@@ -1,0 +1,15 @@
+{
+  "BrowserUnsupport": "您的瀏覽器版本過舊或不支援遊戲部分功能, 請更新瀏覽器或使用其他瀏覽器!",
+  "Yes": "確認",
+  "Cancel": "取消",
+  "Next": "繼續",
+  "LanguageText": "語言",
+  "LoadText": "讀取資源檔...",
+  "LoadTextComplete": "讀取完成!",
+  "BrowserWarning": "為了維持最佳的遊戲體驗, 建議您改用Chrome或Firefox; 否則其他瀏覽器可能不支援某些網頁技術而無法進行遊戲.",
+  "DontShowWarning": "(若按下確認則不再顯示此訊息)",
+  "AvailableToolList": "功能列表",
+  "MistRunnerDB": "賽馬資料庫",
+  "MistRunnerPredict": "次場賽馬預測",
+  "Home": "首頁"
+}

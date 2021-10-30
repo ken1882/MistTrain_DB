@@ -1,0 +1,49 @@
+body{
+  background-color: #1e1e1e;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  
+  color: #cccccc;
+}
+
+a{
+  text-decoration: underline;
+  color: dodgerblue;
+}
+
+.center{
+  display: block;
+  max-width: 100%;
+  margin: auto;
+  text-align: center;
+}
+
+.first{
+  background: midnightblue;
+}
+
+.lang-text{
+  display: inline-block;
+  width: 80px;
+  max-width: 100%;
+  text-align: right;
+}
+
+.lang-box{
+  display: inline-block;
+  width: 120px;
+  max-width: 100%;
+}
+
+.nav-header{
+  padding: 0;
+  margin: auto;
+  font-size: 150%;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dropdown-menu{
+  background-color: dimgray;
+}

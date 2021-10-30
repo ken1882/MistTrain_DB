@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ミストレ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vocab.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
+    <script>
+      function changeLanguage(){
+        DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
+        window.location = window.location.href.split("?")[0];
+      }
+
+      function init_navbar(){
+        if(!DataManager.isReady()){
+          setTimeout(() => {
+            init_navbar();
+          }, 300);
+        }
+        let node = $("#languageText");
+        node.innerText = Vocab.currentLanguageName;        
+        node = $("#languageOptions");
+        for(let i in Vocab.SupportedLanguages){
+          let lang = Vocab.SupportedLanguages[i];
+          node.append($('<option>',{
+            value: lang.key,
+            text: lang.name
+          }));
+        }
+        node.val(DataManager.language);
+      }
+      
+      window.addEventListener("load", ()=>{
+        DataManager.initialize();
+        Vocab.initialize();
+        init_navbar();
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <span id='languageText' label='l-LanguageText' class="navbar-text lang-text">Language:</span>
+            <select id='languageOptions' class="nav-text lang-box">
+              <!-- loaded from json/languages.json -->
+            </select>
+            <input type="button" class="nav-text" value='GO' onclick="changeLanguage()">
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-header" href="/" label="l-Home">_</a>
+          </li>
+          <li class="nav-item">
+            <div class="dropdown">
+              <a class="nav-link nav-header dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" label="l-AvailableToolList">_</a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/mistrunner_database" label="l-MistRunnerDB">_</a>
+                <a class="dropdown-item" href="/mistrunner_predict" label="l-MistRunnerPredict">_</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <br>
+    
+    <div>
+      
+    </div>
+  </body>
+</html>

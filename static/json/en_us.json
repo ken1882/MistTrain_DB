@@ -1,0 +1,15 @@
+{
+  "BrowserUnsupport": "Your browser is outdated or unsupport some functions, please update your browser or switch to other.",
+  "Yes": "Yes",
+  "Cancel": "Cancel",
+  "Next": "Next",
+  "LanguageText": "Language",
+  "LoadText": "Loading...",
+  "LoadTextComplete": "Load Completed!",
+  "BrowserWarning": "Warning: To ensure the best experience, please consider using chrome or firefox; or there might be some issues on other browser.",
+  "DontShowWarning": "(Click yes if you don't want to see this message again)",
+  "AvailableToolList": "Tool list",
+  "MistRunnerDB": "Mist Runner Database",
+  "MistRunnerPredict": "Mist Runner Predictor",
+  "Home": "Home"
+}
