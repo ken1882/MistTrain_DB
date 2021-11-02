@@ -83,9 +83,9 @@ Throttling = True
 StarbrustStream = False
 PersistCharacterCache = True
 
-SIG_COMBAT_WON  = 0x1
-SIG_COMBAT_LOST = 0x2
-SIG_COMBAT_STOP = 0x3
+ERRNO_OK = 0x0
+ERRNO_FAILED = 0x01
+ERRNO_MAINTENANCE = 0x10
 
 STATIC_FILE_TTL = 60*60*24
 
@@ -271,8 +271,8 @@ RARITY_NAME = ['C','B','A','S','SS','US']
 LastErrorCode = 0
 LastErrorMessage = ''
 
-DERPY_WAREHOUSE_HAEDER_PATH   = '.tmp/derpy_header.dat'
-DERPY_WAREHOUSE_CONTENT_PATH  = '.tmp/derpy_warehouse.dat'
+DERPY_WAREHOUSE_HAEDER_PATH   = 'json/derpy_header.json'
+DERPY_WAREHOUSE_CONTENT_PATH  = 'json/derpy_warehouse.json'
 
 DERPY_TACTIC_NIGE     = 1 # 逃げ
 DERPY_TACTIC_SENKO    = 2 # 先行
@@ -326,9 +326,9 @@ DERPY_WEATHER_TYPE = ['晴', '雨']
 DERPY_DIRECTION_TYPE = ['右回り', '左回り']
 DERPY_RANGE_LIST = ['1200m', '2400m', '3600m']
 
-DERPY_RFR_MODEL_NAME  = '.tmp/mtgderpy_rfr.mod'
-DERPY_RFC_MODEL_NAME  = '.tmp/mtgderpy_rfc.mod'
-DERPY_RFR_MODEL_NAME2 = '.tmp/mtgderpy_orfr.mod'
+DERPY_RFR_MODEL_NAME  = 'static/mtgderpy_rfr.mod'
+DERPY_RFC_MODEL_NAME  = 'static/mtgderpy_rfc.mod'
+DERPY_RFR_MODEL_NAME2 = 'static/mtgderpy_orfr.mod'
 
 def make_lparam(x, y):
   return (y << 16) | x

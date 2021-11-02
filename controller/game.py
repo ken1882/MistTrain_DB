@@ -1,0 +1,154 @@
+import _G
+import os
+import requests
+import re
+from ast import literal_eval
+import json
+from _G import log_error,log_info,log_debug,log_warning,wait,get_last_error
+from requests.exceptions import *
+from urllib3.exceptions import ProtocolError
+from datetime import datetime,timedelta
+from time import sleep,gmtime,strftime
+
+NetworkExcpetionRescues = (
+  ConnectTimeout, ReadTimeout, ConnectionError, ConnectionAbortedError,
+  ConnectionResetError, TimeoutError, ProtocolError
+)
+
+TemporaryNetworkErrors = (
+  'Object reference not set',
+  'Data may have been modified or deleted since entities were loaded'
+)
+
+PostHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'Accept-Encoding': 'gzip, deflate, br'
+}
+
+Session = requests.Session()
+Session.headers = {
+  'Accept': '*/*',
+  'Accept-Encoding': 'gzip, deflate, br'
+}
+
+def jpt2localt(jp_time):
+  '''
+  Convert Japanese timezone (GMT+9) datetime object to local timezone
+  '''
+  time_jp = +9
+  time_local = int(strftime("%z", gmtime())) // 100
+  delta = time_jp - time_local
+  return jp_time - timedelta(hours=delta)
+
+def localt2jpt(local_time):
+  time_jp = +9
+  time_local = int(strftime("%z", gmtime())) // 100
+  delta = time_jp - time_local
+  return local_time + timedelta(hours=delta)
+
+def reauth_game():
+  global Session
+  try:
+    Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    raw_cookies = os.getenv('DMM_MTG_COOKIES_A') + os.getenv('DMM_MTG_COOKIES_B')
+    for line in raw_cookies.split(';'):
+      seg = line.strip().split('=')
+      k = seg[0]
+      v = '='.join(seg[1:])
+      Session.cookies.set(k, v)
+    res = Session.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
+    page = res.content.decode('utf8')
+    st = ''
+    for line in page.split('\n'):
+      if re.match(r"(\s+)ST(\s+):", line):
+        st = literal_eval(line.strip().split(':')[-1][:-1].strip())
+        print(st)
+        break
+    payload = os.getenv('DMM_FORM_DATA')
+    rep = re.search(r"st=(.+?)&", payload).group(0)
+    rep = rep.split('=')[1][:-1]
+    payload = payload.replace(rep, st)
+    res = Session.post('https://osapi.dmm.com/gadgets/makeRequest', payload)
+    content = ''.join(res.content.decode('utf8').split('>')[1:])
+    data = json.loads(content)
+    res_json = json.loads(data[list(data.keys())[0]]['body'])
+    change_token(f"Bearer {res_json['r']}")
+  finally:
+    Session.headers['Content-Type'] = 'application/json'
+  res = Session.post('https://mist-train-east4.azurewebsites.net/api/Login')
+  return res
+
+def change_token(token):
+  global Session
+  Session.headers['Authorization'] = token
+
+def is_connected():
+  res = Session.get('https://mist-train-east4.azurewebsites.net/api/Users/Me')
+  if is_response_ok(res) == _G.ERRNO_OK:
+    return True
+  return False
+
+def is_response_ok(res):
+  if res.status_code != 200:
+    _G.LastErrorCode = res.status_code
+    if res.content:
+      try:
+        _G.LastErrorMessage = res.json()['r']['m']
+      except Exception:
+        pass
+    if res.status_code == 403:
+      return _G.ERRNO_MAINTENCE
+    else:
+      log_error(f"An error occurred during sending request to {res.url}:\n{res}\n{res.content}\n\n")
+    return _G.ERRNO_FAILED
+  log_debug(res.content)
+  log_debug('\n')
+  return _G.ERRNO_OK
+
+def is_day_changing():
+  curt = localt2jpt(datetime.now())
+  return (curt.hour == 4 and curt.minute >= 58) or (curt.hour == 5 and curt.minute < 10)
+
+def post_request(url, data=None, depth=1):
+  global Session,TemporaryNetworkErrors
+  while is_day_changing():
+    log_warning("Server day changing, wait for 1 minute")
+    wait(60)
+    if not is_day_changing():
+      log_info("Server day changed, attempting to reauth game")
+      reauth_game()
+      wait(1)
+      break
+  res = None
+  try:
+    log_debug(f"[POST] {url} with payload:", data, sep='\n')
+    if data != None:
+      res = Session.post(url, json.dumps(data), headers=PostHeaders, timeout=_G.NetworkPostTimeout)
+    else:
+      res = Session.post(url, headers=PostHeaders, timeout=_G.NetworkPostTimeout)
+  except NetworkExcpetionRescues as err:
+    Session.close()
+    if depth < _G.NetworkMaxRetry:
+      log_warning(f"Connection errored for {url}, retry after 3 seconds...(depth={depth+1})")
+      wait(3)
+      return post_request(url, data, depth=depth+1)
+    else:
+      raise err
+  if not is_response_ok(res):
+    errno,errmsg = get_last_error()
+    if errno == 500 and any((msg in errmsg for msg in TemporaryNetworkErrors)):
+      log_warning("Temprorary server error occurred, waiting for 3 seconds")
+      wait(3)
+      log_warning(f"Retry connect to {url} (depth={depth+1})")
+      return post_request(url, data, depth=depth+1)
+    elif errno == 401:
+      log_info("Attempting to reauth game")
+      reauth_game()
+      wait(1)
+      return post_request(url, data, depth=depth)
+    else:
+      exit()
+  if not res.content:
+    return None
+  return res.json()
