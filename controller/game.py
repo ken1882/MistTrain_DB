@@ -4,7 +4,8 @@ import requests
 import re
 from ast import literal_eval
 import json
-from _G import log_error,log_info,log_debug,log_warning,wait,get_last_error
+from _G import log_error,log_info,log_debug,log_warning,wait
+from utils import get_last_error,handle_exception,set_last_error
 from requests.exceptions import *
 from urllib3.exceptions import ProtocolError
 from datetime import datetime,timedelta
@@ -32,6 +33,24 @@ Session.headers = {
   'Accept-Encoding': 'gzip, deflate, br'
 }
 
+CharacterDatabase = {}
+EnemyDatabase     = {}
+FormationDatabase = {}
+SkillDatabase     = {}
+LinkSkillDatabase = {}
+ConsumableDatabase= {}
+WeaponDatabase    = {}
+ArmorDatabase     = {}
+AccessoryDatabase = {}
+GearDatabase      = {}
+FieldSkillDatabase= {}
+QuestDatabase     = {}
+ABStoneDatabase   = {}
+
+NetworkMaxRetry = 5
+NetworkGetTimeout = 5
+NetworkPostTimeout = 60
+
 def jpt2localt(jp_time):
   '''
   Convert Japanese timezone (GMT+9) datetime object to local timezone
@@ -49,9 +68,10 @@ def localt2jpt(local_time):
 
 def reauth_game():
   global Session
+  new_token = ''
   try:
     Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    raw_cookies = os.getenv('DMM_MTG_COOKIES_A') + os.getenv('DMM_MTG_COOKIES_B')
+    raw_cookies = os.getenv('DMM_MTG_COOKIES')
     for line in raw_cookies.split(';'):
       seg = line.strip().split('=')
       k = seg[0]
@@ -63,7 +83,6 @@ def reauth_game():
     for line in page.split('\n'):
       if re.match(r"(\s+)ST(\s+):", line):
         st = literal_eval(line.strip().split(':')[-1][:-1].strip())
-        print(st)
         break
     payload = os.getenv('DMM_FORM_DATA')
     rep = re.search(r"st=(.+?)&", payload).group(0)
@@ -72,11 +91,18 @@ def reauth_game():
     res = Session.post('https://osapi.dmm.com/gadgets/makeRequest', payload)
     content = ''.join(res.content.decode('utf8').split('>')[1:])
     data = json.loads(content)
-    res_json = json.loads(data[list(data.keys())[0]]['body'])
-    change_token(f"Bearer {res_json['r']}")
+    new_token = json.loads(data[list(data.keys())[0]]['body'])
+    change_token(f"Bearer {new_token['r']}")
+  except Exception as err:
+    log_error("Unable to reauth game:", err)
+    handle_exception(err)
   finally:
     Session.headers['Content-Type'] = 'application/json'
-  res = Session.post('https://mist-train-east4.azurewebsites.net/api/Login')
+  if new_token:
+    res = Session.post('https://mist-train-east4.azurewebsites.net/api/Login')
+  else:
+    Session = None
+    return None
   return res
 
 def change_token(token):
@@ -86,15 +112,15 @@ def change_token(token):
 def is_connected():
   res = Session.get('https://mist-train-east4.azurewebsites.net/api/Users/Me')
   if is_response_ok(res) == _G.ERRNO_OK:
-    return True
+    return res.json()['r']
   return False
 
 def is_response_ok(res):
   if res.status_code != 200:
-    _G.LastErrorCode = res.status_code
+    set_last_error(code=res.status_code)
     if res.content:
       try:
-        _G.LastErrorMessage = res.json()['r']['m']
+        set_last_error(msg=res.json()['r']['m'])
       except Exception:
         pass
     if res.status_code == 403:
@@ -110,31 +136,60 @@ def is_day_changing():
   curt = localt2jpt(datetime.now())
   return (curt.hour == 4 and curt.minute >= 58) or (curt.hour == 5 and curt.minute < 10)
 
+def get_request(url, depth=1):
+  global Session
+  if not Session:
+    return _G.ERRNO_UNAVAILABLE
+  if is_day_changing():
+    return _G.ERRNO_DAYCHANGING
+  try:
+    log_debug(f"[GET] {url}")
+    res = Session.get(url, timeout=NetworkGetTimeout)
+  except NetworkExcpetionRescues as err:
+    Session.close()
+    if depth < NetworkMaxRetry:
+      log_warning(f"Connection errored for {url}, retry after 3 seconds...(depth={depth+1})")
+      wait(3)
+      return get_request(url, depth=depth+1)
+    else:
+      log_error(f"Unable to connect to {url}, ignore request")
+      return None
+  if not is_response_ok(res):
+    errno,errmsg = get_last_error()
+    if errno == 403:
+      return _G.ERRNO_MAINTENANCE
+    elif errno == 401:
+      log_info("Attempting to reauth game")
+      reauth_game()
+      return get_request(url)
+    else:
+      pass
+  if not res.content:
+    return None
+  return res.json()
+
 def post_request(url, data=None, depth=1):
   global Session,TemporaryNetworkErrors
-  while is_day_changing():
-    log_warning("Server day changing, wait for 1 minute")
-    wait(60)
-    if not is_day_changing():
-      log_info("Server day changed, attempting to reauth game")
-      reauth_game()
-      wait(1)
-      break
+  if not Session:
+    return _G.ERRNO_UNAVAILABLE
+  if is_day_changing():
+    return _G.ERRNO_DAYCHANGING
   res = None
   try:
     log_debug(f"[POST] {url} with payload:", data, sep='\n')
     if data != None:
-      res = Session.post(url, json.dumps(data), headers=PostHeaders, timeout=_G.NetworkPostTimeout)
+      res = Session.post(url, json.dumps(data), headers=PostHeaders, timeout=NetworkPostTimeout)
     else:
-      res = Session.post(url, headers=PostHeaders, timeout=_G.NetworkPostTimeout)
+      res = Session.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
   except NetworkExcpetionRescues as err:
     Session.close()
-    if depth < _G.NetworkMaxRetry:
+    if depth < NetworkMaxRetry:
       log_warning(f"Connection errored for {url}, retry after 3 seconds...(depth={depth+1})")
       wait(3)
       return post_request(url, data, depth=depth+1)
     else:
-      raise err
+      log_error(f"Unable to connect to {url}, ignore request")
+      return None
   if not is_response_ok(res):
     errno,errmsg = get_last_error()
     if errno == 500 and any((msg in errmsg for msg in TemporaryNetworkErrors)):
@@ -142,13 +197,54 @@ def post_request(url, data=None, depth=1):
       wait(3)
       log_warning(f"Retry connect to {url} (depth={depth+1})")
       return post_request(url, data, depth=depth+1)
+    elif errno == 403:
+      return _G.ERRNO_MAINTENANCE
     elif errno == 401:
       log_info("Attempting to reauth game")
       reauth_game()
       wait(1)
       return post_request(url, data, depth=depth)
     else:
-      exit()
+      pass
   if not res.content:
     return None
   return res.json()
+
+def is_service_available():
+  global Session
+  return (not not Session)
+
+def load_database():
+  global CharacterDatabase
+  links = [
+    'https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json',
+  ]
+  for i,link in enumerate(links):
+    db = None
+    db = Session.get(link).json()
+    # Init dbs
+    try:
+      _tmp = __convert2indexdb(db)
+      db = _tmp
+    except Exception:
+      pass
+    if i == 0:
+      CharacterDatabase = db
+
+def __convert2indexdb(db):
+  ret = {}
+  for obj in db:
+    ret[obj['Id']] = obj
+  return ret
+
+def get_character_base(id):
+  if id not in CharacterDatabase:
+    load_database()
+    if id not in CharacterDatabase:
+      _G.log_warning(f"Invalid character id: {id}")
+      return None
+  return CharacterDatabase[id]
+
+def get_character_name(id):
+  ch = get_character_base(id)
+  return f"{ch['Name']}{ch['MCharacterBase']['Name']}"

@@ -40,6 +40,13 @@
       
       window.addEventListener("load", ()=>{
         DataManager.initialize();
+        {% block content %}
+          {% if debug_mode %}
+            DataManager.changeSetting(DataManager.kDebugMode, true);
+          {% else %}
+            DataManager.changeSetting(DataManager.kDebugMode, false);
+          {% endif %}
+        {% endblock content %}
         Vocab.initialize();
         init_navbar();
       });

@@ -3,6 +3,7 @@ import sys
 import json
 from copy import deepcopy
 import _G
+import controller.game as game
 
 Session = requests.Session()
 Session.headers['Accept'] = 'application/json'
@@ -50,7 +51,7 @@ def interpret_race_data(race):
   for i,char in enumerate(race['character']):
     char['condition'] = char['condition'].replace("\n",'')
     obj['character'][i]['condition'] = next((i for i, cond in enumerate(_G.DERPY_CONDITION_LIST) if cond in char['condition']), 0)
-    obj['character'][i]['name'] = get_character_name(char['layerId'])
+    obj['character'][i]['name'] = game.get_character_name(char['layerId'])
     obj['character'][i]['forte'] = _G.DERPY_GROUND_TYPE[char['forte']]
   return obj
 
@@ -73,40 +74,6 @@ def interpret_race_replay(data):
   for obj in ret:
     obj['rank'] = next((i+1 for i,t in enumerate(times) if t == obj['time']), 0)
   return ret
-
-def load_database():
-  global CharacterDatabase
-  links = [
-    'https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json',
-  ]
-  for i,link in enumerate(links):
-    db = None
-    db = Session.get(link).json()
-    # Init dbs
-    try:
-      _tmp = __convert2indexdb(db)
-      db = _tmp
-    except Exception:
-      pass
-    if i == 0:
-      CharacterDatabase = db
-
-def __convert2indexdb(db):
-  ret = {}
-  for obj in db:
-    ret[obj['Id']] = obj
-  return ret
-
-def get_character_base(id):
-  if id not in CharacterDatabase:
-    load_database()
-    if id not in CharacterDatabase:
-      raise RuntimeError(f"Invalid character id: {id}")
-  return CharacterDatabase[id]
-
-def get_character_name(id):
-  ch = get_character_base(id)
-  return f"{ch['Name']}{ch['MCharacterBase']['Name']}"
 
 if __name__ == '__main__':
   data = sweep_race_replays()
