@@ -26,7 +26,6 @@ def index():
 
 @app.route('/mistrunner_database', methods=['GET'])
 def derpy_db_index():
-  derpy.update_race_history_db()
   return render_template('derpy_db.html', db_path=_G.DERPY_WAREHOUSE_CONTENT_PATH)
 
 @app.route('/mistrunner_predict', methods=['GET'])

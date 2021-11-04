@@ -171,7 +171,10 @@ def get_next_prediction():
   id = data['id']
   l_id = _G.GetCacheString('LastPreditId')
   if id == l_id:
-    return _G.GetCacheBinary('RacePreditCache.bin')
+    result = _G.GetCacheBinary('RacePreditCache.bin')
+    if result:
+      log_debug("Return cached predition")
+      return result
   
   log_info(f"Make prediction for race#{id}")
   result = []
