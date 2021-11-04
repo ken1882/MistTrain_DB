@@ -26,6 +26,7 @@ def index():
 
 @app.route('/mistrunner_database', methods=['GET'])
 def derpy_db_index():
+  derpy.update_race_history_db()
   return render_template('derpy_db.html', db_path=_G.DERPY_WAREHOUSE_CONTENT_PATH)
 
 @app.route('/mistrunner_predict', methods=['GET'])
@@ -62,16 +63,10 @@ def setup():
     _G.ThreadPool['game'].start()
 
 def loop_game_listner():
-  last_scan_time = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
-  max_scan_time  = timedelta(days=1)
-  min_scan_time  = timedelta(minutes=30)
   while _G.FlagRunning:
     _G.wait(_G.SERVER_TICK_INTERVAL)
-    curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
-    elapsed = curt - last_scan_time
-    if elapsed > max_scan_time or \
-        (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):
-      derpy.save_recent_races()
+    derpy.update_race_history_db()
+    log_debug("Server ticked")
 
 
 if not app.initialized:

@@ -1,9 +1,14 @@
-import sys
-from datetime import datetime
+import sys,os
+from datetime import datetime,timedelta
+import pytz
 import threading
+import pickle
 from time import sleep
 from random import randint
 from copy import copy,deepcopy
+from dotenv import load_dotenv
+
+load_dotenv()
 
 IS_WIN32 = False
 IS_LINUX = False
@@ -27,7 +32,7 @@ FlagRunning = True
 FlagPaused  = False
 FlagWorking = False
 FlagProcessingUserInput = False
-FlagUseCloudData = True
+FlagUseCloudData = False
 
 MSG_PIPE_CONT   = '\x00\x50\x00CONTINUE\x00'
 MSG_PIPE_STOP   = "\x00\x50\x00STOP\x00"
@@ -303,3 +308,43 @@ def extract_derpy_features(race, character, feats='all'):
       character['country']
     ]
   raise RuntimeError(f"Don't know how to extract features of {feats}")
+
+LastRaceHistoryScanTime = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
+NextRaceCache = None
+LastRaceCacheTime = datetime(2020,9,16, tzinfo=pytz.timezone('Asia/Tokyo'))
+MaxRaceCacheTime  = timedelta(days=1)
+MinRaceCacheTime  = timedelta(minutes=30)
+RacePreditCache = None
+LastPreditId    = 0
+
+def GetCacheString(key):
+  return os.getenv(key)
+
+def GetCacheTimestamp(key):
+  st = int(os.getenv(key) or 0)
+  return datetime.fromtimestamp(st, tz=pytz.timezone('Asia/Tokyo'))
+
+def SetCacheString(key, val):
+  return os.system(f'dotenv set {key} "{val}"')
+
+def SetCacheTimestamp(key, val):
+  if type(val) == datetime:
+    val = val.timestamp()
+  return os.system(f'dotenv set {key} {int(val)}')
+
+def GetCacheBinary(key):
+  if not os.path.exists(key):
+    return None
+  try:
+    with open(key, 'rb') as fp:
+      return pickle.load(fp)
+  except Exception:
+    uwait(0.1)
+    return GetCacheBinary(key)
+
+def SetCacheBinary(key, val):
+  try:
+    with open(key, 'wb') as fp:
+      return pickle.dump(val, fp)
+  except Exception:
+    pass

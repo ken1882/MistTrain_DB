@@ -38,26 +38,26 @@ def save_database(dat, upload=True):
     dm.upload_derpy_db(dat)
   return path
 
-NextRaceCache = None
-LastRaceCacheTime = datetime(2020,9,16, tzinfo=pytz.timezone('Asia/Tokyo'))
-MaxRaceCacheTime  = timedelta(days=1)
-MinRaceCacheTime  = timedelta(minutes=30)
+
 def get_upcoming_race():
-  global NextRaceCache,LastRaceCacheTime
   cache_expired = False
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
-  elapsed = curt - LastRaceCacheTime
-  if NextRaceCache:
-    st = datetime.fromtimestamp(NextRaceCache['timestamp'], tz=pytz.timezone('Asia/Tokyo'))
+  elapsed = curt - _G.GetCacheTimestamp('LastRaceCacheTime')
+  cache = _G.GetCacheBinary('NextRaceCache.bin')
+  data = cache
+  if cache:
+    st = datetime.fromtimestamp(cache['timestamp'], tz=pytz.timezone('Asia/Tokyo'))
     ct = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
     cache_expired = True if st - ct < timedelta(0) else False
-  elif elapsed > MaxRaceCacheTime or \
-      (curt.hour in _G.DerpyUpdateHour and elapsed > MinRaceCacheTime):
+    log_debug("Cache expired due to new race")
+  elif elapsed > _G.MaxRaceCacheTime or \
+      (curt.hour in _G.DerpyUpdateHour and elapsed > _G.MinRaceCacheTime):
     cache_expired = True
+    log_debug("Cache expired due to ttl")
 
   if cache_expired: 
     log_info("Getting next race info")
-    LastRaceCacheTime = curt
+    _G.SetCacheTimestamp('LastRaceCacheTime', curt)
     res = game.post_request('https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetPaddock')
     if type(res) == int:
       return {_G.KEY_ERRNO: res}
@@ -68,8 +68,8 @@ def get_upcoming_race():
     stime = strptime(st, '%Y-%m-%dT%H:%M:%S')
     data['timestamp'] = datetime(*stime[:6], tzinfo=pytz.timezone('Asia/Tokyo')).timestamp()
     log_info("Next race time:", st, stime, stime[:6], data['timestamp'])
-    NextRaceCache = data
-  return NextRaceCache
+    _G.SetCacheBinary('NextRaceCache.bin', data)
+  return data
 
 def get_recent_races():
   res = game.get_request('https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetPastSchedules')  
@@ -83,6 +83,20 @@ def save_recent_races():
   log_info("Saving race history")
   save_database(_G.DerpySavedRaceContent)
   log_info("Race history saved")
+
+def update_race_history_db():
+  max_scan_time  = timedelta(days=1)
+  min_scan_time  = timedelta(minutes=30)
+  curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
+  last_scan_time = _G.GetCacheTimestamp('LastRaceHistoryScanTime')
+  elapsed = curt - last_scan_time
+  log_debug("Cache timestamps:", elapsed, curt, last_scan_time)
+  if elapsed > max_scan_time or \
+      (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):
+    _G.SetCacheTimestamp('LastRaceHistoryScanTime', curt)
+    save_recent_races()
+  else:
+    log_debug("Race history needn't update")
 
 def sweep_race_replays(begin=0,end=0x7fffffff):
   error = 0
@@ -151,16 +165,13 @@ def save_race(race):
   log_info(f"Race#{id} data saved")
   return data
 
-
-RacePreditCache = None
-LastPreditId    = 0
 def get_next_prediction():
-  global RacePreditCache,LastPreditId
   race = get_upcoming_race()
   data = race['schedule'] if 'schedule' in race else race
   id = data['id']
-  if id == LastPreditId:
-    return RacePreditCache
+  l_id = _G.GetCacheString('LastPreditId')
+  if id == l_id:
+    return _G.GetCacheBinary('RacePreditCache.bin')
   
   log_info(f"Make prediction for race#{id}")
   result = []
@@ -187,8 +198,8 @@ def get_next_prediction():
       x_train.append(features)
     log_info(f"Predicting race with classifier {model_name}")
     result.append(pred_score2rank(model_name, clsifer.predict(x_train)))
-  LastPreditId = id
-  RacePreditCache = result
+  _G.SetCacheString('LastPreditId', id)
+  _G.SetCacheBinary('RacePreditCache.bin', result)
   return result
 
 def pred_score2rank(model_name, scores):
