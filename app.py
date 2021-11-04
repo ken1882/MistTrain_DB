@@ -74,6 +74,7 @@ def loop_game_listner():
 
 
 if not app.initialized:
+  app.initialized = True
   setup()
   if (os.getenv('FLASK_ENV') or '').lower() == 'production':
     app.config.from_object(ProductionConfig)
