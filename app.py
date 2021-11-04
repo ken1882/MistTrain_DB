@@ -9,6 +9,7 @@ import controller.game  as game
 import datamanager as dm
 from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
+import pytz
 
 app = Flask(__name__, template_folder='view')
 app.initialized = False
@@ -61,12 +62,12 @@ def setup():
     _G.ThreadPool['game'].start()
 
 def loop_game_listner():
-  last_scan_time = datetime.now()
+  last_scan_time = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   max_scan_time  = timedelta(days=1)
   min_scan_time  = timedelta(minutes=30)
   while _G.FlagRunning:
     _G.wait(_G.SERVER_TICK_INTERVAL)
-    curt = datetime.now()
+    curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
     elapsed = curt - last_scan_time
     if elapsed > max_scan_time or \
         (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):

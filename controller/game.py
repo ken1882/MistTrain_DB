@@ -10,6 +10,7 @@ from requests.exceptions import *
 from urllib3.exceptions import ProtocolError
 from datetime import datetime,timedelta
 from time import sleep,gmtime,strftime
+import pytz
 
 NetworkExcpetionRescues = (
   ConnectTimeout, ReadTimeout, ConnectionError, ConnectionAbortedError,
@@ -140,7 +141,7 @@ def is_response_ok(res):
   return _G.ERRNO_OK
 
 def is_day_changing():
-  curt = localt2jpt(datetime.now())
+  curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   return (curt.hour == 4 and curt.minute >= 58) or (curt.hour == 5 and curt.minute < 10)
 
 def get_request(url, depth=1):

@@ -9,6 +9,7 @@ from pprint import PrettyPrinter
 from _G import log_warning,log_debug,log_error,log_info
 from utils import handle_exception
 from time import mktime,strptime
+import pytz
 pp = PrettyPrinter(indent=2)
 
 
@@ -44,11 +45,11 @@ MinRaceCacheTime  = timedelta(minutes=30)
 def get_upcoming_race():
   global NextRaceCache,LastRaceCacheTime
   cache_expired = False
-  curt = datetime.now()
+  curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   elapsed = curt - LastRaceCacheTime
   if NextRaceCache:
     st = datetime.fromtimestamp(NextRaceCache['timestamp'])
-    ct = datetime.now()
+    ct = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
     cache_expired = True if game.jpt2localt(st) - ct < timedelta(0) else False
   elif elapsed > MaxRaceCacheTime or \
       (curt.hour in _G.DerpyUpdateHour and elapsed > MinRaceCacheTime):
@@ -65,7 +66,7 @@ def get_upcoming_race():
     data['schedule']['character'] = data['character']
     st = data['raceStartDate'] if 'raceStartDate' in data else data['startTime']
     stime = strptime(st, '%Y-%m-%dT%H:%M:%S')
-    data['timestamp'] = datetime(*stime[:6]).timestamp()
+    data['timestamp'] = datetime(*stime[:6], tz=pytz.timezone('Asia/Tokyo')).timestamp()
     log_info("Next race time:", st, stime, stime[:6], data['timestamp'])
     NextRaceCache = data
   return NextRaceCache
