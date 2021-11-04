@@ -65,6 +65,7 @@ def get_upcoming_race():
     data['schedule']['character'] = data['character']
     st = data['raceStartDate'] if 'raceStartDate' in data else data['startTime']
     data['timestamp'] = int(mktime(strptime(st, '%Y-%m-%dT%H:%M:%S')))
+    log_info("Next race time:", st, data['timestamp'])
     NextRaceCache = data
   return NextRaceCache
 
