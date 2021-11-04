@@ -64,7 +64,7 @@ def get_upcoming_race():
     data = interpret_race_data(data)
     data['schedule']['character'] = data['character']
     st = data['raceStartDate'] if 'raceStartDate' in data else data['startTime']
-    data['timestamp'] = int(mktime(strptime(st, '%Y-%m-%dT%H:%M:%S')))
+    data['timestamp'] = datetime(*strptime('2021-11-04T20:00:00', '%Y-%m-%dT%H:%M:%S')[:6]).timestamp()
     log_info("Next race time:", st, data['timestamp'])
     NextRaceCache = data
   return NextRaceCache
