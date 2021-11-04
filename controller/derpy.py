@@ -39,7 +39,7 @@ def save_database(dat, upload=True):
   return path
 
 NextRaceCache = None
-LastRaceCacheTime = datetime(2020,9,16)
+LastRaceCacheTime = datetime(2020,9,16, tzinfo=pytz.timezone('Asia/Tokyo'))
 MaxRaceCacheTime  = timedelta(days=1)
 MinRaceCacheTime  = timedelta(minutes=30)
 def get_upcoming_race():

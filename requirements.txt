@@ -1,6 +1,7 @@
 requests
 gunicorn
 sklearn
+pytz
 Flask==2.0.2
 PyDrive2==1.10.0
 Jinja2==3.0.2
