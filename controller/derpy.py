@@ -66,7 +66,7 @@ def get_upcoming_race():
     data['schedule']['character'] = data['character']
     st = data['raceStartDate'] if 'raceStartDate' in data else data['startTime']
     stime = strptime(st, '%Y-%m-%dT%H:%M:%S')
-    data['timestamp'] = datetime(*stime[:6], tz=pytz.timezone('Asia/Tokyo')).timestamp()
+    data['timestamp'] = datetime(*stime[:6], tzinfo=pytz.timezone('Asia/Tokyo')).timestamp()
     log_info("Next race time:", st, stime, stime[:6], data['timestamp'])
     NextRaceCache = data
   return NextRaceCache
