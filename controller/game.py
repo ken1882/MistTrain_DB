@@ -28,8 +28,6 @@ PostHeaders = {
   'Accept-Encoding': 'gzip, deflate, br'
 }
 
-Session = None
-
 CharacterDatabase = {}
 EnemyDatabase     = {}
 FormationDatabase = {}

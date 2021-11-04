@@ -8,8 +8,6 @@ from random import randint
 from copy import copy,deepcopy
 from dotenv import load_dotenv
 
-load_dotenv()
-
 IS_WIN32 = False
 IS_LINUX = False
 
@@ -26,7 +24,7 @@ STATIC_FILE_DIRECTORY = './static'
 
 # 0:NONE 1:ERROR 2:WARNING 3:INFO 4:DEBUG
 VerboseLevel = 3
-VerboseLevel = 4 if ('-v' in sys.argv or '--verbose' in sys.argv) else VerboseLevel
+VerboseLevel = 4 if os.getenv('VERBOSE') or ('-v' in sys.argv or '--verbose' in sys.argv) else VerboseLevel
 
 FlagRunning = True
 FlagPaused  = False
@@ -318,9 +316,11 @@ RacePreditCache = None
 LastPreditId    = 0
 
 def GetCacheString(key):
+  load_dotenv()
   return os.getenv(key)
 
 def GetCacheTimestamp(key):
+  load_dotenv()
   st = int(os.getenv(key) or 0)
   return datetime.fromtimestamp(st, tz=pytz.timezone('Asia/Tokyo'))
 
