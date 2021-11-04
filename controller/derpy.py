@@ -48,9 +48,9 @@ def get_upcoming_race():
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   elapsed = curt - LastRaceCacheTime
   if NextRaceCache:
-    st = datetime.fromtimestamp(NextRaceCache['timestamp'])
+    st = datetime.fromtimestamp(NextRaceCache['timestamp'], tz=pytz.timezone('Asia/Tokyo'))
     ct = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
-    cache_expired = True if game.jpt2localt(st) - ct < timedelta(0) else False
+    cache_expired = True if st - ct < timedelta(0) else False
   elif elapsed > MaxRaceCacheTime or \
       (curt.hour in _G.DerpyUpdateHour and elapsed > MinRaceCacheTime):
     cache_expired = True
