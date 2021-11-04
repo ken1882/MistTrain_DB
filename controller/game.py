@@ -112,6 +112,7 @@ def reauth_game():
 def change_token(token):
   global Session
   Session.headers['Authorization'] = token
+  os.environ['MTG_AUTH_TOKEN'] = token
 
 def is_connected():
   global Session
@@ -148,6 +149,8 @@ def get_request(url, depth=1):
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
+  if not Session.headers['Authorization']:
+    Session.headers['Authorization'] = os.environ['MTG_AUTH_TOKEN']
   try:
     log_debug(f"[GET] {url}")
     res = Session.get(url, timeout=NetworkGetTimeout)
@@ -181,6 +184,8 @@ def post_request(url, data=None, depth=1):
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
   res = None
+  if not Session.headers['Authorization']:
+    Session.headers['Authorization'] = os.environ['MTG_AUTH_TOKEN']
   try:
     log_debug(f"[POST] {url} with payload:", data, sep='\n')
     if data != None:
