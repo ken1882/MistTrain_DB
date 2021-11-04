@@ -11,6 +11,7 @@ from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
 
 app = Flask(__name__, template_folder='view')
+app.initialized = False
 app.config['TEMPLATES_AUTO_RELOAD '] = True
 
 ori_render_template = render_template
@@ -71,13 +72,15 @@ def loop_game_listner():
         (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):
       derpy.save_recent_races()
 
-if __name__ == '__main__':
+
+if not app.initialized:
   setup()
   if (os.getenv('FLASK_ENV') or '').lower() == 'production':
     app.config.from_object(ProductionConfig)
   else:
     app.config.from_object(DevelopmentConfig)
-  
+
+if __name__ == '__main__':
   try:
     app.run()
   finally:
