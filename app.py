@@ -60,7 +60,7 @@ def setup():
     _G.ThreadPool['game'].start()
 
 def loop_game_listner():
-  last_scan_time = datetime(2020,9,16)
+  last_scan_time = datetime.now()
   max_scan_time  = timedelta(days=1)
   min_scan_time  = timedelta(minutes=30)
   while _G.FlagRunning:
