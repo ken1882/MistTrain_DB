@@ -1,3 +1,6 @@
-Flask
-PyDrive2
 requests
+gunicorn
+Flask==2.0.2
+PyDrive2==1.10.0
+Jinja2==3.0.2
+Werkzeug==2.0.2
