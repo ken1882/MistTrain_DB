@@ -3,7 +3,7 @@ from datetime import datetime
 import threading
 from time import sleep
 from random import randint
-from copy import copy
+from copy import copy,deepcopy
 
 IS_WIN32 = False
 IS_LINUX = False
@@ -27,6 +27,7 @@ FlagRunning = True
 FlagPaused  = False
 FlagWorking = False
 FlagProcessingUserInput = False
+FlagUseCloudData = True
 
 MSG_PIPE_CONT   = '\x00\x50\x00CONTINUE\x00'
 MSG_PIPE_STOP   = "\x00\x50\x00STOP\x00"
@@ -113,6 +114,7 @@ def uwait(sec):
 
 
 # Errnos
+KEY_ERRNO = 'errno'
 ERROR_SUCCESS       = 0x0
 ERROR_LOCKED        = 0x1
 ERROR_LIMIT_REACHED = 0x3
@@ -221,8 +223,18 @@ DERPY_GROUND_TYPE = ['芝', 'ダート']
 DERPY_WEATHER_TYPE = ['晴', '雨']
 DERPY_DIRECTION_TYPE = ['右回り', '左回り']
 DERPY_RANGE_LIST = ['1200m', '2400m', '3600m']
+DERPY_CHARACTER_COUNTRY = [
+  '',
+  'セントイリス',
+  'ニシキ',
+  'アイゼングラート',
+  'ヴェルフォレット',
+  'フレイマリン'
+]
 
+DerpyUpdateHour = [12,20,23]
 
+DERPY_CLOUD_ROOTFOLDERNAME = 'MistTrainDB'
 DERPY_CLOUD_WAREHOUSE = 'derpy_warehouse.json'
 DERPY_LOCAL_WAREHOUSR = '.derpy_warehouse.json'
 DERPY_CLOUD_ESTIMATORS = [
@@ -238,5 +250,56 @@ DERPY_CLOUD_ESTIMATORS = [
 
 DERPY_ESTIMATORS    = []
 
-# saved replays
-DerpySavedReplays   = []
+# saved race history
+DerpySavedRaceHeader   = set()
+DerpySavedRaceContent  = []
+
+def make_model_name(opts):
+  opts = deepcopy(opts)
+  ret = f"{opts.pop('model')}_"
+  ret += str(opts).translate(str.maketrans(":,(){}'",'_-     ')).replace(' ','')
+  ret += ".mod"
+  return ret
+
+def extract_derpy_features(race, character, feats='all'):
+  n_uma = len(race['character'])
+  if feats == 'all':
+    return [
+      race['raceId'],
+      race['direction'],
+      race['grade'],
+      n_uma,
+      character['range'],
+      abs(race['type'] - character['forte']),
+      race['weather'],
+      character['weather'],
+      character['tactics'],
+      character['report'],
+      character['condition'],
+      character['speed'],
+      character['stamina'],
+      character['number'],
+      character['waku'],
+      character['mCharacterBaseId'],
+      character['country']
+    ]
+  elif feats == 'noreport':
+    return [
+      race['raceId'],
+      race['direction'],
+      race['grade'],
+      n_uma,
+      character['range'],
+      abs(race['type'] - character['forte']),
+      race['weather'],
+      character['weather'],
+      character['tactics'],
+      character['condition'],
+      character['speed'],
+      character['stamina'],
+      character['number'],
+      character['waku'],
+      character['mCharacterBaseId'],
+      character['country']
+    ]
+  raise RuntimeError(f"Don't know how to extract features of {feats}")

@@ -33,7 +33,7 @@ function createDailyGroups(data, parent, nested=true){
   var node = $(document.createElement("div"));
   node.attr('id', `race-${data.id}`);
   if(nested){
-    let cls = node.attr('classs');
+    let cls = node.attr('class');
     let month = data.startTime.split('-').slice(0,2).join('-');
     node.attr('class', `${cls} collapse race-${month}`);
   }

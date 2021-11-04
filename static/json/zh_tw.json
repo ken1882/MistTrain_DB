@@ -11,5 +11,13 @@
   "AvailableToolList": "功能列表",
   "MistRunnerDB": "賽馬資料庫",
   "MistRunnerPredict": "次場賽馬預測",
-  "Home": "首頁"
+  "Home": "首頁",
+  "Day": "天",
+  "Hour": "時",
+  "Minute": "分",
+  "Second": "秒",
+  "NextRace": "下一場競賽",
+  "DerpyRiderStats": "騎手數據",
+  "DerpyRacePreditions": "賽程結果預測",
+  "Predition": "預測"
 }

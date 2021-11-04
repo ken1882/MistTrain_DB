@@ -12,5 +12,12 @@
   "MistRunnerDB": "Mist Runner Database",
   "MistRunnerPredict": "Mist Runner Predictor",
   "Home": "Home",
-  "RaceDirLeft": ""
+  "Day": "Days",
+  "Hour": "Hours",
+  "Minute": "Minutes",
+  "Second": "Seconds",
+  "NextRace": "Next Race",
+  "DerpyRiderStats": "Rider Stats",
+  "DerpyRacePreditions": "Race Preditions",
+  "Predition": "Predition"
 }

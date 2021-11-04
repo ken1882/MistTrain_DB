@@ -27,11 +27,7 @@ PostHeaders = {
   'Accept-Encoding': 'gzip, deflate, br'
 }
 
-Session = requests.Session()
-Session.headers = {
-  'Accept': '*/*',
-  'Accept-Encoding': 'gzip, deflate, br'
-}
+Session = None
 
 CharacterDatabase = {}
 EnemyDatabase     = {}
@@ -50,6 +46,12 @@ ABStoneDatabase   = {}
 NetworkMaxRetry = 5
 NetworkGetTimeout = 5
 NetworkPostTimeout = 60
+
+Session = requests.Session()
+Session.headers = {
+  'Accept': '*/*',
+  'Accept-Encoding': 'gzip, deflate, br'
+}
 
 def jpt2localt(jp_time):
   '''
@@ -99,8 +101,10 @@ def reauth_game():
   finally:
     Session.headers['Content-Type'] = 'application/json'
   if new_token:
+    log_info("Game connected")
     res = Session.post('https://mist-train-east4.azurewebsites.net/api/Login')
   else:
+    log_warning("Game session revoked")
     Session = None
     return None
   return res
@@ -110,6 +114,7 @@ def change_token(token):
   Session.headers['Authorization'] = token
 
 def is_connected():
+  global Session
   res = Session.get('https://mist-train-east4.azurewebsites.net/api/Users/Me')
   if is_response_ok(res) == _G.ERRNO_OK:
     return res.json()['r']
@@ -124,6 +129,7 @@ def is_response_ok(res):
       except Exception:
         pass
     if res.status_code == 403:
+      log_error("Server is under maintenance!")
       return _G.ERRNO_MAINTENCE
     else:
       log_error(f"An error occurred during sending request to {res.url}:\n{res}\n{res.content}\n\n")
@@ -154,7 +160,7 @@ def get_request(url, depth=1):
     else:
       log_error(f"Unable to connect to {url}, ignore request")
       return None
-  if not is_response_ok(res):
+  if is_response_ok(res) != _G.ERRNO_OK:
     errno,errmsg = get_last_error()
     if errno == 403:
       return _G.ERRNO_MAINTENANCE
@@ -190,7 +196,7 @@ def post_request(url, data=None, depth=1):
     else:
       log_error(f"Unable to connect to {url}, ignore request")
       return None
-  if not is_response_ok(res):
+  if is_response_ok(res) != _G.ERRNO_OK:
     errno,errmsg = get_last_error()
     if errno == 500 and any((msg in errmsg for msg in TemporaryNetworkErrors)):
       log_warning("Temprorary server error occurred, waiting for 3 seconds")
