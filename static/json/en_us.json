@@ -19,5 +19,14 @@
   "NextRace": "Next Race",
   "DerpyRiderStats": "Rider Stats",
   "DerpyRacePreditions": "Race Preditions",
-  "Predition": "Predition"
+  "Predition": "Predition",
+  "DerpyOdds": "Odds",
+  "Tansho": "Win",
+  "Fukusho": "Place",
+  "TanFukusho": "Win/Place",
+  "Wakuren": "Bracket Quinella",
+  "Umaren": "Quinella",
+  "Umatan": "Exacta",
+  "Waku": "Bracket",
+  "DerpyNumber": "Number"
 }

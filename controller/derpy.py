@@ -38,6 +38,9 @@ def save_database(dat, upload=True):
     dm.upload_derpy_db(dat)
   return path
 
+def get_race_odds(id):
+  res = game.get_request(f"https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetOdds/{id}")
+  return json.loads(res['r'])['data']
 
 def get_upcoming_race():
   cache_expired = False
@@ -65,6 +68,7 @@ def get_upcoming_race():
     data = res['r']['data']
     data = interpret_race_data(data)
     data['schedule']['character'] = data['character']
+    data['odds'] = get_race_odds(data['schedule']['id'])
     st = data['raceStartDate'] if 'raceStartDate' in data else data['startTime']
     stime = strptime(st, '%Y-%m-%dT%H:%M:%S')
     data['timestamp'] = datetime(*stime[:6], tzinfo=pytz.timezone('Asia/Tokyo')).timestamp()

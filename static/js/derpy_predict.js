@@ -1,4 +1,4 @@
-function get_race_table(data){
+function getRaceTable(data){
   let table = $(document.createElement('table'));
   table.attr('class', 'table');
   // table.attr('style', 'display: block;')
@@ -39,6 +39,238 @@ function get_race_table(data){
       let ele = $(document.createElement('th'));
       ele.text(`${attr}`);
       tbtr.append(ele);
+    }
+  }
+  table.append(tbody);
+  return table;
+}
+
+function getTanFukushoTable(race){
+  let data = race.schedule;
+  let table = $(document.createElement('table'));
+  table.attr('class', 'table');
+  let headings = [
+    '枠番',
+    '騎番',
+    '名前',
+    Vocab['Tansho'],
+    Vocab['Fukusho'], 
+  ];
+  let thead = $(document.createElement('thead'));
+  let thtr   = $(document.createElement('tr'));
+  thead.append(thtr);
+  for(let i in headings){
+    let title = headings[i];
+    let leaf = $(document.createElement('th'));
+    leaf.attr('scope', 'col');
+    leaf.text(title);
+    thtr.append(leaf);
+  }
+  table.append(thead);
+  let tbody = $(document.createElement('tbody'));
+  for(let i in data['character']){
+    let tbtr  = $(document.createElement('tr'));
+    tbody.append(tbtr);
+    let char = data['character'][i];
+    let waku = $(document.createElement('th'));
+    waku.text(`${char.waku}`);
+    tbtr.append(waku);
+    let number = $(document.createElement('th'));
+    number.text(`${char.number}`);
+    tbtr.append(number);
+    let name = $(document.createElement('th'));
+    name.text(`${char.name}`);
+    tbtr.append(name);
+    let tansho = $(document.createElement('th'));
+    tansho.text(`${race.odds.tansho[char.number]}`);
+    tbtr.append(tansho);
+    let fukusho = $(document.createElement('th'));
+    fukusho.text(`${race.odds.fukusho[char.number]}`);
+    tbtr.append(fukusho);
+  }
+  console.log(race.odds.tansho);
+  console.log(race.odds.fukusho);
+  table.append(tbody);
+  return table;
+}
+
+function getWakurenTable(race){
+  let table = $(document.createElement('table'));
+  let thead = $(document.createElement('thead'));
+  let thtr   = $(document.createElement('tr'));
+  table.attr('class', 'table');
+  let headings = [''];
+  for(let i=0;i<race.character.length;++i){
+    let w = race.character[i].waku;
+    if(!headings.includes(w)){
+      headings.push(w)
+    }
+  }
+  for(let i in headings){
+    let leaf = $(document.createElement('th'));
+    leaf.attr('scope', 'col');
+    leaf.attr('style', 'font-weight: bold; text-align: center;')
+    leaf.text(headings[i]);
+    if(i == 0){ leaf.text(Vocab['Waku']); }
+    thtr.append(leaf);
+  }
+  thead.append(thtr);
+  table.append(thead);
+  let tbody = $(document.createElement('tbody'));
+  let ele_matrix = [];
+  for(let number in headings){
+    number = headings[number];
+    if(!number){continue;}
+    let row = [];
+    let tbtr  = $(document.createElement('tr'));
+    tbody.append(tbtr);
+    let num2 = $(document.createElement('th'));
+    num2.text(`${number}`);
+    num2.attr('style', 'font-weight: bold; text-align: center;')
+    tbtr.append(num2);
+    for(let _ in headings){
+      let leaf = $(document.createElement('th'));
+      leaf.attr('style', 'text-align: center;')
+      row.push(leaf);
+      tbtr.append(leaf);
+    }
+    ele_matrix.push(row);
+  }
+  for(let first in headings){
+    first = headings[first];
+    if(!first){ continue; }
+    for(let second in headings){
+      second = headings[second];
+      if(!second){ continue; }
+      let key = `${first}-${second}`;
+      if(race.odds.wakuren[key]){
+        ele_matrix[second-1][first-1].text(race.odds.wakuren[key]);
+      }
+      else if(first == second){
+        ele_matrix[second-1][first-1].text('-');
+      }
+    }
+  }
+  table.append(tbody);
+  return table;
+}
+
+function getUmarenTable(race){
+  let table = $(document.createElement('table'));
+  let thead = $(document.createElement('thead'));
+  let thtr   = $(document.createElement('tr'));
+  table.attr('class', 'table');
+  let headings = [''];
+  for(let i=0;i<race.character.length;++i){
+    let w = race.character[i].number;
+    if(!headings.includes(w)){
+      headings.push(w)
+    }
+  }
+  for(let i in headings){
+    let leaf = $(document.createElement('th'));
+    leaf.attr('scope', 'col');
+    leaf.attr('style', 'font-weight: bold; text-align: center;')
+    leaf.text(headings[i]);
+    if(i == 0){ leaf.text(Vocab['DerpyNumber']); }
+    thtr.append(leaf);
+  }
+  thead.append(thtr);
+  table.append(thead);
+  let tbody = $(document.createElement('tbody'));
+  let ele_matrix = [];
+  for(let number in headings){
+    number = headings[number];
+    if(!number){continue;}
+    let row = [];
+    let tbtr  = $(document.createElement('tr'));
+    tbody.append(tbtr);
+    let num2 = $(document.createElement('th'));
+    num2.text(`${number}`);
+    num2.attr('style', 'font-weight: bold; text-align: center;')
+    tbtr.append(num2);
+    for(let _ in headings){
+      let leaf = $(document.createElement('th'));
+      leaf.attr('style', 'text-align: center;')
+      row.push(leaf);
+      tbtr.append(leaf);
+    }
+    ele_matrix.push(row);
+  }
+  for(let first in headings){
+    first = headings[first];
+    if(!first){ continue; }
+    for(let second in headings){
+      second = headings[second];
+      if(!second){ continue; }
+      let key = `${first}-${second}`;
+      if(race.odds.umaren[key]){
+        ele_matrix[second-1][first-1].text(race.odds.umaren[key]);
+      }
+      else if(first == second){
+        ele_matrix[second-1][first-1].text('-');
+      }
+    }
+  }
+  table.append(tbody);
+  return table;
+}
+
+function getUmatanTable(race){
+  let table = $(document.createElement('table'));
+  let thead = $(document.createElement('thead'));
+  let thtr   = $(document.createElement('tr'));
+  table.attr('class', 'table');
+  let headings = [''];
+  for(let i=0;i<race.character.length;++i){
+    let w = race.character[i].number;
+    if(!headings.includes(w)){
+      headings.push(w)
+    }
+  }
+  for(let i in headings){
+    let leaf = $(document.createElement('th'));
+    leaf.attr('scope', 'col');
+    leaf.attr('style', 'font-weight: bold; text-align: center;')
+    leaf.text(headings[i]);
+    if(i == 0){ leaf.text(Vocab['DerpyNumber']); }
+    thtr.append(leaf);
+  }
+  thead.append(thtr);
+  table.append(thead);
+  let tbody = $(document.createElement('tbody'));
+  let ele_matrix = [];
+  for(let number in headings){
+    number = headings[number];
+    if(!number){continue;}
+    let row = [];
+    let tbtr  = $(document.createElement('tr'));
+    tbody.append(tbtr);
+    let num2 = $(document.createElement('th'));
+    num2.text(`${number}`);
+    num2.attr('style', 'font-weight: bold; text-align: center;')
+    tbtr.append(num2);
+    for(let _ in headings){
+      let leaf = $(document.createElement('th'));
+      leaf.attr('style', 'text-align: center;')
+      row.push(leaf);
+      tbtr.append(leaf);
+    }
+    ele_matrix.push(row);
+  }
+  for(let first in headings){
+    first = headings[first];
+    if(!first){ continue; }
+    for(let second in headings){
+      second = headings[second];
+      if(!second){ continue; }
+      let key = `${first}-${second}`;
+      if(race.odds.umatan[key]){
+        ele_matrix[second-1][first-1].text(race.odds.umatan[key]);
+      }
+      else if(first == second){
+        ele_matrix[second-1][first-1].text('-');
+      }
     }
   }
   table.append(tbody);
@@ -98,6 +330,9 @@ function setupCountdown(race){
 }
 
 function fillContent(race){
+  if(isClassOf(race.odds, Array)){
+    race.odds = race.odds[0];
+  }
   data = race.schedule;
   let title = data.name;
   title += ` ${data.type == 0 ? '芝' : 'ダート'}`
@@ -106,9 +341,16 @@ function fillContent(race){
   title += ` ${data.weather == 0 ? '晴' : '雨'}`
   $("#race-title").text(title);
   document.getElementById('race-message').innerHTML = race.hiRate.replace('。','。<br>');
-  $("#uma-base-stats").append(get_race_table(data))
+  $("#uma-base-stats").append(getRaceTable(data));
+  $("#table-tanfukusho").append(getTanFukushoTable(race));
+  $("#table-wakuren").append(getWakurenTable(race));
+  $("#table-umaren").append(getUmarenTable(race));
+  $("#table-umatan").append(getUmatanTable(race));
+
   $("#loading-indicator2").remove();
   $("#info-section").attr('style', '');
+  $("#loading-indicator4").remove();
+  $("#odds-section").attr('style', '');
 }
 
 function fillPreditionMatrix(data){
@@ -154,6 +396,11 @@ function fillPreditionMatrix(data){
 }
 
 function start(){
+  if(!DataManager.isReady()){
+    return setTimeout(() => {
+      start();
+    }, 300);
+  }
   getNextRaceData();
 }
 

@@ -19,5 +19,14 @@
   "NextRace": "下一場競賽",
   "DerpyRiderStats": "騎手數據",
   "DerpyRacePreditions": "賽程結果預測",
-  "Predition": "預測"
+  "Predition": "預測",
+  "DerpyOdds": "賠率",
+  "Tansho": "單勝",
+  "Fukusho": "複勝",
+  "TanFukusho": "單/複勝",
+  "Wakuren": "枠連",
+  "Umaren": "騎連",
+  "Umatan": "騎單",
+  "Waku": "枠號",
+  "DerpyNumber": "編號"
 }

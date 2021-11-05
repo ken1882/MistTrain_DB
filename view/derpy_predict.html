@@ -118,6 +118,7 @@
       <div id="race-message" class="h5 center"></div>
       <hr>
     </div>
+
     <div class="spinner-border center" id="loading-indicator2">
       <span class="sr-only"></span>
     </div>
@@ -142,7 +143,7 @@
       <div>
         <div class="card card-body">
           <a class="btn btn-primary" data-bs-toggle="collapse" 
-            aria-controls="uma-base-stats" href="#uma-preditions"
+            aria-controls="uma-preditions" href="#uma-preditions"
             label="l-DerpyRacePreditions"
           >_
           </a>
@@ -151,5 +152,65 @@
         </div>
       </div>
     </div>
+    <hr>
+
+    <div class="spinner-border center" id="loading-indicator4">
+      <span class="sr-only"></span>
+    </div>
+
+    <div id="odds-section" style="display: none;">
+      <div>
+        <div class="card card-body">
+          <a class="btn btn-primary" data-bs-toggle="collapse" 
+            aria-controls="" data-bs-target=".uma-odds"
+            label="l-DerpyOdds"
+          >_
+          </a>
+          <div class="collapse uma-odds">
+            <hr>
+            <div class="uma-odds collapse" id="odds-tanfukusho">
+              <div class="card card-body">
+                <a class="btn btn-secondary" data-bs-toggle="collapse" aria-controls="table-tanfukusho"
+                  href="#table-tanfukusho" label="l-TanFukusho"
+                >_
+                </a>
+                <div id="table-tanfukusho" class="collapse"></div>
+              </div>
+            </div>
+            <hr>
+            <div class="uma-odds collapse" id="odds-wakuren">
+              <div class="card card-body">
+                <a class="btn btn-secondary" data-bs-toggle="collapse" aria-controls="table-wakuren"
+                  href="#table-wakuren" label="l-Wakuren"
+                >_
+                </a>
+                <div id="table-wakuren" class="collapse"></div>
+              </div>
+            </div>
+            <hr>
+            <div class="uma-odds collapse" id="odds-umaren">
+              <div class="card card-body">
+                <a class="btn btn-secondary" data-bs-toggle="collapse" aria-controls="table-umaren"
+                  href="#table-umaren" label="l-Umaren"
+                >_
+                </a>
+                <div id="table-umaren" class="collapse"></div>
+              </div>
+            </div>
+            <hr>
+            <div class="uma-odds collapse" id="odds-umatan">
+              <div class="card card-body">
+                <a class="btn btn-secondary" data-bs-toggle="collapse" aria-controls="table-umatan"
+                  href="#table-umatan" label="l-Umatan"
+                >_
+                </a>
+                <div id="table-umatan" class="collapse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
