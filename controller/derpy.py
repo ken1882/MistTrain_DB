@@ -61,7 +61,6 @@ def get_upcoming_race():
 
   if cache_expired: 
     log_info("Getting next race info")
-    _G.SetCacheTimestamp('LastRaceCacheTime', curt)
     res = game.post_request('https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetPaddock')
     if type(res) == int:
       return {_G.KEY_ERRNO: res}
@@ -73,6 +72,7 @@ def get_upcoming_race():
     stime = strptime(st, '%Y-%m-%dT%H:%M:%S')
     data['timestamp'] = datetime(*stime[:6], tzinfo=pytz.timezone('Asia/Tokyo')).timestamp()
     log_info("Next race time:", st, stime, stime[:6], data['timestamp'])
+    _G.SetCacheTimestamp('LastRaceCacheTime', curt)
     _G.SetCacheBinary('NextRaceCache.bin', data)
   return data
 
@@ -98,8 +98,8 @@ def update_race_history_db():
   log_debug("Cache timestamps:", elapsed, curt, last_scan_time)
   if elapsed > max_scan_time or \
       (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):
-    _G.SetCacheTimestamp('LastRaceHistoryScanTime', curt)
     save_recent_races()
+    _G.SetCacheTimestamp('LastRaceHistoryScanTime', curt)
   else:
     log_debug("Race history needn't update")
 

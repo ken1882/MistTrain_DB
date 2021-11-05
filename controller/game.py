@@ -49,7 +49,8 @@ NetworkPostTimeout = 60
 Session = requests.Session()
 Session.headers = {
   'Accept': '*/*',
-  'Accept-Encoding': 'gzip, deflate, br'
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Authorization': ''
 }
 
 def jpt2localt(jp_time):
@@ -93,6 +94,8 @@ def reauth_game():
     content = ''.join(res.content.decode('utf8').split('>')[1:])
     data = json.loads(content)
     log_debug(data)
+    if "'rc': 403" in str(data):
+      return _G.ERRNO_MAINTENANCE
     new_token = json.loads(data[list(data.keys())[0]]['body'])
     change_token(f"Bearer {new_token['r']}")
   except Exception as err:
@@ -131,7 +134,7 @@ def is_response_ok(res):
         pass
     if res.status_code == 403:
       log_error("Server is under maintenance!")
-      return _G.ERRNO_MAINTENCE
+      return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
     else:
       log_error(f"An error occurred during sending request to {res.url}:\n{res}\n{res.content}\n\n")
     return _G.ERRNO_FAILED
@@ -169,7 +172,9 @@ def get_request(url, depth=1):
       return _G.ERRNO_MAINTENANCE
     elif errno == 401:
       log_info("Attempting to reauth game")
-      reauth_game()
+      res = reauth_game()
+      if res == _G.ERRNO_MAINTENANCE:
+        return {_G.KEY_ERRNO: res}
       return get_request(url)
     else:
       pass
@@ -209,10 +214,12 @@ def post_request(url, data=None, depth=1):
       log_warning(f"Retry connect to {url} (depth={depth+1})")
       return post_request(url, data, depth=depth+1)
     elif errno == 403:
-      return _G.ERRNO_MAINTENANCE
+      return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
     elif errno == 401:
       log_info("Attempting to reauth game")
-      reauth_game()
+      res = reauth_game()
+      if res == _G.ERRNO_MAINTENANCE:
+        return {_G.KEY_ERRNO: res}
       wait(1)
       return post_request(url, data, depth=depth)
     else:

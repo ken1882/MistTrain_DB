@@ -28,5 +28,7 @@
   "Umaren": "Quinella",
   "Umatan": "Exacta",
   "Waku": "Bracket",
-  "DerpyNumber": "Number"
+  "DerpyNumber": "Number",
+  "UnderMaintenance": "Game server seems under maintenance, please come back later",
+  "UnknownError": "Unknown error occurred, please try again later and notify devs if keep happening"
 }

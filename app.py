@@ -11,6 +11,8 @@ from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
 import pytz
 
+from utils import handle_exception
+
 app = Flask(__name__, template_folder='view')
 app.initialized = False
 app.config['TEMPLATES_AUTO_RELOAD '] = True
@@ -34,29 +36,40 @@ def derpy_predict_index():
 
 @app.route('/api/GetNextRace', methods=['GET'])
 def get_next_race():
-  race = derpy.get_upcoming_race()
-  code = 200
-  if _G.KEY_ERRNO in race:
-    code = 503
-  return jsonify(race),code
+  try:
+    race = derpy.get_upcoming_race()
+    code = 200
+    if _G.KEY_ERRNO in race:
+      code = 503
+    return jsonify(race),code
+  except (TypeError, KeyError) as err:
+    handle_exception(err)
+  return jsonify({}),503
 
 @app.route('/api/GetNextRacePredition', methods=['GET'])
 def get_next_preditions():
-  result = derpy.get_next_prediction()
-  code = 200
-  return jsonify(result),code
+  try:
+    result = derpy.get_next_prediction()
+    code = 200
+    return jsonify(result),code
+  except (TypeError, KeyError) as err:
+    handle_exception(err)
+  return jsonify({}),503
 
 def setup():
   dm.init()
   derpy.init()
   if not game.is_connected():
-    game.reauth_game()
-    log_info("Sweeping race history")
-    sbegin = int(os.getenv('MTG_DERPY_SWEEP_BEGIN') or 0)
-    derpy.sweep_race_replays(sbegin)
-    log_info("Saving race history")
-    derpy.save_database(_G.DerpySavedRaceContent)
-    log_info("Race history saved")
+    res = game.reauth_game()
+    if res == _G.ERRNO_MAINTENANCE:
+      log_warning("Server is under maintenance!")
+    else:
+      log_info("Sweeping race history")
+      sbegin = int(os.getenv('MTG_DERPY_SWEEP_BEGIN') or 0)
+      derpy.sweep_race_replays(sbegin)
+      log_info("Saving race history")
+      derpy.save_database(_G.DerpySavedRaceContent)
+      log_info("Race history saved")
   if 'game' not in _G.ThreadPool:
     _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
     _G.ThreadPool['game'].start()
@@ -64,7 +77,11 @@ def setup():
 def loop_game_listner():
   while _G.FlagRunning:
     _G.wait(_G.SERVER_TICK_INTERVAL)
-    derpy.update_race_history_db()
+    try:
+      derpy.update_race_history_db()
+    except (TypeError, KeyError) as err:
+      log_warning("Server seems is under maintenance")
+      handle_exception(err)
     log_debug("Server ticked")
 
 

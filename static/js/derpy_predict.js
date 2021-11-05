@@ -288,6 +288,12 @@ function getNextRaceData(){
     },
     error: (res) => {
       debug_log(res);
+      if(res.status == 503){
+        alert(Vocab['UnderMaintenance']);
+      }
+      else{
+        alert(Vocab['UnknownError']);
+      }
     }
   });
 }
@@ -301,6 +307,12 @@ function getPredictionMatrix(){
     },
     error: (res) => {
       debug_log(res);
+      if(res.status == 503){
+        alert(Vocab['UnderMaintenance']);
+      }
+      else{
+        alert(Vocab['UnknownError']);
+      }
     }
   });
 }
