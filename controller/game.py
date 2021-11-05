@@ -92,6 +92,7 @@ def reauth_game():
     res = Session.post('https://osapi.dmm.com/gadgets/makeRequest', payload)
     content = ''.join(res.content.decode('utf8').split('>')[1:])
     data = json.loads(content)
+    log_debug(data)
     new_token = json.loads(data[list(data.keys())[0]]['body'])
     change_token(f"Bearer {new_token['r']}")
   except Exception as err:
