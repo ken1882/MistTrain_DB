@@ -48,8 +48,9 @@ def get_upcoming_race():
   if cache:
     st = datetime.fromtimestamp(cache['timestamp'], tz=pytz.timezone('Asia/Tokyo'))
     ct = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
-    cache_expired = True if st - ct < timedelta(0) else False
-    log_debug("Cache expired due to new race")
+    if st - ct < timedelta(0):
+      cache_expired = True
+      log_debug("Cache expired due to new race")
   elif elapsed > _G.MaxRaceCacheTime or \
       (curt.hour in _G.DerpyUpdateHour and elapsed > _G.MinRaceCacheTime):
     cache_expired = True
