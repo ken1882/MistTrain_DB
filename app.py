@@ -2,7 +2,7 @@ from datetime import datetime,timedelta
 import _G
 import os
 from flask import Flask
-from flask import render_template,jsonify
+from flask import render_template,jsonify,send_from_directory
 from _G import log_error,log_info,log_warning,log_debug
 import controller.derpy as derpy
 import controller.game  as game
@@ -56,23 +56,27 @@ def get_next_preditions():
     handle_exception(err)
   return jsonify({}),503
 
+@app.route('/assets/<path:path>')
+def send_assets(path):
+    return send_from_directory('assets', path)
+
 def setup():
   dm.init()
   derpy.init()
-  if not game.is_connected():
-    res = game.reauth_game()
-    if res == _G.ERRNO_MAINTENANCE:
-      log_warning("Server is under maintenance!")
-    else:
-      log_info("Sweeping race history")
-      sbegin = int(os.getenv('MTG_DERPY_SWEEP_BEGIN') or 0)
-      derpy.sweep_race_replays(sbegin)
-      log_info("Saving race history")
-      derpy.save_database(_G.DerpySavedRaceContent)
-      log_info("Race history saved")
-  if 'game' not in _G.ThreadPool:
-    _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
-    _G.ThreadPool['game'].start()
+  # if not game.is_connected():
+  #   res = game.reauth_game()
+  #   if res == _G.ERRNO_MAINTENANCE:
+  #     log_warning("Server is under maintenance!")
+  #   else:
+  #     log_info("Sweeping race history")
+  #     sbegin = int(os.getenv('MTG_DERPY_SWEEP_BEGIN') or 0)
+  #     derpy.sweep_race_replays(sbegin)
+  #     log_info("Saving race history")
+  #     derpy.save_database(_G.DerpySavedRaceContent)
+  #     log_info("Race history saved")
+  # if 'game' not in _G.ThreadPool:
+  #   _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
+  #   _G.ThreadPool['game'].start()
 
 def loop_game_listner():
   while _G.FlagRunning:
