@@ -1,0 +1,9032 @@
+{
+  "metadata": {
+    "width": 490,
+    "height": 1714,
+    "uw": 47,
+    "uh": 47
+  },
+  "frames": {
+    "0.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "1.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "10.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "101.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "102.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "10201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "103.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "10301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "10302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          49
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "104.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          49
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "10401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "10402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "105.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "106.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "107.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "108.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "109.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "11.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        46
+      ],
+      "spriteSourceSize": [
+        47,
+        46
+      ],
+      "textureRect": [
+        [
+          1,
+          1
+        ],
+        [
+          47,
+          46
+        ]
+      ],
+      "textureRotated": false
+    },
+    "110.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          50
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "110201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          98
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "111.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          98
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "111201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "112.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "11201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "113.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "11301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "114.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "11401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "115.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          99
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "116.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          147
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "117.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          147
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "118.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "119.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "12.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "120.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "1201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "121.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "122.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "12201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "123.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "12301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          196
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "124.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          147
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "12401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          196
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "125.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "126.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "127.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          148
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "128.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "129.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "13.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "130.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "131.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "132.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "13201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          245
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "133.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "13301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          245
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "13302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "134.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          197
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "13401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "13402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "135.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "136.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "137.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "14.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "1401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          246
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "1402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          294
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "142.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          294
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "14201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "143.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "14301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "14401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "15.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "15201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "15301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "15401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          295
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "16201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          343
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "16301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          343
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "16401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "17.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "17201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "17301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "17401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "17402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "18201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "18301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          344
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "18401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          392
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "19201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          392
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "19301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "19302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "19401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "2.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "20201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "20301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "20302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "20401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          393
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "20402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          441
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "21201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          441
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "21301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "21401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "21402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "2201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "22201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "22301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "22401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "2301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          442
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "23201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          490
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "23301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          490
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "23401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "2401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "2402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "24201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "24301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "24302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "24401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "24402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          491
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "25201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          539
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "25301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          539
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "25401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "26201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "26301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "26401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "27201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "27301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "27401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "28201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          540
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "28301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          588
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "28401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          588
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "29201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "29301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "29401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "3.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "30201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "30301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "31201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "31301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          589
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "31401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          637
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "3201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          637
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "32201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "32301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "32401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "32402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "3301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "33201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "33301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "33401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          638
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "33402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          686
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "3401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          686
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "34201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "34301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "34401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "35201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "35301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "35302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "35401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "35402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          687
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "36201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          735
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "36301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          735
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "36401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "36402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "37201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "37401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "37402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "38201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "38301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "38401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          736
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "39201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          784
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "39301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          784
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "39401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "4.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "40201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "40301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "40401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "41201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "41301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "41401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          785
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "4201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          833
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "42201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          833
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "42301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "42401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "4301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "43201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "43301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "43401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "4401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "44201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          834
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "44301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          882
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "45201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          882
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "45301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "45401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "46201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "46301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "46401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "47201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "47301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "47401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          883
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "47402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          931
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "48201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          931
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "48301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "48401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "49201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "49301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "49401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "49402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "5.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "50201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          932
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "50301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          980
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "50401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          980
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "50402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "51201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "51301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "51401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "5201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "52201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "52301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "52401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          981
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "5301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1029
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "5302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1029
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "53201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "53301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "53401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "5401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "54201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "54301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "54401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "54402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1030
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "55201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1078
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "55301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1078
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "56201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "56401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "57201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "57301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "58201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "58301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "58401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "59201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1079
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "59301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1127
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "59401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1127
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "6.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "60201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "60401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "60402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "61201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "61301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "6201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "62201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1128
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "62301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1176
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "6301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1176
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "63201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "63301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "63401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "6401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "6402.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "64201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "64301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "64401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1177
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "65201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1225
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "65301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1225
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "66201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "66301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "66401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "67201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "67301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "67401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "68201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "68301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1226
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "68401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1274
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "69201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1274
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "69401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "7.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "70201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "70301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "70401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "71201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "71301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "71401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1275
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "7201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1323
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "72201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1323
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "72301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "7301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "73201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "73401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "7401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "74201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "74301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "74401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1324
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "75201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1372
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "75301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1372
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "75401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "76201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "76401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "77201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "77301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "77401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "78201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "78301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1373
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "79201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1421
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "79401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1421
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "8.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "80201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "80301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "80401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "81201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "81401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "8201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "82201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1422
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "82401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1470
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "8301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1470
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "83201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "83301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "83401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "8401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "84201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "85201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "85401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "86201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1471
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "86401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1519
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "87201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1519
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "87301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "87401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "88201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "89201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        46
+      ],
+      "spriteSourceSize": [
+        47,
+        46
+      ],
+      "textureRect": [
+        [
+          50,
+          1
+        ],
+        [
+          47,
+          46
+        ]
+      ],
+      "textureRotated": false
+    },
+    "89401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "9.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "90201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "91201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "91301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1520
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "91401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1568
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "9201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1568
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "92201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "9301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "9302.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "93201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "93301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "93401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "9401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "94201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1569
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "94401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1617
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "95201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1617
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "95401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          99,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "96201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          148,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "96301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          197,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "96401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          246,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "97201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          295,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "98201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          344,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "98401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          393,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "99201.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          442,
+          1618
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "99301.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          1,
+          1666
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    },
+    "99401.png": {
+      "aliases": [],
+      "spriteOffset": [
+        0,
+        0
+      ],
+      "spriteSize": [
+        47,
+        47
+      ],
+      "spriteSourceSize": [
+        47,
+        47
+      ],
+      "textureRect": [
+        [
+          50,
+          1666
+        ],
+        [
+          47,
+          47
+        ]
+      ],
+      "textureRotated": false
+    }
+  }
+}

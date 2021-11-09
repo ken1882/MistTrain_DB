@@ -4,13 +4,12 @@ var assetManager;
 var skeleton, state, bounds;
 var skeletonRenderer;
 
-var skelName = "32201";
+var assetPath = 'static/assets/character_model/'
+var skelName = "7401";
 var animName = "Idle";
 
 function init () {
-	canvas = document.getElementById("canvas");
-	// canvas.width = window.innerWidth;
-	// canvas.height = window.innerHeight;
+	canvas = document.getElementById("char-canvas");
 	context = canvas.getContext("2d");
 
 	skeletonRenderer = new spine.canvas.SkeletonRenderer(context);
@@ -18,42 +17,54 @@ function init () {
 	skeletonRenderer.debugRendering = true;
 	// enable the triangle renderer, supports meshes, but may produce artifacts in some browsers
 	skeletonRenderer.triangleRendering = true;
-
+	
 	assetManager = new spine.canvas.AssetManager();
 
-	assetManager.loadBinary("assets/" + skelName + ".skel");
-	assetManager.loadText("assets/" + skelName.replace("-pro", "").replace("-ess", "") + ".atlas");
-	assetManager.loadTexture("assets/" + skelName.replace("-pro", "").replace("-ess", "") + ".png");
+	var rss = makeSpineResourcesPaths(skelName);
+	loadSpineResources(rss[0], rss[1], rss[2]);
+}
 
+function makeSpineResourcesPaths(id){
+	return [
+		`https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.png`,
+		`https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.atlas`,
+		`https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.skel`,
+	]
+}
+
+function loadSpineResources(png, atlas, skel){
+	assetManager.loadTexture(png);
+	assetManager.loadText(atlas);
+	assetManager.loadBinary(skel);
 	requestAnimationFrame(load);
 }
 
-function load () {
+function load(){
 	if (assetManager.isLoadingComplete()) {
 		var data = loadSkeleton(skelName, animName, "default");
 		skeleton = data.skeleton;
 		state = data.state;
 		bounds = data.bounds;
-    window.charspine = {
-      skeleton: skeleton,
-      state: state,
-      bounds: bounds
-    }
 		requestAnimationFrame(render);
-	} else {
+	}
+	else{
 		requestAnimationFrame(load);
 	}
 }
 
-function loadSkeleton (name, initialAnimation, skin) {
+function loadSkeleton(name, initialAnimation, skin) {
 	if (skin === undefined) skin = "default";
+	var rss_paths = makeSpineResourcesPaths(name);
 
 	// Load the texture atlas using name.atlas and name.png from the AssetManager.
 	// The function passed to TextureAtlas is used to resolve relative paths.
-	atlas = new spine.TextureAtlas(assetManager.get("assets/" + name.replace("-pro", "").replace("-ess", "") + ".atlas"), function(path) {
-		return assetManager.get("assets/" + path);
-	});
-  window.atlas = atlas;
+	atlas = new spine.TextureAtlas(
+		assetManager.get(rss_paths[1]), 
+		(_) => {
+			return assetManager.get(rss_paths[0]);
+		}
+	);
+  
 	// Create a AtlasAttachmentLoader, which is specific to the WebGL backend.
 	atlasLoader = new spine.AtlasAttachmentLoader(atlas);
 
@@ -61,13 +72,10 @@ function loadSkeleton (name, initialAnimation, skin) {
 	var SkeletonBinary = new spine.SkeletonBinary(atlasLoader);
 
 	// Set the scale to apply during parsing, parse the file, and create a new skeleton.
-	var skeletonData = SkeletonBinary.readSkeletonData(assetManager.get("assets/" + name + ".skel"));
+	var skeletonData = SkeletonBinary.readSkeletonData(assetManager.get(rss_paths[2]));
 	var skeleton = new spine.Skeleton(skeletonData);
 	skeleton.scaleY = -1;
-  window.skel = skeleton;
-  window.skeldat = skeletonData;
 	var bounds = calculateBounds(skeleton);
-  console.log(skin);
 	skeleton.setSkinByName(skin);
 
 	// Create an AnimationState, and set the initial animation in looping mode.
@@ -75,16 +83,16 @@ function loadSkeleton (name, initialAnimation, skin) {
 	animationState.setAnimation(0, initialAnimation, true);
 	animationState.addListener({
 		event: function(trackIndex, event) {
-			console.log("Event on track " + trackIndex + ": " + JSON.stringify(event));
+			// console.log("Event on track " + trackIndex + ": " + JSON.stringify(event));
 		},
 		complete: function(trackIndex, loopCount) {
-			console.log("Animation on track " + trackIndex + " completed, loop count: " + loopCount);
+			// console.log("Animation on track " + trackIndex + " completed, loop count: " + loopCount);
 		},
 		start: function(trackIndex) {
-			console.log("Animation on track " + trackIndex + " started");
+			// console.log("Animation on track " + trackIndex + " started");
 		},
 		end: function(trackIndex) {
-			console.log("Animation on track " + trackIndex + " ended");
+			// console.log("Animation on track " + trackIndex + " ended");
 		}
 	});
 
@@ -155,6 +163,6 @@ function resize () {
 	context.translate(width / 2, height / 2);
 }
 
-(function() {
-	addEventListener("load", init); 
+(function() { 
+	addEventListener("load", init);
 }());

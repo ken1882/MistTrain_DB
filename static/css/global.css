@@ -68,3 +68,9 @@ a{
 tbody tr th {
   font-weight:normal;
 }
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  padding: 4px 4px 4px 4px;
+}

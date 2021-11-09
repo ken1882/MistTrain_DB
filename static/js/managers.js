@@ -124,6 +124,57 @@
     const stat = !!(this.debugMode ^ true);
     this.changeSetting(this.kDebugMode, stat);
   }
+  /*-------------------------------------------------------------------------*/
+  static requestBinaryData(kwargs){
+    if(!kwargs.method){ kwargs.method = 'GET'; }
+    var req = new XMLHttpRequest();
+    req.open(kwargs.method, kwargs.url);
+    req.responseType = "arraybuffer";
+    if(kwargs.progress){ req.addEventListener('progress', kwargs.progress); }
+    if(kwargs.load){ req.addEventListener('load', kwargs.load); }
+    if(kwargs.error){ req.addEventListener('error', kwargs.error); }
+    if(kwargs.abort){ req.addEventListener('abort', kwargs.abort); }
+    if(kwargs.loadend){ req.addEventListener('loadend', kwargs.loadend); }
+    req.send();
+    return req;
+  }
+  /*-------------------------------------------------------------------------*/
+  static requestCharacterSpineData(id, kwargs={}){
+    var req_png   = new XMLHttpRequest();
+    var req_atlas = new XMLHttpRequest();
+    var req_skel  = new XMLHttpRequest();
+    req_png.responseType = "blob";
+    req_atlas.responseType = "text";
+    req_skel.responseType = "arraybuffer";
+    req_png.open('GET', `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.png`);
+    req_atlas.open('GET', `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.atlas`);
+    req_skel.open('GET', `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.skel`);
+    if(kwargs.progress){
+      req_png.addEventListener('progress', kwargs.progress);
+      req_atlas.addEventListener('progress', kwargs.progress);
+      req_skel.addEventListener('progress', kwargs.progress);
+    }
+    if(kwargs.error){
+      req_png.addEventListener('error', kwargs.error);
+      req_atlas.addEventListener('error', kwargs.error);
+      req_skel.addEventListener('error', kwargs.error);
+    }
+    if(kwargs.load){
+      req_png.addEventListener('load', kwargs.load);
+      req_atlas.addEventListener('load', kwargs.load);
+      req_skel.addEventListener('load', kwargs.load);
+    }
+    if(kwargs.loadend){
+      req_png.addEventListener('loadend', kwargs.loadend);
+      req_atlas.addEventListener('loadend', kwargs.loadend);
+      req_skel.addEventListener('loadend', kwargs.loadend);
+    }
+    req_png.send();
+    req_atlas.send();
+    req_skel.send();
+    return [req_png, req_atlas, req_skel];
+  }
+  /*-------------------------------------------------------------------------*/
   /**-------------------------------------------------------------------------
    * > Getter functions
    */

@@ -24,15 +24,42 @@ def render_template(*args, **kwargs):
 
 @app.route('/', methods=['GET'])
 def index():
-  return render_template('index.html')
+  return render_template('index.html', navbar_content=get_navbar())
 
 @app.route('/mistrunner_database', methods=['GET'])
 def derpy_db_index():
-  return render_template('derpy_db.html', db_path=_G.DERPY_WAREHOUSE_CONTENT_PATH)
+  return render_template('derpy_db.html', db_path=_G.DERPY_WAREHOUSE_CONTENT_PATH, navbar_content=get_navbar())
 
 @app.route('/mistrunner_predict', methods=['GET'])
 def derpy_predict_index():
-  return render_template('derpy_predict.html')
+  return render_template('derpy_predict.html', navbar_content=get_navbar())
+
+@app.route('/character_database', methods=['GET'])
+def character_database():
+  return render_template('character_db.html',
+    navbar_content=get_navbar(),
+    ch_aw=_G.CHARACTER_AVATAR_SRC_SIZE[0],
+    ch_ah=_G.CHARACTER_AVATAR_SRC_SIZE[1],
+  )
+
+
+## Auxiliary methods
+
+@app.route('/static/<path:path>')
+def serve_static_resources(path):
+    return send_from_directory('static', path)
+
+
+@app.route('/navbar', methods=['GET'])
+def get_navbar():
+  ret = _G.GetCacheString('navbar.html')
+  if ret:
+    return ret.replace("'" ,'"')
+  with open('view/navbar.html') as fp:
+    ret = fp.read()
+    ret = ret.replace('\n', '').replace('\r','').replace('"',"'")
+  _G.SetCacheString('navbar.html', ret)
+  return ret.replace("'" ,'"')
 
 @app.route('/api/GetNextRace', methods=['GET'])
 def get_next_race():
@@ -56,9 +83,6 @@ def get_next_preditions():
     handle_exception(err)
   return jsonify({}),503
 
-@app.route('/assets/<path:path>')
-def send_assets(path):
-    return send_from_directory('assets', path)
 
 def setup():
   dm.init()
