@@ -40,7 +40,7 @@ def get_next_race():
     race = derpy.get_upcoming_race()
     code = 200
     if _G.KEY_ERRNO in race:
-      code = 503
+      code = race[_G.KEY_ERRNO]
     return jsonify(race),code
   except (TypeError, KeyError) as err:
     handle_exception(err)

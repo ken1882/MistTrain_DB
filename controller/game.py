@@ -91,6 +91,7 @@ def reauth_game():
     rep = rep.split('=')[1][:-1]
     payload = payload.replace(rep, st)
     res = Session.post('https://osapi.dmm.com/gadgets/makeRequest', payload)
+    log_debug("Response:", res)
     content = ''.join(res.content.decode('utf8').split('>')[1:])
     data = json.loads(content)
     log_debug(data)
