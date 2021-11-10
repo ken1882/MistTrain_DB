@@ -101,16 +101,18 @@
     <div class="center h1" id="character-title"></div>
     <div class="center" id="character-icon"></div>
 
-    <hr>
 
     <div>
-      <div class="center">
+      <div id="char-canvas-container" class="center">
         <p>
           <input type="checkbox" onclick="renderer.debugRendering = $(this).prop('checked')">
           <span label="l-DrawSpineBones"></span>
         </p>
-      </div>  
-      <canvas id="char-canvas" style="position: relative;" class="center"></canvas>
+        <div class="spinner-border center" id="loading-indicator">
+          <span class="sr-only"></span>
+        </div>  
+        <canvas id="char-canvas" style="position: relative;"></canvas>
+      </div>
     </div>
   </body>
   <script>

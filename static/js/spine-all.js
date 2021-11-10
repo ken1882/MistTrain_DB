@@ -4278,7 +4278,13 @@ var spine;
 				var slotIndex = input.readInt(true);
 				for (var ii = 0, nn = input.readInt(true); ii < nn; ii++) {
 					var name_3 = input.readStringRef();
-					var attachment = this.readAttachment(input, skeletonData, skin, slotIndex, name_3, nonessential);
+					var attachment = null;
+					try{
+						attachment = this.readAttachment(input, skeletonData, skin, slotIndex, name_3, nonessential);
+					}
+					catch(e){
+						console.log(e);
+					}
 					if (attachment != null)
 						skin.setAttachment(slotIndex, name_3, attachment);
 				}

@@ -9,7 +9,8 @@ var renderer;
 var skelName = __CharacterId;
 var animName = "Idle";
 
-var CanvasWidthScale = 0.5; // window.innerwidth * this
+var CanvasWidthScale = 0.8; // window.innerwidth * this
+var SkeletonShrinkRate = 1.8;
 
 function init () {
 	canvas = document.getElementById("char-canvas");
@@ -49,9 +50,15 @@ function load(){
 		skeleton = data.skeleton;
 		state = data.state;
 		bounds = data.bounds;
-		requestAnimationFrame(render);
+		for(let i in state.data.skeletonData.slots){
+			let bone = state.data.skeletonData.slots[i].boneData;
+			console.log(bone.transformMode);
+			if(bone.transformMode == 2){ bone.transformMode = 0; }
+		}
 		resizeCharacterCanvas();
+		requestAnimationFrame(render);
 		window.addEventListener("resize", resizeCharacterCanvas, true);
+		$("#loading-indicator").remove();
 	}
 	else{
 		requestAnimationFrame(load);
@@ -135,10 +142,6 @@ function render () {
 	state.apply(skeleton);
 	skeleton.updateWorldTransform();
 
-	renderer.camera.viewportWidth = bounds.size.x * 1.2;
-	renderer.camera.viewportHeight = bounds.size.y * 1.2;
-	renderer.resize(spine.webgl.ResizeMode.Fit);
-
 	gl.clearColor(0.8, 0.8, 0.8, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -167,6 +170,13 @@ function resizeCharacterCanvas(){
 	var h = w / portion;
 	canvas.width = w;
 	canvas.height = h;
+	renderer.camera.position.x = 0; // bounds.offset.x + bounds.size.x / 2;
+	renderer.camera.position.y = bounds.offset.y + bounds.size.y / 2;
+	renderer.camera.up.y = -1;
+	renderer.camera.direction.z = 1;
+	renderer.camera.viewportWidth = bounds.size.x * SkeletonShrinkRate;
+	renderer.camera.viewportHeight = bounds.size.y * SkeletonShrinkRate;
+	renderer.resize(spine.webgl.ResizeMode.Fit);
 }
 
 function resize () {
@@ -178,10 +188,6 @@ function resize () {
 		canvas.height = h;
 	}
 
-	renderer.camera.position.x = bounds.offset.x + bounds.size.x / 2;
-	renderer.camera.position.y = bounds.offset.y + bounds.size.y / 2;
-	renderer.camera.up.y = -1;
-	renderer.camera.direction.z = 1;
 }
 
 (function() { 
