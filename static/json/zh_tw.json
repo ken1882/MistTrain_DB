@@ -31,5 +31,6 @@
   "DerpyNumber": "編號",
   "UnderMaintenance": "遊戲伺服器似乎正在維修中，請稍後再次嘗試",
   "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員",
-  "CharacterDB": "角色資料庫"
+  "CharacterDB": "角色資料庫",
+  "DrawSpineBones": "顯示骨骼"
 }

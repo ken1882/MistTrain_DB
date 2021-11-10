@@ -27,55 +27,63 @@ function init(){
   FrameCanvas.width = __CharacterFrameWidth;
   FrameCanvas.height = __CharacterFrameHeight;
   FrameContext = FrameCanvas.getContext('2d');
+  setup();
+}
+
+function setup(){
+  if(__CntDataLoaded < __CntDataRequired){
+    return setTimeout(() => {
+      setup()
+    }, 100);
+  }
+  fillCharacterBaseInfo();
   appendCharacterAvatars();
 }
 
+function fillCharacterBaseInfo(){
+  let data = CharacterData[__CharacterId];
+  console.log(data);
+}
+
 function appendCharacterAvatars(){
-  if(__CntDataLoaded < __CntDataRequired){
-    return setTimeout(() => {
-      appendCharacterAvatars()
-    }, 100);
+  let parent = $('#character-icon');
+  i = __CharacterId;
+  let container = $(document.createElement('div'));
+  container.attr('class', 'avatar-container');
+  let block = $(document.createElement('a'))
+  block.attr('href', `/character_database/${i}`);  
+  container.append(block);
+  let img = document.createElement('img');
+  let img2 = document.createElement('img');
+  $(img).attr('class', 'avatar');
+  $(img2).attr('class', 'avatar-frame');
+  block.append(img);
+  block.append(img2);
+  parent.append(container);
+  let rect = CharacterAvatarClip.frames[`${i}.png`].textureRect.flat();
+  let krarity = 'frm_thumb_rare_a';
+  switch(CharacterData[i].CharacterRarity){
+    case 3:
+      krarity = 'frm_thumb_rare_s';
+      break;
+    case 4:
+      krarity = 'frm_thumb_rare_ss';
+      break;
   }
-  let parent = $('#character-list');
-  for(let i in CharacterData){
-    if(!CharacterData.hasOwnProperty(i)){continue;}
-    let container = $(document.createElement('div'));
-    container.attr('class', 'avatar-container');
-    let block = $(document.createElement('a'))
-    block.attr('href', `/character_database/${i}`);  
-    container.append(block);
-    let img = document.createElement('img');
-    let img2 = document.createElement('img');
-    $(img).attr('class', 'avatar');
-    $(img2).attr('class', 'avatar-frame');
-    block.append(img);
-    block.append(img2);
-    parent.append(container);
-    let rect = CharacterAvatarClip.frames[`${i}.png`].textureRect.flat();
-    let krarity = 'frm_thumb_rare_a';
-    switch(CharacterData[i].CharacterRarity){
-      case 3:
-        krarity = 'frm_thumb_rare_s';
-        break;
-      case 4:
-        krarity = 'frm_thumb_rare_ss';
-        break;
-    }
-    let rect2 = IconClipData[krarity].content.rect;
-    AvatarContext.clearRect(0, 0, AvatarCanvas.width, AvatarCanvas.height);
-    FrameContext.clearRect(0, 0, FrameCanvas.width, FrameCanvas.height);
-    clipImage(
-      AvatarCanvas, CharacterAvatarSet, img, 
-      rect[0], rect[1], rect[2], rect[3],
-      AvatarFramePadding, AvatarFramePadding,
-      rect[2] - AvatarFramePadding*2, rect[3] - AvatarFramePadding*2
-    );
-    clipImage(
-      FrameCanvas, CharacterFrameSet, img2, 
-      rect2[0], rect2[1], rect2[2], rect2[3], 
-      0, 0, rect2[2], rect2[3]
-    );
-  }
+  let rect2 = IconClipData[krarity].content.rect;
+  AvatarContext.clearRect(0, 0, AvatarCanvas.width, AvatarCanvas.height);
+  FrameContext.clearRect(0, 0, FrameCanvas.width, FrameCanvas.height);
+  clipImage(
+    AvatarCanvas, CharacterAvatarSet, img, 
+    rect[0], rect[1], rect[2], rect[3],
+    AvatarFramePadding, AvatarFramePadding,
+    rect[2] - AvatarFramePadding*2, rect[3] - AvatarFramePadding*2
+  );
+  clipImage(
+    FrameCanvas, CharacterFrameSet, img2, 
+    rect2[0], rect2[1], rect2[2], rect2[3], 
+    0, 0, rect2[2], rect2[3]
+  );
 }
 
 

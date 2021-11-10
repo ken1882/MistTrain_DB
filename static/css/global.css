@@ -69,8 +69,28 @@ tbody tr th {
   font-weight:normal;
 }
 
-.avatar {
-  width: 96px;
-  height: 96px;
+.avatar-container {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  height: 100px;
   padding: 4px 4px 4px 4px;
+}
+
+.avatar {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.avatar-frame {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

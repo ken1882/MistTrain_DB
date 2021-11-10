@@ -11,8 +11,6 @@
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
-    <script src="{{ url_for('static', filename='js/spine-all.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/spine-test.js') }}"></script>
     
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
@@ -20,8 +18,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
     
-    <script src="{{ url_for('static', filename='js/char_db.js') }}"></script>
     <script>
+      var __CharacterAvatarWidth  = '{{ ch_aw }}';
+      var __CharacterAvatarHeight = '{{ ch_ah }}';
+      var __CharacterFrameWidth   = '{{ ch_fw }}';
+      var __CharacterFrameHeight  = '{{ ch_fh }}';
+
       function changeLanguage(){
         DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
         window.location = window.location.href.split("?")[0];
@@ -46,20 +48,52 @@
         node.val(DataManager.language);
       }
       
+      function init_totop_button(){
+        let button = document.getElementById("btn-back-to-top");
+        button.style.opacity = '0.5';
+
+        window.onscroll = () => {
+          if(document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
+            button.style.display = "block";
+          }
+          else{
+            button.style.display = "none";
+          }
+        };
+
+        button.addEventListener("click", () => {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        });
+
+        button.addEventListener("mouseover", ()=>{
+          button.style.opacity = "1";          
+        });
+
+        button.addEventListener("mouseout", ()=>{
+          button.style.opacity = "0.5";
+        });
+      }
+
       window.addEventListener("load", ()=>{
         DataManager.initialize();
         Vocab.initialize();
         init_navbar();
+        init_totop_button();
       });
     </script>
+    <script src="{{ url_for('static', filename='js/char_db.js') }}"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       {{ navbar_content | safe }}
     </nav>
     <br>
-    <canvas id="canvas" width="{{ch_aw}}" height="{{ch_ah}}" style="display: none"></canvas>
     
+    <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
+      <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571057658/cd-top-arrow.svg">
+    </button>
+
     <canvas id="char-canvas" style="position: relative;" class="center"></canvas>
     <hr>
 

@@ -1,24 +1,28 @@
 var lastFrameTime = Date.now() / 1000;
-var canvas, context;
+var canvas, gl;
 var assetManager;
 var skeleton, state, bounds;
-var skeletonRenderer;
+var renderer;
+// const glCanvas  = document.createElement("canvas");
+// const glContext = glCanvas.getContext('webgl');
 
-var assetPath = 'static/assets/character_model/'
-var skelName = "7401";
+var skelName = __CharacterId;
 var animName = "Idle";
+
+var CanvasWidthScale = 0.5; // window.innerwidth * this
 
 function init () {
 	canvas = document.getElementById("char-canvas");
-	context = canvas.getContext("2d");
+	gl = canvas.getContext("webgl");
 
-	skeletonRenderer = new spine.canvas.SkeletonRenderer(context);
+	renderer = new spine.webgl.SceneRenderer(canvas, gl);
+	renderer.debugRendering = false;
 	// enable debug rendering
-	skeletonRenderer.debugRendering = true;
+	// skeletonRenderer.debugRendering = true;
 	// enable the triangle renderer, supports meshes, but may produce artifacts in some browsers
-	skeletonRenderer.triangleRendering = true;
+	// skeletonRenderer.triangleRendering = true;
 	
-	assetManager = new spine.canvas.AssetManager();
+	assetManager = new spine.webgl.AssetManager(gl);
 
 	var rss = makeSpineResourcesPaths(skelName);
 	loadSpineResources(rss[0], rss[1], rss[2]);
@@ -46,6 +50,8 @@ function load(){
 		state = data.state;
 		bounds = data.bounds;
 		requestAnimationFrame(render);
+		resizeCharacterCanvas();
+		window.addEventListener("resize", resizeCharacterCanvas, true);
 	}
 	else{
 		requestAnimationFrame(load);
@@ -95,13 +101,13 @@ function loadSkeleton(name, initialAnimation, skin) {
 			// console.log("Animation on track " + trackIndex + " ended");
 		}
 	});
-
+	
 	// Pack everything up and return to caller.
 	return { skeleton: skeleton, state: animationState, bounds: bounds };
 }
 
 function calculateBounds(skeleton) {
-	var data = skeleton.data;
+	
 	skeleton.setToSetupPose();
 	skeleton.updateWorldTransform();
 	var offset = new spine.Vector2();
@@ -117,50 +123,65 @@ function render () {
 
 	resize();
 
-	context.save();
-	context.setTransform(1, 0, 0, 1, 0, 0);
-	context.fillStyle = "#cccccc";
-	context.fillRect(0, 0, canvas.width, canvas.height);
-	context.restore();
+	// context.save();
+	// context.setTransform(1, 0, 0, 1, 0, 0);
+	// context.fillStyle = "#cccccc";
+	// context.fillRect(0, 0, canvas.width, canvas.height);
+	// context.restore();
+	
+	renderer.begin()
 
 	state.update(delta);
 	state.apply(skeleton);
 	skeleton.updateWorldTransform();
-	skeletonRenderer.draw(skeleton);
 
-	context.strokeStyle = "green";
-	context.beginPath();
-	context.moveTo(-1000, 0);
-	context.lineTo(1000, 0);
-	context.moveTo(0, -1000);
-	context.lineTo(0, 1000);
-	context.stroke();
+	renderer.camera.viewportWidth = bounds.size.x * 1.2;
+	renderer.camera.viewportHeight = bounds.size.y * 1.2;
+	renderer.resize(spine.webgl.ResizeMode.Fit);
+
+	gl.clearColor(0.8, 0.8, 0.8, 1.0);
+	gl.clear(gl.COLOR_BUFFER_BIT);
+
+	renderer.begin();
+	renderer.drawSkeleton(skeleton, true);
+	if(renderer.debugRendering){
+		renderer.drawSkeletonDebug(skeleton, false, ["root"]);
+	}
+
+	renderer.end()
+
+	// context.strokeStyle = "green";
+	// context.beginPath();
+	// context.moveTo(-1000, 0);
+	// context.lineTo(1000, 0);
+	// context.moveTo(0, -1000);
+	// context.lineTo(0, 1000);
+	// context.stroke();
 
 	requestAnimationFrame(render);
+}
+
+function resizeCharacterCanvas(){
+	var portion = canvas.clientWidth / canvas.clientHeight;
+	var w = window.innerWidth * CanvasWidthScale;
+	var h = w / portion;
+	canvas.width = w;
+	canvas.height = h;
 }
 
 function resize () {
 	var w = canvas.clientWidth;
 	var h = canvas.clientHeight;
+	
 	if (canvas.width != w || canvas.height != h) {
 		canvas.width = w;
 		canvas.height = h;
 	}
 
-	// magic
-	var centerX = bounds.offset.x + bounds.size.x / 2;
-	var centerY = bounds.offset.y + bounds.size.y / 2;
-	var scaleX = bounds.size.x / canvas.width;
-	var scaleY = bounds.size.y / canvas.height;
-	var scale = Math.max(scaleX, scaleY) * 1.2;
-	if (scale < 1) scale = 1;
-	var width = canvas.width * scale;
-	var height = canvas.height * scale;
-
-	context.setTransform(1, 0, 0, 1, 0, 0);
-	context.scale(1 / scale, 1 / scale);
-	context.translate(-centerX, -centerY);
-	context.translate(width / 2, height / 2);
+	renderer.camera.position.x = bounds.offset.x + bounds.size.x / 2;
+	renderer.camera.position.y = bounds.offset.y + bounds.size.y / 2;
+	renderer.camera.up.y = -1;
+	renderer.camera.direction.z = 1;
 }
 
 (function() { 

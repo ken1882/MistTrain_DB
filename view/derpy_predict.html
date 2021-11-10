@@ -45,6 +45,7 @@
 
       function init_totop_button(){
         let button = document.getElementById("btn-back-to-top");
+        button.style.opacity = '0.5';
 
         window.onscroll = () => {
           if(document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
@@ -58,6 +59,14 @@
         button.addEventListener("click", () => {
           document.body.scrollTop = 0;
           document.documentElement.scrollTop = 0;
+        });
+
+        button.addEventListener("mouseover", ()=>{
+          button.style.opacity = "1";          
+        });
+
+        button.addEventListener("mouseout", ()=>{
+          button.style.opacity = "0.5";
         });
       }
 
