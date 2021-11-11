@@ -14,7 +14,8 @@ function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=n
   if(dy == null){ dy = 0; }
   if(dw == null){ dw = cw; }
   if(dh == null){ dh = ch; }
-  canvas.getContext('2d').drawImage(image, cx, cy, cw, ch, dx, dy, dw, dh);
+  var context = canvas.getContext('2d');
+  context.drawImage(image, cx, cy, cw, ch, dx, dy, dw, dh);
   target.src = canvas.toDataURL();
 }
 
@@ -23,6 +24,9 @@ function init(){
   AvatarCanvas.width = __CharacterAvatarWidth;
   AvatarCanvas.height = __CharacterAvatarHeight;
   AvatarContext = AvatarCanvas.getContext('2d');
+  AvatarContext.webkitImageSmoothingEnabled = false;
+  AvatarContext.mozImageSmoothingEnabled = false;
+  AvatarContext.imageSmoothingEnabled = false;
   FrameCanvas = document.createElement("canvas");
   FrameCanvas.width = __CharacterFrameWidth;
   FrameCanvas.height = __CharacterFrameHeight;
@@ -31,18 +35,75 @@ function init(){
 }
 
 function setup(){
-  if(__CntDataLoaded < __CntDataRequired){
-    return setTimeout(() => {
-      setup()
-    }, 100);
+  if(__CntDataLoaded < __CntDataRequired || !DataManager.isReady()){
+    return setTimeout(setup, 100);
   }
+  $("#loop-battler-anim").prop('checked', 1);
   fillCharacterBaseInfo();
   appendCharacterAvatars();
+  loadSpineData();
+  appendAnimations();
+}
+
+function loadSpineData(){
+  var rssdat  = getBattlerSpineResourcesData(__CharacterId);
+  var rssdat2 = getEventActorSpineResourcesData(__CharacterId);
+  loadBattlerSpineResources(rssdat);
+  loadCharacterSpineResources(rssdat2);
+}
+
+function appendAnimations(){
+  if(!__FlagBattlerCanvasReady || !__FlagCharacterCanvasReady){
+    return setTimeout(appendAnimations, 300);
+  }
+  var ch_anims = CharacterAnimState.data.skeletonData.animations;
+  var ba_anims = BattlerAnimState.data.skeletonData.animations;
+  let list_cha = $("#char-act-list");
+  for(let i in ch_anims){
+    let anim = ch_anims[i];
+    let name = Vocab.CharacterAnimationName[anim.name];
+    if(!name){ name = anim.name; }
+    let opt = document.createElement("option");
+    $(opt).attr('value', anim.name);
+    if(anim.name == DefaultCharacterAnimation){$(opt).attr('selected','')}
+    opt.innerText = name;
+    list_cha.append(opt);
+  }
+  let list_baa = $("#battler-act-list");
+  for(let i in ba_anims){
+    let anim = ba_anims[i];
+    let name = Vocab.CharacterAnimationName[anim.name];
+    if(!name){ 
+      name = anim.name;
+      var reg = name.match(/Skill(\d+)_After/);
+      if(reg){ name = `${Vocab.CharacterAnimationName['Skill_After']} ${reg[1]}`; }
+      reg = name.match(/Skill(\d+)_Before/);
+      if(reg){ name = `${Vocab.CharacterAnimationName['Skill_Before']} ${reg[1]}`; }
+    }
+    let opt = document.createElement("option");
+    $(opt).attr('value', anim.name);
+    if(anim.name == DefaultBattlerAnimation){$(opt).attr('selected','')}
+    opt.innerText = name;
+    list_baa.append(opt);
+  }
+  list_cha.on('change', (e)=>{
+    CharacterAnimState.setAnimation(0, e.target.value, true);
+  });
+  list_baa.on('change', (e)=>{
+    BattlerAnimState.setAnimation(0, e.target.value, $("#loop-battler-anim").prop('checked'));
+  });
 }
 
 function fillCharacterBaseInfo(){
+  if(!DataManager.isReady()){
+    return setTimeout(fillCharacterBaseInfo, 100);
+  }
   let data = CharacterData[__CharacterId];
-  console.log(data);
+  let chname = Vocab.CharacterName[__CharacterId];
+  if(!chname){
+    chname = `${data.Name} ${data.MCharacterBase.Name}`
+  }
+  $("#character-title").text(chname);
 }
 
 function appendCharacterAvatars(){
@@ -77,7 +138,7 @@ function appendCharacterAvatars(){
     AvatarCanvas, CharacterAvatarSet, img, 
     rect[0], rect[1], rect[2], rect[3],
     AvatarFramePadding, AvatarFramePadding,
-    rect[2] - AvatarFramePadding*2, rect[3] - AvatarFramePadding*2
+    AvatarCanvas.width - AvatarFramePadding*2, AvatarCanvas.height - AvatarFramePadding*2
   );
   clipImage(
     FrameCanvas, CharacterFrameSet, img2, 
@@ -132,7 +193,7 @@ function parseIconClipData(res){
 (function(){
   var image = new Image(), image2 = new Image();
   image.crossOrigin = "anonymous";
-  image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Small/Textures/Icons/Atlas/Layers/character-1.png";
+  image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.png";
   image.onload = () => {
     CharacterAvatarSet = image;
     __CntDataLoaded += 1;
@@ -143,7 +204,7 @@ function parseIconClipData(res){
     __CntDataLoaded += 1;
   };
   $.ajax({
-    url: "https://assets.mist-train-girls.com/production-client-web-assets/Small/Textures/Icons/Atlas/Layers/character-1.plist",
+    url: "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.plist",
     success: (res) => { parseAvatarClipData(res); },
     error: (res) => {
       if(res.status == 403){

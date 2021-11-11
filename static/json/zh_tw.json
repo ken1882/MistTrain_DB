@@ -32,5 +32,41 @@
   "UnderMaintenance": "遊戲伺服器似乎正在維修中，請稍後再次嘗試",
   "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員",
   "CharacterDB": "角色資料庫",
-  "DrawSpineBones": "顯示骨骼"
+  "DrawSpineBones": "顯示骨骼",
+  "CharacterList": "角色列表",
+  "CharacterName": {
+    "0": "PlaceHolder"
+  },
+  "CharacterAnimationName": {
+    "Idle_Normal": "正常",
+    "Idle_Normal_Close": "闔眼",
+    "Idle_Amazement": "驚訝",
+    "Idle_Angry": "生氣",
+    "Idle_Happy": "開心",
+    "Idle_Sad": "背傷",
+    "Idle_Shy": "害羞",
+    "Idle_Special": "特殊表情",
+    "Idle_Unique": "獨特表情",
+    "Attack": "攻擊",
+    "Chant": "詠唱",
+    "Damage": "遭受傷害",
+    "Death": "戰鬥不能",
+    "Dying": "瀕死",
+    "Guard": "防禦",
+    "Idle": "閒置",
+    "Idle_Battle": "閒置 (戰鬥中)",
+    "Jump_Flying": "跳躍 (空中)",
+    "Jump_Step": "跳躍 (踏步)",
+    "Rotation": "旋轉",
+    "Run": "奔跑",
+    "Skill_After": "技能後擺",
+    "Skill_Before": "技能前擺",
+    "Swing": "擺動武器",
+    "Victory": "勝利姿勢",
+    "Walk": "行走",
+    "SpecialSkill": "特殊技能"
+  },
+  "CharacterPainting": "立繪",
+  "CharacterFigure": "人物",
+  "LoopAnimation": "重複"
 }

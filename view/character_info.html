@@ -99,19 +99,44 @@
     </button>
 
     <div class="center h1" id="character-title"></div>
+    <br>
     <div class="center" id="character-icon"></div>
-
-
+    <br><br>
+    <div class="center h3" label="l-CharacterPainting"></div>
+    <hr>
+    <div id="character-canvas-container" class="center">
+      <div class="spinner-border center" id="character-loading-indicator">
+        <span class="sr-only"></span>
+      </div>  
+      <div style="display: inline;">
+        <canvas id="character-canvas" class="side-canvas" width="300" height="400"></canvas>
+        <select id="char-act-list" class="form-select side-selectable" size="1" aria-label="select">
+        </select>
+      </div>
+    </div>
+    <br><br>
     <div>
-      <div id="char-canvas-container" class="center">
-        <p>
-          <input type="checkbox" onclick="renderer.debugRendering = $(this).prop('checked')">
+      <div class="center h3" label="l-CharacterFigure"></div>
+      <hr>
+      <div class="center">
+        <p style="display: inline-block; padding: 4px;">
+          <input type="checkbox" onclick="BattlerRenderer.debugRendering = $(this).prop('checked')">
           <span label="l-DrawSpineBones"></span>
         </p>
-        <div class="spinner-border center" id="loading-indicator">
+        <p style="display: inline-block; padding: 4px;">
+          <input type="checkbox" id="loop-battler-anim">
+          <span label="l-LoopAnimation"></span>
+        </p>
+      </div>
+      <div id="battler-canvas-container" class="center">
+        <div class="spinner-border center" id="battler-loading-indicator">
           <span class="sr-only"></span>
-        </div>  
-        <canvas id="char-canvas" style="position: relative;"></canvas>
+        </div>
+        <div style="display: inline;">
+          <canvas id="battler-canvas" class="side-canvas"></canvas>
+          <select id="battler-act-list" class="form-select side-selectable" size="1" aria-label="select">
+          </select>
+        </div>
       </div>
     </div>
   </body>

@@ -1,80 +1,124 @@
 var lastFrameTime = Date.now() / 1000;
-var canvas, gl;
-var assetManager;
-var skeleton, state, bounds;
-var renderer;
-// const glCanvas  = document.createElement("canvas");
-// const glContext = glCanvas.getContext('webgl');
+var BattlerAssetManager, CharacterAssetManager;
+var BattkerSkeleton, BattlerAnimState, BattlerBounds;
+var CharacterSkeleton, CharacterAnimState, CharacterBounds;
+var BattlerRenderer, CharacterRenderer;
 
-var skelName = __CharacterId;
-var animName = "Idle";
+var BattlerCanvasWidthScale = 0.6;
+var BattlerSkeletonShrinkRate = 1.8;
 
-var CanvasWidthScale = 0.8; // window.innerwidth * this
-var SkeletonShrinkRate = 1.8;
+var CharacterCanvasWidthScale = 0.5;
+var CharacterSkeletonShrinkRate = 1.0;
+
+var BattlerCanvas, CharacterCanvas;
+var BattlerGL, CharacterGL;
+
+let __FlagBattlerCanvasReady = false;
+let __FlagCharacterCanvasReady = false;
+
+
+const BattlerBackgroundColor   = [0.8, 0.8, 0.8, 1.0];
+const CharacterBackgroundColor = [0.1176, 0.1176, 0.1176, 1.0];
+const DefaultBattlerAnimation = 'Idle'
+const DefaultCharacterAnimation = 'Idle_Normal'
 
 function init () {
-	canvas = document.getElementById("char-canvas");
-	gl = canvas.getContext("webgl");
-
-	renderer = new spine.webgl.SceneRenderer(canvas, gl);
-	renderer.debugRendering = false;
-	// enable debug rendering
-	// skeletonRenderer.debugRendering = true;
-	// enable the triangle renderer, supports meshes, but may produce artifacts in some browsers
-	// skeletonRenderer.triangleRendering = true;
-	
-	assetManager = new spine.webgl.AssetManager(gl);
-
-	var rss = makeSpineResourcesPaths(skelName);
-	loadSpineResources(rss[0], rss[1], rss[2]);
+	BattlerCanvas = document.getElementById("battler-canvas");
+	BattlerGL = BattlerCanvas.getContext("webgl");
+	BattlerRenderer = new spine.webgl.SceneRenderer(BattlerCanvas, BattlerGL);
+	BattlerRenderer.debugRendering = false;
+	CharacterCanvas = document.getElementById("character-canvas");
+	CharacterGL = CharacterCanvas.getContext("webgl");
+	CharacterRenderer = new spine.webgl.SceneRenderer(CharacterCanvas, CharacterGL);
+	CharacterRenderer.debugRendering = false;
+	BattlerAssetManager = new spine.webgl.AssetManager(BattlerGL);
+	CharacterAssetManager = new spine.webgl.AssetManager(CharacterGL);
 }
 
-function makeSpineResourcesPaths(id){
-	return [
-		`https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.png`,
-		`https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.atlas`,
-		`https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.skel`,
-	]
-}
-
-function loadSpineResources(png, atlas, skel){
-	assetManager.loadTexture(png);
-	assetManager.loadText(atlas);
-	assetManager.loadBinary(skel);
-	requestAnimationFrame(load);
-}
-
-function load(){
-	if (assetManager.isLoadingComplete()) {
-		var data = loadSkeleton(skelName, animName, "default");
-		skeleton = data.skeleton;
-		state = data.state;
-		bounds = data.bounds;
-		for(let i in state.data.skeletonData.slots){
-			let bone = state.data.skeletonData.slots[i].boneData;
-			console.log(bone.transformMode);
-			if(bone.transformMode == 2){ bone.transformMode = 0; }
-		}
-		resizeCharacterCanvas();
-		requestAnimationFrame(render);
-		window.addEventListener("resize", resizeCharacterCanvas, true);
-		$("#loading-indicator").remove();
-	}
-	else{
-		requestAnimationFrame(load);
+function getBattlerSpineResourcesData(id){
+	return {
+		png: `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.png`,
+		atlas: `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.atlas`,
+		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.skel`,
+		name: id,
+		anim: DefaultBattlerAnimation
 	}
 }
 
-function loadSkeleton(name, initialAnimation, skin) {
-	if (skin === undefined) skin = "default";
-	var rss_paths = makeSpineResourcesPaths(name);
+function getEventActorSpineResourcesData(id){
+	return {
+		png: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.png`,
+		atlas: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.atlas`,
+		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.skel`,
+		name: id,
+		anim: DefaultCharacterAnimation
+	}
+}
 
-	// Load the texture atlas using name.atlas and name.png from the AssetManager.
-	// The function passed to TextureAtlas is used to resolve relative paths.
+function loadBattlerSpineResources(rssdata){
+	BattlerAssetManager.loadTexture(rssdata.png);
+	BattlerAssetManager.loadText(rssdata.atlas);
+	BattlerAssetManager.loadBinary(rssdata.skel);
+	loadBattlerSpineData(rssdata);
+}
+
+function loadCharacterSpineResources(rssdata){
+	CharacterAssetManager.loadTexture(rssdata.png);
+	CharacterAssetManager.loadText(rssdata.atlas);
+	CharacterAssetManager.loadBinary(rssdata.skel);
+	loadCharacterSpineData(rssdata);
+}
+
+function loadBattlerSpineData(rssdata){
+	if(!BattlerAssetManager.isLoadingComplete()){
+		return setTimeout(() => {
+			loadBattlerSpineData(rssdata);
+		}, 100);
+	}
+	var data = loadSkeleton(BattlerAssetManager,rssdata);
+	BattkerSkeleton = data.skeleton;
+	BattlerAnimState = data.state;
+	BattlerBounds = data.bounds;
+	for(let i in BattlerAnimState.data.skeletonData.slots){
+		let bone = BattlerAnimState.data.skeletonData.slots[i].boneData;
+		if(bone.transformMode == 2){ bone.transformMode = 0; }
+	}
+	resizeBattlerCanvas();
+	requestAnimationFrame(renderBattler);
+	window.addEventListener("resize", resizeBattlerCanvas, true);
+	$("#battler-loading-indicator").remove();	
+	__FlagBattlerCanvasReady = true;
+}
+
+function loadCharacterSpineData(rssdata){
+	if(!CharacterAssetManager.isLoadingComplete()){
+		return setTimeout(() => {
+			loadCharacterSpineData(rssdata);
+		}, 100);
+	}
+	var data = loadSkeleton(CharacterAssetManager,rssdata);
+	CharacterSkeleton = data.skeleton;
+	CharacterAnimState = data.state;
+	CharacterBounds = data.bounds;
+	for(let i in CharacterAnimState.data.skeletonData.slots){
+		let bone = CharacterAnimState.data.skeletonData.slots[i].boneData;
+		if(bone.transformMode == 2){ bone.transformMode = 0; }
+	}
+	resizeCharacterCanvas();
+	requestAnimationFrame(renderCharacter);
+	window.addEventListener("resize", resizeCharacterCanvas, true);
+	$("#character-loading-indicator").remove();
+	__FlagCharacterCanvasReady = true;
+	CharacterAnimState.timeScale = 15;
+}
+
+
+function loadSkeleton(astmgr, rssdata) {
+	if(!rssdata.skin) rssdata.skin = "default";
 	atlas = new spine.TextureAtlas(
-		assetManager.get(rss_paths[1]), 
+		astmgr.get(rssdata.atlas), 
 		(_) => {
-			return assetManager.get(rss_paths[0]);
+			return astmgr.get(rssdata.png);
 		}
 	);
   
@@ -85,15 +129,15 @@ function loadSkeleton(name, initialAnimation, skin) {
 	var SkeletonBinary = new spine.SkeletonBinary(atlasLoader);
 
 	// Set the scale to apply during parsing, parse the file, and create a new skeleton.
-	var skeletonData = SkeletonBinary.readSkeletonData(assetManager.get(rss_paths[2]));
+	var skeletonData = SkeletonBinary.readSkeletonData(astmgr.get(rssdata.skel));
 	var skeleton = new spine.Skeleton(skeletonData);
 	skeleton.scaleY = -1;
 	var bounds = calculateBounds(skeleton);
-	skeleton.setSkinByName(skin);
+	skeleton.setSkinByName(rssdata.skin);
 
 	// Create an AnimationState, and set the initial animation in looping mode.
 	var animationState = new spine.AnimationState(new spine.AnimationStateData(skeleton.data));
-	animationState.setAnimation(0, initialAnimation, true);
+	animationState.setAnimation(0, rssdata.anim, true);
 	animationState.addListener({
 		event: function(trackIndex, event) {
 			// console.log("Event on track " + trackIndex + ": " + JSON.stringify(event));
@@ -114,7 +158,6 @@ function loadSkeleton(name, initialAnimation, skin) {
 }
 
 function calculateBounds(skeleton) {
-	
 	skeleton.setToSetupPose();
 	skeleton.updateWorldTransform();
 	var offset = new spine.Vector2();
@@ -123,71 +166,94 @@ function calculateBounds(skeleton) {
 	return { offset: offset, size: size };
 }
 
-function render () {
+function renderBattler(){
 	var now = Date.now() / 1000;
 	var delta = now - lastFrameTime;
+	var gl = BattlerGL;
 	lastFrameTime = now;
-
-	resize();
-
-	// context.save();
-	// context.setTransform(1, 0, 0, 1, 0, 0);
-	// context.fillStyle = "#cccccc";
-	// context.fillRect(0, 0, canvas.width, canvas.height);
-	// context.restore();
-	
-	renderer.begin()
-
-	state.update(delta);
-	state.apply(skeleton);
-	skeleton.updateWorldTransform();
-
-	gl.clearColor(0.8, 0.8, 0.8, 1.0);
+	updateCanvasSize(BattlerCanvas);
+	BattlerRenderer.begin()
+	BattlerAnimState.update(delta);
+	BattlerAnimState.apply(BattkerSkeleton);
+	BattkerSkeleton.updateWorldTransform();
+	gl.clearColor.apply(gl, BattlerBackgroundColor);
 	gl.clear(gl.COLOR_BUFFER_BIT);
-
-	renderer.begin();
-	renderer.drawSkeleton(skeleton, true);
-	if(renderer.debugRendering){
-		renderer.drawSkeletonDebug(skeleton, false, ["root"]);
+	BattlerRenderer.begin();
+	BattlerRenderer.drawSkeleton(BattkerSkeleton, false);
+	if(BattlerRenderer.debugRendering){
+		BattlerRenderer.drawSkeletonDebug(BattkerSkeleton, false, ["root"]);
 	}
+	BattlerRenderer.end()
+	requestAnimationFrame(renderBattler);
+}
 
-	renderer.end()
+function renderCharacter(){
+	var now = Date.now() / 1000;
+	var delta = now - lastFrameTime;
+	var gl = CharacterGL;
+	lastFrameTime = now;
+	updateCanvasSize(CharacterCanvas);
+	CharacterRenderer.begin()
+	CharacterAnimState.update(delta);
+	CharacterAnimState.apply(CharacterSkeleton);
+	CharacterSkeleton.updateWorldTransform();
+	gl.clearColor.apply(gl, CharacterBackgroundColor);
+	gl.clear(gl.COLOR_BUFFER_BIT);
+	CharacterRenderer.begin();
+	CharacterRenderer.drawSkeleton(CharacterSkeleton, false);
+	if(CharacterRenderer.debugRendering){
+		CharacterRenderer.drawSkeletonDebug(CharacterSkeleton, false, ["root"]);
+	}
+	CharacterRenderer.end()
+	requestAnimationFrame(renderCharacter);
+}
 
-	// context.strokeStyle = "green";
-	// context.beginPath();
-	// context.moveTo(-1000, 0);
-	// context.lineTo(1000, 0);
-	// context.moveTo(0, -1000);
-	// context.lineTo(0, 1000);
-	// context.stroke();
-
-	requestAnimationFrame(render);
+function resizeBattlerCanvas(){
+	var portion = BattlerCanvas.clientWidth / BattlerCanvas.clientHeight;
+	var w = window.innerWidth * BattlerCanvasWidthScale;
+	var h = w / portion;
+	BattlerCanvas.width = w;
+	BattlerCanvas.height = h;
+	BattlerRenderer.camera.position.x = 0; // bounds.offset.x + bounds.size.x / 2;
+	BattlerRenderer.camera.position.y = BattlerBounds.offset.y + BattlerBounds.size.y / 2;
+	BattlerRenderer.camera.up.y = -1;
+	BattlerRenderer.camera.direction.z = 1;
+	BattlerRenderer.camera.viewportWidth = BattlerBounds.size.x * BattlerSkeletonShrinkRate;
+	BattlerRenderer.camera.viewportHeight = BattlerBounds.size.y * BattlerSkeletonShrinkRate;
+	BattlerRenderer.resize(spine.webgl.ResizeMode.Fit);
+	let actlist = $("#battler-act-list");
+	var ch = BattlerCanvas.height - 32;
+	var lh = actlist.height();
+	$("#battler-act-list").attr('size', parseInt(ch / lh));
 }
 
 function resizeCharacterCanvas(){
-	var portion = canvas.clientWidth / canvas.clientHeight;
-	var w = window.innerWidth * CanvasWidthScale;
+	// var portion = CharacterCanvas.clientWidth / CharacterCanvas.clientHeight;
+	var portion = CharacterBounds.size.x / CharacterBounds.size.y;
+	var w = window.innerWidth * CharacterCanvasWidthScale;
 	var h = w / portion;
-	canvas.width = w;
-	canvas.height = h;
-	renderer.camera.position.x = 0; // bounds.offset.x + bounds.size.x / 2;
-	renderer.camera.position.y = bounds.offset.y + bounds.size.y / 2;
-	renderer.camera.up.y = -1;
-	renderer.camera.direction.z = 1;
-	renderer.camera.viewportWidth = bounds.size.x * SkeletonShrinkRate;
-	renderer.camera.viewportHeight = bounds.size.y * SkeletonShrinkRate;
-	renderer.resize(spine.webgl.ResizeMode.Fit);
+	CharacterCanvas.width = w;
+	CharacterCanvas.height = h;
+	CharacterRenderer.camera.position.x = 0; // bounds.offset.x + bounds.size.x / 2;
+	CharacterRenderer.camera.position.y = CharacterBounds.offset.y + CharacterBounds.size.y / 2;
+	CharacterRenderer.camera.up.y = -1;
+	CharacterRenderer.camera.direction.z = 1;
+	CharacterRenderer.camera.viewportWidth = CharacterBounds.size.x * CharacterSkeletonShrinkRate;
+	CharacterRenderer.camera.viewportHeight = CharacterBounds.size.y * CharacterSkeletonShrinkRate;
+	CharacterRenderer.resize(spine.webgl.ResizeMode.Fit);
+	let actlist = $("#char-act-list");
+	var ch = CharacterCanvas.height - 32;
+	var lh = actlist.height();
+	$("#char-act-list").attr('size', parseInt(ch / lh));
 }
 
-function resize () {
+function updateCanvasSize(canvas){
 	var w = canvas.clientWidth;
 	var h = canvas.clientHeight;
-	
-	if (canvas.width != w || canvas.height != h) {
+	if(canvas.width != w || canvas.height != h){
 		canvas.width = w;
 		canvas.height = h;
 	}
-
 }
 
 (function() { 

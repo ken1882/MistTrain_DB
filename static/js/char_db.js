@@ -14,7 +14,11 @@ function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=n
   if(dy == null){ dy = 0; }
   if(dw == null){ dw = cw; }
   if(dh == null){ dh = ch; }
-  canvas.getContext('2d').drawImage(image, cx, cy, cw, ch, dx, dy, dw, dh);
+  var context = canvas.getContext('2d');
+  context.webkitImageSmoothingEnabled = false;
+  context.mozImageSmoothingEnabled = false;
+  context.imageSmoothingEnabled = false;
+  context.drawImage(image, cx, cy, cw, ch, dx, dy, dw, dh);
   target.src = canvas.toDataURL();
 }
 
@@ -68,7 +72,7 @@ function appendCharacterAvatars(){
       AvatarCanvas, CharacterAvatarSet, img, 
       rect[0], rect[1], rect[2], rect[3],
       AvatarFramePadding, AvatarFramePadding,
-      rect[2] - AvatarFramePadding*2, rect[3] - AvatarFramePadding*2
+      AvatarCanvas.width - AvatarFramePadding*2, AvatarCanvas.height - AvatarFramePadding*2
     );
     clipImage(
       FrameCanvas, CharacterFrameSet, img2, 
@@ -76,6 +80,7 @@ function appendCharacterAvatars(){
       0, 0, rect2[2], rect2[3]
     );
   }
+  $("#loading-indicator").remove();
 }
 
 
@@ -124,7 +129,7 @@ function parseIconClipData(res){
 (function(){
   var image = new Image(), image2 = new Image();
   image.crossOrigin = "anonymous";
-  image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Small/Textures/Icons/Atlas/Layers/character-1.png";
+  image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.png";
   image.onload = () => {
     CharacterAvatarSet = image;
     __CntDataLoaded += 1;
@@ -135,7 +140,7 @@ function parseIconClipData(res){
     __CntDataLoaded += 1;
   };
   $.ajax({
-    url: "https://assets.mist-train-girls.com/production-client-web-assets/Small/Textures/Icons/Atlas/Layers/character-1.plist",
+    url: "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.plist",
     success: (res) => { parseAvatarClipData(res); },
     error: (res) => {
       if(res.status == 403){

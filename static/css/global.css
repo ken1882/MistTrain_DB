@@ -5,6 +5,7 @@ body{
   background-attachment: fixed;
   
   color: #cccccc;
+  margin-bottom: 100px;
 }
 
 a{
@@ -93,4 +94,16 @@ tbody tr th {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.side-canvas{
+  position: relative;
+}
+
+.side-selectable{
+  float: right;
+  vertical-align: top;
+  margin-top: 16px;
+  margin-right: 5%;
+  max-width: 25%;
 }
