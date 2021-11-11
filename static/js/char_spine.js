@@ -19,8 +19,9 @@ let __FlagCharacterCanvasReady = false;
 
 const BattlerBackgroundColor   = [0.8, 0.8, 0.8, 1.0];
 const CharacterBackgroundColor = [0.1176, 0.1176, 0.1176, 1.0];
-const DefaultBattlerAnimation = 'Idle'
-const DefaultCharacterAnimation = 'Idle_Normal'
+const DefaultBattlerAnimation = 'Idle';
+const DefaultCharacterAnimation = 'Idle_Normal';
+const DefaultHomepageAnimation = 'Idle';
 
 function init () {
 	BattlerCanvas = document.getElementById("battler-canvas");
@@ -52,6 +53,16 @@ function getEventActorSpineResourcesData(id){
 		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.skel`,
 		name: id,
 		anim: DefaultCharacterAnimation
+	}
+}
+
+function getHomepageActorSpineResourcesData(id){
+	return {
+		png: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.png`,
+		atlas: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.atlas`,
+		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.skel`,
+		name: id,
+		anim: DefaultHomepageAnimation
 	}
 }
 
@@ -221,9 +232,8 @@ function resizeBattlerCanvas(){
 	BattlerRenderer.camera.viewportWidth = BattlerBounds.size.x * BattlerSkeletonShrinkRate;
 	BattlerRenderer.camera.viewportHeight = BattlerBounds.size.y * BattlerSkeletonShrinkRate;
 	BattlerRenderer.resize(spine.webgl.ResizeMode.Fit);
-	let actlist = $("#battler-act-list");
 	var ch = BattlerCanvas.height - 32;
-	var lh = actlist.height();
+	var lh = 28;
 	$("#battler-act-list").attr('size', parseInt(ch / lh));
 }
 
@@ -241,9 +251,8 @@ function resizeCharacterCanvas(){
 	CharacterRenderer.camera.viewportWidth = CharacterBounds.size.x * CharacterSkeletonShrinkRate;
 	CharacterRenderer.camera.viewportHeight = CharacterBounds.size.y * CharacterSkeletonShrinkRate;
 	CharacterRenderer.resize(spine.webgl.ResizeMode.Fit);
-	let actlist = $("#char-act-list");
 	var ch = CharacterCanvas.height - 32;
-	var lh = actlist.height();
+	var lh = 28;
 	$("#char-act-list").attr('size', parseInt(ch / lh));
 }
 

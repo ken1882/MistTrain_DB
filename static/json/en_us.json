@@ -68,5 +68,7 @@
   },
   "CharacterPainting": "Painting",
   "CharacterFigure": "Figure",
-  "LoopAnimation": "Loop"
+  "LoopAnimation": "Loop",
+  "ZoomIn": "Zoom in",
+  "ZoomOut": "Zoom out"
 }

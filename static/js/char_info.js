@@ -42,7 +42,7 @@ function setup(){
   fillCharacterBaseInfo();
   appendCharacterAvatars();
   loadSpineData();
-  appendAnimations();
+  setupSpineContent();
 }
 
 function loadSpineData(){
@@ -52,10 +52,25 @@ function loadSpineData(){
   loadCharacterSpineResources(rssdat2);
 }
 
-function appendAnimations(){
+function setupSpineContent(){
   if(!__FlagBattlerCanvasReady || !__FlagCharacterCanvasReady){
-    return setTimeout(appendAnimations, 300);
+    return setTimeout(setupSpineContent, 300);
   }
+  appendAnimations();
+  document.getElementById("char-zoomin").addEventListener('click', (e)=>{
+    var n = CharacterSkeletonShrinkRate - 0.1;
+    CharacterSkeletonShrinkRate = Math.max(1.0, n);
+    resizeCharacterCanvas();
+  });
+  document.getElementById("char-zoomout").addEventListener('click', (e)=>{
+    var n = CharacterSkeletonShrinkRate + 0.1;
+    CharacterSkeletonShrinkRate = Math.min(2.0, n);
+    resizeCharacterCanvas();
+  });
+  document.getElementById("char-zooms").style.display = '';
+}
+
+function appendAnimations(){
   var ch_anims = CharacterAnimState.data.skeletonData.animations;
   var ba_anims = BattlerAnimState.data.skeletonData.animations;
   let list_cha = $("#char-act-list");

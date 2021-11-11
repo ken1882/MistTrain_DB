@@ -68,5 +68,7 @@
   },
   "CharacterPainting": "立繪",
   "CharacterFigure": "人物",
-  "LoopAnimation": "重複"
+  "LoopAnimation": "重複",
+  "ZoomIn": "放大",
+  "ZoomOut": "縮小"
 }
