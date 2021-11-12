@@ -242,9 +242,14 @@ function resizeCharacterCanvas(){
 	var portion = CharacterBounds.size.x / CharacterBounds.size.y;
 	var w = window.innerWidth * CharacterCanvasWidthScale;
 	var h = w / portion;
+	var h2 = window.innerHeight * 0.9;
+	if(h > h2){
+		h = h2;
+		w = portion * h;
+	}
 	CharacterCanvas.width = w;
 	CharacterCanvas.height = h;
-	CharacterRenderer.camera.position.x = 0; // bounds.offset.x + bounds.size.x / 2;
+	CharacterRenderer.camera.position.x = CharacterBounds.offset.x + CharacterBounds.size.x / 2;
 	CharacterRenderer.camera.position.y = CharacterBounds.offset.y + CharacterBounds.size.y / 2;
 	CharacterRenderer.camera.up.y = -1;
 	CharacterRenderer.camera.direction.z = 1;

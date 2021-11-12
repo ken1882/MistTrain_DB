@@ -3,11 +3,14 @@ let CharacterFrameSet  = null;
 let CharacterAvatarClip = {};
 let IconClipData  = {}
 let CharacterData = {};
+let SkillData = {};
 let __CntDataLoaded   = 0;
-let __CntDataRequired = 5;
+let __CntDataRequired = 6;
 var AvatarCanvas, AvatarContext;
 var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
+
+const WeaponAttribute = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 
 function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=null, dh=null){
   if(dx == null){ dx = 0; }
@@ -118,7 +121,54 @@ function fillCharacterBaseInfo(){
   if(!chname){
     chname = `${data.Name} ${data.MCharacterBase.Name}`
   }
+  let wtype = data.MCharacterBase.WeaponEquipType;
   $("#character-title").text(chname);
+  $("#character-rarity").text(Vocab.RarityList[data.CharacterRarity]);
+  $("#character-type").text(Vocab.CharacterTypeList[data.CharacterType]);
+  $("#character-weapon").text(Vocab.WeaponTypeList[wtype]);
+  let stats = [];
+  for(let stat in data.StatusInflation){
+    if(!data.StatusInflation.hasOwnProperty(stat)){continue;}
+    let n = data.StatusInflation[stat];
+    if(n > 1){ stats.push(Vocab.StatusName[stat]); }
+  }
+  $("#character-growth").text(stats.join('/'));
+
+  let atkattrs = new Set();
+  atkattrs.add(Vocab.AttributeList[WeaponAttribute[wtype]]);
+  for(attr in data){
+    if(!data.hasOwnProperty(attr)){continue;}
+    if(!attr.match(/^MSkill(\d+)Id$/i)){ continue; }
+    let skill = SkillData[data[attr]];
+    var a1 = skill.Power1Attribute, a2 = skill.Power2Attribute;
+    if(a1){
+      atkattrs.add(Vocab.AttributeList[a1]);
+    }
+    if(a2){
+      atkattrs.add(Vocab.AttributeList[a2]);
+    }
+  }
+  atkattrs = Array.from(atkattrs);
+  $("#character-atkattr").text(atkattrs.join('/'));
+
+  let intro = Vocab.CharacterIntro[data.Id];
+  if(!intro){ intro = data.Greeting; }
+  intro = intro.replaceAll('\\n', '<br>');
+  $("#character-intro").html(intro);
+
+  let resists = CharacterData[__CharacterId].AttributeResistGroup;
+  for(let a in resists){
+    if(!resists.hasOwnProperty(a)){ continue; }
+    let node = $(document.createElement("td"));
+    $("#row-attr-resist").append(node);
+    node.text(`${resists[a]}%`);
+    if(resists[a] > 0){
+      node.css('color', 'orange');
+    }
+    else if(resists[a] < 0){
+      node.css('color', 'red');
+    }
+  }
 }
 
 function appendCharacterAvatars(){
@@ -127,7 +177,6 @@ function appendCharacterAvatars(){
   let container = $(document.createElement('div'));
   container.attr('class', 'avatar-container');
   let block = $(document.createElement('a'))
-  block.attr('href', `/character_database/${i}`);  
   container.append(block);
   let img = document.createElement('img');
   let img2 = document.createElement('img');
@@ -205,6 +254,14 @@ function parseIconClipData(res){
   __CntDataLoaded += 1;
 }
 
+function parseSkillData(res){
+  for(let i in res){
+    let dat = res[i];
+    SkillData[dat['Id']] = dat;
+  }
+  __CntDataLoaded += 1;
+}
+
 (function(){
   var image = new Image(), image2 = new Image();
   image.crossOrigin = "anonymous";
@@ -233,6 +290,18 @@ function parseIconClipData(res){
   $.ajax({
     url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json",
     success: (res) => { parseCharacterData(res); },
+    error: (res) => {
+      if(res.status == 403){
+        alert(Vocab['UnderMaintenance']);
+      }
+      else{
+        alert(Vocab['UnknownError']);
+      }
+    }
+  });
+  $.ajax({
+    url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json",
+    success: (res) => { parseSkillData(res); },
     error: (res) => {
       if(res.status == 403){
         alert(Vocab['UnderMaintenance']);

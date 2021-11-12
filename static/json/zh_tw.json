@@ -34,16 +34,13 @@
   "CharacterDB": "角色資料庫",
   "DrawSpineBones": "顯示骨骼",
   "CharacterList": "角色列表",
-  "CharacterName": {
-    "0": "PlaceHolder"
-  },
   "CharacterAnimationName": {
     "Idle_Normal": "正常",
     "Idle_Normal_Close": "闔眼",
     "Idle_Amazement": "驚訝",
     "Idle_Angry": "生氣",
     "Idle_Happy": "開心",
-    "Idle_Sad": "背傷",
+    "Idle_Sad": "悲傷",
     "Idle_Shy": "害羞",
     "Idle_Special": "特殊表情",
     "Idle_Unique": "獨特表情",
@@ -70,5 +67,59 @@
   "CharacterFigure": "人物",
   "LoopAnimation": "重複",
   "ZoomIn": "放大",
-  "ZoomOut": "縮小"
+  "ZoomOut": "縮小",
+  "Avatar": "頭像",
+  "Rarity": "稀有度",
+  "Weapon": "武器",
+  "Type": "定位",
+  "AttackAttributes": "攻擊屬性",
+  "CharacterTypeList": [
+    "",
+    "輸出",
+    "坦克",
+    "弱化",
+    "輔助"
+  ],
+  "WeaponTypeList": [
+    "",
+    "拳",
+    "劍",
+    "斧",
+    "槍",
+    "鞭",
+    "魔具",
+    "弓",
+    "杖",
+    "銃"
+  ],
+  "GrowthTendency": "成長傾向",
+  "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+  "StatusName": {
+    "HP": "HP",
+    "Defence": "物防",
+    "Dexterity": "命中",
+    "Intelligence": "魔攻",
+    "Luck": "幸運",
+    "Mind": "恢復",
+    "MindDefense": "魔防",
+    "Speed": "速度",
+    "Strength": "物攻"
+  },
+  "AttributeList": [
+    "",
+    "斬", "衝", "貫",
+    "火", "水", "風",
+    "光", "闇"
+  ],
+  "Greeting": "招呼",
+  "SelfIntro": "自我介紹",
+  "AttributeResist": "屬性抵抗",
+  
+  "__備註": "請把複雜翻譯項目置底",
+  "CharacterName": {
+    "0": "角色ID: 角色名稱"
+  },
+  "CharacterIntro": {
+    "0": "角色ID: 角色自介"
+  }
 }

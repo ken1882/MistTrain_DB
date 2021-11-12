@@ -34,9 +34,6 @@
   "CharacterDB": "Character Database",
   "DrawSpineBones": "Draw bones",
   "CharacterList": "Character List",
-  "CharacterName": {
-    "0": "PlaceHolder"
-  },
   "CharacterAnimationName": {
     "Idle_Normal": "Normal",
     "Idle_Normal_Close": "Eye closed",
@@ -70,5 +67,59 @@
   "CharacterFigure": "Figure",
   "LoopAnimation": "Loop",
   "ZoomIn": "Zoom in",
-  "ZoomOut": "Zoom out"
+  "ZoomOut": "Zoom out",
+  "Avatar": "Avatar",
+  "Rarity": "Rarity",
+  "Weapon": "Weapon",
+  "Type": "Type",
+  "AttackAttributes": "Attack Attributes",
+  "CharacterTypeList": [
+    "",
+    "Attacker",
+    "Defender",
+    "Trickster",
+    "Supporter"
+  ],
+  "WeaponTypeList": [
+    "",
+    "Fist",
+    "Sword",
+    "Axe",
+    "Spear",
+    "Whip",
+    "Tailsman",
+    "Bow",
+    "Staff",
+    "Gun"
+  ],
+  "GrowthTendency": "Growth Tendency",
+  "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+  "StatusName": {
+    "HP": "HP",
+    "Defence": "P.Def",
+    "Dexterity": "Hit",
+    "Intelligence": "M.Atk",
+    "Luck": "Luck",
+    "Mind": "Recovery",
+    "MindDefense": "M.Def",
+    "Speed": "Speed",
+    "Strength": "P.Atk"
+  },
+  "AttributeList": [
+    "",
+    "Slash", "Impact", "Pierce",
+    "Fire", "Water", "Wind",
+    "Holy", "Dark"
+  ],
+  "Greeting": "Greeting",
+  "SelfIntro": "Self Introduction",
+  "AttributeResist": "Attribute Resistance",
+  
+  "__comment": "Keep complicated translations at bottom",
+  "CharacterName": {
+    "0": "Character Id: Character Name"
+  },
+  "CharacterIntro": {
+    "0": "Character Id: Character's Intro"
+  }
 }

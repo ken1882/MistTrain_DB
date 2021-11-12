@@ -3,6 +3,10 @@ let CharacterFrameSet  = null;
 let CharacterAvatarClip = {};
 let IconClipData  = {}
 let CharacterData = {};
+let CharacterNodeList = {
+  iconView: {},
+  listView: {}
+};
 let __CntDataLoaded   = 0;
 let __CntDataRequired = 5;
 var AvatarCanvas, AvatarContext;
@@ -31,15 +35,18 @@ function init(){
   FrameCanvas.width = __CharacterFrameWidth;
   FrameCanvas.height = __CharacterFrameHeight;
   FrameContext = FrameCanvas.getContext('2d');
+  setup();
+}
+
+function setup(){
+  if(__CntDataLoaded < __CntDataRequired){
+    return setTimeout(setup, 100);
+  }
   appendCharacterAvatars();
+  setupViewChangeButton();
 }
 
 function appendCharacterAvatars(){
-  if(__CntDataLoaded < __CntDataRequired){
-    return setTimeout(() => {
-      appendCharacterAvatars()
-    }, 100);
-  }
   let parent = $('#character-list');
   for(let i in CharacterData){
     if(!CharacterData.hasOwnProperty(i)){continue;}
@@ -55,6 +62,7 @@ function appendCharacterAvatars(){
     block.append(img);
     block.append(img2);
     parent.append(container);
+    CharacterNodeList.iconView[i] = container;
     let rect = CharacterAvatarClip.frames[`${i}.png`].textureRect.flat();
     let krarity = 'frm_thumb_rare_a';
     switch(CharacterData[i].CharacterRarity){
@@ -83,6 +91,32 @@ function appendCharacterAvatars(){
   $("#loading-indicator").remove();
 }
 
+function setupViewChangeButton(){
+  let vgrid = $("#gridview-button");
+  let vlist = $("#listview-button");
+  vgrid[0].addEventListener('click', viewChangeGrid);
+  vlist[0].addEventListener('click', viewChangeList);
+}
+
+function viewChangeGrid(e){
+  let vgrid = $("#gridview-button");
+  let vlist = $("#listview-button");
+  if(vgrid[0].classList.contains('btn-secondary')){ return; }
+  vlist.removeClass('btn-secondary');
+  vlist.addClass('btn-outline-secondary')
+  vgrid.removeClass('btn-outline-secondary');
+  vgrid.addClass('btn-secondary');
+}
+
+function viewChangeList(e){
+  let vgrid = $("#gridview-button");
+  let vlist = $("#listview-button");
+  if(vlist[0].classList.contains('btn-secondary')){ return; }
+  vgrid.removeClass('btn-secondary');
+  vgrid.addClass('btn-outline-secondary')
+  vlist.removeClass('btn-outline-secondary');
+  vlist.addClass('btn-secondary');
+}
 
 function parseXMLKeyValueDict(node){
   let size = node.children.length;

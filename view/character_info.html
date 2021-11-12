@@ -100,7 +100,60 @@
 
     <div class="center h1" id="character-title"></div>
     <br>
-    <div class="center" id="character-icon"></div>
+    <div>
+      <table class="table table-bordered" style="max-width: 80%; margin: auto; text-align: center;">
+        <thead>
+          <tr>
+            <th label="l-Avatar"></th>
+            <th label="l-Rarity"></th>
+            <th label="l-Type"></th>
+            <th label="l-Weapon"></th>
+            <th label="l-AttackAttributes"></th>
+            <th label="l-GrowthTendency"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="character-icon"></td>
+            <td id="character-rarity"></td>
+            <td id="character-type"></td>
+            <td id="character-weapon"></td>
+            <td id="character-atkattr"></td>
+            <td id="character-growth"></td>
+          </tr>
+        </tbody>
+        <thead>
+          <tr>
+            <th colspan="9" label="l-SelfIntro"></th>
+          </tr>
+        </thead>
+        <tbody><tr><td id="character-intro" colspan="8"></td></tr></tbody>
+        <thead>
+          <tr>
+            <th colspan="8" label="l-AttributeResist"></th>
+          </tr>
+        </thead>
+      </table>
+      <table class="table table-bordered" style="max-width: 80%; margin: auto; text-align: center;">
+        <thead>
+          <tr>
+            <th><img src="{{ url_for('static', filename='/assets/resist_blade.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_impact.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_pierce.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_fire.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_water.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_wind.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_holy.png') }}"></th>
+            <th><img src="{{ url_for('static', filename='/assets/resist_dark.png') }}"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="row-attr-resist">
+          </tr>
+        </tbody>
+      </table>
+      
+    </div>
     <br><br>
     <div class="center h3" label="l-CharacterPainting"></div>
     <hr>

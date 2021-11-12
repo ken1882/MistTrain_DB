@@ -70,6 +70,10 @@ tbody tr th {
   font-weight:normal;
 }
 
+tbody tr td{
+  vertical-align: middle;
+}
+
 .avatar-container {
   display: inline-block;
   position: relative;
@@ -98,6 +102,7 @@ tbody tr th {
 
 .side-canvas{
   position: relative;
+  max-height: 1080px;
 }
 
 .side-selectable{
