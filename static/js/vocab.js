@@ -16,7 +16,7 @@
   static initialize(){
     this.SupportedLanguages = [];
     this.Language   = DataManager.language;
-    this.FolderPath = "static/json";
+    this.FolderPath = "/static/json";
     this.ready      = false;
     this._ready_cnt = 0
     this.loadSupportedLanguages();

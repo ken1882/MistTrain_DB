@@ -5,6 +5,7 @@ body{
   background-attachment: fixed;
   
   color: #cccccc;
+  margin-bottom: 100px;
 }
 
 a{
@@ -67,4 +68,47 @@ a{
 
 tbody tr th {
   font-weight:normal;
+}
+
+tbody tr td{
+  vertical-align: middle;
+}
+
+.avatar-container {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  padding: 4px 4px 4px 4px;
+}
+
+.avatar {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.avatar-frame {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.side-canvas{
+  position: relative;
+  max-height: 1080px;
+}
+
+.side-selectable{
+  float: right;
+  vertical-align: top;
+  margin-top: 16px;
+  margin-right: 5%;
+  max-width: 25%;
 }

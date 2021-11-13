@@ -1,0 +1,158 @@
+{
+  "frm_thumb_rare_a": {
+    "__type__":"cc.SpriteFrame",
+    "group": "party1",
+    "content":{
+      "name":"frm_thumb_rare_a",
+      "texture":"e1dEMK+fdKX7B7rB3k5zA9",
+      "rect":[
+        541,
+        313,
+        102,
+        102
+      ],
+      "offset":[
+        0,
+        0
+      ],
+      "originalSize":[
+        102,
+        102
+      ],
+      "capInsets":[
+        36,
+        28,
+        36,
+        58
+      ]
+    }
+  },
+  "frm_thumb_rare_s": {
+    "__type__":"cc.SpriteFrame",
+    "group": "party1",
+    "content":{
+      "name":"frm_thumb_rare_s",
+      "texture":"e1dEMK+fdKX7B7rB3k5zA9",
+      "rect":[
+        1263,
+        325,
+        102,
+        102
+      ],
+      "offset":[
+        0,
+        0
+      ],
+      "originalSize":[
+        102,
+        102
+      ],
+      "capInsets":[
+        36,
+        28,
+        36,
+        58
+      ]
+    }
+  },
+  "frm_thumb_rare_ss": {
+    "__type__":"cc.SpriteFrame",
+    "group": "party1",
+    "content":{
+      "name":"frm_thumb_rare_ss",
+      "texture":"e1dEMK+fdKX7B7rB3k5zA9",
+      "rect":[
+        213,
+        325,
+        102,
+        102
+      ],
+      "offset":[
+        0,
+        0
+      ],
+      "originalSize":[
+        102,
+        102
+      ],
+      "capInsets":[
+        36,
+        28,
+        36,
+        58
+      ]
+    }
+  },
+  "frm_plist_weapontype_1": {
+    "name": "frm_plist_weapontype_1",
+    "content": {
+      "rect": [1, 1, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_2": {
+    "name": "frm_plist_weapontype_2",
+    "content": {
+      "rect": [1, 67, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_3": {
+    "name": "frm_plist_weapontype_3",
+    "content": {
+      "rect": [1, 133, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_4": {
+    "name": "frm_plist_weapontype_4",
+    "content": {
+      "rect": [67, 1, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_5": {
+    "name": "frm_plist_weapontype_5",
+    "content": {
+      "rect": [133, 1, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_6": {
+    "name": "frm_plist_weapontype_6",
+    "content": {
+      "rect": [67, 67, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_7": {
+    "name": "frm_plist_weapontype_7",
+    "content": {
+      "rect": [67, 133, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_8": {
+    "name": "frm_plist_weapontype_8",
+    "content": {
+      "rect": [133, 67, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  },
+  "frm_plist_weapontype_9": {
+    "name": "frm_plist_weapontype_9",
+    "content": {
+      "rect": [133, 133, 64, 64],
+      "offset": [0, 0],
+      "originalSize": [64,64]
+    }
+  }
+}

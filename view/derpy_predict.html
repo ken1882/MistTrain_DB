@@ -45,6 +45,7 @@
 
       function init_totop_button(){
         let button = document.getElementById("btn-back-to-top");
+        button.style.opacity = '0.5';
 
         window.onscroll = () => {
           if(document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
@@ -59,6 +60,14 @@
           document.body.scrollTop = 0;
           document.documentElement.scrollTop = 0;
         });
+
+        button.addEventListener("mouseover", ()=>{
+          button.style.opacity = "1";          
+        });
+
+        button.addEventListener("mouseout", ()=>{
+          button.style.opacity = "0.5";
+        });
       }
 
       window.addEventListener("load", ()=>{
@@ -71,32 +80,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <span id='languageText' label='l-LanguageText' class="navbar-text lang-text">Language:</span>
-            <select id='languageOptions' class="nav-text lang-box">
-              <!-- loaded from json/languages.json -->
-            </select>
-            <input type="button" class="nav-text" value='GO' onclick="changeLanguage()">
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-header" href="/" label="l-Home">_</a>
-          </li>
-          <li class="nav-item">
-            <div class="dropdown">
-              <a class="nav-link nav-header dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" label="l-AvailableToolList">_</a>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="/mistrunner_database" label="l-MistRunnerDB">_</a>
-                <a class="dropdown-item" href="/mistrunner_predict" label="l-MistRunnerPredict">_</a>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
+      {{ navbar_content | safe }}
     </nav>
     <br>
     

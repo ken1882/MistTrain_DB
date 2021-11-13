@@ -30,5 +30,96 @@
   "Waku": "Bracket",
   "DerpyNumber": "Number",
   "UnderMaintenance": "Game server seems under maintenance, please come back later",
-  "UnknownError": "Unknown error occurred, please try again later and notify devs if keep happening"
+  "UnknownError": "Unknown error occurred, please try again later and notify devs if keep happening",
+  "CharacterDB": "Character Database",
+  "DrawSpineBones": "Draw bones",
+  "CharacterList": "Character List",
+  "CharacterAnimationName": {
+    "Idle_Normal": "Normal",
+    "Idle_Normal_Close": "Eye closed",
+    "Idle_Amazement": "Amazed",
+    "Idle_Angry": "Angry",
+    "Idle_Happy": "Happy",
+    "Idle_Sad": "Sad",
+    "Idle_Shy": "Shy",
+    "Idle_Special": "Special",
+    "Idle_Unique": "Unique",
+    "Attack": "Attack",
+    "Chant": "Chant",
+    "Damage": "Damage",
+    "Death": "Death",
+    "Dying": "Dying",
+    "Guard": "Guard",
+    "Idle": "Idle",
+    "Idle_Battle": "Idle Battle",
+    "Jump_Flying": "Jump Flying",
+    "Jump_Step": "Jump Step",
+    "Rotation": "Rotation",
+    "Run": "Run",
+    "Skill_After": "Skill After",
+    "Skill_Before": "Skill Before",
+    "Swing": "Swing",
+    "Victory": "Victory",
+    "Walk": "Walk",
+    "SpecialSkill": "Special Skill"
+  },
+  "CharacterPainting": "Painting",
+  "CharacterFigure": "Figure",
+  "LoopAnimation": "Loop",
+  "ZoomIn": "Zoom in",
+  "ZoomOut": "Zoom out",
+  "Avatar": "Avatar",
+  "Rarity": "Rarity",
+  "Weapon": "Weapon",
+  "Type": "Type",
+  "AttackAttributes": "Attack Attributes",
+  "CharacterTypeList": [
+    "",
+    "Attacker",
+    "Defender",
+    "Trickster",
+    "Supporter"
+  ],
+  "WeaponTypeList": [
+    "",
+    "Fist",
+    "Sword",
+    "Axe",
+    "Spear",
+    "Whip",
+    "Tailsman",
+    "Bow",
+    "Staff",
+    "Gun"
+  ],
+  "GrowthTendency": "Growth Tendency",
+  "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+  "StatusName": {
+    "HP": "HP",
+    "Defence": "P.Def",
+    "Dexterity": "Hit",
+    "Intelligence": "M.Atk",
+    "Luck": "Luck",
+    "Mind": "Recovery",
+    "MindDefence": "M.Def",
+    "Speed": "Speed",
+    "Strength": "P.Atk"
+  },
+  "AttributeList": [
+    "",
+    "Slash", "Impact", "Pierce",
+    "Fire", "Water", "Wind",
+    "Holy", "Dark"
+  ],
+  "Greeting": "Greeting",
+  "SelfIntro": "Self Introduction",
+  "AttributeResist": "Attribute Resistance",
+  
+  "__comment": "Keep complicated translations at bottom",
+  "CharacterName": {
+    "0": "Character Id: Character Name"
+  },
+  "CharacterIntro": {
+    "0": "Character Id: Character's Intro"
+  }
 }

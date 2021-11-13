@@ -30,5 +30,96 @@
   "Waku": "枠號",
   "DerpyNumber": "編號",
   "UnderMaintenance": "遊戲伺服器似乎正在維修中，請稍後再次嘗試",
-  "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員"
+  "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員",
+  "CharacterDB": "角色資料庫",
+  "DrawSpineBones": "顯示骨骼",
+  "CharacterList": "角色列表",
+  "CharacterAnimationName": {
+    "Idle_Normal": "正常",
+    "Idle_Normal_Close": "闔眼",
+    "Idle_Amazement": "驚訝",
+    "Idle_Angry": "生氣",
+    "Idle_Happy": "開心",
+    "Idle_Sad": "悲傷",
+    "Idle_Shy": "害羞",
+    "Idle_Special": "特殊表情",
+    "Idle_Unique": "獨特表情",
+    "Attack": "攻擊",
+    "Chant": "詠唱",
+    "Damage": "遭受傷害",
+    "Death": "戰鬥不能",
+    "Dying": "瀕死",
+    "Guard": "防禦",
+    "Idle": "閒置",
+    "Idle_Battle": "閒置 (戰鬥中)",
+    "Jump_Flying": "跳躍 (空中)",
+    "Jump_Step": "跳躍 (踏步)",
+    "Rotation": "旋轉",
+    "Run": "奔跑",
+    "Skill_After": "技能後擺",
+    "Skill_Before": "技能前擺",
+    "Swing": "擺動武器",
+    "Victory": "勝利姿勢",
+    "Walk": "行走",
+    "SpecialSkill": "特殊技能"
+  },
+  "CharacterPainting": "立繪",
+  "CharacterFigure": "人物",
+  "LoopAnimation": "重複",
+  "ZoomIn": "放大",
+  "ZoomOut": "縮小",
+  "Avatar": "頭像",
+  "Rarity": "稀有度",
+  "Weapon": "武器",
+  "Type": "定位",
+  "AttackAttributes": "攻擊屬性",
+  "CharacterTypeList": [
+    "",
+    "輸出",
+    "坦克",
+    "弱化",
+    "輔助"
+  ],
+  "WeaponTypeList": [
+    "",
+    "拳",
+    "劍",
+    "斧",
+    "槍",
+    "鞭",
+    "魔具",
+    "弓",
+    "杖",
+    "銃"
+  ],
+  "GrowthTendency": "成長傾向",
+  "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+  "StatusName": {
+    "HP": "HP",
+    "Defence": "物防",
+    "Dexterity": "命中",
+    "Intelligence": "魔攻",
+    "Luck": "幸運",
+    "Mind": "恢復",
+    "MindDefence": "魔防",
+    "Speed": "速度",
+    "Strength": "物攻"
+  },
+  "AttributeList": [
+    "",
+    "斬", "衝", "貫",
+    "火", "水", "風",
+    "光", "闇"
+  ],
+  "Greeting": "招呼",
+  "SelfIntro": "自我介紹",
+  "AttributeResist": "屬性抵抗",
+  
+  "__備註": "請把複雜翻譯項目置底",
+  "CharacterName": {
+    "0": "角色ID: 角色名稱"
+  },
+  "CharacterIntro": {
+    "0": "角色ID: 角色自介"
+  }
 }
