@@ -225,7 +225,7 @@ function resizeBattlerCanvas(){
 	var h = w / portion;
 	BattlerCanvas.width = w;
 	BattlerCanvas.height = h;
-	BattlerRenderer.camera.position.x = 0; // bounds.offset.x + bounds.size.x / 2;
+	BattlerRenderer.camera.position.x = 0; //BattlerBounds.offset.x + BattlerBounds.size.x / 2;
 	BattlerRenderer.camera.position.y = BattlerBounds.offset.y + BattlerBounds.size.y / 2;
 	BattlerRenderer.camera.up.y = -1;
 	BattlerRenderer.camera.direction.z = 1;

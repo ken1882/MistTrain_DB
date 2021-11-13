@@ -101,7 +101,7 @@
     "Intelligence": "M.Atk",
     "Luck": "Luck",
     "Mind": "Recovery",
-    "MindDefense": "M.Def",
+    "MindDefence": "M.Def",
     "Speed": "Speed",
     "Strength": "P.Atk"
   },
