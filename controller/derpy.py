@@ -16,18 +16,21 @@ pp = PrettyPrinter(indent=2)
 def init():
   races = load_database()
   _G.DerpySavedRaceContent = races
-  for race in races:
-    _G.DerpySavedRaceHeader.add(race['id'])
+  for k,month_races in races.items():
+    for race in month_races:
+      _G.DerpySavedRaceHeader.add(race['id']) 
 
-def load_database(cloud=False):
-  if cloud:
-    dm.load_derpy_db()
-  path = f"{_G.STATIC_FILE_DIRECTORY}/{_G.DERPY_WAREHOUSE_CONTENT_PATH}"
-  if not os.path.exists(path):
-    return []
-  ret = []
-  with open(path, 'r') as fp:
-    ret = json.load(fp)
+def load_database():
+  files = dm.load_all_derpy_db()
+  ret = {}
+  keys = list(_G.LoopDerpyYMPair())
+  for i,path in enumerate(files):
+    key = "{:d}-{:02d}".format(keys[i][0], keys[i][1])
+    if os.path.exists(path):
+      with open(path, 'r') as fp:
+        ret[key] = json.load(fp)
+    else:
+      ret[key] = []
   return ret
 
 def save_database(dat, upload=True):

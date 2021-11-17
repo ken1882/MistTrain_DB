@@ -8,6 +8,8 @@ import json
 import pickle
 from _G import log_error,log_debug,log_info,log_warning
 from shutil import copyfile
+from datetime import datetime
+import pytz
 
 Database = None
 RootFolder = None
@@ -41,7 +43,7 @@ def init():
   setup()
   
 def setup():
-  load_derpy_db()
+  load_all_derpy_db()
   load_derpy_estimators()
 
 def log_db_info():
@@ -71,15 +73,16 @@ def get_cache(path):
     return __FileCache[path]
   return None
 
-def load_derpy_db():
-  dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{_G.DERPY_WAREHOUSE_CONTENT_PATH}"
+def load_derpy_db(year, month):
+  filepath,filename = _G.MakeDerpyFilenamePair(year, month)
+  dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{filepath}"
   if not _G.FlagUseCloudData:
     return dst_path
   files = get_root_filelist()
   for file in files:
-    if file['title'] != _G.DERPY_CLOUD_WAREHOUSE:
+    if file['title'] != filename:
       continue
-    tmp_path = f"{_G.DCTmpFolder}/{_G.DERPY_CLOUD_WAREHOUSE}"
+    tmp_path = f"{_G.DCTmpFolder}/{filename}"
     log_info(f"Downloading {file['title']}")
     file.GetContentFile(tmp_path)
     if os.path.exists(dst_path):
@@ -87,6 +90,13 @@ def load_derpy_db():
     copyfile(tmp_path, dst_path)
     break
   return dst_path
+
+def load_all_derpy_db():
+  files = []
+  for y,m in _G.LoopDerpyYMPair():
+    file = load_derpy_db(y, m)
+    files.append(file)
+  return files
 
 def upload_derpy_db(data):
   if not _G.FlagUseCloudData:
