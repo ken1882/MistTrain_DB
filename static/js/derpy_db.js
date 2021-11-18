@@ -1,29 +1,69 @@
+const __DerpyStartYear  = 2021;
+const __DerpyStartMonth = 4;
+
+// Append monthly race data from current back to first
 function createMonthlyGroups(){
-  let data = window.__DerpyData;
+  let end_t = new Date();
+  let cur_y = end_t.getFullYear(), cur_m = end_t.getMonth()+1;
+  let end_y = __DerpyStartYear, end_m = __DerpyStartMonth;
   let parent = $("#history-monthly")
-  let headers = [];
   let last_header = null;
-  for(let i in data){
-    month = data[i].startTime.split('-').slice(0,2).join('/');
-    if(!headers.includes(month)){
-      let section = $(document.createElement('div'));
-      let node = $(document.createElement('div'));
-      let header = $(document.createElement('a'));
-      header.attr('class', 'btn btn-primary center');
-      header.attr('data-bs-toggle', 'collapse');
-      header.attr('aria-controls', '');
-      header.attr('data-bs-target', `.race-${month.replaceAll('/','-')}`);
-      header.text(month);
-      node.append(header);
-      section.append(node);
-      parent.append(section);
-      headers.push(month);
-      last_header = section;
-      last_header.append(document.createElement('hr'));
+  while(cur_y != end_y || cur_m != end_m){
+    month = `${cur_y}/`;
+    if(cur_m < 10){ month += `0${cur_m}`; }
+    else{ month += `${cur_m}`; }
+    let section = $(document.createElement('div'));
+    let node = $(document.createElement('div'));
+    let header = $(document.createElement('a'));
+    header.attr('class', 'btn btn-primary center');
+    header.attr('data-bs-toggle', 'collapse');
+    header.attr('aria-controls', '');
+    header.attr('data-bs-target', `.race-${month.replaceAll('/','-')}`);
+    header.text(month);
+    node.append(header);
+    section.append(node);
+    parent.append(section);
+    last_header = section;
+    appendLoadingIndicator(cur_y, cur_m, last_header);
+    last_header.append(document.createElement('hr'));
+    loadMonthlyRaceData(cur_y, cur_m, last_header);
+    cur_m -= 1;
+    if(cur_m == 0){
+      cur_m = 12;
+      cur_y -= 1;
     }
-    createDailyGroups(data[i], last_header);
   }
-  $("#loading-indicator").remove();
+}
+
+function appendLoadingIndicator(year, month, parent){
+  let loading_container = $(document.createElement('div'));
+  loading_container.attr('class', `spinner-border center collapse race-${year}-${month}`);
+  loading_container.attr('id', `loading-indicator-${year}-${month}`);
+  let loading_img = $(document.createElement('span'));
+  loading_img.attr('class', 'sr-only');
+  loading_container.append(loading_img);
+  parent.append(loading_container);
+}
+
+function loadMonthlyRaceData(year, month, parent){
+  let heading = `${year}-`;
+  if(month < 10){ heading += `0${month}_`; }
+  else{ heading += `${month}_`; }
+  let path = __BaseDerpyDataFilePath.replace('{}', heading);
+  processJSON(path,
+    (res)=>{
+      res = JSON.parse(res);
+      for(let i=res.length-1;i>=0;--i){
+        let data = res[i];
+        createDailyGroups(data, parent);
+      }
+      $(`#loading-indicator-${year}-${month}`).remove();
+    },
+    (res)=>{
+      console.log(res);
+    }
+  );
+  // createDailyGroups(data[i], parent);
 }
 
 function createDailyGroups(data, parent, nested=true){
@@ -48,7 +88,7 @@ function createDailyGroups(data, parent, nested=true){
   var race_title = `${date}@${time} ${data.name} ${data.type ? 'ダート' : '芝'} ${1200*(data.range+1)}m `
   race_title += `${data.direction ? '左回り' : '右回り'} ${data.weather ? '雨' : '晴'}`
   spoiler_btn.text(race_title)
-  parent.prepend(node);
+  parent.append(node);
   var table_container = $(document.createElement('div'));
   table_container.attr('class', 'collapse');
   table_container.attr('id', `${container_id}`);
@@ -113,3 +153,5 @@ function get_race_table(data){
   table.append(tbody);
   return table;
 }
+
+window.addEventListener("load", createMonthlyGroups);

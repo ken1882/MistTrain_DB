@@ -15,6 +15,8 @@
 
     <script src="{{ url_for('static', filename='js/derpy_db.js') }}"></script>
     <script>
+      let __BaseDerpyDataFilePath = '/static/{{db_path}}';
+
       function changeLanguage(){
         DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
         window.location = window.location.href.split("?")[0];
@@ -37,16 +39,6 @@
           }));
         }
         node.val(DataManager.language);
-      }
-      
-      function load_db(){
-        var path = "{{ url_for('static', filename=db_path) }}";
-        processJSON(path, function(result){
-          let data = JSON.parse(result);
-          data.sort((a,b) => {return a.id - b.id;});
-          window.__DerpyData = data;
-          createMonthlyGroups();
-        }); 
       }
 
       function init_totop_button(){
@@ -81,7 +73,6 @@
         Vocab.initialize();
         init_navbar();
         init_totop_button();
-        load_db();
       });
     </script>
   </head>
@@ -97,9 +88,11 @@
     <br>
     
     <div id="history-monthly">
-      <div class="spinner-border center" id="loading-indicator">
-        <span class="sr-only"></span>
-      </div>
+      <!-- 
+        <div class="spinner-border center" id="loading-indicator">
+          <span class="sr-only"></span>
+        </div>
+       -->
     </div>
     
   </body>

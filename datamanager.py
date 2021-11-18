@@ -8,6 +8,8 @@ import json
 import pickle
 from _G import log_error,log_debug,log_info,log_warning
 from shutil import copyfile
+from datetime import datetime
+import pytz
 
 Database = None
 RootFolder = None
@@ -41,7 +43,6 @@ def init():
   setup()
   
 def setup():
-  load_derpy_db()
   load_derpy_estimators()
 
 def log_db_info():
@@ -71,15 +72,16 @@ def get_cache(path):
     return __FileCache[path]
   return None
 
-def load_derpy_db():
-  dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{_G.DERPY_WAREHOUSE_CONTENT_PATH}"
+def load_derpy_db(year, month):
+  filepath,filename = _G.MakeDerpyFilenamePair(year, month)
+  dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{filepath}"
   if not _G.FlagUseCloudData:
     return dst_path
   files = get_root_filelist()
   for file in files:
-    if file['title'] != _G.DERPY_CLOUD_WAREHOUSE:
+    if file['title'] != filename:
       continue
-    tmp_path = f"{_G.DCTmpFolder}/{_G.DERPY_CLOUD_WAREHOUSE}"
+    tmp_path = f"{_G.DCTmpFolder}/{filename}"
     log_info(f"Downloading {file['title']}")
     file.GetContentFile(tmp_path)
     if os.path.exists(dst_path):
@@ -88,21 +90,34 @@ def load_derpy_db():
     break
   return dst_path
 
-def upload_derpy_db(data):
+def load_all_derpy_db():
+  files = []
+  for y,m in _G.LoopDerpyYMPair():
+    file = load_derpy_db(y, m)
+    files.append(file)
+  return files
+
+def upload_derpy_db(data, y, m):
   if not _G.FlagUseCloudData:
     log_warning("Attempting to upload while cloud disabled")
     return True
-  target = get_cache(f"/{_G.DERPY_CLOUD_WAREHOUSE}")
+  fname = _G.MakeDerpyFilenamePair(y, m)[1]
+  target = get_cache(f"/{fname}")
   if not target:
     files = get_root_filelist()
     for file in files:
-      if file['title'] != _G.DERPY_CLOUD_WAREHOUSE:
+      if file['title'] != fname:
         continue
       target = file 
       break
   if not target:
-    return False
-  if target:
+    log_warning(f"Cloud file {fname} does not exists, creating new file")
+    target = Database.CreateFile({
+      'title': fname,
+      'parents': [{'kind': 'drive#fileLink', 'id': RootFolder['id']}],
+    })
+    set_cache(target)
+  else:
     create_cloud_backup(target)
   log_info(f"Uploading {target['title']}")
   target.SetContentString(json.dumps(data))

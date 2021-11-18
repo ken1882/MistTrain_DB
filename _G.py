@@ -175,7 +175,7 @@ LastErrorCode = 0
 LastErrorMessage = ''
 
 DERPY_WAREHOUSE_HAEDER_PATH   = 'json/derpy_header.json'
-DERPY_WAREHOUSE_CONTENT_PATH  = 'json/derpy_warehouse.json'
+DERPY_WAREHOUSE_CONTENT_PATH  = 'json/{}derpy_warehouse.json'
 
 DERPY_TACTIC_NIGE     = 1 # 逃げ
 DERPY_TACTIC_SENKO    = 2 # 先行
@@ -237,11 +237,11 @@ DERPY_CHARACTER_COUNTRY = [
   'フレイマリン'
 ]
 
+DerpyStartYear  = 2021
+DerpyStartMonth = 4
 DerpyUpdateHour = [12,20,23]
 
 DERPY_CLOUD_ROOTFOLDERNAME = 'MistTrainDB'
-DERPY_CLOUD_WAREHOUSE = 'derpy_warehouse.json'
-DERPY_LOCAL_WAREHOUSR = '.derpy_warehouse.json'
 DERPY_CLOUD_ESTIMATORS = [
   'rfr_fit_order_False-feats_all.mod',
   'rfr_fit_order_True-feats_all.mod',
@@ -257,7 +257,7 @@ DERPY_ESTIMATORS    = []
 
 # saved race history
 DerpySavedRaceHeader   = set()
-DerpySavedRaceContent  = []
+DerpySavedRaceContent  = {}
 
 def make_model_name(opts):
   opts = deepcopy(opts)
@@ -353,3 +353,20 @@ def SetCacheBinary(key, val):
       return pickle.dump(val, fp)
   except Exception:
     pass
+
+def LoopDerpyYMPair(end_t=None):
+  if not end_t:
+    end_t = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
+  cy,cm = DerpyStartYear,DerpyStartMonth
+  ey,em = end_t.year,end_t.month
+  while cy != ey or cm != em:
+    yield (cy, cm)
+    cm += 1
+    if cm == 13:
+      cm = 1
+      cy += 1
+  yield (ey, em)
+
+def MakeDerpyFilenamePair(y,m):
+  path = DERPY_WAREHOUSE_CONTENT_PATH.format("{:d}-{:02d}_".format(y, m))
+  return (path, path.split('/')[-1])

@@ -10,7 +10,6 @@ import datamanager as dm
 from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
 import pytz
-
 from utils import handle_exception
 
 app = Flask(__name__, template_folder='view')

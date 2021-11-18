@@ -16,26 +16,31 @@ pp = PrettyPrinter(indent=2)
 def init():
   races = load_database()
   _G.DerpySavedRaceContent = races
-  for race in races:
-    _G.DerpySavedRaceHeader.add(race['id'])
+  for k,month_races in races.items():
+    for race in month_races:
+      _G.DerpySavedRaceHeader.add(race['id']) 
 
-def load_database(cloud=False):
-  if cloud:
-    dm.load_derpy_db()
-  path = f"{_G.STATIC_FILE_DIRECTORY}/{_G.DERPY_WAREHOUSE_CONTENT_PATH}"
-  if not os.path.exists(path):
-    return []
-  ret = []
-  with open(path, 'r') as fp:
-    ret = json.load(fp)
+def load_database():
+  files = dm.load_all_derpy_db()
+  ret = {}
+  keys = list(_G.LoopDerpyYMPair())
+  for i,path in enumerate(files):
+    key = "{:d}-{:02d}".format(keys[i][0], keys[i][1])
+    if os.path.exists(path):
+      with open(path, 'r') as fp:
+        ret[key] = json.load(fp)
+    else:
+      ret[key] = []
   return ret
 
-def save_database(dat, upload=True):
-  path = f"{_G.STATIC_FILE_DIRECTORY}/{_G.DERPY_WAREHOUSE_CONTENT_PATH}"
+def save_database(dat, y, m, upload=True):
+  log_info(f"Saving race data of {y}/{m}")
+  fname = _G.MakeDerpyFilenamePair(y, m)
+  path = f"{_G.STATIC_FILE_DIRECTORY}/{fname[0]}"
   with open(path, 'w') as fp:
     json.dump(dat, fp)
   if upload:
-    dm.upload_derpy_db(dat)
+    dm.upload_derpy_db(dat, y, m)
   return path
 
 def get_race_odds(id):
@@ -83,10 +88,19 @@ def get_recent_races():
 def save_recent_races():
   log_info("Getting recent races")
   races = get_recent_races()
+  updated_month = set()
   for race in races:
     save_race(race)
+    st = race['startTime'].split('T')[0].split('-')
+    updated_month.add(int(st[0]) * 100 + int(st[1]))
   log_info("Saving race history")
-  save_database(_G.DerpySavedRaceContent)
+  for ym,month_races in _G.DerpySavedRaceContent.items():
+    y,m = ym.split('-')
+    y = int(y)
+    m = int(m)
+    if (y*100 + m) not in updated_month:
+      continue
+    save_database(month_races, y, m)
   log_info("Race history saved")
 
 def update_race_history_db():
@@ -154,6 +168,9 @@ def interpret_race_replay(data):
   return ret
 
 def save_race(race):
+  '''
+  Save given race data and add to `_G.DerpySavedRaceContent`
+  '''
   id = race['id']
   if id in _G.DerpySavedRaceHeader:
     log_info(f"Race#{id} already saved, skip")
@@ -166,7 +183,11 @@ def save_race(race):
     return False
   data['result'] = interpret_race_replay(result)
   _G.DerpySavedRaceHeader.add(id)
-  _G.DerpySavedRaceContent.append(data)
+  race_t = race['startTime'].split('T')[0].split('-')
+  key = "{:d}-{:02d}".format(int(race_t[0]), int(race_t[1]))
+  if key not in _G.DerpySavedRaceContent:
+    _G.DerpySavedRaceContent[key] = []
+  _G.DerpySavedRaceContent[key].append(data)
   log_info(f"Race#{id} data saved")
   return data
 
