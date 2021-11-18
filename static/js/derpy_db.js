@@ -63,7 +63,6 @@ function loadMonthlyRaceData(year, month, parent){
       console.log(res);
     }
   );
-  // createDailyGroups(data[i], parent);
 }
 
 function createDailyGroups(data, parent, nested=true){
