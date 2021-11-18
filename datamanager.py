@@ -43,7 +43,6 @@ def init():
   setup()
   
 def setup():
-  load_all_derpy_db()
   load_derpy_estimators()
 
 def log_db_info():
@@ -98,21 +97,27 @@ def load_all_derpy_db():
     files.append(file)
   return files
 
-def upload_derpy_db(data):
+def upload_derpy_db(data, y, m):
   if not _G.FlagUseCloudData:
     log_warning("Attempting to upload while cloud disabled")
     return True
-  target = get_cache(f"/{_G.DERPY_CLOUD_WAREHOUSE}")
+  fname = _G.MakeDerpyFilenamePair(y, m)[1]
+  target = get_cache(f"/{fname}")
   if not target:
     files = get_root_filelist()
     for file in files:
-      if file['title'] != _G.DERPY_CLOUD_WAREHOUSE:
+      if file['title'] != fname:
         continue
       target = file 
       break
   if not target:
-    return False
-  if target:
+    log_warning(f"Cloud file {fname} does not exists, creating new file")
+    target = Database.CreateFile({
+      'title': fname,
+      'parents': [{'kind': 'drive#fileLink', 'id': RootFolder['id']}],
+    })
+    set_cache(target)
+  else:
     create_cloud_backup(target)
   log_info(f"Uploading {target['title']}")
   target.SetContentString(json.dumps(data))

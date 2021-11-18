@@ -255,7 +255,7 @@ DERPY_ESTIMATORS    = []
 
 # saved race history
 DerpySavedRaceHeader   = set()
-DerpySavedRaceContent  = []
+DerpySavedRaceContent  = {}
 
 def make_model_name(opts):
   opts = deepcopy(opts)
