@@ -8,7 +8,13 @@ function createMonthlyGroups(){
   let end_y = __DerpyStartYear, end_m = __DerpyStartMonth;
   let parent = $("#history-monthly")
   let last_header = null;
+  cur_m += 1;
   while(cur_y != end_y || cur_m != end_m){
+    cur_m -= 1;
+    if(cur_m == 0){
+      cur_m = 12;
+      cur_y -= 1;
+    }
     month = `${cur_y}/`;
     if(cur_m < 10){ month += `0${cur_m}`; }
     else{ month += `${cur_m}`; }
@@ -27,17 +33,12 @@ function createMonthlyGroups(){
     appendLoadingIndicator(cur_y, cur_m, last_header);
     last_header.append(document.createElement('hr'));
     loadMonthlyRaceData(cur_y, cur_m, last_header);
-    cur_m -= 1;
-    if(cur_m == 0){
-      cur_m = 12;
-      cur_y -= 1;
-    }
   }
 }
 
 function appendLoadingIndicator(year, month, parent){
   let loading_container = $(document.createElement('div'));
-  loading_container.attr('class', `spinner-border center collapse race-${year}-${month}`);
+  loading_container.attr('class', `spinner-border center race-${year}-${month}`);
   loading_container.attr('id', `loading-indicator-${year}-${month}`);
   let loading_img = $(document.createElement('span'));
   loading_img.attr('class', 'sr-only');
