@@ -1,11 +1,12 @@
 let CharacterAvatarSet = null;
 let CharacterFrameSet  = null;
 let CharacterAvatarClip = {};
-let IconClipData  = {}
+let IconClipData  = {};
 let CharacterData = {};
+let MaxGearStatusData = {};
 let SkillData = {};
 let __CntDataLoaded   = 0;
-let __CntDataRequired = 6;
+let __CntDataRequired = 7;
 var AvatarCanvas, AvatarContext;
 var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
@@ -169,6 +170,29 @@ function fillCharacterBaseInfo(){
       node.css('color', 'red');
     }
   }
+
+  let attr_names = [];
+  let head_attrs = [];
+  for(let i in Vocab.StatusName){
+    if(!Vocab.StatusName.hasOwnProperty(i)){ continue; }
+    attr_names.push(Vocab.StatusName[i]);
+    head_attrs.push(i);
+  }
+  for(let i=1;i<attr_names.length;++i){
+    $(`#th-status-${i}`).text(attr_names[i]);
+    let attr = head_attrs[i];
+    let base = 100;
+    let minn = base, maxn = base;
+    try{
+      minn += data.LevelStatus[`Min${attr}`] / 100;
+      maxn += data.LevelStatus[`Max${attr}`] / 100;
+      maxn += MaxGearStatusData[__CharacterId][attr] / 100;
+      $(`#td-status-${i}`).text(`${minn}% / ${maxn}%`);
+    }
+    catch(_){
+      $(`#td-status-${i}`).text(`-`);
+    }
+  }
 }
 
 function appendCharacterAvatars(){
@@ -262,6 +286,14 @@ function parseSkillData(res){
   __CntDataLoaded += 1;
 }
 
+function parseGearData(res){
+  for(let i=20;i<=res.length;i+=20){
+    let dat = res[i-1];
+    MaxGearStatusData[dat.MCharacterId] = dat.Status;
+  }
+  __CntDataLoaded += 1;
+}
+
 (function(){
   var image = new Image(), image2 = new Image();
   image.crossOrigin = "anonymous";
@@ -302,6 +334,18 @@ function parseSkillData(res){
   $.ajax({
     url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json",
     success: (res) => { parseSkillData(res); },
+    error: (res) => {
+      if(res.status == 403){
+        alert(Vocab['UnderMaintenance']);
+      }
+      else{
+        alert(Vocab['UnknownError']);
+      }
+    }
+  });
+  $.ajax({
+    url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json",
+    success: (res) => { parseGearData(res); },
     error: (res) => {
       if(res.status == 403){
         alert(Vocab['UnderMaintenance']);

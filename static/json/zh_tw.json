@@ -94,6 +94,8 @@
     "銃"
   ],
   "GrowthTendency": "成長傾向",
+  "StatusInflation": "數值補正",
+  "InitMax": "(初始/滿等)",
   "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
   "StatusName": {
     "HP": "HP",

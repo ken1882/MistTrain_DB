@@ -94,6 +94,8 @@
     "Gun"
   ],
   "GrowthTendency": "Growth Tendency",
+  "StatusInflation": "Status Inflation",
+  "InitMax": "(Initial/Maxed)",
   "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
   "StatusName": {
     "HP": "HP",
