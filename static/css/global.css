@@ -91,6 +91,10 @@ tbody tr td{
   transform: translate(-50%, -50%);
 }
 
+.avatar-col-header{
+  width: 100px;
+}
+
 .avatar-frame {
   position: absolute;
   width: 100px;
@@ -111,4 +115,22 @@ tbody tr td{
   margin-top: 16px;
   margin-right: 5%;
   max-width: 25%;
+}
+
+
+.table-hover tbody tr:hover td {
+  background:slategrey;
+}
+
+.fixed-table-toolbar{
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.modal .modal-dialog {
+  color:black;
+}
+
+.modal-body .fixed-table-container table{
+  color: black;
 }
