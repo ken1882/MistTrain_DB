@@ -70,7 +70,7 @@ function setup(){
 
 function setupTableUtils(){
   let params = {
-    // height: window.innerHeight*0.8,
+    height: window.innerHeight*0.8,
     sortReset: true,
     search: true,
     columns: [
@@ -89,27 +89,27 @@ function setupTableUtils(){
     onAll: (e)=>{
       if(e == 'post-body.bs.table'){
         if($("#loading-indicator")[0]){ return ;}
-        reloadAvatars();
+        setTimeout(reloadAvatars(), 100);
       }
       relocateTableHeader();
     }
   };
+  
   for(let key in Vocab.BootstrapTable){
     if(!Vocab.BootstrapTable.hasOwnProperty(key)){ continue; }
     let name = Vocab.BootstrapTable[key];
     params[key] = ()=>{ return name; };
   }
   $("#character-table").bootstrapTable(params);
+  
   localizeBootstrapTable($("#character-table"));
   $(".multi-sort")[0].children[0].innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16"><path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/></svg>';
   $(".fixed-table-container").css('padding-bottom', '50px');
 }
 
 function relocateTableHeader(){
-  let px = window.innerWidth - $($(".fixed-table-header")[0].children[0]).width();
-  px /= 2;
-  if(!window.isMobile){ px -= 16.8; }
-  $(".fixed-table-header").css("padding-left", `${Math.max(0, px)}px`);
+  let rect = $("#character-table")[0].getBoundingClientRect();
+  $($(".fixed-table-header")[0].children[0]).css('margin-left', rect.x)
 }
 
 function appendCharacterAvatars(){

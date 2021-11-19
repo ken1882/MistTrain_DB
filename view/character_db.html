@@ -21,7 +21,7 @@
 
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
-
+    
     <script>
       var __CharacterAvatarWidth  = '{{ ch_aw }}';
       var __CharacterAvatarHeight = '{{ ch_ah }}';
@@ -121,13 +121,13 @@
     <div id="character-list" class="center" style="display: none;">
       <p label="l-HintMaxUpgrade"></p>
       <table id="character-table" class="table table-bordered"
-        style="max-width: 80%; margin: auto; text-align: center;"
+        style="max-width: 95%; margin: auto;"
         data-search="true"
         data-show-multi-sort="true"
       >
         <thead>
           <tr>
-            <th label="l-Avatar"></th>
+            <th class="avatar-col-header" label="l-Avatar"></th>
             <th label="l-Name"></th>
             <th label="l-Weapon" data-field="fweapon"></th>
             <th id="th-status-1" data-field="fstat1"></th>
@@ -141,10 +141,10 @@
           </tr>
         </thead>
         <tbody>
-          
         </tbody>
       </table>
     </div>
-    <!-- <div style="height: 300px;"></div> -->
+    
+    
   </body>
 </html>

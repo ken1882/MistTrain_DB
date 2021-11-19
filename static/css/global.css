@@ -91,6 +91,10 @@ tbody tr td{
   transform: translate(-50%, -50%);
 }
 
+.avatar-col-header{
+  width: 100px;
+}
+
 .avatar-frame {
   position: absolute;
   width: 100px;
