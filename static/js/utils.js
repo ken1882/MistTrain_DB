@@ -287,3 +287,15 @@ function canvasStringToArr(ss) {
   }
   return arr;
 }
+
+
+function localizeBootstrapTable(node){
+  if(!DataManager.isReady()){
+    return setTimeout(localizeBootstrapTable(node), 300);
+  }
+  for(let key in Vocab.BootstrapTable){
+    if(!Vocab.BootstrapTable.hasOwnProperty(key)){ continue; }
+    let name = Vocab.BootstrapTable[key];
+    node.bootstrapTable('updateFormatText', key, name);
+  }
+}

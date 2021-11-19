@@ -68,6 +68,7 @@
   "LoopAnimation": "重複",
   "ZoomIn": "放大",
   "ZoomOut": "縮小",
+  "Name": "名稱",
   "Avatar": "頭像",
   "Rarity": "稀有度",
   "Weapon": "武器",
@@ -96,14 +97,14 @@
   "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
   "StatusName": {
     "HP": "HP",
+    "Strength": "物攻",
     "Defence": "物防",
+    "Speed": "速度",
     "Dexterity": "命中",
     "Intelligence": "魔攻",
-    "Luck": "幸運",
-    "Mind": "恢復",
     "MindDefence": "魔防",
-    "Speed": "速度",
-    "Strength": "物攻"
+    "Mind": "恢復",
+    "Luck": "幸運"
   },
   "AttributeList": [
     "",
@@ -114,6 +115,22 @@
   "Greeting": "招呼",
   "SelfIntro": "自我介紹",
   "AttributeResist": "屬性抵抗",
+  "HintMaxUpgrade": "※ 數值為滿等角色等級/齒輪/好感度",
+  "BootstrapTable": {
+    "formatSearch": "搜尋",
+    "formatMultipleSort": "多重排序",
+    "formatAddLevel": "新增條件",
+    "formatDeleteLevel": "刪除條件",
+    "formatColumn": "列",
+    "formatOrder": "順序",
+    "formatSortBy": "排序依據",
+    "formatThenBy": "接著依據",
+    "formatSort": "排序",
+    "formatCancel": "取消",
+    "formatDuplicateAlertTitle": "偵測到重覆的元素!",
+    "formatDuplicateAlertDescription": "請刪除或剛改重複的元素",
+    "formatSortOrders": {"asc": "遞增", "desc": "遞減"}
+  },
   
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {

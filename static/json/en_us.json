@@ -68,6 +68,7 @@
   "LoopAnimation": "Loop",
   "ZoomIn": "Zoom in",
   "ZoomOut": "Zoom out",
+  "Name": "Name",
   "Avatar": "Avatar",
   "Rarity": "Rarity",
   "Weapon": "Weapon",
@@ -96,14 +97,14 @@
   "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
   "StatusName": {
     "HP": "HP",
+    "Strength": "P.Atk",
     "Defence": "P.Def",
+    "Speed": "Speed",
     "Dexterity": "Hit",
     "Intelligence": "M.Atk",
-    "Luck": "Luck",
-    "Mind": "Recovery",
     "MindDefence": "M.Def",
-    "Speed": "Speed",
-    "Strength": "P.Atk"
+    "Mind": "Recovery",
+    "Luck": "Luck"
   },
   "AttributeList": [
     "",
@@ -114,6 +115,22 @@
   "Greeting": "Greeting",
   "SelfIntro": "Self Introduction",
   "AttributeResist": "Attribute Resistance",
+  "HintMaxUpgrade": "※ Status are max level/gear/kizuna",
+  "BootstrapTable": {
+    "formatSearch": "Search",
+    "formatMultipleSort": "Multiple Sort",
+    "formatAddLevel": "Add Level",
+    "formatDeleteLevel": "Delete Level",
+    "formatColumn": "Column",
+    "formatOrder": "Order",
+    "formatSortBy": "Sort by",
+    "formatThenBy": "Then by",
+    "formatSort": "Sort",
+    "formatCancel": "Cancel",
+    "formatDuplicateAlertTitle": "Duplicate(s) detected!",
+    "formatDuplicateAlertDescription": "Please remove or change any duplicate column.",
+    "formatSortOrders": {"asc": "Ascending", "desc": "Descending"}
+  },
   
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

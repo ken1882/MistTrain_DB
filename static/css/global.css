@@ -112,3 +112,21 @@ tbody tr td{
   margin-right: 5%;
   max-width: 25%;
 }
+
+
+.table-hover tbody tr:hover td {
+  background:slategrey;
+}
+
+.fixed-table-toolbar{
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.modal .modal-dialog {
+  color:black;
+}
+
+.modal-body .fixed-table-container table{
+  color: black;
+}
