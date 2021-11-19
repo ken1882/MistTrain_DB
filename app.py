@@ -111,9 +111,9 @@ def setup():
       # log_info("Saving race history")
       # derpy.save_database(_G.DerpySavedRaceContent)
       # log_info("Race history saved")
-  if 'game' not in _G.ThreadPool:
-    _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
-    _G.ThreadPool['game'].start()
+  # if 'game' not in _G.ThreadPool:
+  #   _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
+  #   _G.ThreadPool['game'].start()
 
 def loop_game_listner():
   while _G.FlagRunning:
