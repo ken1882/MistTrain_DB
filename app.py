@@ -99,20 +99,10 @@ def get_next_preditions():
 def setup():
   dm.init()
   derpy.init()
-  return
   if not game.is_connected():
     res = game.reauth_game()
     if res == _G.ERRNO_MAINTENANCE:
       log_warning("Server is under maintenance!")
-    else:
-      pass
-      # log_info("Sweeping race history")
-      # sbegin = int(os.getenv('MTG_DERPY_SWEEP_BEGIN') or 0)
-      # derpy.sweep_race_replays(sbegin)
-      # log_info("Saving race history")
-      # derpy.save_database(_G.DerpySavedRaceContent)
-      # log_info("Race history saved")
-  if 'game' not in _G.ThreadPool:
     _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
     _G.ThreadPool['game'].start()
 
