@@ -109,7 +109,7 @@ function setupTableUtils(){
 
 function relocateTableHeader(){
   let rect = $("#character-table")[0].getBoundingClientRect();
-  $($(".fixed-table-header")[0].children[0]).css('margin-left', rect.x)
+  $($(".fixed-table-header")[0].children[0]).css('margin-left', Math.max(0, rect.x))
 }
 
 function appendCharacterAvatars(){
