@@ -43,7 +43,7 @@ QuestDatabase     = {}
 ABStoneDatabase   = {}
 
 NetworkMaxRetry = 5
-NetworkGetTimeout = 5
+NetworkGetTimeout = 20
 NetworkPostTimeout = 60
 
 Session = requests.Session()
