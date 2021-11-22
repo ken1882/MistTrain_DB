@@ -25,6 +25,11 @@ def render_template(*args, **kwargs):
 def index():
   return render_template('index.html', navbar_content=get_navbar())
 
+@app.route('/favicon.ico')
+def favicon():
+  return send_from_directory(os.path.join(app.root_path, 'static'),
+                              'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @app.route('/mistrunner_database', methods=['GET'])
 def derpy_db_index():
   return render_template('derpy_db.html', db_path=_G.DERPY_WAREHOUSE_CONTENT_PATH, navbar_content=get_navbar())
