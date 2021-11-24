@@ -240,7 +240,7 @@ def load_database():
   ]
   for i,link in enumerate(links):
     db = None
-    res = Session.get(link)
+    res = requests.get(link)
     log_debug(res)
     log_debug(res.content)
     db = res.json()
