@@ -133,6 +133,34 @@
     "formatDuplicateAlertDescription": "請刪除或剛改重複的元素",
     "formatSortOrders": {"asc": "遞增", "desc": "遞減"}
   },
+  "ActiveSkill": "主動技能",
+  "PassiveSkill": "被動技能",
+  "Cost": "消耗",
+  "Power": "威力",
+  "Distance": "距離",
+  "Attribute": "屬性",
+  "Scope": "範圍",
+  "Effect": "效果",
+  "SkillDistance": [
+   "無",
+   "近距離",
+   "中距離",
+   "遠距離"
+  ],
+  "SkillTarget": [
+   "無",
+   "敵方",
+   "我方",
+   "自身"
+  ],
+  "SkillScope": [
+   "無",
+   "一名",
+   "全體",
+   "隨機",
+   "橫一行",
+   "直一列"
+  ],
   
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
@@ -140,5 +168,11 @@
   },
   "CharacterIntro": {
     "0": "角色ID: 角色自介"
+  },
+  "SkillName": {
+    "0": "技能ID: 技能名稱"
+  },
+  "SkillEffect": {
+    "0": "技能ID: 技能效果"
   }
 }

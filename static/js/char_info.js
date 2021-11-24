@@ -12,6 +12,29 @@ var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
 
 const WeaponAttribute = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
+const SkillPowerRank = [
+  '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'US'
+]
+const TypeSkillDistance = [
+  'none',
+  'close',
+  'medium',
+  'long'
+];
+const TypeSkillTarget = [
+  'none',
+  'enemy',
+  'ally',
+  'self'
+];
+const TypeSkillRange = [
+  'none',
+  'one',
+  'all',
+  'random',
+  'row',
+  'col',
+];
 
 function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=null, dh=null){
   if(dx == null){ dx = 0; }
@@ -44,6 +67,7 @@ function setup(){
   }
   $("#loop-battler-anim").prop('checked', 1);
   fillCharacterBaseInfo();
+  fillCharacterSkillInfo();
   appendCharacterAvatars();
   loadSpineData();
   setupSpineContent();
@@ -192,6 +216,101 @@ function fillCharacterBaseInfo(){
     catch(_){
       $(`#td-status-${i}`).text(`-`);
     }
+  }
+}
+
+function fillCharacterSkillInfo(){
+  if(!DataManager.isReady()){
+    return setTimeout(fillCharacterSkillInfo, 300);
+  }
+  let data = CharacterData[__CharacterId];
+  let askills = [data.MSkill1Id, data.MSkill2Id, data.MSkill3Id, data.SpecialMSkillId];
+  let pskills = [data.AbilityMSkill1Id, data.AbilityMSkill2Id, data.AbilityMSkill3Id];
+  for(let i in askills){
+    if(!SkillData.hasOwnProperty(askills[i])){ continue; }
+    let skill = SkillData[askills[i]];
+    let node    = document.createElement('tr');
+    let sname   = document.createElement('td');
+    let scost   = document.createElement('td');
+    let spower  = document.createElement('td');
+    let sattr   = document.createElement('td');
+    let sscope  = document.createElement('td');
+    let seffect = document.createElement('td');
+    if(i == 3){ // special skill
+      $(sname).addClass('special-skill');
+      $(spower).addClass('special-skill');
+      $(sattr).addClass('special-skill');
+      $(sscope).addClass('special-skill');
+      $(seffect).addClass('special-skill');
+      $(scost).addClass('special-skill');
+    }
+    if(Vocab.SkillName.hasOwnProperty(skill.Id)){
+      $(sname).text(Vocab.SkillName[skill.Id]);
+    }
+    else{
+      $(sname).text(skill.Name);
+    }
+    let cost = '';
+    if(skill.SPCost){
+      cost += `SP ${skill.SPCost} `;
+    }
+    if(skill.RPCost){
+      cost += `RP ${skill.RPCost} `;
+    }
+    if(!cost){ cost = '-'; }
+    $(scost).text(cost);
+    $(spower).text(SkillPowerRank[skill.SkillPowerRank]);
+    let atkattrs = new Set();
+    var a1 = skill.Power1Attribute, a2 = skill.Power2Attribute;
+    if(a1){
+      atkattrs.add(Vocab.AttributeList[a1]);
+    }
+    if(a2){
+      atkattrs.add(Vocab.AttributeList[a2]);
+    }
+    atkattrs = Array.from(atkattrs);
+    $(sattr).text(atkattrs.join('/'));
+    let scope = '';
+    if(skill.TargetDistance){
+      scope = `${Vocab.SkillDistance[skill.TargetDistance]}, `;
+    }
+    scope += `${Vocab.SkillScope[skill.EffectTargetRange]} `;
+    scope += `${Vocab.SkillTarget[skill.TargetTypes]} `;
+    $(sscope).text(scope);
+    if(Vocab.SkillEffect.hasOwnProperty(skill.Id)){
+      $(seffect).text(Vocab.SkillEffect[skill.Id]);
+    }
+    else{
+      $(seffect).text(skill.Description);
+    }
+    $(node).append(sname);
+    $(node).append(scost);
+    $(node).append(spower);
+    $(node).append(sattr);
+    $(node).append(sscope);
+    $(node).append(seffect);
+    $("#tbody-active-skill").append(node);
+  }
+  for(let i in pskills){
+    let skill = SkillData[pskills[i]];
+    let node    = document.createElement('tr');
+    let sname   = document.createElement('td');
+    let seffect = document.createElement('td');
+    if(Vocab.SkillName.hasOwnProperty(skill.Id)){
+      $(sname).text(Vocab.SkillName[skill.Id]);
+    }
+    else{
+      $(sname).text(skill.Name);
+    }
+    if(Vocab.SkillEffect.hasOwnProperty(skill.Id)){
+      $(seffect).text(Vocab.SkillEffect[skill.Id]);
+    }
+    else{
+      $(seffect).text(skill.Description);
+    }
+    $(node).append(sname);
+    $(node).append(seffect);
+    $("#tbody-passive-skill").append(node);
   }
 }
 

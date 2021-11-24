@@ -134,3 +134,13 @@ tbody tr td{
 .modal-body .fixed-table-container table{
   color: black;
 }
+
+.table-main {
+  max-width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+.special-skill{
+  color:gold;
+}

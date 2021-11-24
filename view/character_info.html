@@ -101,7 +101,7 @@
     <div class="center h1" id="character-title"></div>
     <br>
     <div>
-      <table class="table table-bordered" style="max-width: 80%; margin: auto; text-align: center;">
+      <table class="table table-bordered table-main">
         <thead>
           <tr>
             <th label="l-Avatar"></th>
@@ -134,7 +134,7 @@
           </tr>
         </thead>
       </table>
-      <table class="table table-bordered" style="max-width: 80%; margin: auto; text-align: center;">
+      <table class="table table-bordered table-main">
         <thead>
           <tr>
             <th><img src="{{ url_for('static', filename='/assets/resist_blade.png') }}"></th>
@@ -182,7 +182,36 @@
           </tr>
         </tbody>
       </table>
-      
+      <table class="table table-bordered table-main">
+        <thead>
+          <th colspan="6" label="l-ActiveSkill"></th>
+        </thead>
+        <thead>
+          <tr>
+            <th label="l-Name">_</th>
+            <th label="l-Cost">_</th>
+            <th label="l-Power">_</th>
+            <th label="l-Attribute">_</th>
+            <th label="l-Scope">_</th>
+            <th label="l-Effect">_</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-active-skill">
+        </tbody>
+      </table>
+      <table class="table table-bordered table-main">
+        <thead>
+          <th colspan="2" label="l-PassiveSkill"></th>
+        </thead>
+        <thead>
+          <tr>
+            <th label="l-Name">_</th>
+            <th label="l-Effect">_</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-passive-skill">
+        </tbody>
+      </table>
     </div>
     <br><br>
     <div class="center h3" label="l-CharacterPainting"></div>
@@ -227,6 +256,8 @@
         </div>
       </div>
     </div>
+    <hr>
+
   </body>
   <script>
     $('input[type=checkbox]').prop('checked', false);

@@ -133,6 +133,34 @@
     "formatDuplicateAlertDescription": "Please remove or change any duplicate column.",
     "formatSortOrders": {"asc": "Ascending", "desc": "Descending"}
   },
+  "ActiveSkill": "Active Skill",
+  "PassiveSkill": "Passive Skill",
+  "Cost": "Cost",
+  "Power": "Power",
+  "Distance": "Distance",
+  "Attribute": "Attribute",
+  "Scope": "Scope",
+  "Effect": "Effect",
+  "SkillDistance": [
+    "None",
+    "Close",
+    "Medium",
+    "Long"
+  ],
+  "SkillTarget": [
+    "None",
+    "Enemy",
+    "Ally",
+    "Self"
+  ],
+  "SkillScope": [
+    "None",
+    "Single",
+    "All",
+    "Random",
+    "Row",
+    "Column"
+  ],
   
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {
@@ -140,5 +168,11 @@
   },
   "CharacterIntro": {
     "0": "Character Id: Character's Intro"
+  },
+  "SkillName": {
+    "0": "Skill Id: Skill Name"
+  },
+  "SkillEffect": {
+    "0": "Skill Id: Skill Effect"
   }
 }
