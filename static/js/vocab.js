@@ -66,8 +66,10 @@
       if(!node.attributes){continue;}
       let label = node.attributes.label;
       if(!label || label.value.substr(0,2) != 'l-'){continue;}
-      label = label.value.substr(2);
-      node.innerText = Vocab[label];
+      let key = label.value.split('-')[1];
+      let idx = label.value.split('-')[2];
+      if(idx){ node.innerText = Vocab[key][idx]; }
+      else{ node.innerText = Vocab[key]; }
     }
   }
   /*-------------------------------------------------------------------------*/
