@@ -234,13 +234,16 @@ def is_service_available():
   return (not not Session)
 
 def load_database():
-  global CharacterDatabase
+  global Session,CharacterDatabase
   links = [
     'https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json',
   ]
   for i,link in enumerate(links):
     db = None
-    db = Session.get(link).json()
+    res = Session.get(link)
+    log_debug(res)
+    log_debug(res.content)
+    db = res.json()
     # Init dbs
     try:
       _tmp = __convert2indexdb(db)
