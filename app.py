@@ -107,6 +107,7 @@ def get_next_preditions():
 def setup():
   dm.init()
   derpy.init()
+  return
   if not game.is_connected():
     res = game.reauth_game()
     if res == _G.ERRNO_MAINTENANCE:
