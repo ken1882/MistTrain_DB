@@ -241,7 +241,9 @@ DerpyStartYear  = 2021
 DerpyStartMonth = 4
 DerpyUpdateHour = [12,20,23]
 
-DERPY_CLOUD_ROOTFOLDERNAME = 'MistTrainDB'
+CLOUD_ROOT_FOLDERNAME = 'MistTrainDB'
+SCENE_CLOUD_FOLDERNAME = 'Scene'
+DERPY_CLOUD_FOLDERNAME = 'Derpy'
 DERPY_CLOUD_ESTIMATORS = [
   'rfr_fit_order_False-feats_all.mod',
   'rfr_fit_order_True-feats_all.mod',

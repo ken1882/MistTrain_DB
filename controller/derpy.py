@@ -44,7 +44,7 @@ def save_database(dat, y, m, upload=True):
   return path
 
 def get_race_odds(id):
-  res = game.get_request(f"https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetOdds/{id}")
+  res = game.get_request(f"/api/Casino/Race/GetOdds/{id}")
   return json.loads(res['r'])['data']
 
 def get_upcoming_race():
@@ -66,7 +66,7 @@ def get_upcoming_race():
 
   if cache_expired: 
     log_info("Getting next race info")
-    res = game.post_request('https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetPaddock')
+    res = game.post_request('/api/Casino/Race/GetPaddock')
     if type(res) == int:
       return {_G.KEY_ERRNO: res}
     data = res['r']['data']
@@ -82,7 +82,7 @@ def get_upcoming_race():
   return data
 
 def get_recent_races():
-  res = game.get_request('https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetPastSchedules')  
+  res = game.get_request('/api/Casino/Race/GetPastSchedules')  
   return res['r']['list']
 
 def save_recent_races():
@@ -124,7 +124,7 @@ def sweep_race_replays(begin=0,end=0x7fffffff):
       log_warning("Stopping sweeping race due to successive error (>3)")
       break
     try:
-      res = game.get_request(f"https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetSchedule/{i}")
+      res = game.get_request(f"/api/Casino/Race/GetSchedule/{i}")
       race = res['r']['schedule']
     except (SystemExit,Exception) as err:
       log_error("Error sweeping race:", err)
@@ -135,7 +135,7 @@ def sweep_race_replays(begin=0,end=0x7fffffff):
       error += 1
   
 def get_race_replay(id):
-  res = game.get_request(f"https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetReplay/{id}")
+  res = game.get_request(f"/api/Casino/Race/GetReplay/{id}")
   return json.loads(res['r'])
 
 def interpret_race_data(race):

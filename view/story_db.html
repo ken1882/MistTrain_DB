@@ -8,12 +8,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+    
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vocab.js') }}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
+    
     <script>
+      var __CharacterAvatarWidth  = '{{ ch_aw }}';
+      var __CharacterAvatarHeight = '{{ ch_ah }}';
+      var __CharacterFrameWidth   = '{{ ch_fw }}';
+      var __CharacterFrameHeight  = '{{ ch_fh }}';
+
       function changeLanguage(){
         DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
         window.location = window.location.href.split("?")[0];
@@ -38,36 +48,53 @@
         node.val(DataManager.language);
       }
       
+      function init_totop_button(){
+        let button = document.getElementById("btn-back-to-top");
+        button.style.opacity = '0.5';
+
+        window.onscroll = () => {
+          if(document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
+            button.style.display = "block";
+          }
+          else{
+            button.style.display = "none";
+          }
+        };
+
+        button.addEventListener("click", () => {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        });
+
+        button.addEventListener("mouseover", ()=>{
+          button.style.opacity = "1";          
+        });
+
+        button.addEventListener("mouseout", ()=>{
+          button.style.opacity = "0.5";
+        });
+      }
+
       window.addEventListener("load", ()=>{
         DataManager.initialize();
-        {% block content %}
-          {% if debug_mode %}
-            DataManager.changeSetting(DataManager.kDebugMode, true);
-          {% else %}
-            DataManager.changeSetting(DataManager.kDebugMode, false);
-          {% endif %}
-        {% endblock content %}
         Vocab.initialize();
         init_navbar();
+        init_totop_button();
       });
     </script>
+    <script src="{{ url_for('static', filename='js/story_db.js') }}"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       {{ navbar_content | safe }}
     </nav>
     <br>
-    <img src="{{ url_for('static', filename='assets/mtg-logo.png') }}" class="center" style="max-width: 80%;"><br>
     
-    <div>
-      <div class="list-group center" style="max-width: 80%;">
-        <span class="list-group-item active h2" label="l-AvailableToolList">_</span>
-        <a href="/mistrunner_database" class="list-group-item list-group-item-action h4" label="l-MistRunnerDB">_</a>
-        <a href="/mistrunner_predict" class="list-group-item list-group-item-action h4" label="l-MistRunnerPredict">_</a>
-        <a href="/character_database" class="list-group-item list-group-item-action h4" label="l-CharacterDB">_</a>
-        <a href="/story_transcript" class="list-group-item list-group-item-action h4" label="l-StoryTranscriptDB">_</a>
-      </div>
-    </div>
+    <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
+      <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571057658/cd-top-arrow.svg">
+    </button>
+
+    <div label="l-UnderConstruction"></div>
     
   </body>
 </html>
