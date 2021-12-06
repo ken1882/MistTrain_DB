@@ -147,7 +147,7 @@ def reauth_game():
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
       return _G.ERRNO_MAINTENANCE
-    res = post_request('/api/Home')
+    res = get_request('/api/Home')
   else:
     log_warning("Game session revoked")
     Session = None
@@ -162,6 +162,8 @@ def change_token(token):
 def is_connected():
   global Session
   res = get_request('/api/Users/Me')
+  if type(res) == dict or type(res) == int:
+    return False
   if is_response_ok(res) == _G.ERRNO_OK:
     return res.json()['r']
   return False
@@ -200,7 +202,8 @@ def get_request(url, depth=1):
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
       return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
-  url = ServerLocation + url
+  if not url.startswith('http'):
+    url = ServerLocation + url
   try:
     log_debug(f"[GET] {url}")
     res = Session.get(url, timeout=NetworkGetTimeout)
@@ -242,7 +245,8 @@ def post_request(url, data=None, depth=1):
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
       return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
-  url = ServerLocation + url
+  if not url.startswith('http'):
+    url = ServerLocation + url
   try:
     log_debug(f"[POST] {url} with payload:", data, sep='\n')
     if data != None:
