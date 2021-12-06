@@ -22,7 +22,7 @@ def sweep_race_replays():
       print("Stopping sweeping race due to successive error (>3)")
       break
     try:
-      res = Session.get(f"https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetSchedule/{i}")
+      res = Session.get(f"{game.ServerLocation}/api/Casino/Race/GetSchedule/{i}")
       race = res.json()['r']['schedule']
     except (SystemExit,Exception) as err:
       print("Error sweeping race:", err)
@@ -43,7 +43,7 @@ def sweep_race_replays():
   
 def get_race_replay(id):
   global Session
-  res = Session.get(f"https://mist-train-east4.azurewebsites.net/api/Casino/Race/GetReplay/{id}")
+  res = Session.get(f"{game.ServerLocation}/api/Casino/Race/GetReplay/{id}")
   return json.loads(res.json()['r'])
 
 def interpret_race_data(race):

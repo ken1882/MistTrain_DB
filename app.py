@@ -59,6 +59,9 @@ def character_info(id):
     ch_fh=_G.CHARACTER_FRAME_SRC_SIZE[1],
   )
 
+@app.route('/story_transcript', methods=['GET'])
+def story_transcript_index():
+  return render_template('story_db.html', navbar_content=get_navbar())
 
 ## Auxiliary methods
 

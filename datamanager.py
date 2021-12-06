@@ -11,12 +11,14 @@ from shutil import copyfile
 from datetime import datetime
 import pytz
 
-Database = None
-RootFolder = None
+Database    = None
+RootFolder  = None
+SceneFolder = None
+DerpyFolder = None
 __FileCache = {}
 
 def init():
-  global Database,RootFolder
+  global Database,RootFolder,SceneFolder,DerpyFolder
   try:
     os.mkdir(_G.DCTmpFolder)
   except FileExistsError:
@@ -32,14 +34,20 @@ def init():
   )
   Database = GoogleDrive(gauth)
   log_db_info()
-  files = get_root_filelist()
-  RootFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_ROOTFOLDERNAME), None)
+  files = get_all_files()
+  RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
+  SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
+  DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
   for f in files:
     if not f['parents']:
       continue
-    if f['parents'][0]['id'] != RootFolder['id']:
-      continue
-    set_cache(f)
+    fid = f['parents'][0]['id']
+    if fid == RootFolder['id']:
+      set_cache(f)
+    elif fid == DerpyFolder['id']:
+      set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
+    elif fid == SceneFolder['id']:
+      set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
   setup()
   
 def setup():
@@ -56,7 +64,7 @@ def log_db_info():
   string += '=' * 42 + '\n'
   log_info(string)
 
-def get_root_filelist():
+def get_all_files():
   global Database,__FileCache
   if not Database:
     log_error("Database not initialized yet")
@@ -64,8 +72,8 @@ def get_root_filelist():
   ret = Database.ListFile().GetList()
   return ret
 
-def set_cache(file):
-  __FileCache[f"/{file['title']}"] = file
+def set_cache(file, prefix=''):
+  __FileCache[f"{prefix}/{file['title']}"] = file
 
 def get_cache(path):
   if path in __FileCache:
@@ -77,7 +85,7 @@ def load_derpy_db(year, month):
   dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{filepath}"
   if not _G.FlagUseCloudData:
     return dst_path
-  files = get_root_filelist()
+  files = get_all_files()
   for file in files:
     if file['title'] != filename:
       continue
@@ -102,9 +110,9 @@ def upload_derpy_db(data, y, m):
     log_warning("Attempting to upload while cloud disabled")
     return True
   fname = _G.MakeDerpyFilenamePair(y, m)[1]
-  target = get_cache(f"/{fname}")
+  target = get_cache(f"/{_G.DERPY_CLOUD_FOLDERNAME}/{fname}")
   if not target:
-    files = get_root_filelist()
+    files = get_all_files()
     for file in files:
       if file['title'] != fname:
         continue
@@ -114,29 +122,34 @@ def upload_derpy_db(data, y, m):
     log_warning(f"Cloud file {fname} does not exists, creating new file")
     target = Database.CreateFile({
       'title': fname,
-      'parents': [{'kind': 'drive#fileLink', 'id': RootFolder['id']}],
+      'parents': [{'kind': 'drive#fileLink', 'id': DerpyFolder['id']}],
     })
-    set_cache(target)
+    set_cache(target, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
   else:
-    create_cloud_backup(target)
+    create_cloud_backup(target, DerpyFolder)
   log_info(f"Uploading {target['title']}")
   target.SetContentString(json.dumps(data))
   target.Upload()
   return True
 
-def create_cloud_backup(src):
+def create_cloud_backup(src, parent=None):
   global Database,RootFolder
   if not _G.FlagUseCloudData:
     log_warning("Attempting to upload while cloud disabled")
     return True
   fname = f"{src['title']}.bak"
-  target = get_cache(f"/{fname}")
+  prefix = ''
+  if parent:
+    prefix = f"/{parent['title']}"
+  target = get_cache(f"{prefix}/{fname}")
+  if not parent:
+    parent = RootFolder
   if not target:
     target = Database.CreateFile({
       'title': fname,
-      'parents': [{'kind': 'drive#fileLink', 'id': RootFolder['id']}],
+      'parents': [{'kind': 'drive#fileLink', 'id': parent['id']}],
     })
-    set_cache(target)
+    set_cache(target, prefix)
   log_info("Creating cloud backup of", fname)
   target.SetContentString(src.GetContentString())
   target.Upload()
@@ -151,7 +164,7 @@ def load_derpy_estimators():
         _G.DERPY_ESTIMATORS.append(pickle.load(fp))
     return
   
-  files = get_root_filelist()
+  files = get_all_files()
   for fname in _G.DERPY_CLOUD_ESTIMATORS:
     for file in files:
       if file['title'] != fname:

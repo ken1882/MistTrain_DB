@@ -28,6 +28,20 @@ PostHeaders = {
   'Accept-Encoding': 'gzip, deflate, br'
 }
 
+ServerList = (
+  'https://mist-train-east4.azurewebsites.net',
+  'https://mist-train-east5.azurewebsites.net',
+  'https://mist-train-east6.azurewebsites.net',
+  'https://mist-train-east7.azurewebsites.net',
+  'https://mist-train-east8.azurewebsites.net',
+  'https://mist-train-east9.azurewebsites.net',
+  'https://mist-train-east1.azurewebsites.net',
+  'https://mist-train-east2.azurewebsites.net',
+  'https://mist-train-east3.azurewebsites.net',
+)
+
+ServerLocation = ''
+
 CharacterDatabase = {}
 EnemyDatabase     = {}
 FormationDatabase = {}
@@ -53,6 +67,23 @@ Session.headers = {
   'Authorization': ''
 }
 
+
+def determine_server():
+  global Session,ServerList,ServerLocation
+  for uri in ServerList:
+    try:
+      log_info("Trying to connect to server", uri)
+      res = requests.post(f"{uri}/api/Login")
+      if res.status_code == 401:
+        ServerLocation = uri
+        log_info("Server location set to", uri)
+        return ServerLocation
+      log_info("Failed with", res, res.content)
+    except Exception as res:
+      log_error(res)
+  log_warning("Unable to get a live server")
+  return _G.ERRNO_MAINTENANCE
+    
 def jpt2localt(jp_time):
   '''
   Convert Japanese timezone (GMT+9) datetime object to local timezone
@@ -69,8 +100,12 @@ def localt2jpt(local_time):
   return local_time + timedelta(hours=delta)
 
 def reauth_game():
-  global Session
+  global Session,ServerLocation
   new_token = ''
+  if not ServerLocation:
+    res = determine_server()
+    if res == _G.ERRNO_MAINTENANCE:
+      return _G.ERRNO_MAINTENANCE
   try:
     Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     raw_cookies = os.getenv('DMM_MTG_COOKIES')
@@ -87,6 +122,9 @@ def reauth_game():
         st = literal_eval(line.strip().split(':')[-1][:-1].strip())
         break
     payload = os.getenv('DMM_FORM_DATA')
+    rep = re.search(r"mist-train-east(\d)", payload).span()
+    rep = payload[rep[0]:rep[1]]
+    payload = payload.replace(rep, ServerLocation.split('//')[1].split('.')[0])
     rep = re.search(r"st=(.+?)&", payload).group(0)
     rep = rep.split('=')[1][:-1]
     payload = payload.replace(rep, st)
@@ -106,7 +144,10 @@ def reauth_game():
     Session.headers['Content-Type'] = 'application/json'
   if new_token:
     log_info("Game connected")
-    res = Session.post('https://mist-train-east4.azurewebsites.net/api/Login')
+    res = determine_server()
+    if res == _G.ERRNO_MAINTENANCE:
+      return _G.ERRNO_MAINTENANCE
+    res = post_request('/api/Home')
   else:
     log_warning("Game session revoked")
     Session = None
@@ -120,7 +161,7 @@ def change_token(token):
 
 def is_connected():
   global Session
-  res = Session.get('https://mist-train-east4.azurewebsites.net/api/Users/Me')
+  res = get_request('/api/Users/Me')
   if is_response_ok(res) == _G.ERRNO_OK:
     return res.json()['r']
   return False
@@ -148,13 +189,18 @@ def is_day_changing():
   return (curt.hour == 4 and curt.minute >= 58) or (curt.hour == 5 and curt.minute < 10)
 
 def get_request(url, depth=1):
-  global Session
+  global Session,ServerLocation
   if not Session:
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
   if not Session.headers['Authorization']:
     Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+  if not ServerLocation:
+    res = determine_server()
+    if res == _G.ERRNO_MAINTENANCE:
+      return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
+  url = ServerLocation + url
   try:
     log_debug(f"[GET] {url}")
     res = Session.get(url, timeout=NetworkGetTimeout)
@@ -184,7 +230,7 @@ def get_request(url, depth=1):
   return res.json()
 
 def post_request(url, data=None, depth=1):
-  global Session,TemporaryNetworkErrors
+  global Session,TemporaryNetworkErrors,ServerLocation
   if not Session:
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
@@ -192,6 +238,11 @@ def post_request(url, data=None, depth=1):
   res = None
   if not Session.headers['Authorization']:
     Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+  if not ServerLocation:
+    res = determine_server()
+    if res == _G.ERRNO_MAINTENANCE:
+      return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
+  url = ServerLocation + url
   try:
     log_debug(f"[POST] {url} with payload:", data, sep='\n')
     if data != None:
