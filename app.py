@@ -42,10 +42,6 @@ def derpy_predict_index():
 def character_database():
   return render_template('character_db.html',
     navbar_content=get_navbar(),
-    ch_aw=_G.CHARACTER_AVATAR_SRC_SIZE[0],
-    ch_ah=_G.CHARACTER_AVATAR_SRC_SIZE[1],
-    ch_fw=_G.CHARACTER_FRAME_SRC_SIZE[0],
-    ch_fh=_G.CHARACTER_FRAME_SRC_SIZE[1],
   )
 
 @app.route('/character_database/<id>')
@@ -53,10 +49,6 @@ def character_info(id):
   return render_template('character_info.html', 
     navbar_content=get_navbar(),
     ch_id=id,
-    ch_aw=_G.CHARACTER_AVATAR_SRC_SIZE[0],
-    ch_ah=_G.CHARACTER_AVATAR_SRC_SIZE[1],
-    ch_fw=_G.CHARACTER_FRAME_SRC_SIZE[0],
-    ch_fh=_G.CHARACTER_FRAME_SRC_SIZE[1],
   )
 
 @app.route('/story_transcript', methods=['GET'])

@@ -23,11 +23,7 @@
     
     <script>
       var __CharacterId = '{{ ch_id }}';
-      var __CharacterAvatarWidth  = '{{ ch_aw }}';
-      var __CharacterAvatarHeight = '{{ ch_ah }}';
-      var __CharacterFrameWidth   = '{{ ch_fw }}';
-      var __CharacterFrameHeight  = '{{ ch_fh }}';
-
+      
       function changeLanguage(){
         DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
         window.location = window.location.href.split("?")[0];

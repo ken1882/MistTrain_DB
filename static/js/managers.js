@@ -186,3 +186,200 @@
   static get focus(){return this.setting[this.kFocus];}
   /*-------------------------------------------------------------------------*/
 }
+
+/**---------------------------------------------------------------------------
+ * > AssetsManager:
+ *    The static class that manages assets.
+ * @namespace
+ */
+ class AssetsManager{
+  /*-------------------------------------------------------------------------*/
+  constructor(){
+    throw new Error("This is a static class")
+  }
+  /**-------------------------------------------------------------------------
+   * @property {object} setting - the system settings
+   */
+  static initialize(){
+    this.__readyCnt = 0;
+    this.__readyReq = 0;
+    this.loadCharacterAvatars();
+    this.loadAllAssets();
+    this.setupAvatarCanvas();
+  }
+
+  static loadCharacterAvatars(){
+    this.__readyReq += 2;
+    var image = new Image(), image2 = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.png";
+    image.onload = () => {
+      this.CharacterAvatarSet = image;
+      this.__readyCnt += 1;
+    };
+    image2.src = "/static/assets/icons_party1.png";
+    image2.onload = () => {
+      this.CharacterFrameSet = image2;
+      this.__readyCnt += 1;
+    };
+  }
+
+  static loadAllAssets(){
+    const handlers = {
+      "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.plist": this.parseAvatarClipData,
+      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json": this.parseCharacterData,
+      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json": this.parseGearData,
+      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json": this.parseSkillData,
+      "/static/json/iconinfo.json": this.parseIconClipData,
+    }
+    for(let uri in handlers){
+      if(!handlers.hasOwnProperty(uri)){ continue; }
+      this.__readyReq += 1;
+      let method = handlers[uri];
+      $.ajax({
+        url: uri,
+        success: (res) => { 
+          method.apply(AssetsManager, [res]);
+        },
+        error: (res) => {
+          if(res.status == 503){
+            alert(Vocab['UnderMaintenance']);
+          }
+          else{
+            alert(Vocab['UnknownError']);
+          }
+        }
+      });
+    }
+  }
+
+  static parseXMLKeyValueDict(node){
+    let size = node.children.length;
+    if(size == 0){
+      if(node.tagName == 'false'){return false;}
+      if(node.tagName == 'true'){return true;}
+      if(node.tagName == 'array'){
+        return [];
+      }
+      return eval(`"${node.textContent}"`)
+    }
+    for(let i=0;i<size;i+=2){
+      let key = node.children[i].textContent;
+      if(key.includes('Offset') || key.includes('Size') || key.includes('Rect')){
+        let text = node.children[i+1].textContent.replaceAll('{','[').replaceAll('}',']')
+        node[key] = eval(text);
+      }
+      else{
+        node[key] = this.parseXMLKeyValueDict(node.children[i+1]);
+      }
+    }
+    return node;
+  }
+  
+  static parseAvatarClipData(xml){
+    let root = xml.children[0].children[0];
+    this.CharacterAvatarClip = this.parseXMLKeyValueDict(root);
+    this.__readyCnt += 1;
+  }
+  
+  static parseCharacterData(res){
+    this.CharacterData = {};
+    for(let i in res){
+      let dat = res[i];
+      this.CharacterData[dat['Id']] = dat;
+    }
+    this.__readyCnt += 1;
+  }
+  
+  static parseGearData(res){
+    this.MaxGearStatusData = {};
+    for(let i=20;i<=res.length;i+=20){
+      let dat = res[i-1];
+      this.MaxGearStatusData[dat.MCharacterId] = dat.Status;
+    }
+    this.__readyCnt += 1;
+  }
+  
+  static parseIconClipData(res){
+    this.IconClipData = res;
+    this.__readyCnt += 1;
+  }
+
+  static parseSkillData(res){
+    this.SkillData = {};
+    for(let i in res){
+      let dat = res[i];
+      this.SkillData[dat['Id']] = dat;
+    }
+    this.__readyCnt += 1;
+  }
+
+  static setupAvatarCanvas(){
+    this.__readyReq += 1;
+    const CharacterAvatarWidth  = 94;
+    const CharacterAvatarHeight = 94;
+    const CharacterFrameWidth   = 102;
+    const CharacterFrameHeight  = 102;
+    this.AvatarCanvas  = document.createElement("canvas");
+    this.AvatarCanvas.width = CharacterAvatarWidth;
+    this.AvatarCanvas.height = CharacterAvatarHeight;
+    this.AvatarContext = this.AvatarCanvas.getContext('2d');
+    this.AvatarContext.webkitImageSmoothingEnabled = false;
+    this.AvatarContext.mozImageSmoothingEnabled = false;
+    this.AvatarContext.imageSmoothingEnabled = false;
+    this.FrameCanvas = document.createElement("canvas");
+    this.FrameCanvas.width = CharacterFrameWidth;
+    this.FrameCanvas.height = CharacterFrameHeight;
+    this.FrameContext = this.FrameCanvas.getContext('2d');
+    this.__readyCnt += 1;
+  }
+
+  static get AvatarFramePadding(){ return 4; }
+
+  static createCharacterAvatarNode(id, frame_type=null){
+    let container = $(document.createElement('div'));
+    container.attr('class', 'avatar-container');
+    let block = $(document.createElement('a'))
+    container.append(block);
+    let img = document.createElement('img');
+    let img2 = document.createElement('img');
+    $(img).attr('class', 'avatar');
+    $(img2).attr('class', 'avatar-frame');
+    block.append(img);
+    block.append(img2);
+    let rect = this.CharacterAvatarClip.frames[`${id}.png`].textureRect.flat();
+    let krarity = 'frm_thumb_common';
+    if(!frame_type){
+      switch(this.CharacterData[id].CharacterRarity){
+        case 2:
+          krarity = 'frm_thumb_rare_a';
+          break;
+        case 3:
+          krarity = 'frm_thumb_rare_s';
+          break;
+        case 4:
+          krarity = 'frm_thumb_rare_ss';
+          break;
+      }
+    }
+    let rect2 = this.IconClipData[krarity].content.rect;
+    this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
+    this.FrameContext.clearRect(0, 0, this.FrameCanvas.width, this.FrameCanvas.height);
+    clipImage(
+      this.AvatarCanvas, this.CharacterAvatarSet, img, 
+      rect[0], rect[1], rect[2], rect[3],
+      this.AvatarFramePadding, this.AvatarFramePadding,
+      this.AvatarCanvas.width - this.AvatarFramePadding*2, this.AvatarCanvas.height - this.AvatarFramePadding*2
+    );
+    clipImage(
+      this.FrameCanvas, this.CharacterFrameSet, img2, 
+      rect2[0], rect2[1], rect2[2], rect2[3], 
+      0, 0, rect2[2], rect2[3]
+    );
+    return container;
+  }
+
+  static isReady(){ 
+    return this.__readyCnt >= this.__readyReq;
+  }
+}

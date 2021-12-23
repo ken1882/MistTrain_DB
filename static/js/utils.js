@@ -288,6 +288,18 @@ function canvasStringToArr(ss) {
   return arr;
 }
 
+function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=null, dh=null){
+  if(dx == null){ dx = 0; }
+  if(dy == null){ dy = 0; }
+  if(dw == null){ dw = cw; }
+  if(dh == null){ dh = ch; }
+  var context = canvas.getContext('2d');
+  context.webkitImageSmoothingEnabled = false;
+  context.mozImageSmoothingEnabled = false;
+  context.imageSmoothingEnabled = false;
+  context.drawImage(image, cx, cy, cw, ch, dx, dy, dw, dh);
+  target.src = canvas.toDataURL();
+}
 
 function localizeBootstrapTable(node){
   if(!DataManager.isReady()){
@@ -299,3 +311,4 @@ function localizeBootstrapTable(node){
     node.bootstrapTable('updateFormatText', key, name);
   }
 }
+
