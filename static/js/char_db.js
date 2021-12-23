@@ -22,6 +22,7 @@ function loadPreferredDisplay(){
     DataManager.changeSetting('chdb-display', 'grid');
     viewChangeGrid();
   }
+  updateHitCount();
 }
 
 function setup(){
@@ -187,6 +188,7 @@ function viewChangeList(e){
 function reloadAvatars(){
   console.log("Reload avatars");
   let tmp = $('body');
+  let cnt = 0;
   for(let id in CharacterAvatarNode){
     let node = CharacterAvatarNode[id];
     node.css('display', 'none');
@@ -197,7 +199,18 @@ function reloadAvatars(){
       node.appendTo(target);
       node.css('display', '');
     }
+    if(!node.css('display') != 'none'){ cnt += 1;}
   }
+  updateHitCount();
+}
+
+function updateHitCount(){
+  let cnt = 0, len = 0;
+  for(let id in CharacterAvatarNode){
+    len += 1;
+    if(CharacterAvatarNode[id].css('display') != 'none'){ cnt += 1; }
+  }
+  $('#hit-count').text(`(HIT: ${cnt}/${len})`);
 }
 
 (function(){
