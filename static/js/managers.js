@@ -224,6 +224,11 @@
     };
   }
 
+  static requestAsset(req_n, proc, ...args){
+    this.__readyReq += req_n;
+    proc.apply(window, args);
+  }
+
   static loadAllAssets(){
     const handlers = {
       "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.plist": this.parseAvatarClipData,

@@ -163,6 +163,9 @@
     "Column"
   ],
   "StoryTranscriptDB": "Story Transcripts",
+  "MainStory": "Main Story",
+  "EventStory": "Event Story",
+  "CharacterStory": "Character Story",
   
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

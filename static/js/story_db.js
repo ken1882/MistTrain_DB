@@ -14,3 +14,57 @@ function RubifiyJapanese(text){
     data: `Text=${encodeURIComponent(text)}`,
   });
 }
+
+function loadMainStory(){
+  let parent = $("#story-main");
+
+  registerCollapseIndicator($("#header-main"));
+  $("#loading-indicator").remove();
+  $("#main-section").attr('style', '');
+}
+
+function loadEventStory(){
+  let parent = $("#story-events");
+  var section = $(document.createElement('div'));
+  var title = $(document.createElement('a'));
+  section.attr('class', 'card card-body');
+  title.attr('class', 'btn btn-secondary');
+  title.attr('data-bs-toggle', 'collapse');
+  title.text(Vocab['UnderConstruction'])
+  section.append(title);
+  parent.append(section);
+
+  registerCollapseIndicator($("#header-events"));
+  $("#loading-indicator2").remove();
+  $("#event-section").attr('style', '');
+}
+
+function loadCharacterStory(){
+  let parent = $("#story-characters");
+  var section = $(document.createElement('div'));
+  var title = $(document.createElement('a'));
+  section.attr('class', 'card card-body');
+  title.attr('class', 'btn btn-secondary');
+  title.attr('data-bs-toggle', 'collapse');
+  title.text(Vocab['UnderConstruction'])
+  section.append(title);
+  parent.append(section);
+
+  registerCollapseIndicator($("#header-characters"));
+  $("#loading-indicator3").remove();
+  $("#character-section").attr('style', '');
+}
+
+function start(){
+  if(!DataManager.isReady()){
+    return setTimeout(() => {
+      start();
+    }, 300);
+  }
+  loadMainStory();
+  loadEventStory();
+  loadCharacterStory();
+}
+
+AssetsManager.initialize();
+window.addEventListener("load", start);

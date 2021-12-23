@@ -55,6 +55,20 @@ def character_info(id):
 def story_transcript_index():
   return render_template('story_db.html', navbar_content=get_navbar())
 
+@app.route('/mainstory_map/<volume>', methods=['GET'])
+def story_main_worldmap(volume=1):
+  return render_template('main_story.html', 
+    navbar_content=get_navbar(),
+    vol_id=volume,
+  )
+
+@app.route('/story_transcript/<id>', methods=['GET'])
+def story_view(id=1):
+  return render_template('story_view.html', 
+    navbar_content=get_navbar(),
+    sc_id=id,
+  )
+
 ## Auxiliary methods
 
 @app.route('/static/<path:path>')

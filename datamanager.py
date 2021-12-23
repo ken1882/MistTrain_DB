@@ -41,12 +41,12 @@ def init():
   for f in files:
     if not f['parents']:
       continue
-    fid = f['parents'][0]['id']
-    if fid == RootFolder['id']:
+    fpid = f['parents'][0]['id']
+    if fpid == RootFolder['id']:
       set_cache(f)
-    elif fid == DerpyFolder['id']:
+    elif fpid == DerpyFolder['id']:
       set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
-    elif fid == SceneFolder['id']:
+    elif fpid == SceneFolder['id']:
       set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
   setup()
   
@@ -174,6 +174,39 @@ def load_derpy_estimators():
       file.GetContentFile(tmp_path)
       with open(tmp_path, 'rb') as fp:
         _G.DERPY_ESTIMATORS.append(pickle.load(fp))
+
+def load_story_meta():
+  s_main  = f"/{_G.SCENE_METAS['main']}"
+  s_event = f"/{_G.SCENE_METAS['event']}"
+  s_chars = f"/{_G.SCENE_METAS['character']}"
+  metas = [s_main, s_event, s_chars]
+  ret = []
+  for filename in metas:
+    dst_path = f"{_G.STATIC_FILE_DIRECTORY}/json{filename}"
+    ret.append(dst_path)
+    if not _G.FlagUseCloudData:
+      continue
+    file = get_cache(filename)
+    if not file:
+      log_warning(f"Cloud file {file} is not present")
+      continue
+    tmp_path = f"{_G.DCTmpFolder}{filename}"
+    log_info(f"Downloading {file['title']}")
+    file.GetContentFile(tmp_path)
+    if os.path.exists(dst_path):
+      copyfile(dst_path, f"{dst_path}.bak")
+    copyfile(tmp_path, dst_path)
+  return ret
+
+def get_scene(id):
+  path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
+  if not os.path.exists(path):
+    cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
+    file = get_cache(cpath)
+    file.GetContentFile(path)
+  with open(path, 'r') as fp:
+    return json.load(fp)
+
 
 if __name__ == '__main__':
   init()
