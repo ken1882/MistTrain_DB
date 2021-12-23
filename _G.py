@@ -255,6 +255,12 @@ DERPY_CLOUD_ESTIMATORS = [
   'knn_fit_order_True-feats_noreport.mod',
 ]
 
+SCENE_METAS = {
+  'main': 'main_scene.json',
+  'event': 'event_scene.json',
+  'character': 'character_scene.json'
+}
+
 DERPY_ESTIMATORS    = []
 
 # saved race history

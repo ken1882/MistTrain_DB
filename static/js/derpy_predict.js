@@ -413,6 +413,13 @@ function start(){
       start();
     }, 300);
   }
+  registerCollapseIndicator($("#header-riders"));
+  registerCollapseIndicator($("#header-preditions"));
+  registerCollapseIndicator($("#header-odds"));
+  registerCollapseIndicator($("#header-tanfukusho"));
+  registerCollapseIndicator($("#header-wakuren"));
+  registerCollapseIndicator($("#header-umaren"));
+  registerCollapseIndicator($("#header-umatan"));
   getNextRaceData();
 }
 

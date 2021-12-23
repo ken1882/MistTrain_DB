@@ -26,12 +26,13 @@ function createMonthlyGroups(){
     header.attr('aria-controls', '');
     header.attr('data-bs-target', `.race-${month.replaceAll('/','-')}`);
     header.text(month);
+    registerCollapseIndicator(header);
     node.append(header);
     section.append(node);
     parent.append(section);
     last_header = section;
     appendLoadingIndicator(cur_y, cur_m, last_header);
-    last_header.append(document.createElement('hr'));
+    last_header.prepend(document.createElement('hr'));
     loadMonthlyRaceData(cur_y, cur_m, last_header);
   }
 }
@@ -88,6 +89,7 @@ function createDailyGroups(data, parent, nested=true){
   var race_title = `${date}@${time} ${data.name} ${data.type ? 'ダート' : '芝'} ${1200*(data.range+1)}m `
   race_title += `${data.direction ? '左回り' : '右回り'} ${data.weather ? '雨' : '晴'}`
   spoiler_btn.text(race_title)
+  registerCollapseIndicator(spoiler_btn);
   parent.append(node);
   var table_container = $(document.createElement('div'));
   table_container.attr('class', 'collapse');
