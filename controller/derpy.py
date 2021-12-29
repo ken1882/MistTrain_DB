@@ -3,6 +3,7 @@ import _G
 import os, json
 import controller.game as game
 import datamanager as dm
+from flask import Response
 from copy import deepcopy
 from datetime import date, datetime, timedelta
 from pprint import PrettyPrinter
@@ -12,13 +13,26 @@ from time import mktime,strptime
 import pytz
 pp = PrettyPrinter(indent=2)
 
+IsDerpyReady = False
 
 def init():
+  global IsDerpyReady
   races = load_database()
   _G.DerpySavedRaceContent = races
   for k,month_races in races.items():
     for race in month_races:
       _G.DerpySavedRaceHeader.add(race['id']) 
+  dm.load_derpy_estimators()
+  IsDerpyReady = True
+
+def req_derpy_ready(func):
+  def wrapper(*args, **kwargs):
+    global IsDerpyReady
+    if not IsDerpyReady:
+      return Response('"Please retry later"', status=202, mimetype="application/json")
+    return func(*args, **kwargs)
+  wrapper.__name__ = func.__name__
+  return wrapper
 
 def load_database():
   files = dm.load_all_derpy_db()

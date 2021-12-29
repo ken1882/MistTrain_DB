@@ -7,6 +7,8 @@ const MaruHeaders = {
   'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
 }
 
+let MainStoryData = {};
+
 function RubifiyJapanese(text){
   $.ajax({
     url: "https://www.jpmarumaru.com/tw/api/json_KanjiFurigana.asp",
@@ -16,11 +18,27 @@ function RubifiyJapanese(text){
 }
 
 function loadMainStory(){
-  let parent = $("#story-main");
-
   registerCollapseIndicator($("#header-main"));
   $("#loading-indicator").remove();
   $("#main-section").attr('style', '');
+  let vols = Object.keys(MainStoryData.Volumes).length;
+  let parent = $("#main-section");
+  for(let i=0;i<vols;++i){
+    let container = $(document.createElement("div"));
+    container.attr('id', `main-story-${i+1}`);
+    container.attr('class', 'collapse story-main-collapse');
+    let section = $(document.createElement('div'));
+    section.attr('class', 'card card-body');
+    let node = $(document.createElement('a'));
+    node.attr('class', 'btn btn-secondary');
+    node.attr('href', `/mainstory_map/${i+1}`);
+    let text = Vocab['MainStoryVolume'];
+    text = text.replace('%i', i+1);
+    node.text(text);
+    section.append(node);
+    container.append(section);
+    parent.append(container);
+  }
 }
 
 function loadEventStory(){
@@ -55,10 +73,21 @@ function loadCharacterStory(){
   $("#character-section").attr('style', '');
 }
 
-function start(){
-  if(!DataManager.isReady()){
+function loadStoryData(){
+  $.ajax({
+    url: "/static/json/mainstory_data.json",
+    success: (res) => {
+      MainStoryData = res;
+      AssetsManager.incReadyCounter();
+    },
+    error: handleAjaxError,
+  });
+}
+
+function init(){
+  if(!DataManager.isReady() || !AssetsManager.isReady()){
     return setTimeout(() => {
-      start();
+      init();
     }, 300);
   }
   loadMainStory();
@@ -66,5 +95,7 @@ function start(){
   loadCharacterStory();
 }
 
-AssetsManager.initialize();
-window.addEventListener("load", start);
+(function(){
+  AssetsManager.requestAsset(1, loadStoryData);
+  window.addEventListener("load", init);
+})();

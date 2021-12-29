@@ -290,6 +290,6 @@ function appendCharacterAvatars(){
 }
 
 (function(){
-  AssetsManager.initialize();
+  AssetsManager.loadCharacterAssets();
   window.addEventListener("load", init);
-})()
+})();

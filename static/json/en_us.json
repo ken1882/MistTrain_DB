@@ -30,6 +30,7 @@
   "Waku": "Bracket",
   "DerpyNumber": "Number",
   "UnderMaintenance": "Game server seems under maintenance, please come back later",
+  "AppInitializing": "This part of server data is still initializing, please try again later",
   "UnderConstruction": "This section is under development, please stay tuned",
   "UnknownError": "Unknown error occurred, please try again later and notify devs if keep happening",
   "CharacterDB": "Character Database",
@@ -166,6 +167,7 @@
   "MainStory": "Main Story",
   "EventStory": "Event Story",
   "CharacterStory": "Character Story",
+  "MainStoryVolume": "Volume %i",
   
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

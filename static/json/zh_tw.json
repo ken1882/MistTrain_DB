@@ -30,6 +30,7 @@
   "Waku": "枠號",
   "DerpyNumber": "編號",
   "UnderMaintenance": "遊戲伺服器似乎正在維修中，請稍後再次嘗試",
+  "AppInitializing": "此功能的伺服器資料尚未讀取完畢，請稍後再次嘗試",
   "UnderConstruction": "此功能仍在開發中，敬請期待",
   "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員",
   "CharacterDB": "角色資料庫",
@@ -163,7 +164,11 @@
    "直一列"
   ],
   "StoryTranscriptDB": "全劇情文本",
-  
+  "MainStory": "主線劇情",
+  "EventStory": "活動劇情",
+  "CharacterStory": "角色劇情",
+  "MainStoryVolume": "第 %i 部",
+
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
     "0": "角色ID: 角色名稱"

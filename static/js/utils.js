@@ -332,3 +332,16 @@ function switchCollapseIndicator(event){
     node.children[0].innerHTML = html_af;
   }
 }
+
+function handleAjaxError(response){
+  debug_log(response);
+  if(response.status == 503){
+    alert(Vocab['UnderMaintenance']);
+  }
+  else if(response.status == 202){
+    alert(Vocab['AppInitializing']);
+  }
+  else{
+    alert(Vocab['UnknownError']);
+  }
+}

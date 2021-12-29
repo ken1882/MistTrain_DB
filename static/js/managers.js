@@ -203,6 +203,9 @@
   static initialize(){
     this.__readyCnt = 0;
     this.__readyReq = 0;
+  }
+
+  static loadCharacterAssets(){
     this.loadCharacterAvatars();
     this.loadAllAssets();
     this.setupAvatarCanvas();
@@ -215,18 +218,28 @@
     image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.png";
     image.onload = () => {
       this.CharacterAvatarSet = image;
-      this.__readyCnt += 1;
+      this.incReadyCounter();
     };
     image2.src = "/static/assets/icons_party1.png";
     image2.onload = () => {
       this.CharacterFrameSet = image2;
-      this.__readyCnt += 1;
+      this.incReadyCounter();
     };
   }
-
+  /**
+   * > Request async resources, used with `AssetsManager.isReady()` 
+   * to check if fully loaded.
+   * @param {int} req_n - Counter number to increase
+   * @param {function} proc - Function to call (the loading procedure)
+   * @param  {...any} args 
+   */
   static requestAsset(req_n, proc, ...args){
     this.__readyReq += req_n;
     proc.apply(window, args);
+  }
+
+  static incReadyCounter(n=1){
+    this.__readyCnt += n;
   }
 
   static loadAllAssets(){
@@ -246,14 +259,7 @@
         success: (res) => { 
           method.apply(AssetsManager, [res]);
         },
-        error: (res) => {
-          if(res.status == 503){
-            alert(Vocab['UnderMaintenance']);
-          }
-          else{
-            alert(Vocab['UnknownError']);
-          }
-        }
+        error: handleAjaxError,
       });
     }
   }
@@ -284,7 +290,7 @@
   static parseAvatarClipData(xml){
     let root = xml.children[0].children[0];
     this.CharacterAvatarClip = this.parseXMLKeyValueDict(root);
-    this.__readyCnt += 1;
+    this.incReadyCounter();
   }
   
   static parseCharacterData(res){
@@ -293,7 +299,7 @@
       let dat = res[i];
       this.CharacterData[dat['Id']] = dat;
     }
-    this.__readyCnt += 1;
+    this.incReadyCounter();
   }
   
   static parseGearData(res){
@@ -302,12 +308,12 @@
       let dat = res[i-1];
       this.MaxGearStatusData[dat.MCharacterId] = dat.Status;
     }
-    this.__readyCnt += 1;
+    this.incReadyCounter();
   }
   
   static parseIconClipData(res){
     this.IconClipData = res;
-    this.__readyCnt += 1;
+    this.incReadyCounter();
   }
 
   static parseSkillData(res){
@@ -316,7 +322,7 @@
       let dat = res[i];
       this.SkillData[dat['Id']] = dat;
     }
-    this.__readyCnt += 1;
+    this.incReadyCounter();
   }
 
   static setupAvatarCanvas(){
@@ -336,7 +342,7 @@
     this.FrameCanvas.width = CharacterFrameWidth;
     this.FrameCanvas.height = CharacterFrameHeight;
     this.FrameContext = this.FrameCanvas.getContext('2d');
-    this.__readyCnt += 1;
+    this.incReadyCounter();
   }
 
   static get AvatarFramePadding(){ return 4; }

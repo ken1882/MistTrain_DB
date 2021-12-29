@@ -3,6 +3,7 @@ import _G
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 from oauth2client.service_account import ServiceAccountCredentials
+from multiprocessing import Lock
 import os
 import json
 import pickle
@@ -16,6 +17,7 @@ RootFolder  = None
 SceneFolder = None
 DerpyFolder = None
 __FileCache = {}
+FLock = Lock()
 
 def init():
   global Database,RootFolder,SceneFolder,DerpyFolder
@@ -25,7 +27,7 @@ def init():
     pass
   if not _G.FlagUseCloudData:
     log_warning("Cloud data is disabled")
-    return setup()
+    return
   gauth = GoogleAuth()
   gauth.auth_method = 'service'
   gauth.credentials = ServiceAccountCredentials._from_parsed_json_keyfile( \
@@ -48,10 +50,6 @@ def init():
       set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
     elif fpid == SceneFolder['id']:
       set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
-  setup()
-  
-def setup():
-  load_derpy_estimators()
 
 def log_db_info():
   global Database
@@ -199,15 +197,16 @@ def load_story_meta():
   return ret
 
 def get_scene(id):
+  global FLock
   path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
   if not os.path.exists(path):
-    cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
-    file = get_cache(cpath)
-    file.GetContentFile(path)
+    with FLock:
+      cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
+      file = get_cache(cpath)
+      file.GetContentFile(path)
   with open(path, 'r') as fp:
     return json.load(fp)
 
 
 if __name__ == '__main__':
   init()
-  setup()

@@ -72,6 +72,7 @@
 
       window.addEventListener("load", ()=>{
         DataManager.initialize();
+        AssetsManager.initialize();
         Vocab.initialize();
         init_navbar();
         init_totop_button();
@@ -95,18 +96,15 @@
       <span class="sr-only"></span>
     </div>
     <div id="main-section" style="display: none;">
-      <div>
-        <div class="card card-body">
-          <a id="header-main" class="btn btn-primary" data-bs-toggle="collapse" 
-            aria-controls="story-main" href="#story-main"
-            label="l-MainStory"
-          >_
-          </a>
-          <div class="collapse" id="story-main">
-          </div>
-        </div>
+      <div class="card card-body">
+        <a id="header-main" class="btn btn-primary" data-bs-toggle="collapse" 
+          aria-controls="story-main" data-bs-target=".story-main-collapse"
+          label="l-MainStory"
+        >_
+        </a>
       </div>
     </div>
+
     <hr>
     <!-- background="https://assets.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg" -->
     <div class="spinner-border center" id="loading-indicator2">
@@ -144,66 +142,6 @@
         </div>
       </div>
     </div>
-<!--     
-    <div style="font-size: 24px;">
-      <div>
-        <ruby>
-          <rb>元気</rb>
-          <rt>げんき</rt>
-        </ruby>
-        <ruby>
-          <rb>いっぱいなのだから、</rb>
-        </ruby>
-        <ruby>
-          <rb>存分</rb>
-          <rt>ぞんぶん</rt>
-        </ruby>
-        に
-        <ruby>
-          <rb>騒</rb>
-          <rt>さわ</rt>
-        </ruby>
-        げばよい。
-        <br>
-        そんな
-        <ruby>
-          <rb>子供</rb>
-          <rt>こども</rt>
-        </ruby>
-        らの
-        <ruby>
-          <rb>姿</rb>
-          <rt>すがた</rt>
-        </ruby>
-        を
-        <ruby>
-          <rb>見</rb>
-          <rt>み</rt>
-        </ruby>
-        るだけで、
-        <ruby>
-          <rb>吾</rb>
-          <rt>われ</rt>
-        </ruby>
-        も
-        <ruby>
-          <rb>生</rb>
-          <rt>い</rt>
-        </ruby>
-        き
-        <ruby>
-          <rb>返</rb>
-          <rt>かえ</rt>
-        </ruby>
-        るような
-        <ruby>
-          <rb>心地</rb>
-          <rt>ここち</rt>
-        </ruby>
-        がする
-      </div>
-    </div>
-     -->
 
   </body>
 </html>

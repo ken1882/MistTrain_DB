@@ -117,7 +117,6 @@ def uwait(sec):
   dt = dt if Throttling else dt / 3
   sleep(sec+dt)
 
-
 # Errnos
 KEY_ERRNO = 'errno'
 ERROR_SUCCESS       = 0x0

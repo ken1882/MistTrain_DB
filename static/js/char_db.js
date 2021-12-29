@@ -214,6 +214,6 @@ function updateHitCount(){
 }
 
 (function(){
-  AssetsManager.initialize();
+  AssetsManager.loadCharacterAssets();
   window.addEventListener("load", init);
-})()
+})();

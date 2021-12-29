@@ -286,15 +286,7 @@ function getNextRaceData(){
       fillContent(res);
       getPredictionMatrix();
     },
-    error: (res) => {
-      debug_log(res);
-      if(res.status == 503){
-        alert(Vocab['UnderMaintenance']);
-      }
-      else{
-        alert(Vocab['UnknownError']);
-      }
-    }
+    error: handleAjaxError,
   });
 }
 
@@ -305,15 +297,7 @@ function getPredictionMatrix(){
       debug_log(res);
       fillPreditionMatrix(res);
     },
-    error: (res) => {
-      debug_log(res);
-      if(res.status == 503){
-        alert(Vocab['UnderMaintenance']);
-      }
-      else{
-        alert(Vocab['UnknownError']);
-      }
-    }
+    error: handleAjaxError,
   });
 }
 
