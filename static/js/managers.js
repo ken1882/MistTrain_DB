@@ -203,6 +203,7 @@
   static initialize(){
     this.__readyCnt = 0;
     this.__readyReq = 0;
+    this.__requestQueue = [];
   }
 
   static loadCharacterAssets(){
@@ -227,15 +228,48 @@
     };
   }
   /**
-   * > Request async resources, used with `AssetsManager.isReady()` 
+   * > Request async resources, used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()` 
    * to check if fully loaded.
    * @param {int} req_n - Counter number to increase
    * @param {function} proc - Function to call (the loading procedure)
-   * @param  {...any} args 
+   * @param  {...any} args - Arguments passed to the function
    */
   static requestAsset(req_n, proc, ...args){
     this.__readyReq += req_n;
     proc.apply(window, args);
+  }
+
+  /**
+   * > Request a single async resources, increase counter according to
+   * the number of `procs` given.  
+   * Used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()` 
+   * to check if fully loaded.
+   * @param  {function} procs - Functions to call
+   */
+  static requestSingletonAssets(...procs){
+    this.__readyReq += procs.length;
+    for(let i in procs){
+      procs[i].apply(window);
+    }
+  }
+
+  static queueAssetRequest(proc){
+    this.__requestQueue.push({
+      proc: proc,
+    });
+    setTimeout(this.__updateQueuedRequest, 300);
+  }
+
+  static __updateQueuedRequest(){
+    if(!AssetsManager.isStageLoaded()){
+      return setTimeout(AssetsManager.__updateQueuedRequest, 300);
+    }
+    let data = AssetsManager.__requestQueue[0];
+    data.proc.apply(window);
+    AssetsManager.__requestQueue.shift();
+    if(AssetsManager.__requestQueue.length){
+      setTimeout(AssetsManager.__updateQueuedRequest, 300);
+    }
   }
 
   static incReadyCounter(n=1){
@@ -390,7 +424,11 @@
     return container;
   }
 
-  static isReady(){ 
+  static isStageLoaded(){
     return this.__readyCnt >= this.__readyReq;
+  }
+
+  static isReady(){ 
+    return !this.__requestQueue.length && this.isStageLoaded();
   }
 }
