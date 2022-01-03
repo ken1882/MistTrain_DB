@@ -2,7 +2,7 @@ from datetime import datetime,timedelta
 import _G
 import os
 from flask import Flask
-from flask import render_template,jsonify,send_from_directory,Response
+from flask import render_template,jsonify,send_from_directory,request
 from _G import log_error,log_info,log_warning,log_debug
 import controller.derpy as derpy
 import controller.game  as game

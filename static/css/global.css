@@ -82,6 +82,11 @@ tbody tr td{
   padding: 4px 4px 4px 4px;
 }
 
+.dialog-avatar {
+  margin: 8px;
+  margin-right: 24px;
+}
+
 .avatar {
   position: absolute;
   width: 100px;
@@ -147,4 +152,46 @@ tbody tr td{
 
 .locationpin{
   position: absolute;
+  cursor:pointer;
+}
+
+.locationchapter{
+  position: absolute;
+  font-size: 24px;
+  left: 20px;
+  top: 86px;
+  color:black;
+  background-color: rgba(255,255,255,0.4);
+}
+
+.offcanvas{
+  background-color:rgb(30,30,30);
+
+}
+
+.btn-close{
+  background-color: white;
+}
+
+.mulcol-list li{
+  font-size:18px;
+  display: block;
+  width: 33%;
+  float:left;
+}
+
+.dialog-section{
+  max-width: 80%;
+  margin: auto;
+  display: block;
+}
+
+.dialogbox{
+  display: flex;
+  border: solid;
+  border-color: brown;
+  font-size: 24px;
+  padding: 8px;
+  margin-bottom: 16px;
+  min-height: 128px;
 }

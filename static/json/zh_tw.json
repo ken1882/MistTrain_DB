@@ -168,6 +168,8 @@
   "EventStory": "活動劇情",
   "CharacterStory": "角色劇情",
   "MainStoryVolume": "第 %i 部",
+  "StoryChapter": "第 %i 章",
+  "ShowChapterText": "圖示底顯示章節",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {

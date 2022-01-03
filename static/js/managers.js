@@ -384,7 +384,7 @@
   static createCharacterAvatarNode(id, frame_type=null){
     let container = $(document.createElement('div'));
     container.attr('class', 'avatar-container');
-    let block = $(document.createElement('a'))
+    let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
     let img2 = document.createElement('img');
@@ -407,7 +407,13 @@
           break;
       }
     }
-    let rect2 = this.IconClipData[krarity].content.rect;
+    let rect2 = null;
+    try{
+      rect2 = this.IconClipData[krarity].rect;
+    }
+    catch(e){
+      rect2 = this.IconClipData[krarity].content.rect;
+    }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
     this.FrameContext.clearRect(0, 0, this.FrameCanvas.width, this.FrameCanvas.height);
     clipImage(

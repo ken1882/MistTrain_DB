@@ -11,6 +11,7 @@
     
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+    <script src="{{ url_for('static', filename='js/howler.min.js') }}"></script>
     
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
@@ -92,6 +93,11 @@
       <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571057658/cd-top-arrow.svg">
     </button>
 
+    <div id="scene-title" class="center" style="font-size: 40px;">
+    </div>
+    <hr>
+    <div id="log-section" class="dialog-section">
+    </div>
 
   </body>
 </html>

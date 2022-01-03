@@ -9,11 +9,18 @@ const MaruHeaders = {
 
 let MainStoryData = {};
 
-function RubifiyJapanese(text){
+function RubifiyJapanese(text, ok_handler, err_handler=null){
+  if(!err_handler){
+    err_handler = (res)=>{ console.error(res); }
+  }
   $.ajax({
     url: "https://www.jpmarumaru.com/tw/api/json_KanjiFurigana.asp",
+    type: "POST",
+    crossDomain: true,
     headers: MaruHeaders,
     data: `Text=${encodeURIComponent(text)}`,
+    sucess: ok_handler,
+    error: err_handler
   });
 }
 

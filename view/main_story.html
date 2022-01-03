@@ -92,8 +92,24 @@
     <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
       <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571057658/cd-top-arrow.svg">
     </button>
-    
+    <div id="toolbar">
+      <p style="display: inline-block; padding: 4px;">
+        <input type="checkbox" id="ckb_chapterid" onclick="toggleChapTextVisibility()" checked>
+        <label for="ckb_chapterid" label="l-ShowChapterText"></label>
+      </p>
+    </div>
     <div id="worldmap"></div>
 
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+      <div class="offcanvas-header">
+        <h5 id="chapter-title" class="offcanvas-title" id="offcanvasBottomLabel"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small">
+        <ol class="mulcol-list" id="chapter-storylist">
+        </ol>
+      </div>
+    </div>
+    
   </body>
 </html>

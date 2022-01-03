@@ -168,6 +168,8 @@
   "EventStory": "Event Story",
   "CharacterStory": "Character Story",
   "MainStoryVolume": "Volume %i",
+  "StoryChapter": "Chapter %i",
+  "ShowChapterText": "Show chapter below icon",
   
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {
