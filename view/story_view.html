@@ -95,7 +95,7 @@
     </button>
 
     <div id="scene-title" class="center" style="font-size: 40px;">
-      <span id="settings" class="settings-right">
+      <span id="settings" class="settings-right-fixed" data-toggle="tooltip" title="">
         <button class="setting-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#settings-panel" aria-controls="settings-panel">
           <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="rgb(210,210,210)" class="bi bi-gear" viewBox="0 0 16 16">
             <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
@@ -103,9 +103,20 @@
           </svg>
         </button>
       </span>  
+      <span id="autoplaystart" class="settings-left" data-toggle="tooltip" title="">
+        <button class="setting-button" type="button" onclick="autoPlayall()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="rgb(210,210,210)" class="bi bi-collection-play" viewBox="0 0 16 16">
+            <path d="M2 3a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11A.5.5 0 0 0 2 3zm2-2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7A.5.5 0 0 0 4 1zm2.765 5.576A.5.5 0 0 0 6 7v5a.5.5 0 0 0 .765.424l4-2.5a.5.5 0 0 0 0-.848l-4-2.5z"/>
+            <path d="M1.5 14.5A1.5 1.5 0 0 1 0 13V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 16 6v7a1.5 1.5 0 0 1-1.5 1.5h-13zm13-1a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5h-13A.5.5 0 0 0 1 6v7a.5.5 0 0 0 .5.5h13z"/>
+          </svg>
+        </button>
+      </span>
     </div>
     <hr>
     <div id="log-section" class="dialog-section">
+      <div class="spinner-border center" id="loading-indicator">
+        <span class="sr-only"></span>
+      </div>
     </div>
 
 
@@ -116,46 +127,50 @@
       </div>
       <div class="offcanvas-body" style="font-size: 20px;">
         <p>
-          <input type="checkbox" id="ckb-autoplay" onclick="">
+          <input type="checkbox" id="ckb-autoplay" checked>
           <label for="ckb-autoplay" label="l-SceneAutoPlay"></label>
         </p>
         <p>
-          <input type="checkbox" id="ckb-playbgm" onclick="">
+          <input type="checkbox" id="ckb-autoscroll" checked>
+          <label for="ckb-autoscroll" label="l-SceneAutoScroll"></label>
+        </p>
+        <p>
+          <input type="checkbox" id="ckb-playbgm" checked>
           <label for="ckb-playbgm" label="l-EnableBGM"></label>
         </p>
         <div>
           <p label="l-ScenePlaySpeed"></p>
           <p>
             <input id="slider-playspeed" type="range" min="0.5" max="2.0" value="1.0" step="0.25" oninput="updatePlaySpeed(this)">&nbsp;
-            <span id="text-playspeed" style="vertical-align:top;">5</span>
+            <span id="text-playspeed" style="vertical-align:top;">_</span>
           </p>
         </div>
         <div>
           <p label="l-DialogPauseDuration"></p>
           <p>
             <input id="slider-pduration" type="range" min="-5" max="5" value="0" oninput="updatePauseDuration(this)">&nbsp;
-            <span id="text-pduration" style="vertical-align:top;">0</span>
+            <span id="text-pduration" style="vertical-align:top;">_</span>
           </p>
         </div>
         <div>
           <p label="l-BGMVolume"></p>
           <p>
-            <input id="slider-bgmvolume" type="range" min="0" max="100" value="100" oninput="updateBGMVolume(this)">&nbsp;
-            <span id="text-bgmvolume" style="vertical-align:top;">100</span>
+            <input id="slider-bgmvolume" type="range" min="0" max="100" value="30" oninput="updateBGMVolume(this)">&nbsp;
+            <span id="text-bgmvolume" style="vertical-align:top;">_</span>
           </p>
         </div>
         <div>
           <p label="l-SEVolume"></p>
           <p>
             <input id="slider-sevolume" type="range" min="0" max="100" value="100" oninput="updateSEVolume(this)">&nbsp;
-            <span id="text-sevolume" style="vertical-align:top;">100</span>
+            <span id="text-sevolume" style="vertical-align:top;">_</span>
           </p>
         </div>
         <div>
           <p label="l-BGSVolume"></p>
           <p>
             <input id="slider-bgsvolume" type="range" min="0" max="100" value="100" oninput="updateBGSVolume(this)">&nbsp;
-            <span id="text-bgsvolume" style="vertical-align:top;">100</span>
+            <span id="text-bgsvolume" style="vertical-align:top;">_</span>
           </p>
         </div>
       </div>

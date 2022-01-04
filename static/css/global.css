@@ -214,6 +214,31 @@ tbody tr td{
   margin-right: 16px;
 }
 
+.settings-left{
+  float: left;
+  margin-top: 16px;
+  margin-left: 16px;
+}
+
+.settings-left:hover{
+  background-color: rgba(200, 200, 200, 0.5);
+}
+
+.settings-right-fixed{
+  position: fixed;
+  margin-top: 16px;
+  padding-left: 8px;
+  padding-bottom: 8px;
+  padding-right: 8px;
+  right: 0px;
+  top: 4px;
+  background-color: rgba(130,130,130,0.5);
+}
+
+.settings-right-fixed:hover{
+  background-color: rgba(200, 200, 200, 0.5);
+}
+
 .setting-button{
   background-color: rgba(0,0,0,0);
   border: none;

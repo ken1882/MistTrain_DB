@@ -27,8 +27,8 @@
   }
   /*-------------------------------------------------------------------------*/
   static setupSettingKeys(){
-    this.DefaultLanguage = "en_us"
-    this.DefaultVolume   = [1, 1, 1]
+    this.DefaultLanguage = "en_us";
+    this.DefaultVolume   = [0.3, 1, 1];
     this.kLanguage       = "language";
     this.kVolume         = "volume";
     this.kAudioEnable    = "audioEnable";
