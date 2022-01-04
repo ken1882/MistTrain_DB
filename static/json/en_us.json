@@ -170,7 +170,15 @@
   "MainStoryVolume": "Volume %i",
   "StoryChapter": "Chapter %i",
   "ShowChapterText": "Show chapter below icon",
-  
+  "Settings": "Settings",
+  "SceneAutoPlay": "Auto Play",
+  "ScenePlaySpeed": "Play Speed",
+  "DialogPauseDuration": "Duration of non-voiced dialogue",
+  "EnableBGM": "Enable BGM",
+  "BGMVolume": "BGM Vulume",
+  "SEVolume": "SE Volume",
+  "BGSVolume": "BGS Volume",
+
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {
     "0": "Character Id: Character Name"

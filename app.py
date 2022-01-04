@@ -161,7 +161,8 @@ if not app.initialized:
   app.initialized = True
   dm.init()
   th = Thread(target=setup)
-  th.run()
+  th.start()
+  _G.ThreadPool['setup'] = th
   if (os.getenv('FLASK_ENV') or '').lower() == 'production':
     app.config.from_object(ProductionConfig)
   else:

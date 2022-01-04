@@ -5,11 +5,15 @@ function init(){
   if(!DataManager.isReady()){
     return setTimeout(init, 100);
   }
+  AssetsManager.loadCharacterAssets();
   setup();
   loadPreferredDisplay();
 }
 
 function loadPreferredDisplay(){
+  if(!AssetsManager.isReady()){
+    return setTimeout(loadPreferredDisplay, 100);
+  }
   let dis = DataManager.getSetting('chdb-display');
   if(!dis){ dis = DefaultViewSetting; }
   if(dis == 'list'){
@@ -214,6 +218,5 @@ function updateHitCount(){
 }
 
 (function(){
-  AssetsManager.loadCharacterAssets();
   window.addEventListener("load", init);
 })();

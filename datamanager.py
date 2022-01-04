@@ -50,6 +50,7 @@ def init():
       set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
     elif fpid == SceneFolder['id']:
       set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
+  log_info("Cloud initialized")
 
 def log_db_info():
   global Database
@@ -186,7 +187,7 @@ def load_story_meta():
       continue
     file = get_cache(filename)
     if not file:
-      log_warning(f"Cloud file {file} is not present")
+      log_warning(f"Cloud file {filename} is not present")
       continue
     tmp_path = f"{_G.DCTmpFolder}{filename}"
     log_info(f"Downloading {file['title']}")
@@ -202,6 +203,7 @@ def get_scene(id):
   if not os.path.exists(path):
     with FLock:
       cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
+      log_info(f"Downloading {cpath}")
       file = get_cache(cpath)
       file.GetContentFile(path)
   with open(path, 'r') as fp:

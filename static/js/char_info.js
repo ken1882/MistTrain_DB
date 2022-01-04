@@ -28,6 +28,7 @@ const TypeSkillRange = [
 ];
 
 function init(){
+  AssetsManager.loadCharacterAssets();
   setup();
 }
 
@@ -290,6 +291,5 @@ function appendCharacterAvatars(){
 }
 
 (function(){
-  AssetsManager.loadCharacterAssets();
   window.addEventListener("load", init);
 })();

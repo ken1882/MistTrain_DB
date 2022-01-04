@@ -28,7 +28,7 @@
   /*-------------------------------------------------------------------------*/
   static setupSettingKeys(){
     this.DefaultLanguage = "en_us"
-    this.DefaultVolume   = [0.5, 1, 1]
+    this.DefaultVolume   = [1, 1, 1]
     this.kLanguage       = "language";
     this.kVolume         = "volume";
     this.kAudioEnable    = "audioEnable";
@@ -82,7 +82,7 @@
   }
   /*-------------------------------------------------------------------------*/
   static loadAudioEnable(){
-    let en = this.audioEnable
+    let en = this.audioEnable;
     if(!isClassOf(en, Array) || en.length != 2){
       this.changeSetting(this.kAudioEnable, [true, true]);
     }
@@ -412,6 +412,9 @@
       rect2 = this.IconClipData[krarity].rect;
     }
     catch(e){
+      rect2 = this.IconClipData[krarity].content.rect;
+    }
+    if(!rect2){
       rect2 = this.IconClipData[krarity].content.rect;
     }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);

@@ -170,6 +170,14 @@
   "MainStoryVolume": "第 %i 部",
   "StoryChapter": "第 %i 章",
   "ShowChapterText": "圖示底顯示章節",
+  "Settings": "設定",
+  "SceneAutoPlay": "自動播放",
+  "ScenePlaySpeed": "播放速度",
+  "DialogPauseDuration": "無語音文本間隔長度",
+  "EnableBGM": "播放背景音樂",
+  "BGMVolume": "背景音樂音量",
+  "SEVolume": "音效音量",
+  "BGSVolume": "背景音效音量",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
