@@ -131,7 +131,6 @@ def get_story_content(id):
 def setup():
   derpy.init()
   story.init()
-  return
   if not game.is_connected():
     res = game.reauth_game()
     if res == _G.ERRNO_MAINTENANCE:
