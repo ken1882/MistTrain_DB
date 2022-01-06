@@ -3,20 +3,23 @@ import _G
 import os, json
 import controller.game as game
 import datamanager as dm
-from flask import Response
+from flask import render_template
 from copy import deepcopy
 from datetime import date, datetime, timedelta
 from pprint import PrettyPrinter
 from _G import log_warning,log_debug,log_error,log_info
-from utils import handle_exception
 from time import mktime,strptime
+import utils
 import pytz
+from threading import Thread
 pp = PrettyPrinter(indent=2)
 
 IsDerpyReady = False
+IsDerpyInitCalled = False
 
 def init():
-  global IsDerpyReady
+  global IsDerpyReady,IsDerpyInitCalled
+  IsDerpyInitCalled = True
   races = load_database()
   _G.DerpySavedRaceContent = races
   for k,month_races in races.items():
@@ -27,9 +30,15 @@ def init():
 
 def req_derpy_ready(func):
   def wrapper(*args, **kwargs):
-    global IsDerpyReady
+    global IsDerpyReady,IsDerpyInitCalled
+    if not IsDerpyInitCalled:
+      IsDerpyInitCalled = True
+      th = Thread(target=init)
+      th.start()
     if not IsDerpyReady:
-      return Response('"Please retry later"', status=202, mimetype="application/json")
+      return render_template('notready.html',
+        navbar_content=utils.load_navbar(),
+      )
     return func(*args, **kwargs)
   wrapper.__name__ = func.__name__
   return wrapper

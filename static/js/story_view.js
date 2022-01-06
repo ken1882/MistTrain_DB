@@ -67,7 +67,7 @@ function loadDialog(){
         url: `/api/GetStoryDetail/${__SceneId}`,
         success: (res)=>{
           SceneData = res;
-          AssetsManager.incReadyCounter();
+          setTimeout(() => {AssetsManager.incReadyCounter();}, 1000);
         },
         error: handleAjaxError,
       });
@@ -285,6 +285,7 @@ function getPureDialoguePauseTime(text){
   ret += (text.match(/。/g) || []).length * 1.2;
   ret += (text.match(/～/g) || []).length * 0.8;
   ret += (text.match(/、/g) || []).length * 0.8;
+  ret += (text.match(/…/g) || []).length * 0.3;
   return Math.min(Math.max(1+(factor/10), ret), 10+factor);
 }
 

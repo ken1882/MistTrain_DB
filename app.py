@@ -11,7 +11,7 @@ import datamanager as dm
 from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
 import pytz
-from utils import handle_exception
+from utils import handle_exception,load_navbar
 from controller.derpy import req_derpy_ready
 from controller.story import req_story_ready
 
@@ -91,14 +91,7 @@ def serve_static_resources(path):
 
 @app.route('/navbar', methods=['GET'])
 def get_navbar():
-  ret = _G.GetCacheString('navbar.html')
-  if ret:
-    return ret.replace("'" ,'"')
-  with open('view/navbar.html') as fp:
-    ret = fp.read()
-    ret = ret.replace('\n', '').replace('\r','').replace('"',"'")
-  _G.SetCacheString('navbar.html', ret)
-  return ret.replace("'" ,'"')
+  return load_navbar()
 
 @app.route('/api/GetNextRace', methods=['GET'])
 @req_derpy_ready

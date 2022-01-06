@@ -3,19 +3,21 @@ import _G
 import os, json
 import controller.game as game
 import datamanager as dm
-from flask import Response
+from flask import render_template
 from copy import deepcopy
 from datetime import date, datetime, timedelta
 from pprint import PrettyPrinter
 from _G import log_warning,log_debug,log_error,log_info
-from utils import handle_exception
 from time import mktime,strptime
+from threading import Thread
 import pytz
 import requests
 import urllib.parse
+import utils
 pp = PrettyPrinter(indent=2)
 
 IsStoryReady = False
+IsStoryInitCalled = False
 
 SceneMeta = {}
 
@@ -28,19 +30,26 @@ MaruHeaders = {
   'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
 }
 
+def init():
+  global IsStoryReady,IsStoryInitCalled
+  IsStoryInitCalled = True
+  load_metas()
+  IsStoryReady = True
+
 def req_story_ready(func):
   def wrapper(*args, **kwargs):
-    global IsStoryReady
+    global IsStoryReady,IsStoryInitCalled
+    if not IsStoryInitCalled:
+      IsStoryInitCalled = True
+      th = Thread(target=init)
+      th.start()
     if not IsStoryReady:
-      return Response('"Please retry later"', status=202, mimetype="application/json")
+      return render_template('notready.html',
+        navbar_content=utils.load_navbar(),
+      )
     return func(*args, **kwargs)
   wrapper.__name__ = func.__name__
   return wrapper
-
-def init():
-  global IsStoryReady
-  load_metas()
-  IsStoryReady = True
 
 def load_metas():
   files = dm.load_story_meta()

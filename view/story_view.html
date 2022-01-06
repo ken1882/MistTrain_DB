@@ -127,15 +127,15 @@
       </div>
       <div class="offcanvas-body" style="font-size: 20px;">
         <p>
-          <input type="checkbox" id="ckb-autoplay" checked>
+          <input type="checkbox" id="ckb-autoplay" onclick="updateAutoPlaySetting()" checked>
           <label for="ckb-autoplay" label="l-SceneAutoPlay"></label>
         </p>
         <p>
-          <input type="checkbox" id="ckb-autoscroll" checked>
+          <input type="checkbox" id="ckb-autoscroll" onclick="updateAutoScrollSetting()" checked>
           <label for="ckb-autoscroll" label="l-SceneAutoScroll"></label>
         </p>
         <p>
-          <input type="checkbox" id="ckb-playbgm" checked>
+          <input type="checkbox" id="ckb-playbgm" onclick="updatePlayBGMSetting()" checked>
           <label for="ckb-playbgm" label="l-EnableBGM"></label>
         </p>
         <div>
@@ -162,14 +162,14 @@
         <div>
           <p label="l-SEVolume"></p>
           <p>
-            <input id="slider-sevolume" type="range" min="0" max="100" value="100" oninput="updateSEVolume(this)">&nbsp;
+            <input id="slider-sevolume" type="range" min="0" max="100" value="50" oninput="updateSEVolume(this)">&nbsp;
             <span id="text-sevolume" style="vertical-align:top;">_</span>
           </p>
         </div>
         <div>
           <p label="l-BGSVolume"></p>
           <p>
-            <input id="slider-bgsvolume" type="range" min="0" max="100" value="100" oninput="updateBGSVolume(this)">&nbsp;
+            <input id="slider-bgsvolume" type="range" min="0" max="100" value="40" oninput="updateBGSVolume(this)">&nbsp;
             <span id="text-bgsvolume" style="vertical-align:top;">_</span>
           </p>
         </div>
@@ -212,16 +212,56 @@
       DialoguePlayer.updateVolumes();
     }
 
+    function updateAutoPlaySetting(){
+      DataManager.changeSetting('sceneAutoPlay', $("#ckb-autoplay").prop('checked'));
+    }
+
+    function updateAutoScrollSetting(){
+      DataManager.changeSetting('sceneAutoScroll', $("#ckb-autoscroll").prop('checked'));
+    }
+
+    function updatePlayBGMSetting(){
+      DataManager.changeSetting('scenePlayBGM', $("#ckb-playbgm").prop('checked'));
+    }
+
     function initSceneSettings(){
       if(!DataManager.isReady()){
         return setTimeout(initSceneSettings, 300);
       }
+      
+      var play_speed = DataManager.getSetting('dialogueSpeed');
+      var dia_dur    = DataManager.getSetting('dialogueDuration');
+      var vols = (DataManager.getSetting(DataManager.kVolume) || [0.3,0.5,0.4]);
+      for(var i=0;i<vols.length;++i){ vols[i] = parseInt(vols[i]*100); }
+      var psd = document.getElementById('slider-playspeed');
+      var pdr = document.getElementById('slider-pduration');
+      var bgm = document.getElementById('slider-bgmvolume');
+      var se  = document.getElementById('slider-sevolume');
+      var bgs = document.getElementById('slider-bgsvolume');
+      var targets = [psd, pdr, bgm, se, bgs];
+      var vals = [play_speed, dia_dur, vols].flat();
+      
+      for(var i=0;i<targets.length;++i){
+        targets[i].value = vals[i];
+      }
 
-      updatePlaySpeed(document.getElementById('slider-playspeed'));
-      updatePauseDuration(document.getElementById('slider-pduration'));
-      updateBGMVolume(document.getElementById('slider-bgmvolume'));
-      updateSEVolume(document.getElementById('slider-sevolume'));
-      updateBGSVolume(document.getElementById('slider-bgsvolume'));
+      var flag_nodes = [$("#ckb-autoplay"), $("#ckb-autoscroll"), $("#ckb-playbgm")];
+      var flag_vals = [
+        DataManager.getSetting('sceneAutoPlay'),
+        DataManager.getSetting('sceneAutoScroll'),
+        DataManager.getSetting('scenePlayBGM')
+      ]
+      for(var i=0;i<flag_nodes.length;++i){
+        if(flag_vals[i] !== undefined){
+          flag_nodes[i].prop('checked', flag_vals[i]);
+        }
+      }
+
+      updatePlaySpeed(psd);
+      updatePauseDuration(pdr);
+      updateBGMVolume(bgm);
+      updateSEVolume(se);
+      updateBGSVolume(bgs);
     }
 
     initSceneSettings();
