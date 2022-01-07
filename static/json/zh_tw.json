@@ -163,6 +163,8 @@
    "橫一行",
    "直一列"
   ],
+  "LinkSkillCondition": "鏈結技能條件",
+  "LinkSkillEffect": "鏈結技能效果",
   "StoryTranscriptDB": "全劇情文本",
   "MainStory": "主線劇情",
   "EventStory": "活動劇情",

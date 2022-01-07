@@ -163,6 +163,8 @@
     "Row",
     "Column"
   ],
+  "LinkSkillCondition": "Link Condition",
+  "LinkSkillEffect": "Link Effect",
   "StoryTranscriptDB": "Story Transcripts",
   "MainStory": "Main Story",
   "EventStory": "Event Story",

@@ -243,3 +243,7 @@ tbody tr td{
   background-color: rgba(0,0,0,0);
   border: none;
 }
+
+.link-skill{
+  color: yellowgreen;
+}

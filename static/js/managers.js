@@ -282,6 +282,7 @@
       "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json": this.parseCharacterData,
       "https://assets.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json": this.parseGearData,
       "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json": this.parseSkillData,
+      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
       "/static/json/iconinfo.json": this.parseIconClipData,
     }
     for(let uri in handlers){
@@ -355,6 +356,15 @@
     for(let i in res){
       let dat = res[i];
       this.SkillData[dat['Id']] = dat;
+    }
+    this.incReadyCounter();
+  }
+
+  static parseLinkSkillData(res){
+    this.LinkSkillData = {};
+    for(let i in res){
+      let dat = res[i];
+      this.LinkSkillData[dat['OriginMSkillId']] = dat;
     }
     this.incReadyCounter();
   }

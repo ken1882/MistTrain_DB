@@ -1,6 +1,7 @@
 var AvatarCanvas, AvatarContext;
 var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
+let LinkSkillDescSwap = {};
 
 const WeaponAttribute = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 const SkillPowerRank = [
@@ -253,6 +254,34 @@ function fillCharacterSkillInfo(){
     }
     else{
       $(seffect).text(skill.Description);
+    }
+
+    // Link skill
+    if(AssetsManager.LinkSkillData.hasOwnProperty(skill['Id'])){
+      let lskill_req = AssetsManager.LinkSkillData[skill['Id']];
+      let lskill = AssetsManager.SkillData[lskill_req.ActivateMSkillId];
+      console.log(lskill_req);
+      console.log(lskill);
+      let link_icon = document.createElement('span');
+      link_icon.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16" 
+        style="border: dashed 2px; padding: 2px;"
+        >
+        <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+        <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+      </svg>
+      `;
+      seffect.innerHTML = `
+        ${seffect.innerHTML}
+        <hr>
+        <span class="link-skill">
+          <span style="margin:auto;">${Vocab['LinkSkillCondition']}：</span><br>
+          ${lskill_req.ConditionDescription}<hr>
+          <span style="margin:auto;">${Vocab['LinkSkillEffect']}：</span><br>
+          ${lskill.Description}
+        </span>
+      `;
+      sname.appendChild(link_icon);
     }
     $(node).append(sname);
     $(node).append(scost);

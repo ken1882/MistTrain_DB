@@ -3,3 +3,5 @@ __pycache__/
 !.gitignore
 *.bin
 *.bak
+static/scenes/*.json
+!static/scenes/0.json
