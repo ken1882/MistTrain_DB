@@ -3,5 +3,6 @@ __pycache__/
 !.gitignore
 *.bin
 *.bak
+static/json/*_derpy_warehouse.json
 static/scenes/*.json
 !static/scenes/0.json
