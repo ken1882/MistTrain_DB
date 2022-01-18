@@ -70,11 +70,14 @@
   "LoopAnimation": "Loop",
   "ZoomIn": "Zoom in",
   "ZoomOut": "Zoom out",
+  "SaveFrame": "Save Frame",
   "Name": "Name",
   "Avatar": "Avatar",
   "Rarity": "Rarity",
   "Weapon": "Weapon",
   "Type": "Type",
+  "Download": "Download",
+  "ExportAnimation": "Export Current Animation",
   "AttackAttributes": "Attack Attributes",
   "CharacterTypeList": [
     "",
@@ -182,6 +185,7 @@
   "BGMVolume": "BGM Vulume",
   "SEVolume": "SE Volume",
   "BGSVolume": "BGS Volume",
+  "DrawBackground": "Draw background",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

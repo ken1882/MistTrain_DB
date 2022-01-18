@@ -217,6 +217,7 @@
       <div id="char-zooms" style="display: none;">
         <button id="char-zoomin" label="l-ZoomIn"></button>
         <button id="char-zoomout" label="l-ZoomOut"></button>
+        <button id="char-saveframe" label="l-SaveFrame" onclick="exportCharacterCanvas()"></button>
       </div>
       <br>
       <div class="spinner-border center" id="character-loading-indicator">
@@ -234,12 +235,19 @@
       <hr>
       <div class="center">
         <p style="display: inline-block; padding: 4px;">
+          <input type="checkbox" id="ckb_drawbattlerbg" onclick="DrawBattlerBackground = $(this).prop('checked')">
+          <label for="ckb_drawbattlerbg" label="l-DrawBackground"></label>
+        </p>
+        <p style="display: inline-block; padding: 4px;">
           <input type="checkbox" id="ckb_badbg" onclick="BattlerRenderer.debugRendering = $(this).prop('checked')">
           <label for="ckb_badbg" label="l-DrawSpineBones"></label>
         </p>
         <p style="display: inline-block; padding: 4px;">
           <input type="checkbox" id="loop-battler-anim">
           <label for="loop-battler-anim" label="l-LoopAnimation"></label>
+        </p>
+        <p style="display: inline-block; padding: 16px;">
+          <button id="btn-export-anim" label="l-ExportAnimation" onclick="prepareBattlerAnimRecord()" disabled></button>
         </p>
       </div>
       <div id="battler-canvas-container" class="center">
@@ -258,5 +266,6 @@
   </body>
   <script>
     $('input[type=checkbox]').prop('checked', false);
+    $('#ckb_drawbattlerbg').prop('checked', true);
   </script>
 </html>

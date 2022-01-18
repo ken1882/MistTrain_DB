@@ -113,9 +113,15 @@ function setupDialogues(){
       phrase.innerHTML = `<span style="color:greenyellow;"><b>${dialog['Name']}：</b></span><br>` + phrase.innerHTML;
       let mchid = findSpeakerCharacterId(dialog);
       if(mchid != null){
-        let avatar = AssetsManager.createCharacterAvatarNode(mchid, 1);
-        avatar.addClass('dialog-avatar');
-        $(textbox).prepend(avatar);
+        try{
+          let avatar = AssetsManager.createCharacterAvatarNode(mchid, 1);
+          avatar.addClass('dialog-avatar');
+          $(textbox).prepend(avatar);
+        }
+        catch(e){
+          console.error(`Character ${mchid} has no avatar available`)
+          console.error(e);
+        }
       }
     }
     let audio_id = dialog['VoiceFileName'];

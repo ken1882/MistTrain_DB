@@ -2,6 +2,9 @@ var AvatarCanvas, AvatarContext;
 var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
 let LinkSkillDescSwap = {};
+let AnimationChunks = [];
+let AnimationStream = null;
+let AnimationRecorder = null;
 
 const WeaponAttribute = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 const SkillPowerRank = [
@@ -107,6 +110,7 @@ function appendAnimations(){
   list_baa.on('change', (e)=>{
     BattlerAnimState.setAnimation(0, e.target.value, $("#loop-battler-anim").prop('checked'));
   });
+  $("#btn-export-anim").prop('disabled', false);
 }
 
 function fillCharacterBaseInfo(){
@@ -317,6 +321,62 @@ function fillCharacterSkillInfo(){
 function appendCharacterAvatars(){
   let parent = $('#character-icon');
   parent.append(AssetsManager.createCharacterAvatarNode(__CharacterId));
+}
+
+
+function prepareBattlerAnimRecord(){
+	let actlist = $("#battler-act-list");
+  let val = actlist.prop('value');
+	actlist.prop('value', '');
+	actlist.one('change', setupBattlerAnimRecord);
+  $("#btn-export-anim").prop('disabled', true);
+  actlist.prop('disabled', true);
+  actlist.prop('value', val);
+  actlist.trigger('change');
+}
+
+function setupBattlerAnimRecord(){
+  let chunks = [];
+  let anim_stream = BattlerCanvas.captureStream();
+	rec = new MediaRecorder(anim_stream);
+	rec.ondataavailable = (e) => {
+		chunks.push(e.data);
+	};
+  rec.onstop = (_)=>{
+    exportBattlerAnimation( new Blob(chunks, {type: 'video/webm'}) );
+  };
+  rec.start();
+
+  let listner = {
+    complete: (_)=>{
+      rec.stop();
+      BattlerAnimState.removeListener(listner);
+    }
+  };
+
+  BattlerAnimState.addListener(listner);
+	return rec;
+}
+
+function exportBattlerAnimation(blob){
+  let vid = document.createElement('video');
+  vid.src = URL.createObjectURL(blob);
+  vid.controls = true;
+  document.body.appendChild(vid);
+  const a = document.createElement('a');
+  a.download = 'battler.webm';
+  try{
+    a.download = `${__CharacterId}_${BattlerAnimState.tracks[0].animation.name}.webm`
+  }
+  catch(_){}
+  a.href = vid.src;
+  a.textContent = Vocab['Download'];
+  document.body.appendChild(a);
+  $("#btn-export-anim").prop('disabled', false);
+  $("#battler-act-list").prop('disabled', false);
+  $('body,html').animate({
+    scrollTop: Math.max(0, a.offsetTop - (window.innerHeight - a.offsetHeight)/2)
+  }, 800);
 }
 
 (function(){
