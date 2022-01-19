@@ -6,6 +6,7 @@ var BattlerRenderer, CharacterRenderer;
 
 var BattlerCanvasWidthScale = 0.6;
 var BattlerSkeletonShrinkRate = 2.5;
+const BattlerSkeletonShrinkFactor = 10.01;
 
 var CharacterCanvasWidthScale = 0.5;
 var CharacterSkeletonShrinkRate = 1.0;

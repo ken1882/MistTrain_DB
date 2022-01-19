@@ -71,6 +71,10 @@ function setupSpineContent(){
     resizeCharacterCanvas();
   });
   document.getElementById("char-zooms").style.display = '';
+  $("#inp-bacanvas-ratio").prop('value', (BattlerCanvas.height / BattlerCanvas.width).toFixed(2));
+  $("#inp-bacanvas-ratio").trigger('change');
+  $("#inp-battler-zoom").prop('value', BattlerSkeletonShrinkFactor-BattlerSkeletonShrinkRate);
+  $("#inp-battler-zoom").prop('defaultValue', BattlerSkeletonShrinkFactor-BattlerSkeletonShrinkRate);
 }
 
 function appendAnimations(){
@@ -264,8 +268,6 @@ function fillCharacterSkillInfo(){
     if(AssetsManager.LinkSkillData.hasOwnProperty(skill['Id'])){
       let lskill_req = AssetsManager.LinkSkillData[skill['Id']];
       let lskill = AssetsManager.SkillData[lskill_req.ActivateMSkillId];
-      console.log(lskill_req);
-      console.log(lskill);
       let link_icon = document.createElement('span');
       link_icon.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16" 

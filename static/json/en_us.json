@@ -186,6 +186,12 @@
   "SEVolume": "SE Volume",
   "BGSVolume": "BGS Volume",
   "DrawBackground": "Draw background",
+  "CanvasWidth": "Canvas width",
+  "CanvasHeight": "Canvas height",
+  "CanvasHeightRatio": "Canvas height ratio",
+  "CharacterX": "Character X position",
+  "CharacterY": "Character Y position",
+  "ZoomLevel": "Zoom level",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

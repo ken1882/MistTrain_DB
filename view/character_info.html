@@ -234,18 +234,9 @@
       <div class="center h3" label="l-CharacterFigure"></div>
       <hr>
       <div class="center">
-        <p style="display: inline-block; padding: 4px;">
-          <input type="checkbox" id="ckb_drawbattlerbg" onclick="DrawBattlerBackground = $(this).prop('checked')">
-          <label for="ckb_drawbattlerbg" label="l-DrawBackground"></label>
-        </p>
-        <p style="display: inline-block; padding: 4px;">
-          <input type="checkbox" id="ckb_badbg" onclick="BattlerRenderer.debugRendering = $(this).prop('checked')">
-          <label for="ckb_badbg" label="l-DrawSpineBones"></label>
-        </p>
-        <p style="display: inline-block; padding: 4px;">
-          <input type="checkbox" id="loop-battler-anim">
-          <label for="loop-battler-anim" label="l-LoopAnimation"></label>
-        </p>
+        
+        <button type="button" data-toggle="modal" data-target="#settingsModal" label="l-Settings">
+        </button>
         <p style="display: inline-block; padding: 16px;">
           <button id="btn-export-anim" label="l-ExportAnimation" onclick="prepareBattlerAnimRecord()" disabled></button>
         </p>
@@ -263,9 +254,88 @@
     </div>
     <hr>
 
+    <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="settingsModalLabel" label="l-Settings"></h5>
+          </div>
+          <div class="modal-body">
+            <div>
+              <p style="display: inline-block; padding: 4px;">
+                <input type="checkbox" id="ckb_drawbattlerbg" onclick="DrawBattlerBackground = $(this).prop('checked')">
+                <label for="ckb_drawbattlerbg" label="l-DrawBackground"></label>
+              </p>
+              <p style="display: inline-block; padding: 4px;">
+                <input type="checkbox" id="ckb_badbg" onclick="BattlerRenderer.debugRendering = $(this).prop('checked')">
+                <label for="ckb_badbg" label="l-DrawSpineBones"></label>
+              </p>
+              <p style="display: inline-block; padding: 4px;">
+                <input type="checkbox" id="loop-battler-anim">
+                <label for="loop-battler-anim" label="l-LoopAnimation"></label>
+              </p>
+            </div>
+            <div style="padding: 8px;">
+              <label label="l-CanvasHeightRatio"></label>
+              <input id="inp-bacanvas-ratio" style="vertical-align:bottom;" type="range" min="0.5" max="2.0" value="0.85" step="0.05" oninput="$('#text-bacanvasratio').text(this.value)">
+              <span id="text-bacanvasratio" style="vertical-align:top;">0.85</span>
+            </div>
+            <div style="padding: 8px;">
+              <label label="l-CharacterX"></label>
+              <input type="number" value="0" id="inp-battler-x">
+              <br>
+              <label label="l-CharacterY"></label>
+              <input type="number" value="0" id="inp-battler-y">
+            </div>
+            <div style="padding: 8px;">
+              <label label="l-ZoomLevel"></label>
+              <input id="inp-battler-zoom" style="vertical-align:bottom;" type="range" min="0.5" max="10.0" value="7.5" step="0.1" oninput="$('#text-battlerzoom').text(this.value)">
+              <span id="text-battlerzoom" style="vertical-align:top;">7.5</span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" label="l-Yes" onclick="updateBattlerSettings()"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
   <script>
     $('input[type=checkbox]').prop('checked', false);
     $('#ckb_drawbattlerbg').prop('checked', true);
+    $("#inp-battler-x").prop('defaultValue', 0);
+    $("#inp-battler-y").prop('defaultValue', 0);
+    $("#inp-battler-x").prop('value', 0);
+    $("#inp-battler-y").prop('value', 0);
+    $("#inp-battler-x").on('change', enforceNumericInput);
+    $("#inp-battler-y").on('change', enforceNumericInput);
+    $("#inp-battler-zoom").on('change', enforceNumericInput);
+
+    function enforceNumericInput(event){
+      let node = event.target;
+      let val = parseFloat(node.value);
+      if(isNaN(val)){ node.value = node.defaultValue; }
+      else{
+        let maxn = parseFloat(node.max);
+        let minn = parseFloat(node.min);
+        if(!isNaN(maxn) && val > maxn){ val = maxn; }
+        if(!isNaN(minn) && val < minn){ val = minn; }
+        node.value = val;
+      }
+    }
+
+    function updateBattlerSettings(){
+      let chr = $("#inp-bacanvas-ratio").prop('value');
+      let cx = parseInt($("#inp-battler-x").prop('value'));
+      let cy = parseInt($("#inp-battler-y").prop('value'));
+      let cz = parseFloat($("#inp-battler-zoom").prop('value'));
+      BattlerCanvas.height = BattlerCanvas.width * chr;
+      BattlerSkeleton.x = cx;
+      BattlerSkeleton.y = -cy;
+      BattlerSkeletonShrinkRate = BattlerSkeletonShrinkFactor - cz;
+      resizeBattlerCanvas();
+    }
+
   </script>
 </html>
