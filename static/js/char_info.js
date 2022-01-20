@@ -385,7 +385,7 @@ function setupBattlerAnimRecord(){
     else{
       setTimeout(rec_start_proc, 100);
     }
-  }
+  };
 
   let listner = {
     complete: (state)=>{
