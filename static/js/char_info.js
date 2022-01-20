@@ -350,10 +350,13 @@ function appendCharacterAvatars(){
   parent.append(AssetsManager.createCharacterAvatarNode(__CharacterId));
 }
 
-
 function prepareBattlerAnimRecord(){
 	let actlist = $("#battler-act-list");
   let val = actlist.prop('value');
+  var reg = val.match(/Skill(\d+)_(After|Before)/);
+  if(PlayFullSkillAnimation && reg){
+    val = `Skill${reg[1]}_Before`;
+  }
 	actlist.prop('value', '');
 	actlist.one('change', (_)=>{
     AnimationRecorder = setupBattlerAnimRecord();
@@ -374,16 +377,39 @@ function setupBattlerAnimRecord(){
   rec.onstop = (_)=>{
     exportBattlerAnimation( new Blob(chunks, {type: 'video/webm'}) );
   };
-  rec.start();
+  
+  let rec_start_proc = ()=>{
+    if(BattlerAnimState.timeScale > 0){
+      rec.start();
+    }
+    else{
+      setTimeout(rec_start_proc, 100);
+    }
+  }
 
   let listner = {
-    complete: (_)=>{
-      rec.stop();
-      BattlerAnimState.removeListener(listner);
+    complete: (state)=>{
+      var reg = state.animation.name.match(/Skill(\d+)_Before/);
+      if(PlayFullSkillAnimation && reg){
+        var name = `Skill${reg[1]}_After`;
+        var node = document.getElementById('battler-act-list');
+        for(let i=0;i<node.children.length;++i){
+          var ele = node.children[i];
+          if(ele.value == name){
+            node.value = ele.value;
+            BattlerAnimState.setAnimation(0, name, false);
+          }
+        }
+      }
+      else{
+        rec.stop();
+        BattlerAnimState.removeListener(listner);
+      }
     }
   };
-
   BattlerAnimState.addListener(listner);
+  
+  rec_start_proc();
 	return rec;
 }
 
