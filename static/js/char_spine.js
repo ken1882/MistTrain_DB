@@ -6,7 +6,7 @@ var BattlerRenderer, CharacterRenderer;
 
 var BattlerCanvasWidthScale = 0.6;
 var BattlerSkeletonShrinkRate = 2.5;
-const BattlerSkeletonShrinkFactor = 10.01;
+const BattlerSkeletonShrinkFactor = 11;
 
 var CharacterCanvasWidthScale = 0.5;
 var CharacterSkeletonShrinkRate = 1.0;
@@ -27,6 +27,7 @@ const DefaultCharacterAnimation = 'Idle_Normal';
 const DefaultHomepageAnimation = 'Idle';
 
 let BattlerKeyBoneIndex = 1;
+let CameraFollowBattler = true;
 let BattlerCameraXFactor = 100;
 let BattlerCameraYFactor = 4;
 
@@ -221,8 +222,10 @@ function renderBattler(){
 		BattlerRenderer.drawSkeletonDebug(BattlerSkeleton, PREMUL_ALPHA, ["root"]);
 	}
 	BattlerRenderer.end()
-	BattlerRenderer.camera.position.x = BattlerSkeleton.bones[BattlerKeyBoneIndex].x - BattlerCameraXFactor;
-	BattlerRenderer.camera.position.y = (BattlerBounds.offset.y + BattlerBounds.size.y / BattlerCameraYFactor) - BattlerSkeleton.bones[BattlerKeyBoneIndex].y;
+	if(CameraFollowBattler){
+		BattlerRenderer.camera.position.x = BattlerSkeleton.bones[BattlerKeyBoneIndex].x - BattlerCameraXFactor;
+		BattlerRenderer.camera.position.y = (BattlerBounds.offset.y + BattlerBounds.size.y / BattlerCameraYFactor) - BattlerSkeleton.bones[BattlerKeyBoneIndex].y;
+	}
 	requestAnimationFrame(renderBattler);
 }
 
@@ -349,6 +352,7 @@ function exportBattlerCanvas(){
 	window.open(canvas.toDataURL("image/png"));
 	canvas.remove();
 }
+
 
 (function() { 
 	addEventListener("load", init);

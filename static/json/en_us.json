@@ -192,6 +192,9 @@
   "CharacterX": "Character X position",
   "CharacterY": "Character Y position",
   "ZoomLevel": "Zoom level",
+  "CameraFollow": "Enable Following Camera",
+  "CameraTarget": "Camera Target",
+  "FullSkillAnimation": "Full Skill Animation",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

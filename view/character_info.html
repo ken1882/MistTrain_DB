@@ -233,13 +233,21 @@
     <div>
       <div class="center h3" label="l-CharacterFigure"></div>
       <hr>
-      <div class="center">
-        
+      <div id="battler-utils" class="center" style="display: none;">
+        <div style="display: inline-block; padding: 16px;">
+          <p id="battler-anim-pause" style="cursor:pointer;" onclick="toggleBattlerAnimationPause()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-pause-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M5 6.25a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5zm3.5 0a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5z"/>
+            </svg>
+          </p>
+        </div>
         <button type="button" data-toggle="modal" data-target="#settingsModal" label="l-Settings">
         </button>
         <p style="display: inline-block; padding: 16px;">
           <button id="btn-export-anim" label="l-ExportAnimation" onclick="prepareBattlerAnimRecord()" disabled></button>
         </p>
+        <button id="battler-saveframe" label="l-SaveFrame" onclick="exportBattlerCanvas()"></button>
       </div>
       <div id="battler-canvas-container" class="center">
         <div class="spinner-border center" id="battler-loading-indicator">
@@ -271,8 +279,14 @@
                 <label for="ckb_badbg" label="l-DrawSpineBones"></label>
               </p>
               <p style="display: inline-block; padding: 4px;">
-                <input type="checkbox" id="loop-battler-anim">
-                <label for="loop-battler-anim" label="l-LoopAnimation"></label>
+                <input type="checkbox" id="ckb-loop-battler-anim">
+                <label for="ckb-loop-battler-anim" label="l-LoopAnimation"></label>
+              </p>
+            </div>
+            <div>
+              <p style="display: inline-block; padding: 4px;">
+                <input type="checkbox" id="ckb-play-full-skill" onclick="PlayFullSkillAnimation = this.checked">
+                <label for="ckb-play-full-skill" label="l-FullSkillAnimation"></label>
               </p>
             </div>
             <div style="padding: 8px;">
@@ -292,6 +306,18 @@
               <input id="inp-battler-zoom" style="vertical-align:bottom;" type="range" min="0.5" max="10.0" value="7.5" step="0.1" oninput="$('#text-battlerzoom').text(this.value)">
               <span id="text-battlerzoom" style="vertical-align:top;">7.5</span>
             </div>
+            <div style="padding: 8px;">
+              <input type="checkbox" id="ckb-camerafollow" onclick="CameraFollowBattler = $(this).prop('checked')">
+              <label for="ckb-camerafollow" label="l-CameraFollow"></label>
+              <br>
+              <label label="l-CameraTarget"></label>
+              <input type="number" min="0" max="10" value="1" id="inp-camera-target">
+            </div>
+            <div style="padding: 8px;">
+              <label label="l-ScenePlaySpeed"></label>
+              <input id="inp-battler-timescale" style="vertical-align:bottom;" type="range" min="0.1" max="3.0" value="1.0" step="0.1" oninput="$('#text-battlertimescale').text(this.value)">
+              <span id="text-battlertimescale" style="vertical-align:top;">1.0</span>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" label="l-Yes" onclick="updateBattlerSettings()"></button>
@@ -304,6 +330,8 @@
   <script>
     $('input[type=checkbox]').prop('checked', false);
     $('#ckb_drawbattlerbg').prop('checked', true);
+    $('#ckb-loop-battler-anim').prop('checked', true);
+    $('#ckb-play-full-skill').prop('checked', true);
     $("#inp-battler-x").prop('defaultValue', 0);
     $("#inp-battler-y").prop('defaultValue', 0);
     $("#inp-battler-x").prop('value', 0);
@@ -311,6 +339,17 @@
     $("#inp-battler-x").on('change', enforceNumericInput);
     $("#inp-battler-y").on('change', enforceNumericInput);
     $("#inp-battler-zoom").on('change', enforceNumericInput);
+    $("#ckb-camerafollow").prop('checked', true);
+    $("#inp-camera-target").prop('value', 1);
+    $("#inp-camera-target").prop('defaultValue', 1);
+    $("#inp-camera-target").on('change', (e)=>{
+      enforceNumericInput(e);
+      BattlerKeyBoneIndex = e.target.value;
+    });
+    $("#inp-battler-timescale").prop('value', 1.0);
+    $("#inp-battler-timescale").on('change', (e)=>{
+      BattlerAnimState.timeScale = parseFloat(e.target.value);
+    });
 
     function enforceNumericInput(event){
       let node = event.target;
