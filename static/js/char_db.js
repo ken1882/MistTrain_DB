@@ -95,6 +95,7 @@ function appendCharacterAvatars(){
     inner_container.append(AssetsManager.createCharacterAvatarNode(id));
     container.append(inner_container);
     inner_container.attr('href', `/character_database/${id}`);  
+    inner_container.attr('target', '_blank');  
     CharacterAvatarNode[id] = inner_container;
     parent.append(container);
   }

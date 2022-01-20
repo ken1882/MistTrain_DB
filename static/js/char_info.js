@@ -2,6 +2,10 @@ var AvatarCanvas, AvatarContext;
 var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
 let LinkSkillDescSwap = {};
+let AnimationChunks = [];
+let AnimationStream = null;
+let AnimationRecorder = null;
+let PlayFullSkillAnimation = true;
 
 const WeaponAttribute = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 const SkillPowerRank = [
@@ -68,6 +72,11 @@ function setupSpineContent(){
     resizeCharacterCanvas();
   });
   document.getElementById("char-zooms").style.display = '';
+  $("#inp-bacanvas-ratio").prop('value', (BattlerCanvas.height / BattlerCanvas.width).toFixed(2));
+  $("#inp-bacanvas-ratio").trigger('change');
+  $("#inp-battler-zoom").prop('value', BattlerSkeletonShrinkFactor-BattlerSkeletonShrinkRate);
+  $("#inp-battler-zoom").prop('defaultValue', BattlerSkeletonShrinkFactor-BattlerSkeletonShrinkRate);
+  $("#battler-utils").show();
 }
 
 function appendAnimations(){
@@ -105,8 +114,32 @@ function appendAnimations(){
     CharacterAnimState.setAnimation(0, e.target.value, true);
   });
   list_baa.on('change', (e)=>{
-    BattlerAnimState.setAnimation(0, e.target.value, $("#loop-battler-anim").prop('checked'));
+    BattlerAnimState.setAnimation(0, e.target.value, $("#ckb-loop-battler-anim").prop('checked'));
   });
+  BattlerAnimState.addListener({
+    complete: (state)=>{
+      if(!PlayFullSkillAnimation){ return; }
+      var reg = state.animation.name.match(/Skill(\d+)_After/);
+      var reg2 = state.animation.name.match(/Skill(\d+)_Before/);
+      if(!reg && !reg2){ return;}
+      var name = `SkillN_BeforeAfter`;
+      var node = document.getElementById('battler-act-list');
+      if(reg && $("#ckb-loop-battler-anim").prop('checked')){
+        name = `Skill${reg[1]}_Before`;
+      }
+      if(reg2){
+        name = `Skill${reg2[1]}_After`;
+      }
+      for(let i=0;i<node.children.length;++i){
+        var ele = node.children[i];
+        if(ele.value == name){
+          node.value = ele.value;
+          BattlerAnimState.setAnimation(0, name, false);
+        }
+      }
+    }
+  });
+  $("#btn-export-anim").prop('disabled', false);
 }
 
 function fillCharacterBaseInfo(){
@@ -260,8 +293,6 @@ function fillCharacterSkillInfo(){
     if(AssetsManager.LinkSkillData.hasOwnProperty(skill['Id'])){
       let lskill_req = AssetsManager.LinkSkillData[skill['Id']];
       let lskill = AssetsManager.SkillData[lskill_req.ActivateMSkillId];
-      console.log(lskill_req);
-      console.log(lskill);
       let link_icon = document.createElement('span');
       link_icon.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16" 
@@ -317,6 +348,121 @@ function fillCharacterSkillInfo(){
 function appendCharacterAvatars(){
   let parent = $('#character-icon');
   parent.append(AssetsManager.createCharacterAvatarNode(__CharacterId));
+}
+
+function prepareBattlerAnimRecord(){
+	let actlist = $("#battler-act-list");
+  let val = actlist.prop('value');
+  var reg = val.match(/Skill(\d+)_(After|Before)/);
+  if(PlayFullSkillAnimation && reg){
+    val = `Skill${reg[1]}_Before`;
+  }
+	actlist.prop('value', '');
+	actlist.one('change', (_)=>{
+    AnimationRecorder = setupBattlerAnimRecord();
+  });
+  $("#btn-export-anim").prop('disabled', true);
+  actlist.prop('disabled', true);
+  actlist.prop('value', val);
+  actlist.trigger('change');
+}
+
+function setupBattlerAnimRecord(){
+  let chunks = [];
+  let anim_stream = BattlerCanvas.captureStream();
+	rec = new MediaRecorder(anim_stream);
+	rec.ondataavailable = (e) => {
+		chunks.push(e.data);
+	};
+  rec.onstop = (_)=>{
+    exportBattlerAnimation( new Blob(chunks, {type: 'video/webm'}) );
+  };
+  
+  let rec_start_proc = ()=>{
+    if(BattlerAnimState.timeScale > 0){
+      rec.start();
+    }
+    else{
+      setTimeout(rec_start_proc, 100);
+    }
+  };
+
+  let listner = {
+    complete: (state)=>{
+      var reg = state.animation.name.match(/Skill(\d+)_Before/);
+      if(PlayFullSkillAnimation && reg){
+        var name = `Skill${reg[1]}_After`;
+        var node = document.getElementById('battler-act-list');
+        for(let i=0;i<node.children.length;++i){
+          var ele = node.children[i];
+          if(ele.value == name){
+            node.value = ele.value;
+            BattlerAnimState.setAnimation(0, name, false);
+          }
+        }
+      }
+      else{
+        rec.stop();
+        BattlerAnimState.removeListener(listner);
+      }
+    }
+  };
+  BattlerAnimState.addListener(listner);
+  
+  rec_start_proc();
+	return rec;
+}
+
+function exportBattlerAnimation(blob){
+  let vid = document.createElement('video');
+  vid.src = URL.createObjectURL(blob);
+  vid.controls = true;
+  document.body.appendChild(vid);
+  const a = document.createElement('a');
+  a.download = 'battler.webm';
+  try{
+    a.download = `${__CharacterId}_${BattlerAnimState.tracks[0].animation.name}.webm`
+  }
+  catch(_){}
+  a.href = vid.src;
+  a.textContent = Vocab['Download'];
+  document.body.appendChild(a);
+  $("#btn-export-anim").prop('disabled', false);
+  $("#battler-act-list").prop('disabled', false);
+  $('body,html').animate({
+    scrollTop: Math.max(0, a.offsetTop - (window.innerHeight - a.offsetHeight)/2)
+  }, 800);
+}
+
+let LastBattlerAnimTimeScale = 1;
+function toggleBattlerAnimationPause(){
+	if(BattlerAnimState.timeScale > 0){
+		LastBattlerAnimTimeScale = BattlerAnimState.timeScale;
+		BattlerAnimState.timeScale = 0; 
+    if(AnimationRecorder && AnimationRecorder.state == 'recording'){
+      AnimationRecorder.pause();
+    }
+		$("#inp-battler-timescale").prop('disabled', true);
+		document.getElementById('battler-anim-pause').innerHTML = `
+			<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+				<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+				<path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+			</svg>
+		`
+	}
+	else{
+		BattlerAnimState.timeScale = LastBattlerAnimTimeScale;
+    if(AnimationRecorder && AnimationRecorder.state == 'paused'){
+      AnimationRecorder.resume();
+    }
+		$("#inp-battler-timescale").prop('disabled', false);
+		document.getElementById('battler-anim-pause').innerHTML = `
+			<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-pause-circle" viewBox="0 0 16 16">
+				<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+				<path d="M5 6.25a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5zm3.5 0a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5z"/>
+			</svg>
+		`
+	}
 }
 
 (function(){

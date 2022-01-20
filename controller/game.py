@@ -29,8 +29,8 @@ PostHeaders = {
 }
 
 ServerList = (
-  'https://mist-train-east4.azurewebsites.net',
   'https://mist-train-east5.azurewebsites.net',
+  'https://mist-train-east4.azurewebsites.net',
   'https://mist-train-east6.azurewebsites.net',
   'https://mist-train-east7.azurewebsites.net',
   'https://mist-train-east8.azurewebsites.net',
