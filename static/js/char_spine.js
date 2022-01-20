@@ -115,6 +115,10 @@ function loadBattlerSpineData(rssdata){
 		if(bone.transformMode == 2){ bone.transformMode = 0; }
 		if(sdat.blendMode == 1){ sdat.blendMode = 3; }
 	}
+	for(let i in BattlerAnimState.data.skeletonData.bones){
+		let bone = BattlerAnimState.data.skeletonData.bones[i];
+		if(bone.transformMode == 2){ bone.transformMode = 1; }
+	}
 	resizeBattlerCanvas();
 	requestAnimationFrame(renderBattler);
 	window.addEventListener("resize", resizeBattlerCanvas, true);
