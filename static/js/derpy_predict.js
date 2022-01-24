@@ -307,10 +307,9 @@ function setupCountdown(race){
       setupCountdown(race);
     }, 300);
   }
-  var jp_zone = -60 * 9 * 60 + 4740;
-  var cur_zone = new Date().getTimezoneOffset() * 60;
+  var magic_offset = 1140;
   var flipdown = new FlipDown(
-    race.timestamp - (cur_zone - jp_zone),
+    race.timestamp + magic_offset, // magic
     {
       theme: 'light',
       headings: [
