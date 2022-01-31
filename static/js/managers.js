@@ -204,29 +204,60 @@
     this.__readyCnt = 0;
     this.__readyReq = 0;
     this.__requestQueue = [];
+    this.CharacterAvatarSet = {};
+    this.CharacterAvatarClip = {};
+    this.CharacterAvatarMap = {};
   }
 
   static loadCharacterAssets(){
     this.loadCharacterAvatars();
+    this.loadCharacterFrames();
+    this.loadAvatarClipData();
     this.loadAllAssets();
     this.setupAvatarCanvas();
   }
-
-  static loadCharacterAvatars(){
-    this.__readyReq += 2;
-    var image = new Image(), image2 = new Image();
+  
+  static loadCharacterAvatars(idx=1){
+    this.__readyReq += 1;
+    let image = new Image();
     image.crossOrigin = "anonymous";
-    image.src = "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.png";
+    image.src = `https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-${idx}.png`;
     image.onload = () => {
-      this.CharacterAvatarSet = image;
+      this.CharacterAvatarSet[idx] = image;
       this.incReadyCounter();
+      AssetsManager.loadCharacterAvatars(idx+1);
     };
-    image2.src = "/static/assets/icons_party1.png";
-    image2.onload = () => {
-      this.CharacterFrameSet = image2;
+    image.onerror = ()=>{
+      this.incReadyCounter();
+    }
+  }
+
+  static loadCharacterFrames(){
+    this.__readyReq += 1;
+    let image = new Image();
+    image.src = "/static/assets/icons_party1.png";
+    image.onload = () => {
+      this.CharacterFrameSet = image;
       this.incReadyCounter();
     };
   }
+
+  static loadAvatarClipData(idx=1){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-${idx}.plist`,
+      success: (res) => { 
+        AssetsManager.parseAvatarClipData(res, idx);
+        this.incReadyCounter();
+        AssetsManager.loadAvatarClipData(idx+1);
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
   /**
    * > Request async resources, used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()` 
    * to check if fully loaded.
@@ -278,7 +309,6 @@
 
   static loadAllAssets(){
     const handlers = {
-      "https://assets.mist-train-girls.com/production-client-web-assets/Textures/Icons/Atlas/Layers/character-1.plist": this.parseAvatarClipData,
       "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json": this.parseCharacterData,
       "https://assets.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json": this.parseGearData,
       "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json": this.parseSkillData,
@@ -322,10 +352,19 @@
     return node;
   }
   
-  static parseAvatarClipData(xml){
+  /**
+   * > Parse clip data from mega character canvas 
+   * @param {*} xml Response XML dara
+   * @param {*} idx Index of canvas to track correct canvas of character
+   */
+  static parseAvatarClipData(xml, idx){
     let root = xml.children[0].children[0];
-    this.CharacterAvatarClip = this.parseXMLKeyValueDict(root);
-    this.incReadyCounter();
+    let data = this.parseXMLKeyValueDict(root);
+    for(let i in data.frames){
+      if(!data.frames.hasOwnProperty(i)){ continue; }
+      this.CharacterAvatarClip[i] = data.frames[i];
+      this.CharacterAvatarMap[i] = idx;
+    }
   }
   
   static parseCharacterData(res){
@@ -402,7 +441,11 @@
     $(img2).attr('class', 'avatar-frame');
     block.append(img);
     block.append(img2);
-    let rect = this.CharacterAvatarClip.frames[`${id}.png`].textureRect.flat();
+    let avatar_key = `${id}.png`;
+    let rect = null;
+    if(this.CharacterAvatarClip.hasOwnProperty(avatar_key)){
+      rect = this.CharacterAvatarClip[`${id}.png`].textureRect.flat();
+    }
     let krarity = 'frm_thumb_common';
     if(!frame_type){
       switch(this.CharacterData[id].CharacterRarity){
@@ -429,17 +472,28 @@
     }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
     this.FrameContext.clearRect(0, 0, this.FrameCanvas.width, this.FrameCanvas.height);
-    clipImage(
-      this.AvatarCanvas, this.CharacterAvatarSet, img, 
-      rect[0], rect[1], rect[2], rect[3],
-      this.AvatarFramePadding, this.AvatarFramePadding,
-      this.AvatarCanvas.width - this.AvatarFramePadding*2, this.AvatarCanvas.height - this.AvatarFramePadding*2
-    );
-    clipImage(
-      this.FrameCanvas, this.CharacterFrameSet, img2, 
-      rect2[0], rect2[1], rect2[2], rect2[3], 
-      0, 0, rect2[2], rect2[3]
-    );
+    if(rect){
+      let src_idx = this.CharacterAvatarMap[avatar_key];
+      // clipImage(
+      //   this.AvatarCanvas, this.CharacterAvatarSet[src_idx], img, 
+      //   rect[0], rect[1], rect[2], rect[3],
+      //   this.AvatarFramePadding, this.AvatarFramePadding,
+      //   this.AvatarCanvas.width - this.AvatarFramePadding*2, this.AvatarCanvas.height - this.AvatarFramePadding*2
+      // );
+      clipImage(
+        this.FrameCanvas, this.CharacterAvatarSet[src_idx], img, 
+        rect[0], rect[1], rect[2], rect[3],
+        this.AvatarFramePadding, this.AvatarFramePadding,
+        this.AvatarCanvas.width, this.AvatarCanvas.height 
+      );
+    }
+    if(rect2){
+      clipImage(
+        this.FrameCanvas, this.CharacterFrameSet, img2, 
+        rect2[0], rect2[1], rect2[2], rect2[3], 
+        0, 0, rect2[2], rect2[3]
+      );
+    }
     return container;
   }
 

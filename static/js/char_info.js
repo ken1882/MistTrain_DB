@@ -347,7 +347,12 @@ function fillCharacterSkillInfo(){
 
 function appendCharacterAvatars(){
   let parent = $('#character-icon');
-  parent.append(AssetsManager.createCharacterAvatarNode(__CharacterId));
+  let node = AssetsManager.createCharacterAvatarNode(__CharacterId);
+  parent.append(node);
+  console.log(node);
+  let img = node.children();
+  img.attr('target', '_blank');
+  img.attr('href', AssetsManager.FrameCanvas.toDataURL());
 }
 
 function prepareBattlerAnimRecord(){
