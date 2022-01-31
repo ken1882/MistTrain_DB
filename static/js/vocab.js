@@ -53,10 +53,15 @@
     }, this.onLoadError);
   }
   /*-------------------------------------------------------------------------*/
-  static onLoadError(){
+  static onLoadError(depth=0){
     DataManager.changeSetting(DataManager.kLanguage, DataManager.DefaultLanguage);
     Vocab.Language = DataManager.language;
-    Vocab.loadLanguageFile();
+    if(depth < 3){
+      Vocab.loadLanguageFile();
+    }
+    else{
+      alert("Service unavailable, please come back later.")
+    }
   }
   /*-------------------------------------------------------------------------*/
   static translatePageCotent(){
