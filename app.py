@@ -101,6 +101,8 @@ def get_next_race():
     code = 200
     if _G.KEY_ERRNO in race:
       code = race[_G.KEY_ERRNO]
+      if code == _G.ERRNO_UNAVAILABLE:
+        code = 503
     return jsonify(race),code
   except (TypeError, KeyError) as err:
     handle_exception(err)
