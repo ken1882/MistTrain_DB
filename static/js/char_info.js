@@ -47,6 +47,7 @@ function setup(){
   appendCharacterAvatars();
   loadSpineData();
   setupSpineContent();
+  loadCharacterVoices();
 }
 
 function loadSpineData(){
@@ -140,6 +141,34 @@ function appendAnimations(){
     }
   });
   $("#btn-export-anim").prop('disabled', false);
+}
+
+function loadCharacterVoices(){
+  let list = $("#voice-list");
+  let voices = AssetsManager.getCharacterVoiceSet(__CharacterId);
+  for(let i in voices){
+    if(!voices.hasOwnProperty(i)){ continue; }
+    if(i == 'SpecialSkill' && 
+       AssetsManager.CharacterData[__CharacterId].CharacterRarity < 4
+      )
+    {
+      continue;
+    }
+    var opt = document.createElement("option");
+    var key = i.split('_');
+    var name = Vocab.CharacterVoiceName[key[0]];
+    if(key[1]){ name += ' ' + key[1]}
+    $(opt).attr('value', i);
+    opt.innerText = name;
+    list.append(opt);
+  }
+  list.on('change', (e)=>{
+    var player = $("#voice-player");
+    player.attr('src', voices[e.target.value]);
+    if($("#ckb_voiceautoplay").prop('checked')){
+      player[0].play();
+    }
+  });
 }
 
 function fillCharacterBaseInfo(){
@@ -469,6 +498,7 @@ function toggleBattlerAnimationPause(){
 		`
 	}
 }
+
 
 (function(){
   window.addEventListener("load", init);

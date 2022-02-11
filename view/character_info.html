@@ -14,6 +14,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
     <script src="{{ url_for('static', filename='js/spine-all.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/howler.min.js') }}"></script>
     
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
@@ -230,6 +231,29 @@
       </div>
     </div>
     <br><br>
+
+    <div>
+      <div class="center h3" label="l-CharacterVoice"></div>
+      <hr>
+      <div class="center">
+        <p style="display: inline-block; padding: 4px;">
+          <input type="checkbox" id="ckb_voiceautoplay">
+          <label for="ckb_voiceautoplay" label="l-SceneAutoPlay"></label>
+        </p>
+      </div>
+      <div class="center">
+        <div style="display: inline;">
+          <audio id="voice-player" preload="auto" style="width: 50%; height: 214px;"
+            type="audio/mpeg" controls>
+            Your browser doesn't support HTML5 <code>audio</code>. Please use other modern browser.
+          </audio>
+          <select id="voice-list" class="form-select side-selectable" size="8" aria-label="select">
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <br><br>
     <div>
       <div class="center h3" label="l-CharacterFigure"></div>
       <hr>
@@ -261,6 +285,7 @@
       </div>
     </div>
     <hr>
+    
 
     <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -329,6 +354,7 @@
   </body>
   <script>
     $('input[type=checkbox]').prop('checked', false);
+    $('#ckb_voiceautoplay').prop('checked', true);
     $('#ckb_drawbattlerbg').prop('checked', true);
     $('#ckb-loop-battler-anim').prop('checked', true);
     $('#ckb-play-full-skill').prop('checked', true);

@@ -1,5 +1,6 @@
 const __DerpyStartYear  = 2021;
 const __DerpyStartMonth = 4;
+let __FlagDataLoaded = {};
 
 // Append monthly race data from current back to first
 function createMonthlyGroups(){
@@ -20,10 +21,11 @@ function createMonthlyGroups(){
     else{ month += `${cur_m}`; }
     let section = $(document.createElement('div'));
     let node = $(document.createElement('div'));
-    let header = $(document.createElement('a'));
+    let header = $(document.createElement('button'));
     header.attr('class', 'btn btn-primary center');
     header.attr('data-bs-toggle', 'collapse');
     header.attr('aria-controls', '');
+    header.attr('style', 'width: 100%;');
     header.attr('data-bs-target', `.race-${month.replaceAll('/','-')}`);
     header.text(month);
     registerCollapseIndicator(header);
@@ -32,8 +34,23 @@ function createMonthlyGroups(){
     parent.append(section);
     last_header = section;
     appendLoadingIndicator(cur_y, cur_m, last_header);
+    __FlagDataLoaded[`${cur_y}-${cur_m}`] = false;
     last_header.prepend(document.createElement('hr'));
-    loadMonthlyRaceData(cur_y, cur_m, last_header);
+    header.on('click', (e)=>{
+      var date = $(e.target).attr('data-bs-target');
+      if(!date){ return ;}
+      var y = parseInt(date.split('-')[1]), m = parseInt(date.split('-')[2]);
+      if(!__FlagDataLoaded[`${y}-${m}`]){
+        __FlagDataLoaded[`${y}-${m}`] = true;
+        $(`#loading-indicator-${y}-${m}`).show();
+        $(e.target).prop('disabled', true);
+        loadMonthlyRaceData(y, m, $(e.target.parentElement));
+        setTimeout(() => {
+          $(e.target).prop('disabled', false);
+          e.target.click();
+        }, 100);
+      }
+    });
   }
 }
 
@@ -41,6 +58,7 @@ function appendLoadingIndicator(year, month, parent){
   let loading_container = $(document.createElement('div'));
   loading_container.attr('class', `spinner-border center race-${year}-${month}`);
   loading_container.attr('id', `loading-indicator-${year}-${month}`);
+  loading_container.hide();
   let loading_img = $(document.createElement('span'));
   loading_img.attr('class', 'sr-only');
   loading_container.append(loading_img);
