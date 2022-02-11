@@ -45,10 +45,8 @@ function createMonthlyGroups(){
         $(`#loading-indicator-${y}-${m}`).show();
         $(e.target).prop('disabled', true);
         loadMonthlyRaceData(y, m, $(e.target.parentElement));
-        setTimeout(() => {
-          $(e.target).prop('disabled', false);
-          e.target.click();
-        }, 100);
+        $(e.target).prop('disabled', false);
+        setTimeout(()=>{e.target.click();}, 300);
       }
     });
   }
