@@ -44,9 +44,7 @@ function createMonthlyGroups(){
         __FlagDataLoaded[`${y}-${m}`] = true;
         $(`#loading-indicator-${y}-${m}`).show();
         $(e.target).prop('disabled', true);
-        loadMonthlyRaceData(y, m, $(e.target.parentElement));
-        $(e.target).prop('disabled', false);
-        setTimeout(()=>{e.target.click();}, 300);
+        loadMonthlyRaceData(y, m, $(e.target.parentElement), e.target);
       }
     });
   }
@@ -63,7 +61,7 @@ function appendLoadingIndicator(year, month, parent){
   parent.append(loading_container);
 }
 
-function loadMonthlyRaceData(year, month, parent){
+function loadMonthlyRaceData(year, month, parent, target){
   let heading = `${year}-`;
   if(month < 10){ heading += `0${month}_`; }
   else{ heading += `${month}_`; }
@@ -76,6 +74,8 @@ function loadMonthlyRaceData(year, month, parent){
         createDailyGroups(data, parent);
       }
       $(`#loading-indicator-${year}-${month}`).remove();
+      $(target).prop('disabled', false);
+      setTimeout(()=>{target.click();}, 100);
     },
     (res)=>{
       console.log(res);
