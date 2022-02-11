@@ -8,6 +8,7 @@ from random import randint
 from copy import copy,deepcopy
 from dotenv import load_dotenv
 
+ENCODING = 'UTF-8'
 IS_WIN32 = False
 IS_LINUX = False
 
@@ -17,6 +18,7 @@ elif sys.platform == 'linux':
   IS_LINUX = True
 
 ARGV = {}
+
 
 DCTmpFolder = ".tmp"
 DCSnapshotFile = "snapshot.png"
