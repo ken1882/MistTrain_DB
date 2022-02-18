@@ -1,4 +1,4 @@
-const AssetsHost = 'https://assets.mist-train-girls.com/production-client-web-assets';
+const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
 
 /**---------------------------------------------------------------------------
  * > DataManager:
@@ -148,9 +148,9 @@ const AssetsHost = 'https://assets.mist-train-girls.com/production-client-web-as
     req_png.responseType = "blob";
     req_atlas.responseType = "text";
     req_skel.responseType = "arraybuffer";
-    req_png.open('GET', `${AssetsHost}/Small/Spines/SDs/${id}/${id}.png`);
-    req_atlas.open('GET', `${AssetsHost}/Small/Spines/SDs/${id}/${id}.atlas`);
-    req_skel.open('GET', `${AssetsHost}/Small/Spines/SDs/${id}/${id}.skel`);
+    req_png.open('GET', `${ASSET_HOST}/Small/Spines/SDs/${id}/${id}.png`);
+    req_atlas.open('GET', `${ASSET_HOST}/Small/Spines/SDs/${id}/${id}.atlas`);
+    req_skel.open('GET', `${ASSET_HOST}/Small/Spines/SDs/${id}/${id}.skel`);
     if(kwargs.progress){
       req_png.addEventListener('progress', kwargs.progress);
       req_atlas.addEventListener('progress', kwargs.progress);
@@ -223,7 +223,7 @@ const AssetsHost = 'https://assets.mist-train-girls.com/production-client-web-as
     this.__readyReq += 1;
     let image = new Image();
     image.crossOrigin = "anonymous";
-    image.src = `${AssetsHost}/Textures/Icons/Atlas/Layers/character-${idx}.png`;
+    image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Layers/character-${idx}.png`;
     image.onload = () => {
       this.CharacterAvatarSet[idx] = image;
       this.incReadyCounter();
@@ -247,47 +247,47 @@ const AssetsHost = 'https://assets.mist-train-girls.com/production-client-web-as
   static getCharacterVoiceSet(id){
     let bid = this.CharacterData[id].MCharacterBaseId;
     return {
-      'BattleStart':    `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_battle_${id}.mp3`,
-      'Attack_1':       `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_attack1_${bid}.mp3`,
-      'Attack_2':       `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_attack2_${bid}.mp3`,
-      'Skill_1':        `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_skill1_${id}.mp3`,
-      'Skill_2':        `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_skill2_${id}.mp3`,
-      'SkillLink':      `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_cutin_${id}.mp3`,
-      'Damage':         `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_damage_${bid}.mp3`,
-      'Death':          `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_death_${id}.mp3`,
-      'Victory':        `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_victory_${id}.mp3`,
-      'SpecialSkill':   `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_special_${id}.mp3`,
-      'NewJoin':        `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_new_${id}.mp3`,
-      'Home_1':         `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_home1_${id}.mp3`,
-      'Home_2':         `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_home2_${id}.mp3`,
-      'Home_3':         `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_home3_${id}.mp3`,
-      'Kizuna_1':       `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_favorite1_${id}.mp3`,
-      'Kizuna_2':       `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_favorite2_${id}.mp3`,
-      'Kizuna_3':       `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_favorite3_${id}.mp3`,
-      'Kizuna_4':       `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_favorite4_${id}.mp3`,
-      'Kizuna_5':       `${AssetsHost}/Sounds/Voices/Characters/Layers/${id}/voice_favorite5_${id}.mp3`,
-      'NewYear':        `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_jan_${bid}.mp3`,
-      'Valentine':      `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_feb_${bid}.mp3`,
-      'WhiteValentine': `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_mar1_${bid}.mp3`,
-      'DollsDay':       `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_mar2_${bid}.mp3`,
-      'GoldenWeek':     `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_apr_${bid}.mp3`,
-      'MomsDay':        `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_may_${bid}.mp3`,
-      'Tsuyu':          `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_jun_${bid}.mp3`,
-      'Tanabata':       `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_jul_${bid}.mp3`,
-      'SummerFesti':    `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_aug_${bid}.mp3`,
-      'Moonfesti':      `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_sep_${bid}.mp3`,
-      'Halloween':      `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_oct_${bid}.mp3`,
-      'Autumn':         `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_nov_${bid}.mp3`,
-      'Christmas':      `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_dec1_${bid}.mp3`,
-      'NewYearEve':     `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_dec2_${bid}.mp3`,
-      'Oneyear':        `${AssetsHost}/Sounds/Voices/Characters/Bases/${bid}/voice_oneyear_${bid}.mp3`,
+      'BattleStart':    `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_battle_${id}.mp3`,
+      'Attack_1':       `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_attack1_${bid}.mp3`,
+      'Attack_2':       `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_attack2_${bid}.mp3`,
+      'Skill_1':        `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_skill1_${id}.mp3`,
+      'Skill_2':        `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_skill2_${id}.mp3`,
+      'SkillLink':      `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_cutin_${id}.mp3`,
+      'Damage':         `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_damage_${bid}.mp3`,
+      'Death':          `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_death_${id}.mp3`,
+      'Victory':        `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_victory_${id}.mp3`,
+      'SpecialSkill':   `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_special_${id}.mp3`,
+      'NewJoin':        `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_new_${id}.mp3`,
+      'Home_1':         `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_home1_${id}.mp3`,
+      'Home_2':         `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_home2_${id}.mp3`,
+      'Home_3':         `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_home3_${id}.mp3`,
+      'Kizuna_1':       `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_favorite1_${id}.mp3`,
+      'Kizuna_2':       `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_favorite2_${id}.mp3`,
+      'Kizuna_3':       `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_favorite3_${id}.mp3`,
+      'Kizuna_4':       `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_favorite4_${id}.mp3`,
+      'Kizuna_5':       `${ASSET_HOST}/Sounds/Voices/Characters/Layers/${id}/voice_favorite5_${id}.mp3`,
+      'NewYear':        `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_jan_${bid}.mp3`,
+      'Valentine':      `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_feb_${bid}.mp3`,
+      'WhiteValentine': `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_mar1_${bid}.mp3`,
+      'DollsDay':       `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_mar2_${bid}.mp3`,
+      'GoldenWeek':     `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_apr_${bid}.mp3`,
+      'MomsDay':        `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_may_${bid}.mp3`,
+      'Tsuyu':          `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_jun_${bid}.mp3`,
+      'Tanabata':       `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_jul_${bid}.mp3`,
+      'SummerFesti':    `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_aug_${bid}.mp3`,
+      'Moonfesti':      `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_sep_${bid}.mp3`,
+      'Halloween':      `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_oct_${bid}.mp3`,
+      'Autumn':         `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_nov_${bid}.mp3`,
+      'Christmas':      `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_dec1_${bid}.mp3`,
+      'NewYearEve':     `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_dec2_${bid}.mp3`,
+      'Oneyear':        `${ASSET_HOST}/Sounds/Voices/Characters/Bases/${bid}/voice_oneyear_${bid}.mp3`,
     }
   }
 
   static loadAvatarClipData(idx=1){
     this.__readyReq += 1;
     $.ajax({
-      url: `${AssetsHost}/Textures/Icons/Atlas/Layers/character-${idx}.plist`,
+      url: `${ASSET_HOST}/Textures/Icons/Atlas/Layers/character-${idx}.plist`,
       success: (res) => { 
         AssetsManager.parseAvatarClipData(res, idx);
         this.incReadyCounter();
