@@ -1,4 +1,4 @@
-const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
+const ASSET_HOST = 'https://assets3.mist-train-girls.com/production-client-web-assets';
 
 /**---------------------------------------------------------------------------
  * > DataManager:
@@ -351,10 +351,10 @@ const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-as
 
   static loadAllAssets(){
     const handlers = {
-      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json": this.parseCharacterData,
-      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json": this.parseGearData,
-      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json": this.parseSkillData,
-      "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
+      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json": this.parseCharacterData,
+      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json": this.parseGearData,
+      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json": this.parseSkillData,
+      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
       "/static/json/iconinfo.json": this.parseIconClipData,
     }
     for(let uri in handlers){

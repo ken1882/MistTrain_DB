@@ -57,9 +57,9 @@ function init () {
 
 function getBattlerSpineResourcesData(id){
 	return {
-		png: `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.png`,
-		atlas: `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.atlas`,
-		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.skel`,
+		png: `https://assets3.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.png`,
+		atlas: `https://assets3.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.atlas`,
+		skel: `https://assets3.mist-train-girls.com/production-client-web-assets/Small/Spines/SDs/${id}/${id}.skel`,
 		name: id,
 		anim: DefaultBattlerAnimation
 	}
@@ -67,9 +67,9 @@ function getBattlerSpineResourcesData(id){
 
 function getEventActorSpineResourcesData(id){
 	return {
-		png: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.png`,
-		atlas: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.atlas`,
-		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.skel`,
+		png: `https://assets3.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.png`,
+		atlas: `https://assets3.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.atlas`,
+		skel: `https://assets3.mist-train-girls.com/production-client-web-assets/Spines/Events/${id}/${id}.skel`,
 		name: id,
 		anim: DefaultCharacterAnimation
 	}
@@ -77,9 +77,9 @@ function getEventActorSpineResourcesData(id){
 
 function getHomepageActorSpineResourcesData(id){
 	return {
-		png: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.png`,
-		atlas: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.atlas`,
-		skel: `https://assets.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.skel`,
+		png: `https://assets3.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.png`,
+		atlas: `https://assets3.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.atlas`,
+		skel: `https://assets3.mist-train-girls.com/production-client-web-assets/Spines/Homes/${id}/${id}.skel`,
 		name: id,
 		anim: DefaultHomepageAnimation
 	}

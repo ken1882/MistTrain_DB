@@ -20,8 +20,8 @@ LocationPinCanvas.width = 140*PinScale;
 LocationPinCanvas.height = 210*PinScale;
 
 const __MapURI = {
-  '1': 'https://assets.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
-  '2': 'https://assets.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
+  '1': 'https://assets3.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
+  '2': 'https://assets3.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
 }
 
 function init(){
@@ -166,7 +166,7 @@ function loadWorldData(){
     },
     ()=>{
       $.ajax({
-        url: `https://assets.mist-train-girls.com/production-client-web-assets/Jsons/WorldPin/worldMapPin${__VolumeId}.json`,
+        url: `https://assets3.mist-train-girls.com/production-client-web-assets/Jsons/WorldPin/worldMapPin${__VolumeId}.json`,
         success: (res) => {
           handlePinData(res);
           AssetsManager.incReadyCounter();
@@ -176,7 +176,7 @@ function loadWorldData(){
     },
     ()=>{
       $.ajax({
-        url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MWorldViewModel.json",
+        url: "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MWorldViewModel.json",
         success: (res) => {
           handleLocationData(res);
           AssetsManager.incReadyCounter();
@@ -186,7 +186,7 @@ function loadWorldData(){
     },
     ()=>{
       $.ajax({
-        url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MQuestViewModel.json",
+        url: "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MQuestViewModel.json",
         success: (res) => {
           handleQuestData(res);
           AssetsManager.incReadyCounter();
@@ -196,7 +196,7 @@ function loadWorldData(){
     },
     ()=>{
       $.ajax({
-        url: "https://assets.mist-train-girls.com/production-client-web-static/MasterData/MSceneViewModel.json",
+        url: "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MSceneViewModel.json",
         success: (res) => {
           handleSceneData(res);
           AssetsManager.incReadyCounter();
@@ -243,7 +243,7 @@ function loadPinAssets(){
     pset.add(pid);
     var image = new Image();
     image.crossOrigin = "anonymous";
-    image.src = `https://assets.mist-train-girls.com/production-client-web-assets/Textures/Parts/Icons/Pins/illust/${pid}.png`;
+    image.src = `https://assets3.mist-train-girls.com/production-client-web-assets/Textures/Parts/Icons/Pins/illust/${pid}.png`;
     image.onload = ()=>{
       AssetsManager.incReadyCounter();
     };
@@ -265,7 +265,7 @@ function loadPinAssets(){
       let bid = bar[i];
       var image = new Image();
       image.crossOrigin = "anonymous";
-      image.src = `https://assets.mist-train-girls.com/production-client-web-assets/Textures/Parts/Icons/Pins/base/${bid}.png`;
+      image.src = `https://assets3.mist-train-girls.com/production-client-web-assets/Textures/Parts/Icons/Pins/base/${bid}.png`;
       image.onload = ()=>{
         AssetsManager.incReadyCounter();
       };
