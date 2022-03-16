@@ -1,4 +1,5 @@
 const ASSET_HOST = 'https://assets3.mist-train-girls.com/production-client-web-assets';
+const STATIC_HOST = 'https://assets3.mist-train-girls.com/production-client-web-static';
 
 /**---------------------------------------------------------------------------
  * > DataManager:
@@ -350,17 +351,21 @@ const ASSET_HOST = 'https://assets3.mist-train-girls.com/production-client-web-a
   }
 
   static loadAllAssets(){
-    const handlers = {
-      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json": this.parseCharacterData,
-      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/GearLevelsViewModel.json": this.parseGearData,
-      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MSkillViewModel.json": this.parseSkillData,
-      "https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
+    let handlers = {
       "/static/json/iconinfo.json": this.parseIconClipData,
+      "/MasterData/MCharacterViewModel.json": this.parseCharacterData,
+      "/MasterData/GearLevelsViewModel.json": this.parseGearData,
+      "/MasterData/MSkillViewModel.json": this.parseSkillData,
+      "/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
+      "/MasterData/MChangeSkillViewModel.json": this.parseChangeSkillData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
       this.__readyReq += 1;
       let method = handlers[uri];
+      if(uri.includes('MasterData')){
+        uri = `${STATIC_HOST}${uri}`;
+      }
       $.ajax({
         url: uri,
         success: (res) => { 
@@ -446,6 +451,17 @@ const ASSET_HOST = 'https://assets3.mist-train-girls.com/production-client-web-a
     for(let i in res){
       let dat = res[i];
       this.LinkSkillData[dat['OriginMSkillId']] = dat;
+    }
+    this.incReadyCounter();
+  }
+
+  static parseChangeSkillData(res){
+    this.ChangeSkillData = {};
+    for(let i in res){
+      let dat = res[i];
+      this.ChangeSkillData[dat['EffectSkillId']] = [
+        dat['BeforeSkillId'], dat['AfterSkillId']
+      ];
     }
     this.incReadyCounter();
   }

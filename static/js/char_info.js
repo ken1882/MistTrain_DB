@@ -7,6 +7,7 @@ let AnimationStream = null;
 let AnimationRecorder = null;
 let PlayFullSkillAnimation = true;
 
+const EFF_CHANGE_SKILL = 100;
 const WeaponAttribute = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 const SkillPowerRank = [
   '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'US'
@@ -253,6 +254,21 @@ function fillCharacterBaseInfo(){
   }
 }
 
+function getLinkedChangeSkillId(skill_id){
+  if(!AssetsManager.LinkSkillData.hasOwnProperty(skill_id)){ return ;}
+  let lskill_req = AssetsManager.LinkSkillData[skill_id];
+  let ach_skill = AssetsManager.SkillData[lskill_req.ActivateMSkillId];
+  let ret = null;
+  for(let i in ach_skill.MSkillEffects){
+    let eff = ach_skill.MSkillEffects[i];
+    if(eff.EffectDetail == EFF_CHANGE_SKILL){
+      ret = eff.NextMSkillId;
+      break;
+    }
+  }
+  return ret;
+}
+
 function fillCharacterSkillInfo(){
   if(!DataManager.isReady()){
     return setTimeout(fillCharacterSkillInfo, 300);
@@ -260,6 +276,11 @@ function fillCharacterSkillInfo(){
   let data = AssetsManager.CharacterData[__CharacterId];
   let askills = [data.MSkill1Id, data.MSkill2Id, data.MSkill3Id, data.SpecialMSkillId];
   let pskills = [data.AbilityMSkill1Id, data.AbilityMSkill2Id, data.AbilityMSkill3Id];
+  for(let i in askills){
+    if(!AssetsManager.SkillData.hasOwnProperty(askills[i])){ continue; }
+    let csid = getLinkedChangeSkillId(askills[i]);
+    if(csid){ askills.push(csid); }
+  }
   for(let i in askills){
     if(!AssetsManager.SkillData.hasOwnProperty(askills[i])){ continue; }
     let skill = AssetsManager.SkillData[askills[i]];
@@ -270,13 +291,15 @@ function fillCharacterSkillInfo(){
     let sattr   = document.createElement('td');
     let sscope  = document.createElement('td');
     let seffect = document.createElement('td');
-    if(i == 3){ // special skill
-      $(sname).addClass('special-skill');
-      $(spower).addClass('special-skill');
-      $(sattr).addClass('special-skill');
-      $(sscope).addClass('special-skill');
-      $(seffect).addClass('special-skill');
-      $(scost).addClass('special-skill');
+    if(i >= 3){ // special skill and change skill
+      let _skcls = 'change-skill';
+      if(i == 3){ _skcls = 'special-skill'; }
+      $(sname).addClass(_skcls);
+      $(spower).addClass(_skcls);
+      $(sattr).addClass(_skcls);
+      $(sscope).addClass(_skcls);
+      $(seffect).addClass(_skcls);
+      $(scost).addClass(_skcls);
     }
     if(Vocab.SkillName.hasOwnProperty(skill.Id)){
       $(sname).text(Vocab.SkillName[skill.Id]);
