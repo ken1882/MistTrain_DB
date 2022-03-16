@@ -150,6 +150,10 @@ tbody tr td{
   color:gold;
 }
 
+.change-skill{
+  color: aqua;
+}
+
 .locationpin{
   position: absolute;
   cursor:pointer;
