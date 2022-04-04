@@ -1,4 +1,4 @@
-requests
+requests==2.26.0
 gunicorn
 scikit-learn==1.0.1
 pytz
