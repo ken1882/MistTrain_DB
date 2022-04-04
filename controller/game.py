@@ -124,9 +124,9 @@ def reauth_game():
         st = literal_eval(line.strip().split(':')[-1][:-1].strip())
         break
     payload = os.getenv('DMM_FORM_DATA')
-    rep = re.search(r"mist-train-east(\d)", payload).span()
-    rep = payload[rep[0]:rep[1]]
-    payload = payload.replace(rep, ServerLocation.split('//')[1].split('.')[0])
+    # rep = re.search(r"mist-train-east(\d)", payload).span()
+    # rep = payload[rep[0]:rep[1]]
+    # payload = payload.replace(rep, ServerLocation.split('//')[1].split('.')[0])
     rep = re.search(r"st=(.+?)&", payload).group(0)
     rep = rep.split('=')[1][:-1]
     payload = payload.replace(rep, st)
