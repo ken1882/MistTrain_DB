@@ -141,7 +141,7 @@
         <div>
           <p label="l-ScenePlaySpeed"></p>
           <p>
-            <input id="slider-playspeed" type="range" min="0.5" max="2.0" value="1.0" step="0.25" oninput="updatePlaySpeed(this)">&nbsp;
+            <input id="slider-playspeed" type="range" min="0.5" max="2.0" value="1" step="0.25" oninput="updatePlaySpeed(this)">&nbsp;
             <span id="text-playspeed" style="vertical-align:top;">_</span>
           </p>
         </div>
@@ -238,6 +238,12 @@
       var bgm = document.getElementById('slider-bgmvolume');
       var se  = document.getElementById('slider-sevolume');
       var bgs = document.getElementById('slider-bgsvolume');
+
+      if(!play_speed){
+        document.getElementById('slider-playspeed').value = '1';
+        play_speed = '1';
+      }
+
       var targets = [psd, pdr, bgm, se, bgs];
       var vals = [play_speed, dia_dur, vols].flat();
       
