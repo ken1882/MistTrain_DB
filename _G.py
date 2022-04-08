@@ -366,10 +366,11 @@ def GetCacheTimestamp(key):
   global RedisCache
   try:
     if RedisCache:
-      st = int( (RedisCache.get(key) or b'0').decode() )
+      st = float( (RedisCache.get(key) or b'0').decode() )
     else:
       load_dotenv()
-      st = int(os.getenv(key) or 0)
+      st = float(os.getenv(key) or 0)
+    st = int(st)
     return datetime.fromtimestamp(st, tz=pytz.timezone('Asia/Tokyo'))
   except Exception as err:
     log_error("Error while getting timestamp:", err)
@@ -392,7 +393,7 @@ def SetCacheTimestamp(key, val):
     val = val.timestamp()
   try:
     if RedisCache:
-      return RedisCache.set(key, val)
+      return RedisCache.set(key, int(val))
     else:
       return os.system(f'dotenv set {key} {int(val)}')
   except Exception as err:
