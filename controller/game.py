@@ -198,7 +198,8 @@ def get_request(url, depth=1):
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
-  Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+  if not Session.headers['Authorization']:
+    Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
   if not ServerLocation:
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
