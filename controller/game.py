@@ -198,8 +198,7 @@ def get_request(url, depth=1):
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
-  if not Session.headers['Authorization']:
-    Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+  Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
   if not ServerLocation:
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
@@ -293,7 +292,7 @@ def is_service_available():
 def load_database():
   global Session,CharacterDatabase
   links = [
-    'https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json',
+    f"{_G.STATIC_HOST}/MasterData/MCharacterViewModel.json",
   ]
   for i,link in enumerate(links):
     db = None

@@ -1,3 +1,4 @@
+const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
 /**
  * > DialoguePlayer:
  *    The static class that handles the flow and audio in story
@@ -32,7 +33,7 @@ class DialoguePlayer{
       if(voice && !this.audios.hasOwnProperty(voice)){
         this.__se.push(voice);
         this.audios[voice] = new Howl({
-          src: [`https://assets3.mist-train-girls.com/production-client-web-assets/Sounds/Voices/Scenarios/Mains/m_${this.sceneId}/${voice}.mp3`],
+          src: [`${ASSET_HOST}/Sounds/Voices/Scenarios/Mains/m_${this.sceneId}/${voice}.mp3`],
           volume: DataManager.getSetting(DataManager.kVolume)[1],
           onloaderror: (audio_id, errno)=>{
             console.error(`Unable to load audio ${audio_id} ERRNO=(${errno})`);
@@ -43,7 +44,7 @@ class DialoguePlayer{
       if(bgm && !this.audios.hasOwnProperty(bgm)){
         this.__bgm.push(bgm);
         this.audios[bgm] = new Howl({
-          src: [`https://assets3.mist-train-girls.com/production-client-web-assets/Sounds/Bgms/Adv/${bgm}.mp3`],
+          src: [`${ASSET_HOST}/Sounds/Bgms/Adv/${bgm}.mp3`],
           volume: DataManager.getSetting(DataManager.kVolume)[0],
           onloaderror: (audio_id, errno)=>{
             console.error(`Unable to load audio ${audio_id} ERRNO=(${errno})`);
