@@ -119,7 +119,8 @@ def uwait(sec):
   dt = dt if Throttling else dt / 3
   sleep(sec+dt)
 
-ASSET_HOST = 'https://assets3.mist-train-girls.com/production-client-web-static'
+ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets'
+STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-static'
 
 # Errnos
 KEY_ERRNO = 'errno'

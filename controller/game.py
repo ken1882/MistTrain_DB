@@ -292,7 +292,7 @@ def is_service_available():
 def load_database():
   global Session,CharacterDatabase
   links = [
-    'https://assets3.mist-train-girls.com/production-client-web-static/MasterData/MCharacterViewModel.json',
+    f"{_G.STATIC_HOST}/MasterData/MCharacterViewModel.json",
   ]
   for i,link in enumerate(links):
     db = None

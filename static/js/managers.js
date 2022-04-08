@@ -1,5 +1,5 @@
-const ASSET_HOST = 'https://assets3.mist-train-girls.com/production-client-web-assets';
-const STATIC_HOST = 'https://assets3.mist-train-girls.com/production-client-web-static';
+const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
+const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-static';
 
 /**---------------------------------------------------------------------------
  * > DataManager:
