@@ -7,6 +7,8 @@ from time import sleep
 from random import randint
 from copy import copy,deepcopy
 from dotenv import load_dotenv
+from redis import Redis
+from base64 import b64decode,b64encode
 
 ENCODING = 'UTF-8'
 IS_WIN32 = False
@@ -63,6 +65,22 @@ SYMBOL_WIDTH = {
   1: '♪',
   2: '★☆【】ⅠⅡⅢ：',
 }
+
+RedisCache = None
+if os.getenv('REDISCLOUD_URL'):
+  try:
+    cred,uri = os.getenv('REDISCLOUD_URL').split('@')
+    RedisCache = Redis(
+      host=uri.split(':')[0], port=uri.split(':')[-1],
+      password=cred.split(':')[-1]
+    )
+  except Exception:
+    pass
+
+if RedisCache:
+  print("Cache with redis server")
+else:
+  print("Cache with local file system")
 
 def format_curtime():
   return datetime.strftime(datetime.now(), '%H:%M:%S')
@@ -333,23 +351,62 @@ CHARACTER_AVATAR_SRC_SIZE = (94, 94)
 CHARACTER_FRAME_SRC_SIZE  = (102, 102)
 
 def GetCacheString(key):
-  load_dotenv()
-  return os.getenv(key)
+  global RedisCache
+  try:
+    if RedisCache:
+      return (RedisCache.get(key) or b'').decode()
+    else:
+      load_dotenv()
+      return os.getenv(key)
+  except Exception as err:
+    log_error("Error while getting cache string:", err)
+    return ''
 
 def GetCacheTimestamp(key):
-  load_dotenv()
-  st = int(os.getenv(key) or 0)
-  return datetime.fromtimestamp(st, tz=pytz.timezone('Asia/Tokyo'))
+  global RedisCache
+  try:
+    if RedisCache:
+      st = int( (RedisCache.get(key) or b'0').decode() )
+    else:
+      load_dotenv()
+      st = int(os.getenv(key) or 0)
+    return datetime.fromtimestamp(st, tz=pytz.timezone('Asia/Tokyo'))
+  except Exception as err:
+    log_error("Error while getting timestamp:", err)
+    return datetime.now()
 
 def SetCacheString(key, val):
-  return os.system(f'dotenv set {key} "{val}"')
+  global RedisCache
+  try:
+    if RedisCache:
+      return RedisCache.set(key, val)
+    else:
+      return os.system(f'dotenv set {key} "{val}"')
+  except Exception as err:
+    log_error("Error while caching:", err)
+    return None  
 
 def SetCacheTimestamp(key, val):
+  global RedisCache
   if type(val) == datetime:
     val = val.timestamp()
-  return os.system(f'dotenv set {key} {int(val)}')
+  try:
+    if RedisCache:
+      return RedisCache.set(key, val)
+    else:
+      return os.system(f'dotenv set {key} {int(val)}')
+  except Exception as err:
+    log_error("Error while caching timestamp:", err)
+    return False
 
 def GetCacheBinary(key):
+  global RedisCache
+  if RedisCache:
+    try:
+      return pickle.loads(RedisCache.get(key))
+    except Exception as err:
+      log_error("Error while loading cache binary:", err)
+      return None
   if not os.path.exists(key):
     return None
   try:
@@ -360,11 +417,18 @@ def GetCacheBinary(key):
     return GetCacheBinary(key)
 
 def SetCacheBinary(key, val):
+  global RedisCache
+  if RedisCache:
+    try:
+      return RedisCache.set(key, pickle.dumps(val))
+    except Exception as err:
+      log_error("Error while setting cache binary:", err)
+      return None
   try:
     with open(key, 'wb') as fp:
       return pickle.dump(val, fp)
   except Exception:
-    pass
+    return None
 
 def LoopDerpyYMPair(end_t=None):
   if not end_t:

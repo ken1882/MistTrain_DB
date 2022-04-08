@@ -26,8 +26,6 @@ const DefaultBattlerAnimation = 'Idle';
 const DefaultCharacterAnimation = 'Idle_Normal';
 const DefaultHomepageAnimation = 'Idle';
 
-const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
-
 let BattlerKeyBoneIndex = 1;
 let CameraFollowBattler = true;
 let BattlerCameraXFactor = 100;
@@ -361,5 +359,5 @@ function exportBattlerCanvas(){
 
 
 (function() { 
-	addEventListener("load", init);
+	window.addEventListener("load", init);
 }());

@@ -1,4 +1,3 @@
-const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
 /**
  * > DialoguePlayer:
  *    The static class that handles the flow and audio in story
