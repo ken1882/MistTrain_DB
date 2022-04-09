@@ -164,11 +164,9 @@ def change_token(token):
 def is_connected():
   global Session
   res = get_request('/api/Users/Me')
-  if type(res) == dict or type(res) == int:
+  if type(res) != dict:
     return False
-  if is_response_ok(res) == _G.ERRNO_OK:
-    return res.json()['r']
-  return False
+  return res['r']
 
 def is_response_ok(res):
   if res.status_code != 200:
@@ -212,9 +210,6 @@ def get_request(url, depth=1):
       res = Session.get(url, timeout=NetworkGetTimeout)
     else:
       res = Session.get(url)
-    if res.status_code == 408:
-      log_error("Client-side connection timeout")
-      raise ConnectTimeout
   except NetworkExcpetionRescues as err:
     Session.close()
     if depth < NetworkMaxRetry:
@@ -267,9 +262,6 @@ def post_request(url, data=None, depth=1):
         res = res = Session.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
       else:
         res = Session.post(url, headers=PostHeaders)
-    if res.status_code == 408:
-      log_error("Client-side connection timeout")
-      raise ConnectTimeout
   except NetworkExcpetionRescues as err:
     Session.close()
     if depth < NetworkMaxRetry:
