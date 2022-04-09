@@ -59,8 +59,8 @@ QuestDatabase     = {}
 ABStoneDatabase   = {}
 
 NetworkMaxRetry = 5
-NetworkGetTimeout = 20
-NetworkPostTimeout = 60
+NetworkGetTimeout = 0#20
+NetworkPostTimeout = 0#60
 
 Session = requests.Session()
 Session.headers = {
@@ -208,7 +208,10 @@ def get_request(url, depth=1):
     url = ServerLocation + url
   try:
     log_debug(f"[GET] {url}")
-    res = Session.get(url, timeout=NetworkGetTimeout)
+    if NetworkGetTimeout > 0:
+      res = Session.get(url, timeout=NetworkGetTimeout)
+    else:
+      res = Session.get(url)
   except NetworkExcpetionRescues as err:
     Session.close()
     if depth < NetworkMaxRetry:
@@ -252,9 +255,15 @@ def post_request(url, data=None, depth=1):
   try:
     log_debug(f"[POST] {url} with payload:", data, sep='\n')
     if data != None:
-      res = Session.post(url, json.dumps(data), headers=PostHeaders, timeout=NetworkPostTimeout)
+      if NetworkPostTimeout > 0:
+        res = Session.post(url, json.dumps(data), headers=PostHeaders, timeout=NetworkPostTimeout)
+      else:
+        res = Session.post(url, json.dumps(data), headers=PostHeaders)
     else:
-      res = Session.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
+      if NetworkPostTimeout > 0:
+        res = res = Session.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
+      else:
+        res = Session.post(url, headers=PostHeaders)
   except NetworkExcpetionRescues as err:
     Session.close()
     if depth < NetworkMaxRetry:
