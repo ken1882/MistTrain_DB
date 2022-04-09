@@ -59,8 +59,8 @@ QuestDatabase     = {}
 ABStoneDatabase   = {}
 
 NetworkMaxRetry = 5
-NetworkGetTimeout = 0#20
-NetworkPostTimeout = 0#60
+NetworkGetTimeout = 30
+NetworkPostTimeout = 60
 
 Session = requests.Session()
 Session.headers = {
@@ -212,6 +212,9 @@ def get_request(url, depth=1):
       res = Session.get(url, timeout=NetworkGetTimeout)
     else:
       res = Session.get(url)
+    if res.status_code == 408:
+      log_error("Client-side connection timeout")
+      raise ConnectTimeout
   except NetworkExcpetionRescues as err:
     Session.close()
     if depth < NetworkMaxRetry:
@@ -264,6 +267,9 @@ def post_request(url, data=None, depth=1):
         res = res = Session.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
       else:
         res = Session.post(url, headers=PostHeaders)
+    if res.status_code == 408:
+      log_error("Client-side connection timeout")
+      raise ConnectTimeout
   except NetworkExcpetionRescues as err:
     Session.close()
     if depth < NetworkMaxRetry:
