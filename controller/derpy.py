@@ -27,6 +27,7 @@ def init():
       _G.DerpySavedRaceHeader.add(race['id']) 
   dm.load_derpy_estimators()
   IsDerpyReady = True
+  save_recent_races()
 
 def req_derpy_ready(func):
   def wrapper(*args, **kwargs):
