@@ -110,6 +110,8 @@ def reauth_game():
       return _G.ERRNO_MAINTENANCE
   try:
     Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    # If too long, set in powershell using this command:
+    # [System.Environment]::SetEnvironmentVariable('DMM_MTG_COOKIES', '<cookies_here>', 'USER')
     raw_cookies = os.getenv('DMM_MTG_COOKIES')
     for line in raw_cookies.split(';'):
       seg = line.strip().split('=')
