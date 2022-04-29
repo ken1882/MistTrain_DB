@@ -139,8 +139,8 @@ def setup():
     res = game.reauth_game()
     if res == _G.ERRNO_MAINTENANCE:
       log_warning("Server is under maintenance!")
-    _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
-    _G.ThreadPool['game'].start()
+  _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
+  _G.ThreadPool['game'].start()
 
 def loop_game_listner():
   while _G.FlagRunning:
