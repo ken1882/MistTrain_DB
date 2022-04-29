@@ -202,6 +202,7 @@ function playDialogueNode(node){
   CurrentDialogueIndex = DialogData.findIndex(obj => {
     return obj.GroupOrder == dia_ids[1] && obj.ViewOrder == dia_ids[2];
   });
+  // highlight current playing node
   $(node).addClass('dialogbox-playing');
   if($("#ckb-autoscroll").prop('checked')){
     $('body,html').animate({
@@ -229,20 +230,14 @@ function playDialogueNode(node){
       CurrentDialogueTimer = null;
     }, parseInt(getPureDialoguePauseTime(phrase)*1000));
   }
+  // new bgm
   let bgm = DialogData[CurrentDialogueIndex].BGM;
   if(bgm){
-    let dur = 3000;
+    let dur = 1500;
     if(DialoguePlayer.currentBGM){
-      let last_bgm = DialoguePlayer.fadeOutBGM(null, dur);
-      last_bgm.once('fade', ()=>{
-        setTimeout(() => {
-          DialoguePlayer.fadeInBGM(bgm, dur);
-        }, 500);
-      });
+      DialoguePlayer.fadeOutBGM(null, dur);
     }
-    else{
-      DialoguePlayer.fadeInBGM(bgm, dur);
-    }
+    DialoguePlayer.fadeInBGM(bgm, dur);
   }
 }
 

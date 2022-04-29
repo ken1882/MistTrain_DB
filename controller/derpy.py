@@ -117,12 +117,22 @@ def save_recent_races():
     save_race(race)
     st = race['startTime'].split('T')[0].split('-')
     updated_month.add(int(st[0]) * 100 + int(st[1]))
+  save_race_history(updated_month)
+
+def save_race_history(updated_month=[]):
+  '''
+  Save `G.DerpySavedRaceContent` to database.
+
+  Argument: `updated_month` is set/list of month that need to update, \n
+  if givem, only that month will be save/update to databse. \n
+  the elements are calculated hash of `year*100 + month`
+  '''
   log_info("Saving race history")
   for ym,month_races in _G.DerpySavedRaceContent.items():
     y,m = ym.split('-')
     y = int(y)
     m = int(m)
-    if (y*100 + m) not in updated_month:
+    if updated_month and (y*100 + m) not in updated_month:
       continue
     save_database(month_races, y, m)
   log_info("Race history saved")
@@ -133,7 +143,7 @@ def update_race_history_db():
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   last_scan_time = _G.GetCacheTimestamp('LastRaceHistoryScanTime')
   elapsed = curt - last_scan_time
-  log_debug("Cache timestamps:", elapsed, curt, last_scan_time)
+  log_debug("Cache timestamps:", curt, elapsed, last_scan_time)
   if elapsed > max_scan_time or \
       (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):
     save_recent_races()

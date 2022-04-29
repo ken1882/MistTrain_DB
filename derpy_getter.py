@@ -13,11 +13,11 @@ Session.headers['Authorization'] = (next((arg.strip() for arg in sys.argv if arg
 
 CharacterDatabase = {}
 
-def sweep_race_replays():
+def sweep_race_replays(st=1, ed=0x7fffffff):
   global Session
   error = 0
   ret = []
-  for i in range(0x7fffffff):
+  for i in range(st, ed):
     if error > 3:
       print("Stopping sweeping race due to successive error (>3)")
       break
