@@ -225,7 +225,7 @@ def get_request(url, depth=1):
     errno,errmsg = get_last_error()
     if errno == 403:
       return _G.ERRNO_MAINTENANCE
-    elif errno == 401:
+    elif errno == 401 or errno == 408:
       log_info("Attempting to reauth game")
       res = reauth_game()
       if res == _G.ERRNO_MAINTENANCE:
@@ -282,7 +282,7 @@ def post_request(url, data=None, depth=1):
       return post_request(url, data, depth=depth+1)
     elif errno == 403:
       return {_G.KEY_ERRNO: _G.ERRNO_MAINTENANCE}
-    elif errno == 401:
+    elif errno == 401 or errno == 408:
       log_info("Attempting to reauth game")
       res = reauth_game()
       if res == _G.ERRNO_MAINTENANCE:
