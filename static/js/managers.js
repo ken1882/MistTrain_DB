@@ -358,6 +358,8 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
       "/MasterData/MSkillViewModel.json": this.parseSkillData,
       "/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
       "/MasterData/MChangeSkillViewModel.json": this.parseChangeSkillData,
+      "/MasterData/MDressUpViewModel.json": this.parseDressupData,
+      "/MasterData/MCharacterSkinViewModel.json": this.parseCharacterSkinData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
@@ -370,6 +372,7 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
         url: uri,
         success: (res) => { 
           method.apply(AssetsManager, [res]);
+          this.incReadyCounter();
         },
         error: handleAjaxError,
       });
@@ -420,7 +423,6 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
       let dat = res[i];
       this.CharacterData[dat['Id']] = dat;
     }
-    this.incReadyCounter();
   }
   
   static parseGearData(res){
@@ -429,12 +431,10 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
       let dat = res[i-1];
       this.MaxGearStatusData[dat.MCharacterId] = dat.Status;
     }
-    this.incReadyCounter();
   }
   
   static parseIconClipData(res){
     this.IconClipData = res;
-    this.incReadyCounter();
   }
 
   static parseSkillData(res){
@@ -443,7 +443,6 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
       let dat = res[i];
       this.SkillData[dat['Id']] = dat;
     }
-    this.incReadyCounter();
   }
 
   static parseLinkSkillData(res){
@@ -452,7 +451,6 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
       let dat = res[i];
       this.LinkSkillData[dat['OriginMSkillId']] = dat;
     }
-    this.incReadyCounter();
   }
 
   static parseChangeSkillData(res){
@@ -463,7 +461,45 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
         dat['BeforeSkillId'], dat['AfterSkillId']
       ];
     }
-    this.incReadyCounter();
+  }
+
+  static parseCharacterSkinData(res){
+    this.CharacterSkinData = {};
+    for(let i in res){
+      let dat = res[i];
+      let mbchid = dat.MCharacterBaseId;
+      if(!this.CharacterSkinData.hasOwnProperty(mbchid)){
+        this.CharacterSkinData[mbchid] = {};
+      }
+      this.CharacterSkinData[mbchid][dat.Id] = dat;
+    }
+  }
+
+  static parseDressupData(res){
+    this.DressupData = {};
+    for(let i in res){
+      let dat = res[i];
+      let sid = res[i].MCharacterSkinId;
+      if(!this.DressupData.hasOwnProperty(sid)){
+        this.DressupData[sid] = [];
+      }
+      this.DressupData[sid].push(dat);
+    }
+  }
+
+  static setupCharacterSkin(){
+    this.DressedCharacterMap = {};
+    for(let mbchid in this.CharacterSkinData){
+      if(!this.CharacterSkinData.hasOwnProperty(mbchid)){ continue; }
+      for(let skin_id in this.CharacterSkinData[mbchid]){
+        if(!this.DressupData.hasOwnProperty(skin_id)){ continue; }
+        let mchid = this.DressupData[skin_id][0].MCharacterId;
+        if(!this.DressedCharacterMap.hasOwnProperty(mchid)){
+          this.DressedCharacterMap[mchid] = [];
+        }
+        this.DressedCharacterMap[mchid].push(skin_id);
+      }
+    }
   }
 
   static setupAvatarCanvas(){

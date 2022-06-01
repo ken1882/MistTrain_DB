@@ -33,6 +33,7 @@ let BattlerCameraYFactor = 4;
 
 let DrawCharacterBackground = true;
 let DrawBattlerBackground = true;
+let DefaultSkinAttachments = {};
 
 function init () {
 	BattlerCanvas = document.getElementById("battler-canvas");
@@ -112,8 +113,12 @@ function loadBattlerSpineData(rssdata){
 	for(let i in BattlerAnimState.data.skeletonData.slots){
 		let sdat = BattlerAnimState.data.skeletonData.slots[i];
 		let bone = BattlerAnimState.data.skeletonData.slots[i].boneData;
-		if(bone.transformMode == 2){ bone.transformMode = 0; }
+		if(bone.transformMode == 2){ bone.transformMode = 1; }
 		if(sdat.blendMode == 1){ sdat.blendMode = 3; }
+		
+		let aname = sdat.attachmentName;
+		if(!aname){ aname = null;}
+		DefaultSkinAttachments[sdat.name] = aname;
 	}
 	for(let i in BattlerAnimState.data.skeletonData.bones){
 		let bone = BattlerAnimState.data.skeletonData.bones[i];
@@ -357,6 +362,20 @@ function exportBattlerCanvas(){
 	canvas.remove();
 }
 
+
+function ChangeBattlerSkin(skin_id){
+	if(!skin_id){
+		for(let slot_name in DefaultSkinAttachments){
+			if(!DefaultSkinAttachments.hasOwnProperty(slot_name)){ continue; }
+			BattlerSkeleton.setAttachment(slot_name, DefaultSkinAttachments[slot_name]);
+		}
+		return ;
+	}
+	let data = AssetsManager.DressupData[skin_id];
+	for(let i in data){
+		BattlerSkeleton.setAttachment(data[i].SlotName, data[i].AttachmentName);
+	}
+}
 
 (function() { 
 	window.addEventListener("load", init);

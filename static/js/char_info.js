@@ -42,6 +42,7 @@ function setup(){
   if(!AssetsManager.isReady() || !DataManager.isReady()){
     return setTimeout(setup, 100);
   }
+  AssetsManager.setupCharacterSkin();
   $("#loop-battler-anim").prop('checked', 1);
   fillCharacterBaseInfo();
   fillCharacterSkillInfo();
@@ -62,7 +63,8 @@ function setupSpineContent(){
   if(!__FlagBattlerCanvasReady || !__FlagCharacterCanvasReady){
     return setTimeout(setupSpineContent, 300);
   }
-  appendAnimations();
+  loadBattlerAnimations();
+  loadBattlerSkins();
   document.getElementById("char-zoomin").addEventListener('click', (e)=>{
     var n = CharacterSkeletonShrinkRate - 0.1;
     CharacterSkeletonShrinkRate = Math.max(1.0, n);
@@ -81,7 +83,7 @@ function setupSpineContent(){
   $("#battler-utils").show();
 }
 
-function appendAnimations(){
+function loadBattlerAnimations(){
   var ch_anims = CharacterAnimState.data.skeletonData.animations;
   var ba_anims = BattlerAnimState.data.skeletonData.animations;
   let list_cha = $("#char-act-list");
@@ -142,6 +144,31 @@ function appendAnimations(){
     }
   });
   $("#btn-export-anim").prop('disabled', false);
+}
+
+function loadBattlerSkins(){
+  let list_skin = $("#battler-skin-list");
+  let chdat = AssetsManager.CharacterData[__CharacterId];
+  let mbchid = chdat.MCharacterBase.Id;
+  let opt = appendCharacterSkinOption(list_skin, 0, Vocab.CharacterSkinName[0]);
+  $(opt).attr('selected', '');
+  if(AssetsManager.DressedCharacterMap.hasOwnProperty(__CharacterId)){
+    for(let skin_id of AssetsManager.DressedCharacterMap[__CharacterId]){
+      let dat = AssetsManager.CharacterSkinData[mbchid][skin_id];
+      appendCharacterSkinOption(list_skin, skin_id, dat.Name);
+    }
+  }
+  list_skin.on('change', (e) => {
+    ChangeBattlerSkin(parseInt(e.target.value));
+  });
+}
+
+function appendCharacterSkinOption(parent_list, id, name){
+  let opt = document.createElement("option");
+  $(opt).attr('value', id);
+  opt.innerText = name;
+  parent_list.append(opt);
+  return opt;
 }
 
 function loadCharacterVoices(){

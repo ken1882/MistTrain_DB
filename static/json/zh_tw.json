@@ -240,5 +240,8 @@
   },
   "SkillEffect": {
     "0": "技能ID: 技能效果"
+  },
+  "CharacterSkinName": {
+    "0": "預設外觀造型"
   }
 }

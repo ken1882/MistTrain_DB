@@ -240,5 +240,8 @@
   },
   "SkillEffect": {
     "0": "Skill Id: Skill Effect"
+  },
+  "CharacterSkinName": {
+    "0": "Default skin"
   }
 }
