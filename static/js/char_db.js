@@ -1,4 +1,5 @@
 let CharacterAvatarNode = {};
+let FlagSkinViewActivate = false;
 const DefaultViewSetting = 'list';
 
 function init(){
@@ -33,6 +34,7 @@ function setup(){
   if(!AssetsManager.isReady()){
     return setTimeout(setup, 100);
   }
+  AssetsManager.setupCharacterSkin();
   appendCharacterAvatars();
   appendCharacterList();
   setupViewChangeButton();
@@ -46,17 +48,17 @@ function setupTableUtils(){
     sortReset: true,
     search: true,
     columns: [
-      {sortable: false},
-      {sortable: false},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
-      {sortable: true},
+      {sortable: false},  // avatar
+      {sortable: false},  // name
+      {sortable: true},   // weapon
+      {sortable: true},   // physical attack
+      {sortable: true},   // physical defense
+      {sortable: true},   // speed
+      {sortable: true},   // hit rate
+      {sortable: true},   // magical attack
+      {sortable: true},   // magical defense
+      {sortable: true},   // recovery
+      {sortable: true},   // luck
     ],
     onAll: (e)=>{
       if(e == 'post-body.bs.table'){
@@ -154,8 +156,10 @@ function appendCharacterList(){
 function setupViewChangeButton(){
   let vgrid = $("#gridview-button");
   let vlist = $("#listview-button");
+  let vskin = $("#skinview-button");
   vgrid[0].addEventListener('click', viewChangeGrid);
   vlist[0].addEventListener('click', viewChangeList);
+  vskin[0].addEventListener('click', (_)=>{ viewChangeSkin(); });
 }
 
 function viewChangeGrid(e){
@@ -169,12 +173,25 @@ function viewChangeGrid(e){
   DataManager.changeSetting('chdb-display', 'grid');
   $('#character-grid').css('display', '');
   $('#character-list').css('display', 'none');
+  console.log('viewChangeGrid');
   for(let id in CharacterAvatarNode){
-    $(CharacterAvatarNode[id]).appendTo(`#grid-avatar-${id}`);
+    let node = $(CharacterAvatarNode[id]);
+    if(node.css('display') == 'none'){
+      node.css('display', 'block');
+      node.css('opacity', '0.3');
+      CharacterAvatarNode[id].ori_opacity = '0.3';
+    }
+    else{
+      CharacterAvatarNode[id].ori_opacity = '1.0';
+    }
+    node.appendTo(`#grid-avatar-${id}`);
   }
+  $("#skinview-button").removeAttr('disabled');
 }
 
 function viewChangeList(e){
+  $("#skinview-button").attr('disabled', '');
+  viewChangeSkin(false);
   let vgrid = $("#gridview-button");
   let vlist = $("#listview-button");
   if(vlist[0].classList.contains('btn-secondary')){ return; }
@@ -190,6 +207,24 @@ function viewChangeList(e){
   }
 }
 
+function viewChangeSkin(active){
+  let vskin = $("#skinview-button");
+  if(active == null){
+    FlagSkinViewActivate ^= true;
+  }
+  else{
+    FlagSkinViewActivate = !!active;
+  }
+  vskin.removeClass(FlagSkinViewActivate ? 'btn-outline-secondary' : 'btn-secondary');
+  vskin.addClass(FlagSkinViewActivate ? 'btn-secondary' : 'btn-outline-secondary');
+  for(let id in CharacterAvatarNode){
+    let node = CharacterAvatarNode[id];
+    if(!AssetsManager.DressedCharacterMap.hasOwnProperty(id)){
+      node.css('opacity', FlagSkinViewActivate ? '0.3' : CharacterAvatarNode[id].ori_opacity);
+    }
+  }
+}
+
 function reloadAvatars(){
   console.log("Reload avatars");
   let tmp = $('body');
@@ -197,6 +232,7 @@ function reloadAvatars(){
   for(let id in CharacterAvatarNode){
     let node = CharacterAvatarNode[id];
     node.css('display', 'none');
+    node.css('opacity', '1.0');
     let pid = `${DataManager.getSetting('chdb-display')}-avatar-${id}`;
     node.appendTo(tmp);
     let target = $(`#${pid}`)[0];
