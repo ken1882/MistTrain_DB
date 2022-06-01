@@ -47,6 +47,7 @@ function setupTableUtils(){
     height: window.innerHeight*0.8,
     sortReset: true,
     search: true,
+    searchOnEnterKey: true,
     columns: [
       {sortable: false},  // avatar
       {sortable: false},  // name
