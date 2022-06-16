@@ -360,6 +360,7 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
       "/MasterData/MChangeSkillViewModel.json": this.parseChangeSkillData,
       "/MasterData/MDressUpViewModel.json": this.parseDressupData,
       "/MasterData/MCharacterSkinViewModel.json": this.parseCharacterSkinData,
+      "/MasterData/MTrainBoardViewModel.json": this.parseTrainBoardData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
@@ -455,11 +456,15 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
 
   static parseChangeSkillData(res){
     this.ChangeSkillData = {};
+    this.ChangeSkillMirrorMap = {};
     for(let i in res){
       let dat = res[i];
       this.ChangeSkillData[dat['EffectSkillId']] = [
         dat['BeforeSkillId'], dat['AfterSkillId']
       ];
+      // This assumes change skills are one to one, may be bugged in future
+      this.ChangeSkillMirrorMap[dat['BeforeSkillId']] = dat['AfterSkillId'];
+      this.ChangeSkillMirrorMap[dat['AfterSkillId']] = dat['BeforeSkillId'];
     }
   }
 
@@ -484,6 +489,18 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
         this.DressupData[sid] = [];
       }
       this.DressupData[sid].push(dat);
+    }
+  }
+
+  static parseTrainBoardData(res){
+    this.TrainBoardData = {};
+    for(let i in res){
+      let dat = res[i];
+      for(let j in dat.TrainBoardOarders){
+        let tb = dat.TrainBoardOarders[j];
+        tb.MTrainBoardDetails = tb.MTrainBoardDetails.sort((a,b)=>{return a.DetailOrder - b.DetailOrder});
+      }
+      this.TrainBoardData[dat.MCharacterId] = dat;
     }
   }
 
