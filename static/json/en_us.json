@@ -227,6 +227,7 @@
   "CameraFollow": "Enable Following Camera",
   "CameraTarget": "Camera Target",
   "FullSkillAnimation": "Full Skill Animation",
+  "TrainboardCorrection": "Trainboard Correction",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {
