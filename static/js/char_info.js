@@ -312,6 +312,19 @@ function fillCharacterBaseInfo(){
       $(`#td-status-${i}`).html(`-`);
     }
   }
+
+  if(AssetsManager.TrainBoardData.hasOwnProperty(__CharacterId)){
+    for(node of $('span')){
+      if(!node.attributes.label || node.attributes.label.value != 'l-InitMax'){
+        continue;
+      }
+      let _html = node.innerHTML;
+      _html = _html.substr(0, _html.length-1);
+      console.log(_html);
+      _html += `<span class="trainboard-skill"> → ${Vocab['TrainboardCorrection']}</span>)`;
+      node.innerHTML = _html;
+    }
+  }
 }
 
 function getLinkedChangeSkillId(skill_id){
