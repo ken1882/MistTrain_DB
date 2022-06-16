@@ -146,12 +146,21 @@ tbody tr td{
   text-align: center;
 }
 
+
+.normal-skill{
+  color:white;
+}
+
 .special-skill{
   color:gold;
 }
 
 .change-skill{
   color: aqua;
+}
+
+.trainboard-skill{
+  color: deeppink;
 }
 
 .locationpin{

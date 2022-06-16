@@ -16,7 +16,7 @@ CharacterDatabase = {}
 def sweep_race_replays(st=1, ed=0x7fffffff):
   global Session
   error = 0
-  ret = []
+  ret = {}
   for i in range(st, ed):
     if error > 3:
       print("Stopping sweeping race due to successive error (>3)")
@@ -37,7 +37,11 @@ def sweep_race_replays(st=1, ed=0x7fffffff):
       error += 1
       continue
     data['result'] = interpret_race_replay(result)
-    ret.append(data)
+    race_t = race['startTime'].split('T')[0].split('-')
+    key = "{:d}-{:02d}".format(int(race_t[0]), int(race_t[1]))
+    if key not in ret:
+      ret[key] = []
+    ret[key].append(data)
     print(f"Race#{race['id']} data saved")
   return ret
   
@@ -76,6 +80,14 @@ def interpret_race_replay(data):
   return ret
 
 if __name__ == '__main__':
+  game.ServerLocation = game.ServerList[0]
   data = sweep_race_replays()
-  with open('static/'+_G.DERPY_WAREHOUSE_CONTENT_PATH, 'w') as fp:
-    json.dump(data, fp, indent=2)
+  for ym,month_races in data.items():
+    y,m = ym.split('-')
+    y = int(y)
+    m = int(m)
+    print(f"Saving race data of {y}/{m}")
+    fname = _G.MakeDerpyFilenamePair(y, m)
+    path = f"{_G.STATIC_FILE_DIRECTORY}/{fname[0]}"
+    with open(path, 'w') as fp:
+      json.dump(month_races, fp)
