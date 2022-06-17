@@ -574,47 +574,61 @@ function setupChangableSkills(){
       });
     }
   }
-  // Change ability (of Trainboard)
+  // Change skill/ability (of Trainboard)
   if(AssetsManager.TrainBoardData.hasOwnProperty(__CharacterId)){
     let train_boards = AssetsManager.TrainBoardData[__CharacterId].TrainBoardOarders;
     for(let board of train_boards){
       for(let entry of board.MTrainBoardDetails){
         if(entry.TrainBoardDetailChangeAbility){
-          let ori_aid = entry.TrainBoardDetailChangeAbility.BeforeMSkillId;
-          let aft_aid = entry.TrainBoardDetailChangeAbility.AfterMSkillId;
-          let swap_icon = document.createElement('span');
-          $(`#ability-name-${ori_aid}`).attr('style', 'cursor:pointer;');
-          swap_icon.innerHTML = ICON_SVG_SWAP;
-          $(swap_icon).addClass('trainboard-skill');
-          $(`#ability-name-${ori_aid}`).append(swap_icon);
-          $(`#ability-name-${ori_aid}`).on('click', (_)=>{
-            swapAbilityDescription(ori_aid, aft_aid);
-            $(`#ability-name-${aft_aid}`).append(swap_icon);
-            let node = $(`#ability-node-${aft_aid}`);
-            if(node.attr('class') == 'trainboard-skill'){
-              node.removeClass('trainboard-skill');
-            }
-            else{
-              node.addClass('trainboard-skill');
-            }
-            if($(swap_icon).attr('class') == 'trainboard-skill'){
-              $(swap_icon).removeClass('trainboard-skill');
-              $(swap_icon).addClass('normal-skill');
-            }
-            else{
-              $(swap_icon).addClass('trainboard-skill');
-              $(swap_icon).removeClass('normal-skill');
-            }
-            ori_aid ^= aft_aid;
-            aft_aid ^= ori_aid;
-            ori_aid ^= aft_aid;
-          });
+          setTrainboardSwappableEntry(
+            'ability', 
+            entry.TrainBoardDetailChangeAbility.BeforeMSkillId,
+            entry.TrainBoardDetailChangeAbility.AfterMSkillId,
+            swapAbilityDescription
+          )
+        }
+        if(entry.TrainBoardDetailChangeSkill){
+          setTrainboardSwappableEntry(
+            'skill', 
+            entry.TrainBoardDetailChangeSkill.BeforeMSkillId,
+            entry.TrainBoardDetailChangeSkill.AfterMSkillId,
+            swapSkillDescription
+          ) 
         }
       }
     }
   }
 }
 
+function setTrainboardSwappableEntry(node_prefix, ori_id, aft_id, swap_callback){
+  let swap_icon = document.createElement('span');
+  $(`#${node_prefix}-name-${ori_id}`).attr('style', 'cursor:pointer;');
+  swap_icon.innerHTML = ICON_SVG_SWAP;
+  $(swap_icon).addClass('trainboard-skill');
+  $(`#${node_prefix}-name-${ori_id}`).append(swap_icon);
+  $(`#${node_prefix}-name-${ori_id}`).on('click', (_)=>{
+    swap_callback(ori_id, aft_id);
+    $(`#${node_prefix}-name-${aft_id}`).append(swap_icon);
+    let node = $(`#${node_prefix}-node-${aft_id}`);
+    if(node.attr('class') == 'trainboard-skill'){
+      node.removeClass('trainboard-skill');
+    }
+    else{
+      node.addClass('trainboard-skill');
+    }
+    if($(swap_icon).attr('class') == 'trainboard-skill'){
+      $(swap_icon).removeClass('trainboard-skill');
+      $(swap_icon).addClass('normal-skill');
+    }
+    else{
+      $(swap_icon).addClass('trainboard-skill');
+      $(swap_icon).removeClass('normal-skill');
+    }
+    ori_id ^= aft_id;
+    aft_id ^= ori_id;
+    ori_id ^= aft_id;
+  });
+}
 
 function appendCharacterAvatars(){
   let parent = $('#character-icon');
