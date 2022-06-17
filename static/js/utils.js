@@ -288,7 +288,7 @@ function canvasStringToArr(ss) {
   return arr;
 }
 
-function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=null, dh=null){
+function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=null, dh=null, rotate=null){
   if(dx == null){ dx = 0; }
   if(dy == null){ dy = 0; }
   if(dw == null){ dw = cw; }
@@ -297,13 +297,15 @@ function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=n
   context.webkitImageSmoothingEnabled = false;
   context.mozImageSmoothingEnabled = false;
   context.imageSmoothingEnabled = false;
+  if(rotate){ context.rotate(toRad(rotate)); }
   context.drawImage(image, cx, cy, cw, ch, dx, dy, dw, dh);
+  context.setTransform(1, 0, 0, 1, 0, 0);
   target.src = canvas.toDataURL();
 }
 
 function localizeBootstrapTable(node){
   if(!DataManager.isReady()){
-    return setTimeout(localizeBootstrapTable(node), 300);
+    return setTimeout(()=>{localizeBootstrapTable(node)}, 300);
   }
   for(let key in Vocab.BootstrapTable){
     if(!Vocab.BootstrapTable.hasOwnProperty(key)){ continue; }

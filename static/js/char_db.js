@@ -67,6 +67,20 @@ function setupTableUtils(){
         setTimeout(reloadAvatars(), 100);
       }
       relocateTableHeader();
+    },
+    customSearch: (data, text) => {
+      let fragments = text.split(' ');
+      let fields = [
+          'fname', 'fweapon'
+      ];
+      return data.filter(function (row) {
+          return fragments.every((keyword) => {
+              keyword = keyword.toLocaleLowerCase();
+              return fields.some((field) => {
+                  return row[field].toLocaleLowerCase().indexOf(keyword) >= 0;
+              })
+          });
+      })
     }
   };
   

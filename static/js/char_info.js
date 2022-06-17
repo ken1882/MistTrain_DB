@@ -1,4 +1,3 @@
-var AvatarCanvas, AvatarContext;
 var FrameCanvas, FrameContext;
 let AvatarFramePadding = 4;
 let LinkSkillDescSwap = {};
@@ -320,7 +319,6 @@ function fillCharacterBaseInfo(){
       }
       let _html = node.innerHTML;
       _html = _html.substr(0, _html.length-1);
-      console.log(_html);
       _html += `<span class="trainboard-skill"> → ${Vocab['TrainboardCorrection']}</span>)`;
       node.innerHTML = _html;
     }
@@ -430,7 +428,6 @@ function fillCharacterSkillInfo(){
     $(node).append(sname);
     $(node).append(seffect);
     $("#tbody-passive-skill").append(node);
-    console.log(node);
     swapAbilityDescription(i, aid);
   }
   setupChangableSkills();
@@ -634,10 +631,9 @@ function appendCharacterAvatars(){
   let parent = $('#character-icon');
   let node = AssetsManager.createCharacterAvatarNode(__CharacterId);
   parent.append(node);
-  console.log(node);
   let img = node.children();
   img.attr('target', '_blank');
-  img.attr('href', AssetsManager.FrameCanvas.toDataURL());
+  img.attr('href', AssetsManager.AvatarCanvas.toDataURL());
 }
 
 function prepareBattlerAnimRecord(){

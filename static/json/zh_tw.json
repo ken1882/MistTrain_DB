@@ -102,6 +102,7 @@
   "SaveFrame": "儲存當前圖像",
   "Name": "名稱",
   "Avatar": "頭像",
+  "Image": "圖片",
   "Rarity": "稀有度",
   "Weapon": "武器",
   "Type": "定位",
@@ -228,6 +229,7 @@
   "CameraTarget": "攝影機目標",
   "FullSkillAnimation": "完整技能動畫",
   "TrainboardCorrection": "訓練板補正",
+  "FieldSkillDB": "PT 技能卡一覽",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
@@ -244,5 +246,8 @@
   },
   "CharacterSkinName": {
     "0": "預設外觀造型"
+  },
+  "FieldSkillName": {
+    "0": "PT Id: PT 名稱"
   }
 }

@@ -74,6 +74,11 @@ tbody tr td{
   vertical-align: middle;
 }
 
+.dialog-avatar {
+  margin: 8px;
+  margin-right: 24px;
+}
+
 .avatar-container {
   display: inline-block;
   position: relative;
@@ -82,12 +87,16 @@ tbody tr td{
   padding: 4px 4px 4px 4px;
 }
 
-.dialog-avatar {
-  margin: 8px;
-  margin-right: 24px;
+.avatar {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.avatar {
+.avatar-frame {
   position: absolute;
   width: 100px;
   height: 100px;
@@ -100,14 +109,36 @@ tbody tr td{
   width: 100px;
 }
 
-.avatar-frame {
+/* .fieldskill-col-header{
+  width: 220px;
+} */
+
+
+/* .fieldskill-container {
+  display: inline-block;
+  position: relative;
+  width: 214px;
+  height: 102px;
+  padding: 4px 4px 4px 4px;
+}
+
+.fieldskill-image {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 214px;
+  height: 102px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.fieldskill-frame {
+  position: absolute;
+  width: 214px;
+  height: 102px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+} */
 
 .side-canvas{
   position: relative;
