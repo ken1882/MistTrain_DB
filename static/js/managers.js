@@ -1,6 +1,15 @@
 const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
 const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-static';
 
+const CharacterAvatarWidth  = 94;
+const CharacterAvatarHeight = 94;
+const CharacterFrameWidth   = 102;
+const CharacterFrameHeight  = 102;
+const FieldSkillImageWidth  = 202;
+const FieldSkillImageHeight = 94;
+const FieldSkillFrameWidth  = 214;
+const FieldSkillFrameHeight = 102;
+
 /**---------------------------------------------------------------------------
  * > DataManager:
  *    The static class that manages data and settings.
@@ -207,17 +216,70 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
     this.__readyCnt = 0;
     this.__readyReq = 0;
     this.__requestQueue = [];
-    this.CharacterAvatarSet = {};
-    this.CharacterAvatarClip = {};
-    this.CharacterAvatarMap = {};
+    this.CharacterAvatarSet   = {};
+    this.CharacterAvatarClip  = {};
+    this.CharacterAvatarMap   = {};
+    this.FieldSkillImageSet   = {};
+    this.FieldSkillImageClip  = {};
+    this.FieldSkillImageMap   = {};
   }
 
   static loadCharacterAssets(){
     this.loadCharacterAvatars();
-    this.loadCharacterFrames();
+    this.loadPartyFrames();
     this.loadAvatarClipData();
     this.loadAllAssets();
     this.setupAvatarCanvas();
+  }
+
+  static loadFieldSkillArchive(){
+    this.loadAssetDataArchive('/static/json/iconinfo.json', this.parseIconClipData);
+    this.__readyReq += 1;
+    this.FieldSkillData = {};
+    this.loadFieldSkillAsset();
+    this.setupFieldSkillCanvas();
+    $.ajax({
+      url: `${STATIC_HOST}/MasterData/MFieldSkillViewModel.json`,
+      success: (res) => { 
+        for(let dat of res){
+          this.FieldSkillData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      },
+      error: handleAjaxError,
+    })
+  }
+
+  static loadFieldSkillAsset(idx=1){
+    this.__readyReq += 1;
+    let image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = `${ASSET_HOST}/Textures/Icons/Atlas/FieldSkills/field_skill-${idx}.png?`;
+    image.onload = () => {
+      this.FieldSkillImageSet[idx] = image;
+      this.incReadyCounter();
+      AssetsManager.loadFieldSkillImageClip(idx);
+      AssetsManager.loadFieldSkillAsset(idx+1);
+    };
+    image.onerror = ()=>{
+      this.incReadyCounter();
+    }
+  }
+
+  static loadFieldSkillImageClip(idx=1){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `${ASSET_HOST}/Textures/Icons/Atlas/FieldSkills/field_skill-${idx}.plist`,
+      success: (res) => { 
+        AssetsManager.parseFieldSkillImageClip(res, idx);
+        this.incReadyCounter();
+        AssetsManager.loadFieldSkillImageClip(idx+1);
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
   }
   
   static loadCharacterAvatars(idx=1){
@@ -235,12 +297,12 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
     }
   }
 
-  static loadCharacterFrames(){
+  static loadPartyFrames(){
     this.__readyReq += 1;
     let image = new Image();
     image.src = "/static/assets/icons_party1.png";
     image.onload = () => {
-      this.CharacterFrameSet = image;
+      this.PartyFrameSet = image;
       this.incReadyCounter();
     };
   }
@@ -364,20 +426,35 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
-      this.__readyReq += 1;
-      let method = handlers[uri];
-      if(uri.includes('MasterData')){
-        uri = `${STATIC_HOST}${uri}`;
-      }
-      $.ajax({
-        url: uri,
-        success: (res) => { 
-          method.apply(AssetsManager, [res]);
-          this.incReadyCounter();
-        },
-        error: handleAjaxError,
-      });
+      this.loadAssetDataArchive(uri, handlers[uri]);
     }
+  }
+
+  static loadSkillArchive(){
+    let handlers = {
+      "/MasterData/MSkillViewModel.json": this.parseSkillData,
+      "/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
+      "/MasterData/MChangeSkillViewModel.json": this.parseChangeSkillData,
+    }
+    for(let uri in handlers){
+      if(!handlers.hasOwnProperty(uri)){ continue; }
+      this.loadAssetDataArchive(uri, handlers[uri]);
+    }
+  }
+
+  static loadAssetDataArchive(uri, handler){
+    this.__readyReq += 1;
+    if(uri.includes('MasterData')){
+      uri = `${STATIC_HOST}${uri}`;
+    }
+    $.ajax({
+      url: uri,
+      success: (res) => { 
+        handler.apply(AssetsManager, [res]);
+        this.incReadyCounter();
+      },
+      error: handleAjaxError,
+    });
   }
 
   static parseXMLKeyValueDict(node){
@@ -504,6 +581,16 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
     }
   }
 
+  static parseFieldSkillImageClip(xml, idx){
+    let root = xml.children[0].children[0];
+    let data = this.parseXMLKeyValueDict(root);
+    for(let i in data.frames){
+      if(!data.frames.hasOwnProperty(i)){ continue; }
+      this.FieldSkillImageClip[i] = data.frames[i];
+      this.FieldSkillImageMap[i] = idx;
+    }
+  }
+
   static setupCharacterSkin(){
     this.DressedCharacterMap = {};
     for(let mbchid in this.CharacterSkinData){
@@ -521,25 +608,14 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
 
   static setupAvatarCanvas(){
     this.__readyReq += 1;
-    const CharacterAvatarWidth  = 94;
-    const CharacterAvatarHeight = 94;
-    const CharacterFrameWidth   = 102;
-    const CharacterFrameHeight  = 102;
-    this.AvatarCanvas  = document.createElement("canvas");
-    this.AvatarCanvas.width = CharacterAvatarWidth;
-    this.AvatarCanvas.height = CharacterAvatarHeight;
+    this.AvatarCanvas = document.createElement("canvas");
+    this.AvatarCanvas.width = CharacterFrameWidth;
+    this.AvatarCanvas.height = CharacterFrameHeight;
     this.AvatarContext = this.AvatarCanvas.getContext('2d');
-    this.AvatarContext.webkitImageSmoothingEnabled = false;
-    this.AvatarContext.mozImageSmoothingEnabled = false;
-    this.AvatarContext.imageSmoothingEnabled = false;
-    this.FrameCanvas = document.createElement("canvas");
-    this.FrameCanvas.width = CharacterFrameWidth;
-    this.FrameCanvas.height = CharacterFrameHeight;
-    this.FrameContext = this.FrameCanvas.getContext('2d');
     this.incReadyCounter();
   }
 
-  static get AvatarFramePadding(){ return 4; }
+  static get FramePadding(){ return 4; }
 
   static createCharacterAvatarNode(id, frame_type=null){
     let container = $(document.createElement('div'));
@@ -547,11 +623,11 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    let img2 = document.createElement('img');
+    // let img2 = document.createElement('img');
     $(img).attr('class', 'avatar');
-    $(img2).attr('class', 'avatar-frame');
+    // $(img2).attr('class', 'avatar-frame');
     block.append(img);
-    block.append(img2);
+    // block.append(img2);
     let avatar_key = `${id}.png`;
     let rect = null;
     if(this.CharacterAvatarClip.hasOwnProperty(avatar_key)){
@@ -573,34 +649,98 @@ const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-s
     }
     let rect2 = null;
     try{
-      rect2 = this.IconClipData[krarity].rect;
-    }
-    catch(e){
       rect2 = this.IconClipData[krarity].content.rect;
-    }
-    if(!rect2){
-      rect2 = this.IconClipData[krarity].content.rect;
+    }catch(e){
+      console.error(e);
     }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
-    this.FrameContext.clearRect(0, 0, this.FrameCanvas.width, this.FrameCanvas.height);
     if(rect){
       let src_idx = this.CharacterAvatarMap[avatar_key];
-      // clipImage(
-      //   this.AvatarCanvas, this.CharacterAvatarSet[src_idx], img, 
-      //   rect[0], rect[1], rect[2], rect[3],
-      //   this.AvatarFramePadding, this.AvatarFramePadding,
-      //   this.AvatarCanvas.width - this.AvatarFramePadding*2, this.AvatarCanvas.height - this.AvatarFramePadding*2
-      // );
       clipImage(
-        this.FrameCanvas, this.CharacterAvatarSet[src_idx], img, 
+        this.AvatarCanvas, this.CharacterAvatarSet[src_idx], img, 
         rect[0], rect[1], rect[2], rect[3],
-        this.AvatarFramePadding, this.AvatarFramePadding,
-        this.AvatarCanvas.width, this.AvatarCanvas.height 
+        this.FramePadding, this.FramePadding,
+        CharacterAvatarWidth, CharacterAvatarHeight,
       );
     }
     if(rect2){
       clipImage(
-        this.FrameCanvas, this.CharacterFrameSet, img2, 
+        this.AvatarCanvas, this.PartyFrameSet, img, 
+        rect2[0], rect2[1], rect2[2], rect2[3], 
+        0, 0, rect2[2], rect2[3]
+      );
+    }
+    return container;
+  }
+
+
+  static setupFieldSkillCanvas(){
+    this.__readyReq += 1;
+    this.FieldSkillCanvas  = document.createElement("canvas");
+    this.FieldSkillCanvas.width  = FieldSkillFrameWidth;
+    this.FieldSkillCanvas.height = FieldSkillFrameHeight;
+    this.FieldSkillContext = this.FieldSkillCanvas.getContext('2d');
+    this.incReadyCounter();
+  }
+
+  static createFieldSkillImageNode(id, frame_type=null){
+    let container = $(document.createElement('div'));
+    container.attr('class', 'fieldskill-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    // let img2 = document.createElement('img');
+    $(img).attr('class', 'fieldskill-image');
+    // $(img2).attr('class', 'fieldskill-frame');
+    block.append(img);
+    // block.append(img2);
+    let image_key = `${id}.png`;
+    let rect = null;
+    if(this.FieldSkillImageClip.hasOwnProperty(image_key)){
+      rect = this.FieldSkillImageClip[`${id}.png`].textureRect.flat();
+    }
+    else{ return null; }
+    let krarity = 'frm_thumb__ptskill_rare_b';
+    if(!frame_type){
+      switch(this.FieldSkillData[id].Rarity){
+        case 2:
+          krarity = 'frm_thumb__ptskill_rare_a';
+          break;
+        case 3:
+          krarity = 'frm_thumb__ptskill_rare_s';
+          break;
+        case 4:
+          krarity = 'frm_thumb__ptskill_rare_ss';
+          break;
+      }
+    }
+    let rect2 = null;
+    try{
+      rect2 = this.IconClipData[krarity].content.rect;
+    }catch(e){
+      console.error(e);
+    }
+    let canvas  = this.FieldSkillCanvas;
+    let context = this.FieldSkillContext;
+    let rotated = this.FieldSkillImageClip[image_key].textureRotated;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    if(rect){
+      let src_idx = this.FieldSkillImageMap[image_key];
+      if(rotated){
+        context.translate(0, canvas.height);
+      }
+      clipImage(
+        canvas, this.FieldSkillImageSet[src_idx], img, 
+        rect[0], rect[1], rotated ? rect[3] : rect[2], rotated ? rect[2] : rect[3],
+        this.FramePadding, this.FramePadding,
+        rotated ? FieldSkillImageHeight : FieldSkillImageWidth, 
+        rotated ? FieldSkillImageWidth  : FieldSkillImageHeight,
+        rotated ? 270 : 0
+      );
+    }
+    if(rect2){
+      clipImage(
+        canvas, this.PartyFrameSet, img, 
         rect2[0], rect2[1], rect2[2], rect2[3], 
         0, 0, rect2[2], rect2[3]
       );

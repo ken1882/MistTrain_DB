@@ -82,6 +82,10 @@ def story_view(id=1):
     sc_id=id,
   )
 
+@app.route('/fieldskill_db', methods=['GET'])
+def fieldskill_index():
+  return render_template('field_skill.html', navbar_content=get_navbar())
+
 ## Auxiliary methods / API
 
 @app.route('/static/<path:path>')
