@@ -199,4 +199,10 @@ function resizeBedroomCanvas(){
 	BedroomRenderer.resize(spine.webgl.ResizeMode.Fit);
 }
 
+function setAnimationStep(n){
+  for(let i in CharacterAnimStates){
+    CharacterAnimStates[i].setAnimation(0, CharacterAnimations[i][n], true);
+  }
+}
+
 window.addEventListener('load', init)
