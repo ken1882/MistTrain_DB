@@ -59,6 +59,15 @@ def character_info(id):
     ch_id=id,
   )
 
+@app.route('/character_database/<id>/bedroom')
+def character_bedroom(id):
+  if _G.FlagUseCloudData:
+    return jsonify({'msg': 'Forbidden'}),403
+  return render_template('character_bedroom.html', 
+    navbar_content=get_navbar(),
+    ch_id=id,
+  )
+
 @app.route('/story_transcript', methods=['GET'])
 @req_story_ready
 def story_transcript_index():

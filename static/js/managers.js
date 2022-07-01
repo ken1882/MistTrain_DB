@@ -228,7 +228,7 @@ const FieldSkillFrameHeight = 102;
     this.loadCharacterAvatars();
     this.loadPartyFrames();
     this.loadAvatarClipData();
-    this.loadAllAssets();
+    this.loadCharacterData();
     this.setupAvatarCanvas();
   }
 
@@ -412,7 +412,7 @@ const FieldSkillFrameHeight = 102;
     this.__readyCnt += n;
   }
 
-  static loadAllAssets(){
+  static loadCharacterData(){
     let handlers = {
       "/static/json/iconinfo.json": this.parseIconClipData,
       "/MasterData/MCharacterViewModel.json": this.parseCharacterData,
