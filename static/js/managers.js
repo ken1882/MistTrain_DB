@@ -423,6 +423,7 @@ const FieldSkillFrameHeight = 102;
       "/MasterData/MDressUpViewModel.json": this.parseDressupData,
       "/MasterData/MCharacterSkinViewModel.json": this.parseCharacterSkinData,
       "/MasterData/MTrainBoardViewModel.json": this.parseTrainBoardData,
+      "/MasterData/MSceneViewModel.json": this.parseSceneData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
@@ -578,6 +579,14 @@ const FieldSkillFrameHeight = 102;
         tb.MTrainBoardDetails = tb.MTrainBoardDetails.sort((a,b)=>{return a.DetailOrder - b.DetailOrder});
       }
       this.TrainBoardData[dat.MCharacterId] = dat;
+    }
+  }
+
+  static parseSceneData(res){
+    this.SceneData = {};
+    for(let i=0;i<res.length;++i){
+      let scene = res[i];
+      this.SceneData[scene.Id] = scene;
     }
   }
 

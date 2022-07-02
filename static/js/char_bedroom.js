@@ -1,7 +1,9 @@
 let BedroomCanvas, BedroomGL;
 let CharacterSkeletons = [], CharacterAnimStates = [];
 let CharacterBounds    = [], CharacterAnimations = [];
+let AnimationParts = [];
 let CharacterAssetManager;
+let CharacterScenes;
 let SceneId;
 
 var lastFrameTime = Date.now() / 1000;
@@ -16,7 +18,7 @@ const CharacterBackgroundColor = [0, 0, 0, 0];
 const PREMUL_ALPHA = true;
 
 
-let __readyReq = 0, __readyCnt = 0;
+let __bedroomReadyReq, __bedRoomReadyCnt;
 
 function init(){
   AssetsManager.loadCharacterData();
@@ -25,22 +27,29 @@ function init(){
     preserveDrawingBuffer: true,
     premultipliedAlpha: PREMUL_ALPHA,
   });
-  CharacterSkeletons = [], CharacterAnimStates = [];
-  CharacterBounds    = [], CharacterAnimations = [];
+  CharacterSkeletons  = [];
+  CharacterAnimStates = [];
+  CharacterBounds     = [];
+  CharacterAnimations = [];
+  AnimationParts      = [];
+  __bedroomReadyReq   = 1;
+  __bedRoomReadyCnt   = 0;
   BedroomRenderer = new spine.webgl.SceneRenderer(BedroomCanvas, BedroomGL);
 	BedroomRenderer.debugRendering = false;
 	CharacterAssetManager = new spine.webgl.AssetManager(BedroomGL);
   setup();
 }
 
+
+
 function setup(){
   if(!DataManager.isReady() || !AssetsManager.isReady()){
     return setTimeout(setup, 300);
   }
-  let scenes = AssetsManager.CharacterData[__CharacterId].MCharacterScenes.sort(
+  CharacterScenes = AssetsManager.CharacterData[__CharacterId].MCharacterScenes.sort(
     (a,b) => {return a.KizunaRank - b.KizunaRank}
   );
-  SceneId = scenes[0].MSceneId+1;
+  SceneId = CharacterScenes[0].MSceneId+1;
   let baseurl = getBedroombaseUrl();
   $.ajax({
     url: `${baseurl}/still_configuration.json`,
@@ -60,11 +69,12 @@ function getBedroombaseUrl(sid=0){
 }
 
 function loadBedroomSpineMeta(res){
-  __readyReq = res.Partslength;
+  __bedroomReadyReq = res.Parts.length;
   for(let p of res.Parts){
     loadBedroomSpineData( getBedroomSpinePart(p.Path) );
+    AnimationParts.push(p);
   }
-  startRendering();
+  postSetup();
 }
 
 function loadBedroomSpineData(data){
@@ -74,10 +84,15 @@ function loadBedroomSpineData(data){
   setupBedroomSpine(data);
 }
 
-function startRendering(){
-  if(__readyCnt < __readyReq){
-    return setTimeout(startRendering, 300);
+function postSetup(){
+  if(__bedRoomReadyCnt < __bedroomReadyReq){
+    return setTimeout(postSetup, 300);
   }
+  setupBedroomOptions();
+  startRendering();
+}
+
+function startRendering(){
   $("#bedroom-loading-indicator").remove();
   setTimeout(() => {
     requestAnimationFrame(renderBedroom);
@@ -91,7 +106,7 @@ function setupBedroomSpine(data){
 		}, 100);
 	}
   let chdata = loadSkeleton(CharacterAssetManager, data);
-  let ord = CharacterSkeletons.length;
+  
 	CharacterSkeletons.push(chdata.skeleton);
 	CharacterAnimStates.push(chdata.state);
 	CharacterBounds.push(chdata.bounds);
@@ -103,7 +118,7 @@ function setupBedroomSpine(data){
   chdata.state.setAnimation(0, chdata.animations[0], true);
   resizeBedroomCanvas();
   window.addEventListener('resize', resizeBedroomCanvas, true);
-  __readyCnt += 1;
+  __bedRoomReadyCnt += 1;
 }
 
 function getBedroomSpinePart(p){
@@ -183,9 +198,7 @@ function resizeBedroomCanvas(){
   BedroomCanvas.width = w;
 	BedroomCanvas.height = h;
 	BedroomRenderer.camera.position.x = 0;
-	BedroomRenderer.camera.position.y = 0; // (CharacterBounds.offset.y + CharacterBounds.size.y / BedroomCameraYFactor);
-	// BedroomRenderer.camera.up.y = -1;
-	// BedroomRenderer.camera.direction.z = 1;
+	BedroomRenderer.camera.position.y = 0;
   let maxn = 0;
   for(let b of CharacterBounds){
     let sum = Math.abs(b.size.x) + Math.abs(b.size.y);
@@ -203,6 +216,105 @@ function setAnimationStep(n){
   for(let i in CharacterAnimStates){
     CharacterAnimStates[i].setAnimation(0, CharacterAnimations[i][n], true);
   }
+}
+
+function exportCharacterCanvas(){
+	let canvas = createGlContextSnapshot(BedroomGL);
+	window.open(canvas.toDataURL("image/png"));
+	canvas.remove();
+}
+
+function createGlContextSnapshot(gl){
+	let width  = gl.drawingBufferWidth;
+	let height = gl.drawingBufferHeight;
+	let pixels = new Uint8Array(width * height * 4);
+	let tmp = new Uint8Array(width * height * 4)
+	let row = width * 4;
+	let end = (height - 1) * row;
+	
+	gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, tmp);
+	for(var i=0;i<tmp.length;i+=row){
+		pixels.set(tmp.subarray(i,i+row), end - i);
+	}
+
+	// alpha channel binarization
+	for(var i=0;i<pixels.length;i+=4){
+		if(pixels[i+3] < 0x70){pixels[i+3] = 0;}
+		else{ pixels[i+3] = 0xff; }
+	}
+
+	let canvas 		= document.createElement('canvas');
+	canvas.width 	= width;
+	canvas.height = height;
+	let context 	= canvas.getContext('2d');
+	let imgdata 	= context.createImageData(width, height);
+
+	for(var i=0;i<pixels.length;++i){
+		imgdata.data[i] = pixels[i];
+	}
+
+	context.putImageData(imgdata, 0, 0);
+	return canvas;
+}
+
+function setupBedroomOptions(){
+  setupAnimationSteps();
+  setupAvailableScenes();
+  setupPartSelection();
+}
+
+function setupAvailableScenes(){
+  let list_bedroom = $('#bedroom-list');
+  let scene_list = [CharacterScenes[0].MSceneId];
+  if(AssetsManager.CharacterData[__CharacterId].CharacterRarity == 4){
+    scene_list.push(CharacterScenes[2].MSceneId);
+  }
+  for(let sid of scene_list){
+    let name = AssetsManager.SceneData[sid].Title;
+    let opt = document.createElement("option");
+    $(opt).attr('value', sid);
+    if(sid == CharacterScenes[0].MSceneId){$(opt).attr('selected','')}
+    opt.innerText = name;
+    list_bedroom.append(opt);
+  }
+}
+
+function setupAnimationSteps(){
+  let list_anim = $('#anim-list');
+  for(let i in CharacterAnimations[0]){
+    let name = CharacterAnimations[0][i];
+    let opt = document.createElement("option");
+    $(opt).attr('value', i);
+    if(i == 0){$(opt).attr('selected','')}
+    opt.innerText = name;
+    list_anim.append(opt);
+  }
+  list_anim.on('change', (e)=>{
+    setAnimationStep(e.target.value);
+  });
+}
+
+function setupPartSelection(){
+  let plist = $('#part-list');
+  for(let i in AnimationParts){
+    let p = AnimationParts[i];
+    let section = document.createElement('p');
+    section.innerHTML = `
+      <input type="checkbox" id="ckb_part-${i}" checked>
+      <label for="ckb_part-${i}">${p.Path}</label>
+    `
+    $(section).addClass('item');
+    plist.append(section);
+    $(`#ckb_part-${i}`).on('change', (e)=>{
+      if(e.target.checked){
+        CharacterSkeletons[i].scaleX = 1;
+      }
+      else{
+        CharacterSkeletons[i].scaleX = 0;
+      }
+    });
+  }
+
 }
 
 window.addEventListener('load', init)

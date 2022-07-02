@@ -96,20 +96,27 @@
     </button>
 
     <div id="bedroom-canvas-container" class="center">
-      <!-- <div id="bedroom-zooms" style="display: none;">
-        <button id="bedroom-zoomin" label="l-ZoomIn"></button>
-        <button id="bedroom-zoomout" label="l-ZoomOut"></button>
-        <button id="bedroom-saveframe" label="l-SaveFrame" onclick="exportCharacterCanvas()"></button>
-      </div>
-      <br> -->
       <div class="spinner-border center" id="bedroom-loading-indicator">
         <span class="sr-only"></span>
       </div>  
       <div style="display: inline;">
         <canvas id="bedroom-canvas"></canvas>
       </div>
+      
     </div>
     <br><br>
+    <hr>
+    <div class="center">
+      <div style="display: inline;">
+        <select id="bedroom-list" class="form-select main-selectable" size="2" aria-label="select">
+        </select>
+        <select id="anim-list" class="form-select main-selectable" size="4" aria-label="select">
+        </select>
+      </div>
+    </div>
+    <hr>
+    <div id="part-list" class="center">
 
+    </div>
   </body>
 </html>

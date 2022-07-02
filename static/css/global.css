@@ -153,6 +153,18 @@ tbody tr td{
   max-width: 25%;
 }
 
+.main-selectable{
+  vertical-align: top;
+  margin-top: 16px;
+  margin-right: 5%;
+  max-width: 25%;
+  display: inline-block;
+}
+
+.item{
+  display: inline-block;
+  padding: 8px;
+}
 
 .table-hover tbody tr:hover td {
   background:slategrey;
