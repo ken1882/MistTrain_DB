@@ -10,6 +10,7 @@ import pickle
 from _G import log_error,log_debug,log_info,log_warning
 from shutil import copyfile
 from datetime import datetime
+from utils import handle_exception
 import pytz
 
 Database    = None
@@ -155,6 +156,7 @@ def create_cloud_backup(src, parent=None):
   log_info("Backup complete")
 
 def load_derpy_estimators():
+  # load models in .tmp folder if cloud disabled
   if not _G.FlagUseCloudData:
     for fname in _G.DERPY_CLOUD_ESTIMATORS:
       tmp_path = f"{_G.DCTmpFolder}/{fname}"
@@ -162,7 +164,7 @@ def load_derpy_estimators():
       with open(tmp_path, 'rb') as fp:
         _G.DERPY_ESTIMATORS.append(pickle.load(fp))
     return
-  
+  # download from cloud
   files = get_all_files()
   for fname in _G.DERPY_CLOUD_ESTIMATORS:
     for file in files:
@@ -170,9 +172,22 @@ def load_derpy_estimators():
         continue
       tmp_path = f"{_G.DCTmpFolder}/{fname}"
       log_info(f"Downloading estimator {fname}")
-      file.GetContentFile(tmp_path)
-      with open(tmp_path, 'rb') as fp:
-        _G.DERPY_ESTIMATORS.append(pickle.load(fp))
+      depth = 0
+      while True:
+        file.GetContentFile(tmp_path)
+        try:
+          with open(tmp_path, 'rb') as fp:
+            bin = pickle.load(fp)
+        except Exception as err:
+          log_error("An error occurred during loading estimator from cloud")
+          handle_exception(err)
+          depth += 1
+          log_error(f"Retrying...(depth=#{depth})")
+          if depth > 3:
+            raise err
+          continue
+        _G.DERPY_ESTIMATORS.append(bin)
+        break
 
 def load_story_meta():
   s_main  = f"/{_G.SCENE_METAS['main']}"
