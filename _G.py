@@ -46,6 +46,8 @@ MSG_PIPE_ERROR  = "\x00\x50\x00ERROR\x00"
 MSG_PIPE_TERM   = "\x00\x50\x00TERMINATED\x00"
 MSG_PIPE_RET    = "\x00\x50\x00RET\x00"
 MSG_PIPE_INFO   = "\x00\x50\x00INFO\x00"
+MSG_PIPE_REAUTH = "\x00\x50\x00REAUTH\x00"
+MSG_PIPE_UNAUTH = "\x00\x50\x00UNAUTH\x00"
 
 ThreadPool = {}
 MutexLock  = threading.Lock()

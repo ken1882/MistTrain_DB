@@ -130,12 +130,14 @@ function startRendering(){
   if(!isBedroomLoaded()){
     return setTimeout(startRendering, 300);
   }
-  $("#bedroom-loading-indicator").css('display', 'none');
-  $(BedroomCanvas).css('display', 'inline');
-  $('#bedroom-list').attr('disabled', null);
-  resizeBedroomCanvas();
   setTimeout(() => {
     requestAnimationFrame(renderBedroom);
+  }, 500);
+  setTimeout(() => {
+    $("#bedroom-loading-indicator").css('display', 'none');
+    $(BedroomCanvas).css('display', 'inline');
+    $('#bedroom-list').attr('disabled', null);
+    resizeBedroomCanvas();
   }, 1000);
 }
 

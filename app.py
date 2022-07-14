@@ -1,7 +1,7 @@
 from datetime import datetime,timedelta
 import _G
 import os
-from flask import Flask
+from flask import Flask, make_response, redirect, abort
 from flask import render_template,jsonify,send_from_directory,request
 from _G import log_error,log_info,log_warning,log_debug
 import controller.derpy as derpy
@@ -15,6 +15,9 @@ import auth
 from utils import handle_exception,load_navbar
 from controller.derpy import req_derpy_ready
 from controller.story import req_story_ready
+from urllib.parse import quote
+from base64 import b64decode, b64encode
+from datetime import datetime, timedelta
 
 app = Flask(__name__, template_folder='view')
 app.initialized = False
@@ -30,8 +33,18 @@ def render_template(*args, **kwargs):
 @app.route('/auth/discord/redirect', methods=['GET'])
 @req_story_ready
 def discord_oauth():
-  print(request.args)
-  return render_template('index.html', navbar_content=get_navbar())
+  direction = request.args.get('dir')
+  print(direction)
+  res  = make_response(render_template('redirect.html', navbar_content=get_navbar()))
+  code = request.args.get('code')
+  if code:
+    tokens = auth.issue_token(code)
+    if not tokens:
+      return res
+    atoken = tokens['access_token']
+    res.set_cookie('atoken', atoken)
+    res.set_cookie('rtoken', tokens['refresh_token'])
+  return res
 
 
 ## Routes
@@ -71,13 +84,33 @@ def character_info(id):
 
 @app.route('/character_database/<id>/bedroom')
 def character_bedroom(id):
-  if _G.FlagUseCloudData:
-    return jsonify({'msg': 'Forbidden'}),403
-  return render_template('character_bedroom.html', 
+  res_ok = make_response(render_template('character_bedroom.html', 
     navbar_content=get_navbar(),
     ch_id=id,
-  )
-
+  ))
+  msg = auth.verify_request(request, response=[res_ok])
+  if msg == _G.MSG_PIPE_REAUTH:
+    ainfo = auth.get_dcauth_info()
+    dest = quote(
+      "https://discord.com/oauth2/authorize?" + \
+      f"response_type={ainfo['type']}&client_id={ainfo['client_id']}&" + \
+      f"scope={ainfo['scope']}&redirect_uri={ainfo['callback']}"
+    )
+    return redirect(f"/auth/discord/redirect?dir=out&callback={request.path}&dest={dest}")
+  elif msg == _G.MSG_PIPE_CONT:
+    res_ok.set_cookie('btoken', 
+      b64encode('ミストトレインガールズ～霧の世界の車窓から～ X'.encode()).decode(),
+      expires=datetime.now()+timedelta(days=7)
+    )
+    return res_ok
+  
+  res_ban = make_response(jsonify({'msg': 'Forbidden'}), 403)
+  res_ban.set_cookie('btoken', 
+      b64encode('ミストトレインガールズ～霧の世界の車窓から～'.encode()).decode(),
+      expires=datetime.now()+timedelta(days=7)
+    )
+  return res_ban
+  
 @app.route('/story_transcript', methods=['GET'])
 @req_story_ready
 def story_transcript_index():
