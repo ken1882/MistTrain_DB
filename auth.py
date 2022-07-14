@@ -67,7 +67,7 @@ def issue_token(code):
         'client_secret': DC_AUTH_APP_SECRET,
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': 'http://localhost/auth/discord/redirect',
+        'redirect_uri': DC_AUTH_CALLBACK_URI,
     }, headers={'Content-Type': 'application/x-www-form-urlencoded'})
     log_debug("Issue token:", res, res.content)
     if res.status_code != 200:
