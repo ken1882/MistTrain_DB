@@ -31,10 +31,7 @@ def render_template(*args, **kwargs):
 ## Auth
 
 @app.route('/auth/discord/redirect', methods=['GET'])
-@req_story_ready
 def discord_oauth():
-  direction = request.args.get('dir')
-  print(direction)
   res  = make_response(render_template('redirect.html', navbar_content=get_navbar()))
   code = request.args.get('code')
   if code:
