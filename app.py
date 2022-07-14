@@ -11,6 +11,7 @@ import datamanager as dm
 from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
 import pytz
+import auth
 from utils import handle_exception,load_navbar
 from controller.derpy import req_derpy_ready
 from controller.story import req_story_ready
@@ -24,17 +25,26 @@ def render_template(*args, **kwargs):
   kwargs['debug_mode'] = app.debug
   return ori_render_template(*args, **kwargs)
 
+## Auth
+
+@app.route('/auth/discord/redirect', methods=['GET'])
+@req_story_ready
+def discord_oauth():
+  print(request.args)
+  return render_template('index.html', navbar_content=get_navbar())
+
+
 ## Routes
 
 @app.route('/', methods=['GET'])
 def index():
   return render_template('index.html', navbar_content=get_navbar())
 
-
 @app.route('/favicon.ico')
 def favicon():
   return send_from_directory(os.path.join(app.root_path, 'static'),
                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 @app.route('/mistrunner_database', methods=['GET'])
 @req_derpy_ready

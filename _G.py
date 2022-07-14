@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from redis import Redis
 from base64 import b64decode,b64encode
 
+load_dotenv()
+
 ENCODING = 'UTF-8'
 IS_WIN32 = False
 IS_LINUX = False
