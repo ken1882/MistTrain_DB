@@ -4,7 +4,7 @@ let CharacterBounds    = [], CharacterAnimations = [];
 let AnimationParts = [];
 let CharacterAssetManager;
 let CharacterScenes;
-let SceneId;
+let CurrentCharacterData = {};
 
 var lastFrameTime = Date.now() / 1000;
 
@@ -12,13 +12,15 @@ var BedroomCanvasWidthScale = 0.9;
 var BedroomCameraYFactor = 4;
 var CharacterSkeletonShrinkRate = 1.0;
 
+let BedroomSpineDataCache = {};
+var CurrentSceneId = 0;
+
 const EmptyBackgroundColor = [0, 0, 0, 0];
 const BattlerBackgroundColor   = [0.8, 0.8, 0.8, 1.0];
 const CharacterBackgroundColor = [0, 0, 0, 0];
 const PREMUL_ALPHA = true;
 
-
-let __bedroomReadyReq, __bedRoomReadyCnt;
+let __bedroomReadyReq, __bedroomReadyCnt;
 
 function init(){
   AssetsManager.loadCharacterData();
@@ -33,7 +35,7 @@ function init(){
   CharacterAnimations = [];
   AnimationParts      = [];
   __bedroomReadyReq   = 1;
-  __bedRoomReadyCnt   = 0;
+  __bedroomReadyCnt   = 0;
   BedroomRenderer = new spine.webgl.SceneRenderer(BedroomCanvas, BedroomGL);
 	BedroomRenderer.debugRendering = false;
 	CharacterAssetManager = new spine.webgl.AssetManager(BedroomGL);
@@ -46,20 +48,31 @@ function setup(){
   if(!DataManager.isReady() || !AssetsManager.isReady()){
     return setTimeout(setup, 300);
   }
-  CharacterScenes = AssetsManager.CharacterData[__CharacterId].MCharacterScenes.sort(
+  CurrentCharacterData = AssetsManager.CharacterData[__CharacterId];
+  CharacterScenes = CurrentCharacterData.MCharacterScenes.sort(
     (a,b) => {return a.KizunaRank - b.KizunaRank}
   );
-  SceneId = CharacterScenes[0].MSceneId+1;
-  let baseurl = getBedroombaseUrl();
+  CurrentSceneId = CharacterScenes[0].MSceneId+1;
+  loadBedroomSpineMeta(CurrentSceneId);
+  postSetup();
+}
+
+function loadBedroomSpineMeta(scene_id){
+  __bedroomReadyCnt = 0;
+  __bedroomReadyReq = 1;
+  if(BedroomSpineDataCache.hasOwnProperty(scene_id)){
+    __bedroomReadyCnt = 1;
+    return ;
+  }
+  var baseurl = getBedroombaseUrl(scene_id);
   $.ajax({
     url: `${baseurl}/still_configuration.json`,
-    success: loadBedroomSpineMeta,
+    success: (res)=>{parseBedroomSpineMeta(res, scene_id)},
   });
 }
 
-function getBedroombaseUrl(sid=0){
-  if(!sid){ sid = SceneId; }
-  let pre = '', n = parseInt(SceneId / 100000);
+function getBedroombaseUrl(sid){
+  let pre = '', n = parseInt(sid / 100000);
   while(n > 10){
     pre += parseInt(n % 10);
     n = parseInt(n / 10);
@@ -68,13 +81,19 @@ function getBedroombaseUrl(sid=0){
   return `${ASSET_HOST}/Spines/Stills/${pre}/${sid}`;
 }
 
-function loadBedroomSpineMeta(res){
+function parseBedroomSpineMeta(res, sid){
   __bedroomReadyReq = res.Parts.length;
-  for(let p of res.Parts){
-    loadBedroomSpineData( getBedroomSpinePart(p.Path) );
-    AnimationParts.push(p);
+  BedroomSpineDataCache[sid] = {
+    parts: [],
+    skeletons: [],
+    animstates: [],
+    animations: [],
+    bounds: [],
   }
-  postSetup();
+  for(let p of res.Parts){
+    loadBedroomSpineData( getBedroomSpinePart(sid, p.Path) );
+    BedroomSpineDataCache[sid].parts.push(p);
+  }
 }
 
 function loadBedroomSpineData(data){
@@ -84,18 +103,41 @@ function loadBedroomSpineData(data){
   setupBedroomSpine(data);
 }
 
+function isBedroomLoaded(){
+  return __bedroomReadyCnt >= __bedroomReadyReq && __bedroomReadyCnt > 0;
+}
+
 function postSetup(){
-  if(__bedRoomReadyCnt < __bedroomReadyReq){
+  if(!isBedroomLoaded()){
     return setTimeout(postSetup, 300);
   }
-  setupBedroomOptions();
+  window.addEventListener('resize', resizeBedroomCanvas, true);
+  setupAvailableScenes();
+  prepareBedroomRendering();
+}
+
+function prepareBedroomRendering(){
+  if(!isBedroomLoaded()){
+    return setTimeout(prepareBedroomRendering, 300);
+  }
+  swapCurrentScene(CurrentSceneId);
+  setupAnimationSteps();
+  setupPartSelection();
   startRendering();
 }
 
 function startRendering(){
-  $("#bedroom-loading-indicator").remove();
+  if(!isBedroomLoaded()){
+    return setTimeout(startRendering, 300);
+  }
   setTimeout(() => {
     requestAnimationFrame(renderBedroom);
+  }, 500);
+  setTimeout(() => {
+    $("#bedroom-loading-indicator").css('display', 'none');
+    $(BedroomCanvas).css('display', 'inline');
+    $('#bedroom-list').attr('disabled', null);
+    resizeBedroomCanvas();
   }, 1000);
 }
 
@@ -107,22 +149,20 @@ function setupBedroomSpine(data){
 	}
   let chdata = loadSkeleton(CharacterAssetManager, data);
   
-	CharacterSkeletons.push(chdata.skeleton);
-	CharacterAnimStates.push(chdata.state);
-	CharacterBounds.push(chdata.bounds);
-  CharacterAnimations.push(chdata.animations);
+	BedroomSpineDataCache[CurrentSceneId].skeletons.push(chdata.skeleton);
+	BedroomSpineDataCache[CurrentSceneId].animstates.push(chdata.state);
+	BedroomSpineDataCache[CurrentSceneId].bounds.push(chdata.bounds);
+  BedroomSpineDataCache[CurrentSceneId].animations.push(chdata.animations);
   for(let i in chdata.state.data.skeletonData.slots){
     let sdat = chdata.state.data.skeletonData.slots[i];
     sdat.blendMode = 3;
 	}
   chdata.state.setAnimation(0, chdata.animations[0], true);
-  resizeBedroomCanvas();
-  window.addEventListener('resize', resizeBedroomCanvas, true);
-  __bedRoomReadyCnt += 1;
+  __bedroomReadyCnt += 1;
 }
 
-function getBedroomSpinePart(p){
-  let baseurl = getBedroombaseUrl() + '/' + p;
+function getBedroomSpinePart(sid, p){
+  let baseurl = getBedroombaseUrl(sid) + '/' + p;
   return {
     png: `${baseurl}.png`,
     atlas: `${baseurl}.atlas`,
@@ -167,6 +207,8 @@ function calculateBounds(skeleton) {
 }
 
 function renderBedroom(){
+  if(!CurrentSceneId){ return ; }
+
   var now = Date.now() / 1000;
 	var delta = now - lastFrameTime;
 	var gl = BedroomGL;
@@ -257,12 +299,6 @@ function createGlContextSnapshot(gl){
 	return canvas;
 }
 
-function setupBedroomOptions(){
-  setupAnimationSteps();
-  setupAvailableScenes();
-  setupPartSelection();
-}
-
 function setupAvailableScenes(){
   let list_bedroom = $('#bedroom-list');
   let scene_list = [CharacterScenes[0].MSceneId];
@@ -272,11 +308,25 @@ function setupAvailableScenes(){
   for(let sid of scene_list){
     let name = AssetsManager.SceneData[sid].Title;
     let opt = document.createElement("option");
-    $(opt).attr('value', sid);
+    $(opt).attr('value', sid+1);
     if(sid == CharacterScenes[0].MSceneId){$(opt).attr('selected','')}
     opt.innerText = name;
     list_bedroom.append(opt);
   }
+  list_bedroom.on('change', (e)=>{
+    var sid = e.target.value;
+    CurrentSceneId = 0;
+    $("#bedroom-loading-indicator").css('display', '');
+    $(BedroomCanvas).css('display', 'none');
+    $('#bedroom-list').attr('disabled', '');
+    $('#anim-list').html('');
+    $('#part-list').html('');
+    setTimeout(() => {
+      CurrentSceneId = sid;
+      loadBedroomSpineMeta(sid);
+      prepareBedroomRendering();
+    }, 1000);
+  });
 }
 
 function setupAnimationSteps(){
@@ -317,4 +367,11 @@ function setupPartSelection(){
 
 }
 
+function swapCurrentScene(sid){
+  AnimationParts      = BedroomSpineDataCache[sid].parts;
+  CharacterSkeletons  = BedroomSpineDataCache[sid].skeletons;
+  CharacterAnimStates = BedroomSpineDataCache[sid].animstates;
+  CharacterAnimations = BedroomSpineDataCache[sid].animations;
+  CharacterBounds     = BedroomSpineDataCache[sid].bounds;
+}
 window.addEventListener('load', init)

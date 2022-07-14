@@ -5,7 +5,7 @@ class DevelopmentConfig(Config):
   ENV = 'development'
   DEBUG = True
   TESTING = True
-  SERVER_NAME = 'localhost:5000'
+  SERVER_NAME = 'localhost:80'
 
 
 class ProductionConfig(Config):

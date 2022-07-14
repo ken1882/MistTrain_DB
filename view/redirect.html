@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ミストレ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
+    <script>
+        window.addEventListener("load", ()=>{
+            DataManager.initialize();
+            var u = new URL(window.location.href);
+            if(u.searchParams.get('dir') == 'out'){
+                DataManager.changeSetting('callback_uri', u.searchParams.get('callback'))
+                window.location.href = u.searchParams.get('dest');
+            }
+            else{
+                var path = DataManager.getSetting('callback_uri');
+                if(path){
+                    DataManager.changeSetting('callback_uri', '');
+                    window.location.href = path;
+                }
+                else{
+                    window.location.href = '/';
+                }
+            }
+        });
+    </script>
+  </head>
+  <body>
+    <div>
+        Please wait while you're being redirected...
+    </div>
+    <div>
+        Click <a href="/">here</a> to return to homepage.
+    </div>
+  </body>
+</html>

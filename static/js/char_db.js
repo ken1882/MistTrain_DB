@@ -1,5 +1,6 @@
 let CharacterAvatarNode = {};
 let FlagSkinViewActivate = false;
+let FlagBedroomViewActivate = false;
 const DefaultViewSetting = 'list';
 
 function init(){
@@ -40,6 +41,10 @@ function setup(){
   setupViewChangeButton();
   setupTableUtils();
   $("#loading-indicator").remove();
+  if(document.cookie.includes('44Of44K544OI44OI44Os44Kk44Oz44Ks44O844Or44K6772e6Zyn44Gu5LiW55WM44Gu6LuK56qT44GL44KJ772eIFg=')){
+    $('#bedroom-button').css('display', '');
+    $('#bedroom-button').attr('disabled', null);
+  }
 }
 
 function setupTableUtils(){
@@ -172,9 +177,11 @@ function setupViewChangeButton(){
   let vgrid = $("#gridview-button");
   let vlist = $("#listview-button");
   let vskin = $("#skinview-button");
+  let vlove = $("#bedroom-button");
   vgrid[0].addEventListener('click', viewChangeGrid);
   vlist[0].addEventListener('click', viewChangeList);
-  vskin[0].addEventListener('click', (_)=>{ viewChangeSkin(); });
+  vskin[0].addEventListener('click', ()=>{ viewChangeSkin(); });
+  vlove[0].addEventListener('click', viewChangeBedroom);
 }
 
 function viewChangeGrid(e){
@@ -238,6 +245,23 @@ function viewChangeSkin(active){
       node.css('opacity', FlagSkinViewActivate ? '0.3' : CharacterAvatarNode[id].ori_opacity);
     }
   }
+}
+
+function viewChangeBedroom(){
+  let vlove = $("#bedroom-button");
+  FlagBedroomViewActivate ^= true;
+  vlove.removeClass(FlagBedroomViewActivate ? 'btn-outline-secondary' : 'btn-secondary');
+  vlove.addClass(FlagBedroomViewActivate ? 'btn-secondary' : 'btn-outline-secondary');
+  for(let i in CharacterAvatarNode){
+    if(!CharacterAvatarNode.hasOwnProperty(i)){ continue; }
+    var link = CharacterAvatarNode[i].attr('href');
+    if(FlagBedroomViewActivate){
+      CharacterAvatarNode[i].attr('href', link+'/bedroom');
+    }
+    else{
+      CharacterAvatarNode[i].attr('href', link.split('/').slice(0, 3).join('/'));
+    }
+  } 
 }
 
 function reloadAvatars(){
