@@ -43,7 +43,6 @@ def issue_token(code):
         'client_secret': DC_AUTH_APP_SECRET,
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': 'http://localhost/auth/discord/redirect'
     }, headers={'Content-Type': 'application/x-www-form-urlencoded'})
     if res.status_code != 200:
         return None
