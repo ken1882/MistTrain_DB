@@ -32,7 +32,7 @@ def verify_request(request, response=[]):
     except Exception:
         pass
     log_debug('Request token:', atoken, rtoken)
-    msg    = verify_bedroom_access(atoken)
+    msg = verify_bedroom_access(atoken)
     if msg == _G.MSG_PIPE_CONT:
         tokens = refresh_token(rtoken)
         if tokens:
@@ -50,13 +50,16 @@ def verify_bedroom_access(token):
         headers={'Authorization': f"Bearer {token}"}
     )
     log_debug("Guild Info:\n", res, res.content)
-    if res.status_code != 200:
+    if res.status_code == 429:
+        return _G.MSG_PIPE_STOP
+    elif res.status_code == 401:
         return _G.MSG_PIPE_REAUTH
-    try:
-        if DC_AUTH_SERVER_ROLE[1] in res.json()['roles']:
-            return _G.MSG_PIPE_CONT
-    except Exception:
-        pass
+    elif res.status_code == 200:
+        try:
+            if DC_AUTH_SERVER_ROLE[1] in res.json()['roles']:
+                return _G.MSG_PIPE_CONT
+        except Exception:
+            pass
     return _G.MSG_PIPE_UNAUTH
 
 def issue_token(code):
