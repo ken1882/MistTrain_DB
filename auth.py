@@ -4,7 +4,7 @@ import os
 import requests
 import _G
 from _G import log_debug,log_error,log_info,log_warning
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 load_dotenv()
 DC_AUTH_APP_SECRET   = os.getenv('DCAUTH_APP_SECRET')
@@ -16,6 +16,10 @@ DC_AUTH_CLIENT_INFO[-1] = ' '.join(DC_AUTH_CLIENT_INFO[-1].split('&'))
 def is_auth_available():
     return DC_AUTH_CLIENT_INFO and DC_AUTH_SERVER_ROLE and DC_AUTH_APP_SECRET and DC_AUTH_CALLBACK_URI
 
+def is_refresh_needed(timestamp):
+    curt = int(datetime.now().timestamp())
+    return curt - timestamp > 60 * 60 * 12 # 12 hours
+
 def verify_request(request, response=[]):
     '''
     response: Response to set new tokens if refreshed
@@ -23,22 +27,32 @@ def verify_request(request, response=[]):
     atoken = request.cookies.get('atoken')
     rtoken = request.cookies.get('rtoken')
     btoken = request.cookies.get('btoken')
+    msg = None
     try:
         magic = b64decode(btoken).decode()
-        if magic == 'ミストトレインガールズ～霧の世界の車窓から～ X':
-            return _G.MSG_PIPE_CONT
+        if magic == 'ミストトレインガールズ～霧の世界の車窓から～ X ':
+            msg = _G.MSG_PIPE_CONT
         elif magic == 'ミストトレインガールズ～霧の世界の車窓から～':
             return _G.MSG_PIPE_UNAUTH
     except Exception:
         pass
-    log_debug('Request token:', atoken, rtoken)
-    msg = verify_bedroom_access(atoken)
+    if not msg:
+        log_debug('Request token:', atoken, rtoken)
+        msg = verify_bedroom_access(atoken)
     if msg == _G.MSG_PIPE_CONT:
-        tokens = refresh_token(rtoken)
-        if tokens:
-            for res in response:
-                res.set_cookie('atoken', tokens['access_token'], expires=datetime.now()+timedelta(days=7))
-                res.set_cookie('rtoken', tokens['refresh_token'], expires=datetime.now()+timedelta(days=7))
+        try:
+            ttoken = int(request.cookies.get('ttoken')) or 0
+        except Exception:
+            ttoken = 0
+        if is_refresh_needed(ttoken):
+            tokens = refresh_token(rtoken)
+            if tokens:
+                curt = int(datetime.now().timestamp())
+                for res in response:
+                    exp = datetime.now()+timedelta(days=7)
+                    res.set_cookie('atoken', tokens['access_token'],  expires=exp)
+                    res.set_cookie('rtoken', tokens['refresh_token'], expires=exp)
+                    res.set_cookie('ttoken', str(curt), expires=exp)
     return msg
 
 def verify_bedroom_access(token):
@@ -51,6 +65,7 @@ def verify_bedroom_access(token):
     )
     log_debug("Guild Info:\n", res, res.content)
     if res.status_code == 429:
+        _G.PipeRetQueue.append(res)
         return _G.MSG_PIPE_STOP
     elif res.status_code == 401:
         return _G.MSG_PIPE_REAUTH
@@ -65,7 +80,7 @@ def verify_bedroom_access(token):
 def issue_token(code):
     if not is_auth_available():
         return None
-    res = requests.post(f"https://discord.com/api/oauth2/token", {
+    res = requests.post('https://discord.com/api/oauth2/token', {
         'client_id': DC_AUTH_CLIENT_INFO[1],
         'client_secret': DC_AUTH_APP_SECRET,
         'grant_type': 'authorization_code',
@@ -80,7 +95,7 @@ def issue_token(code):
 def refresh_token(token):
     if not is_auth_available():
         return None
-    res = requests.post(f"https://discord.com/api/oauth2/token", {
+    res = requests.post('https://discord.com/api/oauth2/token', {
         'client_id': DC_AUTH_CLIENT_INFO[1],
         'client_secret': DC_AUTH_APP_SECRET,
         'grant_type': 'refresh_token',

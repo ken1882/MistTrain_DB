@@ -41,7 +41,7 @@ function setup(){
   setupViewChangeButton();
   setupTableUtils();
   $("#loading-indicator").remove();
-  if(document.cookie.includes('44Of44K544OI44OI44Os44Kk44Oz44Ks44O844Or44K6772e6Zyn44Gu5LiW55WM44Gu6LuK56qT44GL44KJ772eIFg=')){
+  if(document.cookie.includes('44Of44K544OI44OI44Os44Kk44Oz44Ks44O844Or44K6772e6Zyn44Gu5LiW55WM44Gu6LuK56qT44GL44KJ772eIFgg')){
     $('#bedroom-button').css('display', '');
     $('#bedroom-button').attr('disabled', null);
   }

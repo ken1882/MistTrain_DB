@@ -9,6 +9,7 @@ from copy import copy,deepcopy
 from dotenv import load_dotenv
 from redis import Redis
 from base64 import b64decode,b64encode
+from collections import deque
 
 load_dotenv()
 
@@ -48,6 +49,8 @@ MSG_PIPE_RET    = "\x00\x50\x00RET\x00"
 MSG_PIPE_INFO   = "\x00\x50\x00INFO\x00"
 MSG_PIPE_REAUTH = "\x00\x50\x00REAUTH\x00"
 MSG_PIPE_UNAUTH = "\x00\x50\x00UNAUTH\x00"
+
+PipeRetQueue    = deque()
 
 ThreadPool = {}
 MutexLock  = threading.Lock()
