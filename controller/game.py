@@ -10,6 +10,9 @@ from requests.exceptions import *
 from urllib3.exceptions import ProtocolError
 from datetime import datetime,timedelta
 from time import sleep,gmtime,strftime
+from bs4 import BeautifulSoup as BS
+from html import unescape
+from urllib.parse import unquote,urlparse,urlencode
 import pytz
 
 NetworkExcpetionRescues = (
@@ -25,7 +28,7 @@ TemporaryNetworkErrors = (
 PostHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'Accept-Encoding': 'gzip, deflate, br'
+  'Accept-Encoding': 'gzip, deflate, br',
 }
 
 ServerList = (
@@ -63,11 +66,13 @@ NetworkGetTimeout = 30
 NetworkPostTimeout = 60
 
 Session = requests.Session()
-Session.headers = {
+GAME_POST_HEADERS = {
   'Accept': '*/*',
   'Accept-Encoding': 'gzip, deflate, br',
+  'Content-Type': 'application/json',
   'Authorization': ''
 }
+Session.headers = GAME_POST_HEADERS
 
 
 def determine_server():
@@ -86,6 +91,16 @@ def determine_server():
   log_warning("Unable to get a live server")
   return _G.ERRNO_MAINTENANCE
     
+def check_login():
+  global Session,ServerLocation
+  log_info("Trying to connect to server:", ServerLocation)
+  res = post_request('/api/Login')
+  if res.status_code == 200:
+    return res
+  elif res.status_code == 401:
+    return _G.ERRNO_FAILED
+  return _G.ERRNO_MAINTENANCE
+
 def jpt2localt(jp_time):
   '''
   Convert Japanese timezone (GMT+9) datetime object to local timezone
@@ -101,37 +116,92 @@ def localt2jpt(local_time):
   delta = time_jp - time_local
   return local_time + timedelta(hours=delta)
 
-def reauth_game():
+
+def is_dmm_loggedin():
+  pass
+
+def login_dmm():
+  global Session,ServerLocation
+  _G.SetCacheString('DMM_MTG_COOKIES', '')
+  _G.SetCacheString('DMM_FORM_DATA', '')
+  Session = requests.Session()
+  res  = Session.get('https://accounts.dmm.co.jp/service/login/password')
+  page = BS(res.content, 'html.parser')
+  form = {
+    'token': page.find('input', {'name': 'token'})['value'],
+    'path':   '',
+    'prompt': '',
+    'device': '',
+  }
+  form['login_id'],form['password'] = os.getenv('DMM_CREDENTIALS').split(':')
+  res2 = Session.post('https://accounts.dmm.co.jp/service/login/password/authenticate', form)
+  if res2.status_code != 200:
+    log_error("Failed to login DMM Account:", res2, '\n', res2.content)
+  raw_cookies = ''
+  for k in Session.cookies.keys():
+    raw_cookies += f"{k}={Session.cookies[k]};"
+  _G.SetCacheString('DMM_MTG_COOKIES', raw_cookies)
+  return res2
+
+def reauth_game(depth=0):
   global Session,ServerLocation
   new_token = ''
-  if not ServerLocation:
-    res = determine_server()
-    if res == _G.ERRNO_MAINTENANCE:
-      return _G.ERRNO_MAINTENANCE
+  if depth > 3:
+    log_warning("Reauth depth excessed, abort")
+    return _G.ERRNO_MAINTENANCE
+  # if not ServerLocation:
+  #   res = determine_server()
+  #   if res == _G.ERRNO_MAINTENANCE:
+  #     return _G.ERRNO_MAINTENANCE
   try:
-    Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    # If too long, set in powershell using this command:
-    # [System.Environment]::SetEnvironmentVariable('DMM_MTG_COOKIES', '<cookies_here>', 'USER')
-    raw_cookies = os.getenv('DMM_MTG_COOKIES')
+    raw_cookies = _G.GetCacheString('DMM_MTG_COOKIES')
     for line in raw_cookies.split(';'):
       seg = line.strip().split('=')
       k = seg[0]
       v = '='.join(seg[1:])
       Session.cookies.set(k, v)
-    res = Session.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
+    
+    res  = Session.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
     page = res.content.decode('utf8')
-    st = ''
-    for line in page.split('\n'):
-      if re.match(r"(\s+)ST(\s+):", line):
-        st = literal_eval(line.strip().split(':')[-1][:-1].strip())
-        break
-    payload = os.getenv('DMM_FORM_DATA')
-    # rep = re.search(r"mist-train-east(\d)", payload).span()
-    # rep = payload[rep[0]:rep[1]]
-    # payload = payload.replace(rep, ServerLocation.split('//')[1].split('.')[0])
-    rep = re.search(r"st=(.+?)&", payload).group(0)
-    rep = rep.split('=')[1][:-1]
-    payload = payload.replace(rep, st)
+    inf_raw = re.search(r"var gadgetInfo = {((?:.*?|\n)*?)};", page).group(0)
+    inf     = {}
+    for line in inf_raw.split('\n'):
+      line = [l.strip() for l in line.split(':')]
+      if len(line) < 2:
+        continue
+      inf[line[0].lower()] = literal_eval(line[1].strip()[:-1])
+    inf['url'] = unescape(unquote(inf['url']))
+    inf['st']  = unquote(inf['st'])
+    tmp  = inf['url'].split('&url=')[-1].split('&st=')
+    _url = [u for u in tmp if u[:4] == 'http'][0]
+    urld = urlparse(_url)
+    
+    Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    payload = _G.GetCacheString('DMM_FORM_DATA')
+    ServerLocation = f"{urld.scheme}://{urld.hostname}"
+    if not payload:
+      payload = {
+        'url': f"{ServerLocation}/api/DMM/auth?fromGadget=true",
+        'gadget': _url,
+        'st': inf['st'],
+        'httpMethod': 'POST',
+        'headers': 'Content-Type=application%2Fx-www-form-urlencoded',
+        'postData': 'key=value',
+        'authz': 'signed',
+        'contentType': 'JSON',
+        'numEntries': '3',
+        'getSummaries': 'false',
+        'signOwner': 'true',
+        'signViewer': 'true',
+        'container': 'dmm',
+        'bypassSpecCache': '',
+        'getFullHeaders': 'false',
+        'oauthState': '',
+        'OAUTH_SIGNATURE_PUBLICKEY': 'key_2032',
+      }
+      payload = urlencode(payload)
+      _G.SetCacheString('DMM_FORM_DATA', payload)
+
     res = Session.post('https://osapi.dmm.com/gadgets/makeRequest', payload)
     log_debug("Response:", res)
     content = ''.join(res.content.decode('utf8').split('>')[1:])
@@ -145,16 +215,20 @@ def reauth_game():
     log_error("Unable to reauth game:", err)
     handle_exception(err)
   finally:
-    Session.headers['Content-Type'] = 'application/json'
+    Session.headers = GAME_POST_HEADERS
   if new_token:
     log_info("Game connected")
-    res = determine_server()
+    res = check_login()
     if res == _G.ERRNO_MAINTENANCE:
       return _G.ERRNO_MAINTENANCE
     res = get_request('/api/Home')
   else:
-    log_warning("Game session revoked")
-    Session = None
+    log_warning("Failed to login to game, retry dmm login")
+    _G.SetCacheString('DMM_COOKIES', '')
+    _G.SetCacheString('DMM_FORM', '')
+    res_dmm = login_dmm()
+    if res_dmm.status_code == 200:
+      return reauth_game(depth=depth+1)
     return None
   return res
 

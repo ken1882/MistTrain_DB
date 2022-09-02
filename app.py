@@ -43,6 +43,14 @@ def discord_oauth():
     res.set_cookie('rtoken', tokens['refresh_token'])
   return res
 
+# @app.route('/auth/discord/refresh', methods=['POST'])
+# def discord_reauth():
+#   token = request.args.get('token')
+#   if token:
+#     res = auth.refresh_token(token)
+#     if res.status_code == 200:
+#       return jsonify(res),200
+#   return jsonify({}),400
 
 ## Routes
 
@@ -96,15 +104,18 @@ def character_bedroom(id):
     return redirect(f"/auth/discord/redirect?dir=out&callback={request.path}&dest={dest}")
   elif msg == _G.MSG_PIPE_CONT:
     res_ok.set_cookie('btoken', 
-      b64encode('ミストトレインガールズ～霧の世界の車窓から～ X'.encode()).decode(),
-      expires=datetime.now()+timedelta(days=7)
+      b64encode('ミストトレインガールズ～霧の世界の車窓から～ X '.encode()).decode(),
+      expires=datetime.now()+timedelta(days=30)
     )
     return res_ok
+  elif msg == _G.MSG_PIPE_STOP:
+    res = _G.PipeRetQueue.popleft()
+    return jsonify(res.json()),res.status_code
   
   res_ban = make_response(jsonify({'msg': 'Forbidden'}), 403)
   res_ban.set_cookie('btoken', 
       b64encode('ミストトレインガールズ～霧の世界の車窓から～'.encode()).decode(),
-      expires=datetime.now()+timedelta(days=7)
+      expires=datetime.now()+timedelta(days=3)
     )
   return res_ban
   
