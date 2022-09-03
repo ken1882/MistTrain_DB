@@ -98,6 +98,7 @@ def check_login():
   if res.status_code == 200:
     return res
   elif res.status_code == 401:
+    log_warning("Failed login into game:", res, res.content)
     return _G.ERRNO_FAILED
   return _G.ERRNO_MAINTENANCE
 
@@ -219,7 +220,7 @@ def reauth_game(depth=0):
   if new_token:
     log_info("Game connected")
     res = check_login()
-    if res == _G.ERRNO_MAINTENANCE:
+    if type(res) == int:
       return _G.ERRNO_MAINTENANCE
     res = get_request('/api/Home')
   else:
