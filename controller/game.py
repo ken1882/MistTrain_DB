@@ -9,7 +9,7 @@ from utils import get_last_error,handle_exception,set_last_error
 from requests.exceptions import *
 from urllib3.exceptions import ProtocolError
 from datetime import datetime,timedelta
-from time import sleep,gmtime,strftime
+from time import sleep,gmtime,strftime,localtime
 from bs4 import BeautifulSoup as BS
 from html import unescape
 from urllib.parse import unquote,urlparse,urlencode
@@ -107,13 +107,15 @@ def jpt2localt(jp_time):
   Convert Japanese timezone (GMT+9) datetime object to local timezone
   '''
   time_jp = +9
-  time_local = int(strftime("%z", gmtime())) // 100
+  time_local = int(strftime("%z", gmtime()))    // 100
+  time_local = int(strftime("%z", localtime())) // 100 or time_local
   delta = time_jp - time_local
   return jp_time - timedelta(hours=delta)
 
 def localt2jpt(local_time):
   time_jp = +9
-  time_local = int(strftime("%z", gmtime())) // 100
+  time_local = int(strftime("%z", gmtime()))    // 100
+  time_local = int(strftime("%z", localtime())) // 100 or time_local
   delta = time_jp - time_local
   return local_time + timedelta(hours=delta)
 

@@ -1,4 +1,3 @@
-import enum
 import _G
 import os, json
 import controller.game as game
@@ -30,6 +29,9 @@ MaruHeaders = {
   'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
 }
 
+FlagUpdated = False
+UPDATE_HOUR = 4 # 4 am
+
 def init():
   global IsStoryReady,IsStoryInitCalled
   IsStoryInitCalled = True
@@ -57,6 +59,18 @@ def load_metas():
     for path in files:
       if fname in path and os.path.exists(path):
         log_info(f"{fname} ready")
+
+def check_new_available():
+  global FlagUpdated
+  curt = game.localt2jpt(datetime.now())
+  if curt.hour != UPDATE_HOUR:
+    FlagUpdated = False
+    return
+  if FlagUpdated:
+    return
+  load_metas()
+  FlagUpdated = True
+  log_info("Story meta updated")
 
 def rubifiy_japanese(text):
   res = requests.post(
