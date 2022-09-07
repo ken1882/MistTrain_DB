@@ -1,5 +1,3 @@
-from copy import copy
-from turtle import update
 import _G
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
