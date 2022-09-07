@@ -1,4 +1,5 @@
 from copy import copy
+from turtle import update
 import _G
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
@@ -21,7 +22,7 @@ __FileCache = {}
 FLock = Lock()
 
 def init():
-  global Database,RootFolder,SceneFolder,DerpyFolder
+  global Database
   try:
     os.mkdir(_G.DCTmpFolder)
   except FileExistsError:
@@ -36,11 +37,20 @@ def init():
     scopes=["https://www.googleapis.com/auth/drive"]
   )
   Database = GoogleDrive(gauth)
+  update_cache()
+  log_info("Cloud initialized")
+
+def update_cache(folder=None):
+  global Database,RootFolder,SceneFolder,DerpyFolder
   log_db_info()
-  files = get_all_files()
-  RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
-  SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
-  DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
+  if not folder: # update all
+    files = get_folder_files()
+    RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
+    SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
+    DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
+  else:
+    files = get_folder_files(folder)
+  
   for f in files:
     if not f['parents']:
       continue
@@ -51,7 +61,7 @@ def init():
       set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
     elif fpid == SceneFolder['id']:
       set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
-  log_info("Cloud initialized")
+  log_info(f"Cloud cache of {folder['title'] if folder else 'root'} updated")
 
 def log_db_info():
   global Database
@@ -64,13 +74,14 @@ def log_db_info():
   string += '=' * 42 + '\n'
   log_info(string)
 
-def get_all_files():
+def get_folder_files(folder=None):
   global Database,__FileCache
   if not Database:
     log_error("Database not initialized yet")
     return []
-  ret = Database.ListFile().GetList()
-  return ret
+  if not folder: # get all
+    return Database.ListFile().GetList()
+  return Database.ListFile({'q': f"'{folder['id']}' in parents"}).GetList()
 
 def set_cache(file, prefix=''):
   __FileCache[f"{prefix}/{file['title']}"] = file
@@ -85,7 +96,7 @@ def load_derpy_db(year, month):
   dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{filepath}"
   if not _G.FlagUseCloudData:
     return dst_path
-  files = get_all_files()
+  files = get_folder_files()
   for file in files:
     if file['title'] != filename:
       continue
@@ -112,7 +123,7 @@ def upload_derpy_db(data, y, m):
   fname = _G.MakeDerpyFilenamePair(y, m)[1]
   target = get_cache(f"/{_G.DERPY_CLOUD_FOLDERNAME}/{fname}")
   if not target:
-    files = get_all_files()
+    files = get_folder_files()
     for file in files:
       if file['title'] != fname:
         continue
@@ -165,7 +176,7 @@ def load_derpy_estimators():
         _G.DERPY_ESTIMATORS.append(pickle.load(fp))
     return
   # download from cloud
-  files = get_all_files()
+  files = get_folder_files()
   for fname in _G.DERPY_CLOUD_ESTIMATORS:
     for file in files:
       if file['title'] != fname:
