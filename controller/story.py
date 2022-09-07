@@ -69,6 +69,7 @@ def check_new_available():
   if FlagUpdated:
     return
   load_metas()
+  dm.update_cache(dm.SceneFolder)
   FlagUpdated = True
   log_info("Story meta updated")
 
