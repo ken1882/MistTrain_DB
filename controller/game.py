@@ -95,7 +95,8 @@ def determine_server():
 def check_login():
   global Session,ServerLocation
   log_info("Trying to connect to server:", ServerLocation)
-  res = post_request('/api/Login')
+  url = f"{ServerLocation}/api/Login"
+  res = Session.post(url=url, headers=PostHeaders, timeout=NetworkPostTimeout)
   if type(res) == dict or res.status_code == 401:
     log_warning("Failed login into game:", res, res.content)
     return _G.ERRNO_FAILED
@@ -154,7 +155,7 @@ def reauth_game(depth=0):
     log_warning("Reauth depth excessed, abort")
     return _ret_auth(_G.ERRNO_MAINTENANCE)
   if _G.GetCacheString('LOGIN_LOCK'):
-    w = 2+randint(5)
+    w = randint(2, 5)
     log_warning(f"Login lock detected, wait for {w} seconds to retry")
     sleep(w)
     Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
