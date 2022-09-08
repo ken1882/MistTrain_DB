@@ -13,6 +13,7 @@ from time import sleep,gmtime,strftime,localtime
 from bs4 import BeautifulSoup as BS
 from html import unescape
 from urllib.parse import unquote,urlparse,urlencode
+from random import randint
 import pytz
 
 NetworkExcpetionRescues = (
@@ -95,11 +96,11 @@ def check_login():
   global Session,ServerLocation
   log_info("Trying to connect to server:", ServerLocation)
   res = post_request('/api/Login')
-  if res.status_code == 200:
-    return res
-  elif res.status_code == 401:
+  if type(res) == dict or res.status_code == 401:
     log_warning("Failed login into game:", res, res.content)
     return _G.ERRNO_FAILED
+  elif res.status_code == 200:
+    return res
   return _G.ERRNO_MAINTENANCE
 
 def jpt2localt(jp_time):
@@ -151,11 +152,16 @@ def reauth_game(depth=0):
   new_token = ''
   if depth > 3:
     log_warning("Reauth depth excessed, abort")
-    return _G.ERRNO_MAINTENANCE
-  # if not ServerLocation:
-  #   res = determine_server()
-  #   if res == _G.ERRNO_MAINTENANCE:
-  #     return _G.ERRNO_MAINTENANCE
+    return _ret_auth(_G.ERRNO_MAINTENANCE)
+  if _G.GetCacheString('LOGIN_LOCK'):
+    w = 2+randint(5)
+    log_warning(f"Login lock detected, wait for {w} seconds to retry")
+    sleep(w)
+    Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+    ret = check_login()
+    ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
+    return ret
+  _G.SetCacheString('LOGIN_LOCK', '1')
   try:
     raw_cookies = _G.GetCacheString('DMM_MTG_COOKIES')
     for line in raw_cookies.split(';'):
@@ -211,7 +217,7 @@ def reauth_game(depth=0):
     data = json.loads(content)
     log_debug(data)
     if "'rc': 403" in str(data):
-      return _G.ERRNO_MAINTENANCE
+      return _ret_auth(_G.ERRNO_MAINTENANCE)
     new_token = json.loads(data[list(data.keys())[0]]['body'])
     change_token(f"Bearer {new_token['r']}")
   except Exception as err:
@@ -219,11 +225,12 @@ def reauth_game(depth=0):
     handle_exception(err)
   finally:
     Session.headers = GAME_POST_HEADERS
+  
   if new_token:
     log_info("Game connected")
     res = check_login()
     if type(res) == int:
-      return _G.ERRNO_MAINTENANCE
+      return _ret_auth(_G.ERRNO_MAINTENANCE)
     res = get_request('/api/Home')
   else:
     log_warning("Failed to login to game, retry dmm login")
@@ -232,8 +239,12 @@ def reauth_game(depth=0):
     res_dmm = login_dmm()
     if res_dmm.status_code == 200:
       return reauth_game(depth=depth+1)
-    return None
-  return res
+    return _ret_auth()
+  return _ret_auth(res)
+
+def _ret_auth(ret=None):
+  _G.SetCacheString('LOGIN_LOCK', '')
+  return ret
 
 def change_token(token):
   global Session
