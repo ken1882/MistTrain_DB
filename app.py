@@ -200,7 +200,7 @@ def loop_game_listner():
 
 if not app.initialized:
   app.initialized = True
-  dm.init()
+  # dm.init()
   # th = Thread(target=setup)
   # th.start()
   # _G.ThreadPool['setup'] = th
