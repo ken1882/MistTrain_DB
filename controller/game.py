@@ -163,6 +163,7 @@ def reauth_game(depth=0):
     ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
     return ret
   _G.SetCacheString('LOGIN_LOCK', '1')
+  log_info("Try login game")
   try:
     raw_cookies = _G.GetCacheString('DMM_MTG_COOKIES')
     for line in raw_cookies.split(';'):
