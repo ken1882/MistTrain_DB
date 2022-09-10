@@ -351,7 +351,12 @@ function handleAjaxError(response){
 
 (function fwarn(){
   try{
-    alert(Vocab.FutureWarning)
+    if(Vocab && Vocab.FutureWarning){
+      alert(Vocab.FutureWarning)
+    }
+    else{
+      setTimeout(fwarn, 500);
+    }
   }
   catch(_){
     setTimeout(fwarn, 500);
