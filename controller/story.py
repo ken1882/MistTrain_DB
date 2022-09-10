@@ -41,10 +41,10 @@ def init():
 def req_story_ready(func):
   def wrapper(*args, **kwargs):
     global IsStoryReady,IsStoryInitCalled
-    if not IsStoryInitCalled:
-      IsStoryInitCalled = True
-      th = Thread(target=init)
-      th.start()
+    # if not IsStoryInitCalled:
+    #   IsStoryInitCalled = True
+    #   th = Thread(target=init)
+    #   th.start()
     if not IsStoryReady:
       return render_template('notready.html',
         navbar_content=utils.load_navbar(),

@@ -30,7 +30,7 @@
   "Waku": "Bracket",
   "DerpyNumber": "Number",
   "UnderMaintenance": "Game server seems under maintenance, please come back later",
-  "AppInitializing": "This part of server data is still initializing, please try again later",
+  "AppInitializing": "This feature has been closed, please go to the new site to continue using it ( https://misttrain-db.ddns.net )",
   "UnderConstruction": "This section is under development, please stay tuned",
   "UnknownError": "Unknown error occurred, please try again later and notify devs if keep happening",
   "CharacterDB": "Character Database",
@@ -231,6 +231,7 @@
   "TrainboardCorrection": "Trainboard Correction",
   "FieldSkillDB": "PT Cards",
 
+  "FutureWarning": "Due to Heroku announcing the end of free tiers, this site will be closed after 2022/09/30.\n\nAnd the site has been migreated to:\nhttps://misttrain-db.ddns.net\n\nso please visit there instead.",
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {
     "0": "Character Id: Character Name"

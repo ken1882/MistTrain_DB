@@ -347,3 +347,13 @@ function handleAjaxError(response){
     alert(Vocab['UnknownError']);
   }
 }
+
+
+(function fwarn(){
+  try{
+    alert(Vocab.FutureWarning)
+  }
+  catch(_){
+    setTimeout(fwarn, 500);
+  }
+})();

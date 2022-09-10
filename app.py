@@ -160,36 +160,16 @@ def get_navbar():
 @app.route('/api/GetNextRace', methods=['GET'])
 @req_derpy_ready
 def get_next_race():
-  try:
-    race = derpy.get_upcoming_race()
-    code = 200
-    if _G.KEY_ERRNO in race:
-      code = race[_G.KEY_ERRNO]
-      if code == _G.ERRNO_UNAVAILABLE:
-        code = 503
-    return jsonify(race),code
-  except (TypeError, KeyError) as err:
-    handle_exception(err)
   return jsonify({}),503
 
 @app.route('/api/GetNextRacePredition', methods=['GET'])
 @req_derpy_ready
 def get_next_preditions():
-  try:
-    result = derpy.get_next_prediction()
-    code = 200
-    return jsonify(result),code
-  except (TypeError, KeyError) as err:
-    handle_exception(err)
   return jsonify({}),503
 
 @app.route('/api/GetStoryDetail/<id>', methods=['GET'])
 @req_story_ready
 def get_story_content(id):
-  try:
-    return jsonify(dm.get_scene(id)),200
-  except (TypeError, KeyError) as err:
-    handle_exception(err)
   return jsonify({}),503
 
 ## Main functions
@@ -221,9 +201,9 @@ def loop_game_listner():
 if not app.initialized:
   app.initialized = True
   dm.init()
-  th = Thread(target=setup)
-  th.start()
-  _G.ThreadPool['setup'] = th
+  # th = Thread(target=setup)
+  # th.start()
+  # _G.ThreadPool['setup'] = th
   if (os.getenv('FLASK_ENV') or '').lower() == 'production':
     app.config.from_object(ProductionConfig)
   else:

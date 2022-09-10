@@ -30,7 +30,7 @@
   "Waku": "枠號",
   "DerpyNumber": "編號",
   "UnderMaintenance": "遊戲伺服器似乎正在維修中，請稍後再次嘗試",
-  "AppInitializing": "此功能的伺服器資料尚未讀取完畢，請稍後再次嘗試",
+  "AppInitializing": "此功能已關閉, 如須繼續使用請至新網站 ( https://misttrain-db.ddns.net )",
   "UnderConstruction": "此功能仍在開發中，敬請期待",
   "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員",
   "CharacterDB": "角色資料庫",
@@ -231,6 +231,7 @@
   "TrainboardCorrection": "訓練板補正",
   "FieldSkillDB": "PT 技能卡一覽",
 
+  "FutureWarning": "因為 Heroku 公告將不再提供免費架站服務, 所以此網站將會於 2022/09/30 後關閉.\n\n網站已搬遷至:\nhttps://misttrain-db.ddns.net",
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
     "0": "角色ID: 角色名稱"

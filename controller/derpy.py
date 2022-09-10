@@ -32,10 +32,10 @@ def init():
 def req_derpy_ready(func):
   def wrapper(*args, **kwargs):
     global IsDerpyReady,IsDerpyInitCalled
-    if not IsDerpyInitCalled:
-      IsDerpyInitCalled = True
-      th = Thread(target=init)
-      th.start()
+    # if not IsDerpyInitCalled:
+    #   IsDerpyInitCalled = True
+    #   th = Thread(target=init)
+    #   th.start()
     if not IsDerpyReady:
       return render_template('notready.html',
         navbar_content=utils.load_navbar(),
