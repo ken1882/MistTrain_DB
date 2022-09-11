@@ -17,7 +17,7 @@ RootFolder  = None
 SceneFolder = None
 DerpyFolder = None
 __FileCache = {}
-FLock = Lock()
+FLOCK = Lock()
 
 def init():
   global Database
@@ -222,10 +222,10 @@ def load_story_meta():
   return ret
 
 def get_scene(id):
-  global FLock
+  global FLOCK
   path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
   if not os.path.exists(path):
-    with FLock:
+    with FLOCK:
       cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
       log_info(f"Downloading {cpath}")
       file = get_cache(cpath)

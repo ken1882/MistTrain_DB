@@ -14,7 +14,10 @@ from bs4 import BeautifulSoup as BS
 from html import unescape
 from urllib.parse import unquote,urlparse,urlencode
 from random import randint
+from multiprocessing import Lock
 import pytz
+
+FLOCK = Lock()
 
 NetworkExcpetionRescues = (
   ConnectTimeout, ReadTimeout, ConnectionError, ConnectionAbortedError,
@@ -154,15 +157,17 @@ def reauth_game(depth=0):
   if depth > 3:
     log_warning("Reauth depth excessed, abort")
     return _ret_auth(_G.ERRNO_MAINTENANCE)
-  if _G.GetCacheString('LOGIN_LOCK'):
-    w = randint(2, 5)
-    log_warning(f"Login lock detected, wait for {w} seconds to retry")
-    sleep(w)
-    Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
-    ret = check_login()
-    ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
-    return ret
-  _G.SetCacheString('LOGIN_LOCK', '1')
+  with FLOCK:
+    if _G.GetCacheString('LOGIN_LOCK'):
+      w = randint(1, 3)
+      log_warning(f"Login lock detected, wait for {w} seconds to retry")
+      sleep(w)
+      Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+      ret = check_login()
+      ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
+      return ret
+    _G.SetCacheString('LOGIN_LOCK', '1')
+  log_info("Try login game")
   try:
     raw_cookies = _G.GetCacheString('DMM_MTG_COOKIES')
     for line in raw_cookies.split(';'):
