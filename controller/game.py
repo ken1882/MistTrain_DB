@@ -152,17 +152,24 @@ def login_dmm():
   return res2
 
 def reauth_game(depth=0):
+  try:
+    ret = _reauth_game(depth=depth)
+  finally:
+    _G.SetCacheString('LOGIN_LOCK', '')
+  return ret
+
+def _reauth_game(depth=0):
   global Session,ServerLocation
   new_token = ''
   if depth > 3:
     log_warning("Reauth depth excessed, abort")
-    return _ret_auth(_G.ERRNO_MAINTENANCE)
+    return _G.ERRNO_MAINTENANCE
   with FLOCK:
     if _G.GetCacheString('LOGIN_LOCK'):
       w = randint(1, 3)
       log_warning(f"Login lock detected, wait for {w} seconds to retry")
       sleep(w)
-      Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+      sync_token()
       ret = check_login()
       ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
       return ret
@@ -223,7 +230,7 @@ def reauth_game(depth=0):
     data = json.loads(content)
     log_debug(data)
     if "'rc': 403" in str(data):
-      return _ret_auth(_G.ERRNO_MAINTENANCE)
+      return _G.ERRNO_MAINTENANCE
     new_token = json.loads(data[list(data.keys())[0]]['body'])
     change_token(f"Bearer {new_token['r']}")
   except Exception as err:
@@ -236,7 +243,7 @@ def reauth_game(depth=0):
     log_info("Game connected")
     res = check_login()
     if type(res) == int:
-      return _ret_auth(_G.ERRNO_MAINTENANCE)
+      return _G.ERRNO_MAINTENANCE
     res = get_request('/api/Home')
   else:
     log_warning("Failed to login to game, retry dmm login")
@@ -245,12 +252,8 @@ def reauth_game(depth=0):
     res_dmm = login_dmm()
     if res_dmm.status_code == 200:
       return reauth_game(depth=depth+1)
-    return _ret_auth()
-  return _ret_auth(res)
-
-def _ret_auth(ret=None):
-  _G.SetCacheString('LOGIN_LOCK', '')
-  return ret
+    return None
+  return res
 
 def change_token(token):
   global Session
@@ -286,6 +289,10 @@ def is_day_changing():
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   return (curt.hour == 4 and curt.minute >= 58) or (curt.hour == 5 and curt.minute < 10)
 
+def sync_token():
+  global Session
+  Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+
 def get_request(url, depth=1):
   global Session,ServerLocation
   if not Session:
@@ -293,7 +300,7 @@ def get_request(url, depth=1):
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
   if not Session.headers['Authorization']:
-    Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+    sync_token()
   if not ServerLocation:
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
@@ -339,7 +346,7 @@ def post_request(url, data=None, depth=1):
     return _G.ERRNO_DAYCHANGING
   res = None
   if not Session.headers['Authorization']:
-    Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+    sync_token()
   if not ServerLocation:
     res = determine_server()
     if res == _G.ERRNO_MAINTENANCE:
