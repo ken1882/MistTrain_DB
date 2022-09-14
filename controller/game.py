@@ -145,11 +145,34 @@ def login_dmm():
   res2 = Session.post('https://accounts.dmm.co.jp/service/login/password/authenticate', form)
   if res2.status_code != 200:
     log_error("Failed to login DMM Account:", res2, '\n', res2.content)
+    return res2
+  
+  if 'login/totp' in res2.url:
+    page  = BS(res2.content, 'html.parser')
+    token = page.find('input', {'name': 'token'})['value']
+    res3 = login_totp(token)
+    if res3.status_code != 200 or 'login' in res3.url:
+      log_error("2FA verification failed")
+      res3.status_code = 401
+      return res3
+  
   raw_cookies = ''
   for k in Session.cookies.keys():
     raw_cookies += f"{k}={Session.cookies[k]};"
   _G.SetCacheString('DMM_MTG_COOKIES', raw_cookies)
   return res2
+
+def login_totp(token, pin=''):
+  global Session,ServerLocation
+  if not pin:
+    input('Enter your authenticator pin: ')
+  form = {
+    'token': token,
+    'totp': pin,
+    'path': '',
+    'device': ''
+  }
+  return requests.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
 
 def reauth_game(depth=0):
   try:
@@ -166,7 +189,7 @@ def _reauth_game(depth=0):
     return _G.ERRNO_MAINTENANCE
   with FLOCK:
     if _G.GetCacheString('LOGIN_LOCK'):
-      w = randint(1, 3)
+      w = randint(2, 5)
       log_warning(f"Login lock detected, wait for {w} seconds to retry")
       sleep(w)
       sync_token()
@@ -192,6 +215,7 @@ def _reauth_game(depth=0):
       if len(line) < 2:
         continue
       inf[line[0].lower()] = literal_eval(line[1].strip()[:-1])
+    
     inf['url'] = unescape(unquote(inf['url']))
     inf['st']  = unquote(inf['st'])
     tmp  = inf['url'].split('&url=')[-1].split('&st=')
@@ -251,6 +275,7 @@ def _reauth_game(depth=0):
     _G.SetCacheString('DMM_FORM', '')
     res_dmm = login_dmm()
     if res_dmm.status_code == 200:
+      log_info("DMM login ok")
       return reauth_game(depth=depth+1)
     return None
   return res
@@ -291,7 +316,20 @@ def is_day_changing():
 
 def sync_token():
   global Session
+  log_info("Token synchronized")
   Session.headers['Authorization'] = _G.GetCacheString('MTG_AUTH_TOKEN')
+
+
+FlagDayChanged = False
+def refresh_daily_token():
+  global FlagDayChanged
+  if is_day_changing():
+    FlagDayChanged = True
+    return
+  elif not FlagDayChanged:
+    return
+  FlagDayChanged = False
+  reauth_game()
 
 def get_request(url, depth=1):
   global Session,ServerLocation
