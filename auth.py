@@ -1,10 +1,11 @@
-from base64 import b64decode
+from base64 import b64decode,b64encode
 from dotenv import load_dotenv
 import os
 import requests
 import _G
 from _G import log_debug,log_error,log_info,log_warning
 from datetime import date, datetime, timedelta
+import random,time,hashlib
 
 load_dotenv()
 DC_AUTH_APP_SECRET   = os.getenv('DCAUTH_APP_SECRET')
@@ -12,6 +13,14 @@ DC_AUTH_CALLBACK_URI = os.getenv('DCAUTH_CALLBACK_URI')
 DC_AUTH_SERVER_ROLE  = (os.getenv('DCAUTH_SERVER_ROLE') or '').split(':')
 DC_AUTH_CLIENT_INFO  = (os.getenv('DCAUTH_CLIENT_INFO') or '').split(':')
 DC_AUTH_CLIENT_INFO[-1] = ' '.join(DC_AUTH_CLIENT_INFO[-1].split('&'))
+
+def init():
+    global RSA_PRIVATEKEY
+    try:
+        RSA_PRIVATEKEY = rsa.PrivateKey(*[int(h,16) for h in b64decode(RSA_PRIVATEKEY).split(',')])
+    except Exception as err:
+        log_error("Error while loading private key:". err)
+    return True
 
 def is_auth_available():
     return DC_AUTH_CLIENT_INFO and DC_AUTH_SERVER_ROLE and DC_AUTH_APP_SECRET and DC_AUTH_CALLBACK_URI
@@ -115,3 +124,15 @@ def get_dcauth_info():
         'scope': DC_AUTH_CLIENT_INFO[2],
         'callback': DC_AUTH_CALLBACK_URI,
     }
+
+def generate_sessionid(length=0x30):
+    allowed_chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    random.seed(
+        hashlib.sha256(
+            ("%s%s%s" % (
+                random.getstate(),
+                time.time(),
+                'ミストトレインガールズ')).encode('utf-8')
+        ).digest()
+    )
+    return ''.join(random.choice(allowed_chars) for _ in range(length))

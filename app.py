@@ -52,6 +52,13 @@ def discord_oauth():
 #       return jsonify(res),200
 #   return jsonify({}),400
 
+@app.route('/api/login/pwd', methods=['POST'])
+def dmm_login():
+  return jsonify({}),200
+
+def dmm_2fa():
+  return None
+
 ## Routes
 
 @app.route('/', methods=['GET'])
@@ -63,6 +70,9 @@ def favicon():
   return send_from_directory(os.path.join(app.root_path, 'static'),
                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/dmmlogin', methods=['GET'])
+def login_dmm():
+  return render_template('login_dmm.html', navbar_content=get_navbar())
 
 @app.route('/mistrunner_database', methods=['GET'])
 @req_derpy_ready
