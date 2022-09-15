@@ -45,7 +45,7 @@ def login(username, password, remember=False):
         ret['token'] = page.find('input', {'name': 'token'})['value']
         ret['totp'] = True
         return ret
-    
+    ret['status'] = 200
     return ret
 
 def login_totp(b64ck, token, pin):
@@ -89,7 +89,6 @@ def load_cookies(sjar):
     return ret
 
 def login_game(b64ck):
-    # TODO: game maintenance check
     se = requests.Session()
     ret = {'status': 400}
     for k,v in load_cookies(b64decode(b64ck).decode()).items():
@@ -138,8 +137,10 @@ def login_game(b64ck):
     data = json.loads(content)
     log_debug(data)
     if "'rc': 403" in str(data):
-      return ret
+        ret['status'] = 403
+        return ret
     new_token = json.loads(data[list(data.keys())[0]]['body'])
     ret['mtg_token'] = f"Bearer {new_token['r']}"
+    ret['server'] = server_host
     ret['status'] = 200
     return ret

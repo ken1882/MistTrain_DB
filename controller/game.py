@@ -328,6 +328,7 @@ def refresh_daily_token():
     return
   elif not FlagDayChanged:
     return
+  log_info("Refresh daily game token")
   FlagDayChanged = False
   reauth_game()
 

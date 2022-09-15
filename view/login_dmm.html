@@ -16,6 +16,7 @@
     <script src="{{ url_for('static', filename='js/vocab.js') }}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
+    <script src="{{ url_for('static', filename='js/mtg_game.js') }}"></script>
     <script src="{{ url_for('static', filename='js/login_dmm.js') }}"></script>
     <script>
       function changeLanguage(){
@@ -62,8 +63,8 @@
 
       <div class="center" id="main-form" style="max-width: 250px;">
         <div class="form-outline mb-4">
-          <input type="email" id="inp-email" class="form-control" />
-          <label class="form-label" for="inp-email" label="l-Email">_</label>
+          <input type="text" id="inp-email" class="form-control" />
+          <label class="form-label" for="inp-email" id="l-email" label="l-Email">_</label>
         </div>
       
         <div class="form-outline mb-4">
@@ -91,7 +92,7 @@
       <div class="center" id="tfa-form" style="max-width: 250px; display: none;">
         <p id="login-warning" label="l-TFAHint"></p>
         <div class="form-outline mb-4">
-          <input type="password" id="inp-pin" class="form-control" />
+          <input type="text" id="inp-pin" class="form-control" />
         </div>
         <button type="button" id="btn-login-totp" class="btn btn-primary btn-block mb-4" onclick="login_totp()" label="l-Login">_</button>
       </div>
@@ -99,7 +100,11 @@
     
     <script>
       document.getElementById('ckb-token').checked = false;
+      $("#inp-email").val('');
       $("#ckb-token").on('change', (e)=>{ switchOAuthLogin(e.target.checked); });
+      $('#inp-email').on('keyup', function(e){ if(e.keyCode == 13){ login(); } });
+      $('#inp-password').on('keyup', function(e){ if(e.keyCode == 13){ login(); } });
+      $('#inp-pin').on('keyup', function(e){ if(e.keyCode == 13){ login_totp(); } });
     </script>
 
   </body>

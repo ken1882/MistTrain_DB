@@ -89,11 +89,13 @@ def handle_exception(err, debug=False):
     log_error(msg)
 
 def load_navbar():
-  ret = GetCacheString('navbar.html')
-  if ret:
-    return ret.replace("'" ,'"')
+  if PRODUCTION:
+    ret = GetCacheString('navbar.html')
+    if ret:
+      return ret.replace("'" ,'"')
   with open('view/navbar.html') as fp:
     ret = fp.read()
     ret = ret.replace('\n', '').replace('\r','').replace('"',"'")
-  SetCacheString('navbar.html', ret)
+  if PRODUCTION:
+    SetCacheString('navbar.html', ret)
   return ret.replace("'" ,'"')

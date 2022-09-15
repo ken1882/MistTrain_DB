@@ -62,10 +62,9 @@ def dmm_login():
     ret = dmm.login(email, pwd, reme)
   except Exception as err:
     handle_exception(err, debug=True)
-    ret = {'status': 400}
+    ret = {'status': 403}
   if ret['status'] == 200:
     if 'totp' not in ret:
-      # TODO: game maintenance check
       ret['mtg_result'] = dmm.login_game(ret['result'])
   return jsonify(ret),ret['status']
 
@@ -78,9 +77,8 @@ def dmm_login_totp():
     ret = dmm.login_totp(b64ck, token, pin)
   except Exception as err:
     handle_exception(err, debug=True)
-    ret = {'status': 400}
+    ret = {'status': 403}
   
-  # TODO: game maintenance check
   ret['mtg_result'] = dmm.login_game(ret['result'])
   return jsonify(ret),ret['status']
 
@@ -91,7 +89,7 @@ def mtg_login():
     ret = dmm.login_game(b64ck)
   except Exception as err:
     handle_exception(err, debug=True)
-    ret = {'status': 400}
+    ret = {'status': 403}
   return jsonify(ret),ret['status']
 
 ## Routes
@@ -269,7 +267,7 @@ if not app.initialized:
   th = Thread(target=setup)
   th.start()
   _G.ThreadPool['setup'] = th
-  if (os.getenv('FLASK_ENV') or '').lower() == 'production':
+  if _G.PRODUCTION:
     app.config.from_object(ProductionConfig)
   else:
     app.config.from_object(DevelopmentConfig)

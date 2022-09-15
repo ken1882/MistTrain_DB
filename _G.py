@@ -24,6 +24,7 @@ elif sys.platform == 'linux':
 
 ARGV = {}
 
+PRODUCTION = ((os.getenv('FLASK_ENV') or '').lower() == 'production')
 
 DCTmpFolder = ".tmp"
 DCSnapshotFile = "snapshot.png"
