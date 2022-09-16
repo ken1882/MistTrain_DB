@@ -19,6 +19,7 @@
   "GameLoginFailed2": "Server might be under maintenance, date changed or account logged in somewhere else, please try again later.",
   "GameLoginOK": "Login successed",
   "LoginSavedDMM": "Login with existing DMM account?",
+  "NotLogin": "You haven't logged in yet",
   "ReloginDMM": "Go to login page?",
   "CheckConnection": "Check connection",
   "LanguageText": "Language",
