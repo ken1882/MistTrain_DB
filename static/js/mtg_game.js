@@ -90,7 +90,7 @@ function refreshMTGToken(){
             else{
                 alert(Vocab.LoginFailed);
             }
-            window.location = window.location;
+            window.location.reload();
         },
     });
 }
