@@ -251,6 +251,8 @@
   "DimMissingChars": "Dim missing characters",
   "LoadCharacters": "Load Characters",
   "LoadInventory": "Load Inventory",
+  "LoadCharactersOK": "Characters loaded",
+  "LoadInventoryOK": "Inventory loaded",
   "Amount": "Amount",
   "Armor": "Armor",
   "Item": "Item",
