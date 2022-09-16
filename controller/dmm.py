@@ -39,6 +39,7 @@ def login(username, password, remember=False):
         return ret
 
     ret['result'] = b64encode(stringify_cookies(se.cookies).encode()).decode()
+    log_info("Success login DMM Account for:", username)
     if 'login/totp' in res2.url:
         ret['status'] = 200
         page  = BS(res2.content, 'html.parser')
@@ -46,7 +47,6 @@ def login(username, password, remember=False):
         ret['totp'] = True
         return ret
     ret['status'] = 200
-    log_info("Success login DMM Account for:", username)
     return ret
 
 def login_totp(b64ck, token, pin):
