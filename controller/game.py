@@ -447,8 +447,8 @@ def load_database():
   for i,link in enumerate(links):
     db = None
     res = requests.get(link)
-    log_debug(res)
-    log_debug(res.content)
+    # log_debug(res)
+    # log_debug(res.content)
     db = res.json()
     # Init dbs
     try:

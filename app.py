@@ -267,7 +267,7 @@ def loop_game_listner():
     except (TypeError, KeyError) as err:
       log_warning("Server seems is under maintenance")
       handle_exception(err)
-    log_debug("Server ticked")
+    #log_debug("Server ticked")
 
 
 if not app.initialized:

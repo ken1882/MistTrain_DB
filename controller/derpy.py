@@ -143,13 +143,14 @@ def update_race_history_db():
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   last_scan_time = _G.GetCacheTimestamp('LastRaceHistoryScanTime')
   elapsed = curt - last_scan_time
-  log_debug("Cache timestamps:", curt, elapsed, last_scan_time)
+  #log_debug("Cache timestamps:", curt, elapsed, last_scan_time)
   if elapsed > max_scan_time or \
       (curt.hour in _G.DerpyUpdateHour and elapsed > min_scan_time):
     save_recent_races()
     _G.SetCacheTimestamp('LastRaceHistoryScanTime', curt)
   else:
-    log_debug("Race history needn't update")
+    pass
+    #log_debug("Race history needn't update")
 
 def sweep_race_replays(begin=0,end=0x7fffffff):
   error = 0
