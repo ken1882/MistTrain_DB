@@ -10,7 +10,7 @@ function initCharDB(){
   AssetsManager.loadCharacterAssets();
   setup();
   loadPreferredDisplay();
-  if(DataManager.playerProfile){
+  if(DataManager.playerProfile && getMTGServer()){
     fetchCharacters();
   }
 }
