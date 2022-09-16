@@ -37,7 +37,12 @@ function login(){
                 alert(Vocab.RateLimited);
             }
             else{
-                alert(Vocab.LoginFailed);
+                var ret = res.responseJSON;
+                var msg = Vocab.LoginFailed;
+                if(ret.msg){
+                    msg += "\n\n"+ret.msg;
+                }
+                alert(msg);
             }
             window.location = window.location;
         },
