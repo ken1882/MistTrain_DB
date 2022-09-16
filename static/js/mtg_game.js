@@ -10,30 +10,35 @@ function init_mtggame(){
         return setTimeout(init_mtggame, 500);
     }
     reloadProfile();
-    $("#chk-conn").on('click', ()=>{
-        if(FlagConnLock){ return ; }
-        FlagConnLock = true;
-        $("#conn-icon").css('display', 'none');
-        $("#conid-game").css('display', '');
-        Promise.all(fetchPlayerProfile()).then(()=>{
-            console.log("Ajax done");
-            reloadProfile();
-            let p = DataManager.playerProfile;
-            alert(`${Vocab.GameLoginOK}\n${Vocab.Name}: ${p.Name} (Lv.${p.Level})`)
-            FlagConnLock = false;
-        }).catch(() => {
-            console.log("Ajax failed");
-            reloadProfile();
-            alert(Vocab.GameLoginFailed+'\n\n'+Vocab.GameLoginFailed2);
-            handleGameConnectionError();
-            FlagConnLock = false;
-        });
-    });
+    $("#chk-conn").on('click', checkGameConnection);
     $("#conn-chars").on('click', loadCharacters);
     $("#conn-items").on('click', loadInventory);
 }
 window.addEventListener('load', init_mtggame);
 
+
+function checkGameConnection(){
+    if(FlagConnLock){ return ; }
+    if(!getMTGServer()){
+        return handleNotLoggedin();
+    }
+    FlagConnLock = true;
+    $("#conn-icon").css('display', 'none');
+    $("#conid-game").css('display', '');
+    Promise.all(fetchPlayerProfile()).then(()=>{
+        console.log("Ajax done");
+        reloadProfile();
+        let p = DataManager.playerProfile;
+        alert(`${Vocab.GameLoginOK}\n${Vocab.Name}: ${p.Name} (Lv.${p.Level})`)
+        FlagConnLock = false;
+    }).catch(() => {
+        console.log("Ajax failed");
+        reloadProfile();
+        alert(Vocab.GameLoginFailed+'\n\n'+Vocab.GameLoginFailed2);
+        handleGameConnectionError();
+        FlagConnLock = false;
+    });
+}
 
 function reloadProfile(){
     let p = DataManager.playerProfile;
@@ -163,7 +168,7 @@ function handleGameConnectionError(res){
 }
 
 function fetchPlayerProfile(){
-    DataManager.playerProfile = {};
+    // DataManager.playerProfile = {};
     return [
         sendMTG({
             url: '/api/Users/Me',
@@ -245,7 +250,7 @@ function fetchInventory(){
 function loadCharacters(){
     if(FlagConnLock){ return ;}
     if(!getMTGServer()){
-        return handleGameConnectionError();
+        return handleNotLoggedin();
     }
     FlagConnLock = true;
     $("#conid-chars").css('display', '');
@@ -264,7 +269,7 @@ function loadCharacters(){
 function loadInventory(){
     if(FlagConnLock){ return ;}
     if(!getMTGServer()){
-        return handleGameConnectionError();
+        return handleNotLoggedin();
     }
     $("#conid-items").css('display', '');
     Promise.all(fetchInventory()).then(()=>{
