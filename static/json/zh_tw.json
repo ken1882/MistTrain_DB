@@ -19,6 +19,7 @@
   "GameLoginFailed2": "伺服器可能正在維護、換日或帳號在其他地方登入；請稍後嘗試。",
   "GameLoginOK": "您已成功登入",
   "LoginSavedDMM": "是否是用以儲存的 DMM 帳號重新登入?",
+  "NotLogin": "您尚未登入",
   "ReloginDMM": "是否前往登入畫面?",
   "CheckConnection": "檢查遊戲連線",
   "LanguageText": "語言",

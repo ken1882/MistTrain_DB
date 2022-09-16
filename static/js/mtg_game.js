@@ -128,31 +128,38 @@ function sendMTG(payload){
     return $.ajax(payload);
 }
 
+function handleNotLoggedin(){
+    let msg = Vocab.NotLogin + '\n\n';
+    msg += Vocab.ReloginDMM;
+    let cont = window.confirm(msg);
+    if(cont){
+        window.location = `/dmmlogin?loginback=${window.location.pathname}`;
+    }
+}
+
 function handleGameConnectionError(res){
     // this pop should display last
-    setTimeout(() => {
-        console.error(res);
-        let b64ck = getDMMLogin();
-        let msg = Vocab.GameLoginFailed + '\n';
+    console.error(res);
+    let b64ck = getDMMLogin();
+    let msg = Vocab.GameLoginFailed + '\n';
+    if(b64ck){
+        msg += Vocab.LoginSavedDMM;
+    }
+    else{
+        msg += Vocab.ReloginDMM;
+    }
+    let cont = window.confirm(msg);
+    if(cont){
         if(b64ck){
-            msg += Vocab.LoginSavedDMM;
+            refreshMTGToken();
         }
         else{
-            msg += Vocab.ReloginDMM;
+            window.location = `/dmmlogin?loginback=${window.location.pathname}`;
         }
-        let cont = window.confirm(msg);
-        if(cont){
-            if(b64ck){
-                refreshMTGToken();
-            }
-            else{
-                window.location = `/dmmlogin?loginback=${window.location.pathname}`;
-            }
-        }
-        else{
-            // preserved
-        } 
-    }, 100);
+    }
+    else{
+        // preserved
+    } 
 }
 
 function fetchPlayerProfile(){
@@ -237,6 +244,9 @@ function fetchInventory(){
 
 function loadCharacters(){
     if(FlagConnLock){ return ;}
+    if(!getMTGServer()){
+        return handleGameConnectionError();
+    }
     FlagConnLock = true;
     $("#conid-chars").css('display', '');
     Promise.all(fetchCharacters()).then(()=>{
@@ -253,6 +263,9 @@ function loadCharacters(){
 
 function loadInventory(){
     if(FlagConnLock){ return ;}
+    if(!getMTGServer()){
+        return handleGameConnectionError();
+    }
     $("#conid-items").css('display', '');
     Promise.all(fetchInventory()).then(()=>{
         var msg = `${Vocab.LoadInventoryOK}, ${Vocab.Amount}:\n`;

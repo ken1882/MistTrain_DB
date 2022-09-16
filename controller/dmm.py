@@ -57,7 +57,6 @@ def login_totp(b64ck, token, pin):
         'path': '',
         'device': ''
     }
-    print(form)
     for k,v in load_cookies(b64decode(b64ck).decode()).items():
         se.cookies.set(k, v)
     res = se.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
