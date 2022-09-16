@@ -46,6 +46,7 @@ def login(username, password, remember=False):
         ret['totp'] = True
         return ret
     ret['status'] = 200
+    log_info("Success login DMM Account for:", username)
     return ret
 
 def login_totp(b64ck, token, pin):
