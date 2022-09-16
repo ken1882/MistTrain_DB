@@ -36,7 +36,7 @@ def login(username, password, remember=False):
         with open('.tmp/tmp.html', 'w') as fp:
             fp.write(res2.content.decode())
         try:
-            page = BS(res.content, 'html.parser')
+            page = BS(res2.content, 'html.parser')
             ret['msg'] = page.select('#loginbutton_script_on')[0].find('p').text
         except Exception:
             pass
