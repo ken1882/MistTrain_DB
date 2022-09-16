@@ -7,6 +7,7 @@ from _G import log_error,log_info,log_warning,log_debug
 import controller.derpy as derpy
 import controller.game  as game
 import controller.story as story
+import controller.dmm as dmm
 import datamanager as dm
 from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
@@ -54,10 +55,42 @@ def discord_oauth():
 
 @app.route('/api/login/pwd', methods=['POST'])
 def dmm_login():
-  return jsonify({}),200
+  email = request.form.get('email')
+  pwd   = request.form.get('password')
+  reme  = (not not request.form.get('remember'))
+  try:
+    ret = dmm.login(email, pwd, reme)
+  except Exception as err:
+    handle_exception(err, debug=True)
+    ret = {'status': 403}
+  if ret['status'] == 200:
+    if 'totp' not in ret:
+      ret['mtg_result'] = dmm.login_game(ret['result'])
+  return jsonify(ret),ret['status']
 
-def dmm_2fa():
-  return None
+@app.route('/api/login/totp', methods=['POST'])
+def dmm_login_totp():
+  b64ck = request.form.get('b64ck')
+  token = request.form.get('token')
+  pin   = request.form.get('pin')
+  try:
+    ret = dmm.login_totp(b64ck, token, pin)
+  except Exception as err:
+    handle_exception(err, debug=True)
+    ret = {'status': 403}
+  
+  ret['mtg_result'] = dmm.login_game(ret['result'])
+  return jsonify(ret),ret['status']
+
+@app.route('/api/login/game', methods=['POST'])
+def mtg_login():
+  b64ck = request.form.get('b64ck')
+  try:
+    ret = dmm.login_game(b64ck)
+  except Exception as err:
+    handle_exception(err, debug=True)
+    ret = {'status': 403}
+  return jsonify(ret),ret['status']
 
 ## Routes
 
@@ -234,7 +267,7 @@ if not app.initialized:
   th = Thread(target=setup)
   th.start()
   _G.ThreadPool['setup'] = th
-  if (os.getenv('FLASK_ENV') or '').lower() == 'production':
+  if _G.PRODUCTION:
     app.config.from_object(ProductionConfig)
   else:
     app.config.from_object(DevelopmentConfig)

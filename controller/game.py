@@ -146,7 +146,7 @@ def login_dmm():
   if res2.status_code != 200:
     log_error("Failed to login DMM Account:", res2, '\n', res2.content)
     return res2
-  
+
   if 'login/totp' in res2.url:
     page  = BS(res2.content, 'html.parser')
     token = page.find('input', {'name': 'token'})['value']
@@ -172,7 +172,7 @@ def login_totp(token, pin=''):
     'path': '',
     'device': ''
   }
-  return requests.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
+  return Session.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
 
 def reauth_game(depth=0):
   try:
@@ -328,6 +328,7 @@ def refresh_daily_token():
     return
   elif not FlagDayChanged:
     return
+  log_info("Refresh daily game token")
   FlagDayChanged = False
   reauth_game()
 

@@ -347,3 +347,13 @@ function handleAjaxError(response){
     alert(Vocab['UnknownError']);
   }
 }
+
+function downloadJsonFile(data, filename){
+  let blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+  let url  = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = filename || '';
+  a.click();
+  a.remove();
+}

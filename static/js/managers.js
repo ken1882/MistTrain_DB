@@ -47,6 +47,13 @@ const FieldSkillFrameHeight = 102;
     this.kDebug          = "debug";
     this.kDebugMode      = "debugMode";
     this.kFocus          = "focus";
+    this.kProfile        = 'MTG_PROFILE';
+    this.kCharacters     = 'MTG_CHARS';
+    this.kWeapons        = 'MTG_WEAPONS';
+    this.kArmors         = 'MTG_ARMORS';
+    this.kItems          = 'MTG_ITEMS';
+    this.kAccessories    = 'MTG_ACCESSORIES';
+    this.kAbstone        = 'MTG_ABSTONE';
   }
   /*-------------------------------------------------------------------------*/
   static loadDatabase(){
@@ -185,10 +192,14 @@ const FieldSkillFrameHeight = 102;
     req_atlas.send();
     req_skel.send();
     return [req_png, req_atlas, req_skel];
-  }
+  }  
   /*-------------------------------------------------------------------------*/
+  static updateProfile(val){
+    let p = this.playerProfile;
+    this.playerProfile = Object.assign({}, p, val);
+  }
   /**-------------------------------------------------------------------------
-   * > Getter functions
+   * > Getter/Setter functions
    */
   static get language(){return this.setting[this.kLanguage];}
   static get volume(){return this.setting[this.kVolume];}
@@ -196,6 +207,55 @@ const FieldSkillFrameHeight = 102;
   static get debugOption(){return this.setting[this.kDebug];}
   static get debugMode(){return this.setting[this.kDebugMode];}
   static get focus(){return this.setting[this.kFocus];}
+  /*-------------------------------------------------------------------------*/
+  static get playerProfile(){
+    return this.getSetting(this.kProfile) || {};
+  }
+  static set playerProfile(val){
+    this.changeSetting(this.kProfile, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get dataCharacters(){
+    return this.getSetting(this.kCharacters) || [];
+  }
+  static set dataCharacters(val){
+    this.changeSetting(this.kCharacters, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get dataItems(){
+    return this.getSetting(this.kItems) || [];
+  }
+  static set dataItems(val){
+    this.changeSetting(this.kItems, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get dataWeapons(){
+    return this.getSetting(this.kWeapons) || [];
+  }
+  static set dataWeapons(val){
+    this.changeSetting(this.kWeapons, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get dataArmors(){
+    return this.getSetting(this.kArmors) || [];
+  }
+  static set dataArmors(val){
+    this.changeSetting(this.kArmors, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get dataAccessories(){
+    return this.getSetting(this.kAccessories) || [];
+  }
+  static set dataAccessories(val){
+    this.changeSetting(this.kAccessories, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get dataAbstone(){
+    return this.getSetting(this.kAbstone) || [];
+  }
+  static set dataAbstone(val){
+    this.changeSetting(this.kAbstone, val);
+  }
   /*-------------------------------------------------------------------------*/
 }
 

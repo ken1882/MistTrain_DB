@@ -80,17 +80,22 @@ def get_last_error():
   LastErrorMessage = ''
   return (retc, retm)
 
-def handle_exception(err):
+def handle_exception(err, debug=False):
   err_info = traceback.format_exc()
   msg = f"{err}\n{err_info}\n"
-  log_error(msg)
+  if debug:
+    log_debug(msg)
+  else:
+    log_error(msg)
 
 def load_navbar():
-  ret = GetCacheString('navbar.html')
-  if ret:
-    return ret.replace("'" ,'"')
+  if PRODUCTION:
+    ret = GetCacheString('navbar.html')
+    if ret:
+      return ret.replace("'" ,'"')
   with open('view/navbar.html') as fp:
     ret = fp.read()
     ret = ret.replace('\n', '').replace('\r','').replace('"',"'")
-  SetCacheString('navbar.html', ret)
+  if PRODUCTION:
+    SetCacheString('navbar.html', ret)
   return ret.replace("'" ,'"')

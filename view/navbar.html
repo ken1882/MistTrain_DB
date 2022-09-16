@@ -3,7 +3,7 @@
   <span class="navbar-toggler-icon"></span>
 </button>
 <div class="collapse navbar-collapse" id="navbarNav">
-  <ul class="navbar-nav mr-auto">
+  <ul class="navbar-nav">
     <li class="nav-item">
       <span id="languageText" label="l-LanguageText" class="navbar-text lang-text">Language:</span>
       <select id="languageOptions" class="nav-text lang-box">
@@ -27,4 +27,39 @@
       </div>
     </li>
   </ul>
+  <span class="ms-auto nav-item btn-group dropstart">
+    <button type="button" class="btn btn-link dropdown-toggle-split" id="btn-profile" style="color: #cccccc;" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+      </svg>
+    </button>
+    <div class="dropdown-menu" style="padding: 4px;" aria-labelledby="btn-profile">
+      <a class="dropdown-item" id="chk-conn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16" id="conn-icon">
+          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+        </svg>
+        <span class="spinner-border spinner-border-sm" id="conid-game" style="display: none;">
+          <span class="sr-only"></span>
+        </span>
+        <span label="l-CheckConnection">Check Connection</span>
+        
+      </a>
+      <span id="prof-name">_</span><br>
+      <span id="prof-level">Lv. </span><br>
+      <a class="dropdown-item" id="conn-chars">
+        <span class="spinner-border spinner-border-sm" id="conid-chars" style="display: none;">
+          <span class="sr-only"></span>
+        </span>
+        <span label="l-LoadCharacters"></span>
+      </a>
+      <a class="dropdown-item" id="conn-items">
+        <span class="spinner-border spinner-border-sm" id="conid-items" style="display: none;">
+          <span class="sr-only"></span>
+        </span>
+        <span label="l-LoadInventory"></span>
+      </a>
+    </div>
+  </span>
 </div>

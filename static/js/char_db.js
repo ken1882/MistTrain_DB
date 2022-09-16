@@ -3,13 +3,16 @@ let FlagSkinViewActivate = false;
 let FlagBedroomViewActivate = false;
 const DefaultViewSetting = 'list';
 
-function init(){
+function initCharDB(){
   if(!DataManager.isReady()){
-    return setTimeout(init, 100);
+    return setTimeout(initCharDB, 100);
   }
   AssetsManager.loadCharacterAssets();
   setup();
   loadPreferredDisplay();
+  if(DataManager.playerProfile){
+    fetchCharacters();
+  }
 }
 
 function loadPreferredDisplay(){
@@ -29,6 +32,7 @@ function loadPreferredDisplay(){
     viewChangeGrid();
   }
   updateHitCount();
+  updateOwnedCharacters();
 }
 
 function setup(){
@@ -44,6 +48,25 @@ function setup(){
   if(document.cookie.includes('44Of44K544OI44OI44Os44Kk44Oz44Ks44O844Or44K6772e6Zyn44Gu5LiW55WM44Gu6LuK56qT44GL44KJ772eIFgg')){
     $('#bedroom-button').css('display', '');
     $('#bedroom-button').attr('disabled', null);
+  }
+  $("#ckb-unowned").on('change', ()=>{updateOwnedCharacters();});
+}
+
+function updateOwnedCharacters(){
+  let flag = $('#ckb-unowned').prop('checked');
+  let chars = DataManager.dataCharacters;
+  for(let id in CharacterAvatarNode){
+    if(flag){
+      var owned = chars.some(o => o.MCharacterId == id);
+      if(!owned){
+        $(CharacterAvatarNode[id]).css('opacity', '0.3');
+        CharacterAvatarNode[id].ori_opacity = '0.3';
+      }
+    }
+    else{
+      $(CharacterAvatarNode[id]).css('opacity', '1.0');
+      CharacterAvatarNode[id].ori_opacity = '1.0';
+    }
   }
 }
 
@@ -282,17 +305,23 @@ function reloadAvatars(){
     if(!node.css('display') != 'none'){ cnt += 1;}
   }
   updateHitCount();
+  updateOwnedCharacters();
 }
 
 function updateHitCount(){
-  let cnt = 0, len = 0;
+  let chars = DataManager.dataCharacters;
+  let hit = 0, len = 0, own = 0;
   for(let id in CharacterAvatarNode){
     len += 1;
-    if(CharacterAvatarNode[id].css('display') != 'none'){ cnt += 1; }
+    if(CharacterAvatarNode[id].css('display') != 'none'){ hit += 1; }
+    if(chars.some(o => o.MCharacterId == id)){
+      own += 1;
+    }
   }
-  $('#hit-count').text(`(HIT: ${cnt}/${len})`);
+  $('#hit-count').text(`(HIT: ${hit}/${len})`);
+  $('#own-count').text(`(OWN: ${own}/${len})`);
 }
 
 (function(){
-  window.addEventListener("load", init);
+  window.addEventListener("load", initCharDB);
 })();

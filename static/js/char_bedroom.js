@@ -22,7 +22,7 @@ const PREMUL_ALPHA = true;
 
 let __bedroomReadyReq, __bedroomReadyCnt;
 
-function init(){
+function initBedroom(){
   AssetsManager.loadCharacterData();
   BedroomCanvas = document.getElementById('bedroom-canvas');
   BedroomGL     = BedroomCanvas.getContext('webgl', {
@@ -374,4 +374,4 @@ function swapCurrentScene(sid){
   CharacterAnimations = BedroomSpineDataCache[sid].animations;
   CharacterBounds     = BedroomSpineDataCache[sid].bounds;
 }
-window.addEventListener('load', init)
+window.addEventListener('load', initBedroom)
