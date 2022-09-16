@@ -13,6 +13,12 @@ function init_mtggame(){
     $("#chk-conn").on('click', checkGameConnection);
     $("#conn-chars").on('click', loadCharacters);
     $("#conn-items").on('click', loadInventory);
+    if(isMobile){
+        $("#profile-dropdown").addClass('dropend');
+    }
+    else{
+        $("#profile-dropdown").addClass('dropstart');
+    }
 }
 window.addEventListener('load', init_mtggame);
 
