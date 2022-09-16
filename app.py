@@ -65,7 +65,11 @@ def dmm_login():
     ret = {'status': 403}
   if ret['status'] == 200:
     if 'totp' not in ret:
-      ret['mtg_result'] = dmm.login_game(ret['result'])
+      try:
+        ret['mtg_result'] = dmm.login_game(ret['result'])
+      except Exception as err:
+        handle_exception(err, debug=True)
+        ret = {'status': 403}
   return jsonify(ret),ret['status']
 
 @app.route('/api/login/totp', methods=['POST'])
@@ -79,7 +83,12 @@ def dmm_login_totp():
     handle_exception(err, debug=True)
     ret = {'status': 403}
   
-  ret['mtg_result'] = dmm.login_game(ret['result'])
+  try:
+    ret['mtg_result'] = dmm.login_game(ret['result'])
+  except Exception as err:
+    handle_exception(err, debug=True)
+    ret = {'status': 403}
+  
   return jsonify(ret),ret['status']
 
 @app.route('/api/login/game', methods=['POST'])

@@ -46,6 +46,7 @@ def login(username, password, remember=False):
         ret['totp'] = True
         return ret
     ret['status'] = 200
+    log_info("Success login DMM Account for:", username)
     return ret
 
 def login_totp(b64ck, token, pin):
@@ -94,7 +95,13 @@ def login_game(b64ck):
         se.cookies.set(k, v)
     res  = se.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
     page = res.content.decode('utf8')
-    inf_raw = re.search(r"var gadgetInfo = {((?:.*?|\n)*?)};", page).group(0)
+    inf_raw = re.search(r"var gadgetInfo = {((?:.*?|\n)*?)};", page)
+    try:
+        inf_raw = inf_raw.group(0)
+    except Exception as err:
+        with open('.errorpage.html', 'w') as fp:
+            fp.write(page)
+        raise err
     inf     = {}
     for line in inf_raw.split('\n'):
       line = [l.strip() for l in line.split(':')]
