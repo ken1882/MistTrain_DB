@@ -81,7 +81,9 @@ function refreshMTGToken(){
         data: {
             b64ck: getDMMLogin(),
         },
-        success: processGameLogin,
+        success: (res)=>{
+            processGameLogin(res, window.location.pathname);
+        },
         error: (res) => {
             console.log(res);
             if(res.status == 429){
@@ -96,18 +98,17 @@ function refreshMTGToken(){
 }
 
 
-function processGameLogin(ret){
+function processGameLogin(ret, back='/'){
     saveMTGServer(ret.server);
     saveMTGToken(ret.mtg_token);
-    verifyGameLogin();
+    verifyGameLogin(back);
 }
 
-function verifyGameLogin(){
+function verifyGameLogin(back='/'){
     Promise.all(fetchPlayerProfile()).then(()=>{
         console.log("Ajax done");
         var u = new URL(window.location.href);
-        var path = u.searchParams.get('loginback');
-        console.log(path);
+        var path = u.searchParams.get('loginback') || back;
         if(!path || path.includes('http')){ path = '/'; }
         let p = DataManager.playerProfile;
         alert(`${Vocab.GameLoginOK}\n${Vocab.Name}: ${p.Name} (Lv.${p.Level})`)
