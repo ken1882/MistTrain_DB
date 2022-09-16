@@ -358,6 +358,9 @@ LastPreditId    = 0
 CHARACTER_AVATAR_SRC_SIZE = (94, 94)
 CHARACTER_FRAME_SRC_SIZE  = (102, 102)
 
+def ClearCache():
+  SetCacheString('navbar.html', '')
+
 def GetCacheString(key):
   global RedisCache
   try:
