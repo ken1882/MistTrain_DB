@@ -35,6 +35,11 @@ def login(username, password, remember=False):
         log_info("Failed to login DMM Account for:", username)
         with open('.tmp/tmp.html', 'w') as fp:
             fp.write(res2.content.decode())
+        try:
+            page = BS(res.content, 'html.parser')
+            ret['msg'] = page.select('#loginbutton_script_on')[0].find('p').text
+        except Exception:
+            pass
         ret['status'] = 401 if res2.status_code == 200 else res2.status_code
         return ret
 
@@ -63,7 +68,7 @@ def login_totp(b64ck, token, pin):
     res = se.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
     rsc = res.status_code
     if rsc != 200 or 'login' in res.url:
-        with open('.tmp/tmp.html', 'w') as fp:
+        with open('.tmp/tmp2.html', 'w') as fp:
             fp.write(res.content.decode())
         ret['status'] = 401 if rsc == 200 else rsc
         return ret
