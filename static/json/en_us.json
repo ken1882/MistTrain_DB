@@ -16,7 +16,7 @@
   "TotpFailed": "Incorrect pin code. You can only try 5 times in 5 minutes for sake of spam prevention.",
   "RateLimited": "You're being rate limited, try again after 5 minutes.",
   "GameLoginFailed": "Failed connect to game server",
-  "GameLoginFailed2": "Server might be under maintenance, or account logged in somewhere else, please try again later.",
+  "GameLoginFailed2": "Server might be under maintenance, date changed or account logged in somewhere else, please try again later.",
   "GameLoginOK": "Login successed",
   "LoginSavedDMM": "Login with existing DMM account?",
   "ReloginDMM": "Go to login page?",
@@ -248,6 +248,14 @@
   "FullSkillAnimation": "Full Skill Animation",
   "TrainboardCorrection": "Trainboard Correction",
   "FieldSkillDB": "PT Cards",
+  "DimMissingChars": "Dim missing characters",
+  "LoadCharacters": "Load Characters",
+  "LoadInventory": "Load Inventory",
+  "Amount": "Amount",
+  "Armor": "Armor",
+  "Item": "Item",
+  "Accessory": "Accessory",
+  "ABStone": "Ability Stone",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

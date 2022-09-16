@@ -96,16 +96,20 @@ function switchOAuthLogin(enabled){
     if(enabled){
         window.__OAuthLogin = true;
         $("#inp-email").val(DEFAULT_SERVER);
+        $("#inp-password").val('');
         $("#l-email").text(Vocab.ServerLocation);
         $("#inp-password").attr('placeholder', 'Bearer xxxxx...');
+        $("#inp-password").attr('type', 'text');
         $("#login-warning").css('visibility', 'hidden');
         $("#section_remember").css('visibility', 'hidden');
     }
     else{
         window.__OAuthLogin = false;
         $("#inp-email").val('');
+        $("#inp-password").val('');
         $("#l-email").text(Vocab.Email);
         $("#inp-password").attr('placeholder', '');
+        $("#inp-password").attr('type', 'password');
         $("#login-warning").css('visibility', '');
         $("#section_remember").css('visibility', '');
     }
