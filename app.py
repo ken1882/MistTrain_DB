@@ -274,6 +274,7 @@ if not app.initialized:
 
 if __name__ == '__main__':
   try:
+    _G.ClearCache()
     app.run()
   finally:
     _G.FlagRunning = False
