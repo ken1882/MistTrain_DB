@@ -156,6 +156,7 @@ ERROR_LIMIT_REACHED = 0x3
 ERROR_NOSTAMINA     = 0x6
 
 ERRNO_OK          = 0x0
+ERRNO_LOCKED      = 0x1
 ERRNO_MAINTENANCE = 0x10
 ERRNO_DAYCHANGING = 0x11
 ERRNO_FAILED      = 0xfe
@@ -273,6 +274,7 @@ DerpyUpdateHour = [12,20,23]
 
 CLOUD_ROOT_FOLDERNAME = 'MistTrainDB'
 SCENE_CLOUD_FOLDERNAME = 'Scene'
+SCENE_LOCAL_FOLDERNAME = '.tmp/scenes'
 DERPY_CLOUD_FOLDERNAME = 'Derpy'
 DERPY_CLOUD_ESTIMATORS = [
   'rfr_fit_order_False-feats_all.mod',
@@ -289,6 +291,12 @@ SCENE_METAS = {
   'main': 'main_scene.json',
   'event': 'event_scene.json',
   'character': 'character_scene.json'
+}
+
+SCENE_META_API = {
+  'main': '/api/UScenes/MainScenes',
+  'event': '/api/UScenes/EventScenes',
+  'character': '/api/UScenes/ViewableCharacters'
 }
 
 DERPY_ESTIMATORS    = []

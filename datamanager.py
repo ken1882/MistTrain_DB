@@ -10,6 +10,7 @@ from _G import log_error,log_debug,log_info,log_warning
 from shutil import copyfile
 from datetime import datetime
 from utils import handle_exception
+from multiprocessing import Lock
 import pytz
 
 Database    = None
@@ -23,6 +24,7 @@ def init():
   global Database
   try:
     os.mkdir(_G.DCTmpFolder)
+    os.mkdir(_G.SCENE_LOCAL_FOLDERNAME)
   except FileExistsError:
     pass
   if not _G.FlagUseCloudData:
@@ -233,6 +235,23 @@ def get_scene(id):
   with open(path, 'r') as fp:
     return json.load(fp)
 
+def save_scene(id, data):
+  global FLOCK
+  fname = f"{id}.json"
+  target = get_cache(f"/{_G.SCENE_CLOUD_FOLDERNAME}/{fname}")
+  if not target:
+    log_warning(f"Cloud file {fname} does not exists, creating new file")
+    target = Database.CreateFile({
+      'title': fname,
+      'parents': [{'kind': 'drive#fileLink', 'id': SceneFolder['id']}],
+    })
+    set_cache(target, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
+  else:
+    create_cloud_backup(target, SceneFolder)
+  log_info(f"Uploading {target['title']}")
+  target.SetContentString(json.dumps(data))
+  target.Upload()
+  return True
 
 if __name__ == '__main__':
   init()

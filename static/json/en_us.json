@@ -21,6 +21,7 @@
   "LoginSavedDMM": "Login with existing DMM account?",
   "NotLogin": "You haven't logged in yet",
   "ReloginDMM": "Go to login page?",
+  "AskOuathLogin": "If you want to use OAuth token to login, plese enter it below:",
   "CheckConnection": "Check connection",
   "LanguageText": "Language",
   "LoadText": "Loading...",

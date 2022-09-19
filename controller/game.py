@@ -64,6 +64,8 @@ GearDatabase      = {}
 FieldSkillDatabase= {}
 QuestDatabase     = {}
 ABStoneDatabase   = {}
+SceneDatabase     = {}
+PotionExpiration  = {}
 
 NetworkMaxRetry = 5
 NetworkGetTimeout = 30
@@ -252,7 +254,7 @@ def _reauth_game(depth=0):
     log_debug("Response:", res)
     content = ''.join(res.content.decode('utf8').split('>')[1:])
     data = json.loads(content)
-    log_debug(data)
+    #log_debug(data)
     if "'rc': 403" in str(data):
       return _G.ERRNO_MAINTENANCE
     new_token = json.loads(data[list(data.keys())[0]]['body'])
@@ -332,13 +334,15 @@ def refresh_daily_token():
   FlagDayChanged = False
   reauth_game()
 
-def get_request(url, depth=1):
+def get_request(url, depth=1, agent=None):
   global Session,ServerLocation
-  if not Session:
+  if not agent:
+    agent = Session
+  if not agent:
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
-  if not Session.headers['Authorization']:
+  if not agent.headers['Authorization']:
     sync_token()
   if not ServerLocation:
     res = determine_server()
@@ -349,11 +353,11 @@ def get_request(url, depth=1):
   try:
     log_debug(f"[GET] {url}")
     if NetworkGetTimeout > 0:
-      res = Session.get(url, timeout=NetworkGetTimeout)
+      res = agent.get(url, timeout=NetworkGetTimeout)
     else:
-      res = Session.get(url)
+      res = agent.get(url)
   except NetworkExcpetionRescues as err:
-    Session.close()
+    agent.close()
     if depth < NetworkMaxRetry:
       log_warning(f"Connection errored for {url}, retry after 3 seconds...(depth={depth+1})")
       wait(3)
@@ -377,14 +381,16 @@ def get_request(url, depth=1):
     return None
   return res.json()
 
-def post_request(url, data=None, depth=1):
+def post_request(url, data=None, depth=1, agent=None):
   global Session,TemporaryNetworkErrors,ServerLocation
-  if not Session:
+  if not agent:
+    agent = Session
+  if not agent:
     return _G.ERRNO_UNAVAILABLE
   if is_day_changing():
     return _G.ERRNO_DAYCHANGING
   res = None
-  if not Session.headers['Authorization']:
+  if not agent.headers['Authorization']:
     sync_token()
   if not ServerLocation:
     res = determine_server()
@@ -396,16 +402,16 @@ def post_request(url, data=None, depth=1):
     log_debug(f"[POST] {url} with payload:", data, sep='\n')
     if data != None:
       if NetworkPostTimeout > 0:
-        res = Session.post(url, json.dumps(data), headers=PostHeaders, timeout=NetworkPostTimeout)
+        res = agent.post(url, json.dumps(data), headers=PostHeaders, timeout=NetworkPostTimeout)
       else:
-        res = Session.post(url, json.dumps(data), headers=PostHeaders)
+        res = agent.post(url, json.dumps(data), headers=PostHeaders)
     else:
       if NetworkPostTimeout > 0:
-        res = res = Session.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
+        res = agent.post(url, headers=PostHeaders, timeout=NetworkPostTimeout)
       else:
-        res = Session.post(url, headers=PostHeaders)
+        res = agent.post(url, headers=PostHeaders)
   except NetworkExcpetionRescues as err:
-    Session.close()
+    agent.close()
     if depth < NetworkMaxRetry:
       log_warning(f"Connection errored for {url}, retry after 3 seconds...(depth={depth+1})")
       wait(3)
@@ -441,8 +447,10 @@ def is_service_available():
 
 def load_database():
   global Session,CharacterDatabase
+  global SceneDatabase
   links = [
     f"{_G.STATIC_HOST}/MasterData/MCharacterViewModel.json",
+    f"{_G.STATIC_HOST}/MasterData/MSceneViewModel.json",
   ]
   for i,link in enumerate(links):
     db = None
@@ -458,6 +466,8 @@ def load_database():
       pass
     if i == 0:
       CharacterDatabase = db
+    elif i == 1:
+      SceneDatabase = db
 
 def __convert2indexdb(db):
   ret = {}
@@ -476,3 +486,11 @@ def get_character_base(id):
 def get_character_name(id):
   ch = get_character_base(id)
   return f"{ch['Name']}{ch['MCharacterBase']['Name']}"
+
+def get_scene(id):
+  global SceneDatabase
+  if id not in SceneDatabase:
+    load_database(True)
+    if id not in SceneDatabase:
+      raise RuntimeError(f"Invalid scene id: {id}")
+  return SceneDatabase[id]
