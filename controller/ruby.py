@@ -3,6 +3,7 @@ import requests
 import urllib.parse
 import json
 import controller.game as game
+from time import sleep
 
 MaruHeaders = {
   'Accept-Encoding': 'gzip, deflate, br',
@@ -15,17 +16,37 @@ MaruHeaders = {
 
 LinewrapSymbol = '＊'
 CommonTitleCache = {}
-
+ErrorFiles = set()
 ###
 
-def rubifiy_japanese(text):
+IgnorePhrase = [
+  'ーーーー',
+  '！！！！！！'
+]
+
+def rubifiy_japanese(text, fname='', depth=0):
+  if text in IgnorePhrase:
+    return f"<div>{text}</div>"
   res = requests.post(
     "https://www.jpmarumaru.com/tw/api/json_KanjiFurigana.asp",
     'Text='+urllib.parse.quote_plus(text),
     headers=MaruHeaders
   )
-  print(res.content.decode())
-  return res.content.decode()
+  ret = text
+  try:
+    ret = res.content.decode()
+  except Exception as err:
+    print("An error occurred during rubifiy phrase:", err, 'original text:', text, sep='\n')
+    if fname:
+      print('File:', fname)
+    if depth < 3:
+      print('Retry after a second, depth=', depth+1, sep='')
+      sleep(1)
+      return rubifiy_japanese(text, fname, depth+1)
+    else:
+      print("Payload:", urllib.parse.quote_plus(text), sep='\n')
+      print("Response:", res.content, sep='\n')
+  return f"<div>{ret}</div>"
 
 def rubifiy_file(file):
   with open(file, 'r') as fp:
@@ -40,7 +61,8 @@ def rubifiy_file(file):
     text = dia['Phrase']
     text = text.replace('\\n', LinewrapSymbol)
     text = text.replace('\u3000', '')
-    ruby = rubifiy_japanese(text)
+    text = text.replace('\r',  LinewrapSymbol)
+    ruby = rubifiy_japanese(text, file)
     correction = (
       (
         '<ruby><rb>一</rb><rt>いち</rt></ruby><ruby><rb>人</rb><rt>にん</rt></ruby>',
@@ -64,6 +86,6 @@ def rubifiy_file(file):
   if t in CommonTitleCache:
     data['Title'] = CommonTitleCache[t]
   else:
-    data['Title'] = rubifiy_japanese(t)
+    data['Title'] = rubifiy_japanese(t, file)
     CommonTitleCache[t] = data['Title']
   return data

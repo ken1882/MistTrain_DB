@@ -490,7 +490,7 @@ def get_character_name(id):
 def get_scene(id):
   global SceneDatabase
   if id not in SceneDatabase:
-    load_database(True)
+    load_database()
     if id not in SceneDatabase:
       raise RuntimeError(f"Invalid scene id: {id}")
   return SceneDatabase[id]

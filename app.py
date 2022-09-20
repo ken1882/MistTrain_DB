@@ -244,6 +244,21 @@ def get_story_content(id):
     handle_exception(err)
   return jsonify({}),503
 
+
+@app.route('/api/SponsorScenes', methods=['POST'])
+def spnosor_scene():
+  token = request.form.get('token')
+  msg = story.dump_sponspred_scene(token)
+  if msg == _G.ERROR_LOCKED:
+    return jsonify({'msg': 'Locked'}),409
+  if msg == _G.ERRNO_UNAUTH:
+    return jsonify({'msg': 'Unauthorized'}),401
+  if msg == _G.ERRNO_UNAUTH:
+    return jsonify({'msg': 'Maintenance'}),403
+  elif msg == _G.ERRNO_OK:
+    return jsonify({'msg': 'OK'}),200
+  return jsonify({'msg': 'Error'}),500
+
 ## Main functions
 
 def setup():

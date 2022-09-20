@@ -91,6 +91,23 @@ function loadStoryData(){
   });
 }
 
+function sponsorScenes(){
+  if(!getMTGToken()){
+    return ;
+  }
+  $.ajax({
+    method: 'POST',
+    url: '/api/SponsorScenes',
+    data: {'token': getMTGToken()},
+    success: (res) => {
+      console.log(res);
+    },
+    error: (res) => {
+      console.error(res);
+    }
+  });
+}
+
 function init(){
   if(!DataManager.isReady() || !AssetsManager.isReady()){
     return setTimeout(() => {

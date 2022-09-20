@@ -6,7 +6,7 @@ import datamanager as dm
 from flask import render_template
 from copy import deepcopy
 from datetime import date, datetime, timedelta
-from pprint import PrettyPrinter
+from pprint import PrettyPrinter,pformat
 from _G import log_warning,log_debug,log_error,log_info
 from time import mktime,strptime
 from threading import Thread
@@ -17,6 +17,8 @@ import urllib.parse
 import utils
 from shutil import copyfile
 from multiprocessing import Lock
+from threading import Thread
+from time import sleep
 pp = PrettyPrinter(indent=2)
 
 
@@ -27,7 +29,11 @@ IsStoryInitCalled = False
 UploadLock    = False
 UploadStatus  = ''
 
-SceneMeta = {}
+TRANSLATE_FILES = os.getenv('MTG_AUTO_RUBIFY')
+
+SceneMeta   = {}
+MaxWorkers  = 8
+RubyWorkers = []
 ExistedScene = set()
 
 MaruHeaders = {
@@ -46,7 +52,7 @@ def init():
   global IsStoryReady,IsStoryInitCalled
   IsStoryInitCalled = True
   load_metas()
-  copy_meta_cache()
+  # copy_meta_cache()
   IsStoryReady = True
 
 def req_story_ready(func):
@@ -68,6 +74,7 @@ def load_metas():
   global SceneMeta
   files = dm.load_story_meta()
   for k, fname in _G.SCENE_METAS.items():
+    SceneMeta[k] = []
     for path in files:
       if fname in path and os.path.exists(path):
         with open(path, 'r') as fp:
@@ -121,7 +128,8 @@ def copy_meta_cache():
   for k,fn in _G.SCENE_METAS.items():
     src = f"{_G.STATIC_FILE_DIRECTORY}/json/{fn}"
     dst = f"{_G.STATIC_FILE_DIRECTORY}/json/c_{fn}"
-    copyfile(src, dst)
+    if os.path.exists(src):
+      copyfile(src, dst)
 
 def is_scene_unlocked(_type, id, status):
   if _type == 'main':
@@ -132,12 +140,25 @@ def is_scene_unlocked(_type, id, status):
     return (status == 1) or (status == 3)
   return False
 
+def rubify_scenes(sids):
+  log_info("Start rubifing scenes of", len(sids))
+  for sid in sids:
+    log_info("Rubifing", sid)
+    src = f"{_G.DCTmpFolder}/scenes/{sid}.json"
+    dst = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{sid}.json"
+    if os.path.exists(dst):
+      log_info(f"{dst} already exists, skip")
+      continue
+    rbd = ruby.rubifiy_file(src)
+    with open(dst, 'w') as fp:
+      json.dump(rbd, fp)
+
 # save in tmp folder, add to cache 
 # and upload to gdrive after downloaded
 # file will need to be rubified before serving
 # TODO: make this part prettier
-def dump_sponsered_scene(token):
-  global UploadLock,SceneMeta,UploadStatus
+def dump_sponspred_scene(token):
+  global UploadLock,SceneMeta,UploadStatus,RubyWorkers
   if UploadLock:
     return _G.ERROR_LOCKED
   UploadStatus = 'init' # ret for polling status query
@@ -153,12 +174,17 @@ def dump_sponsered_scene(token):
     nmeta = {}
     for k,uri in _G.SCENE_META_API.items():
       # get metas
-      res  = game.get_request(uri, agent=se) 
+      res = se.get(f"{game.ServerLocation}/{uri}")
+      if res.status_code == 401 or res.status_code == 408:
+        return _G.ERRNO_UNAUTH
+      elif res.status_code == 403:
+        return _G.ERRNO_MAINTENANCE
+      res = res.json()
       # get missing scenes
       news[k] = get_new_scenes(k, res['r'])
       new_total += len(news[k])
       nmeta[k] = res['r']
-    
+    log_info('New scenes:', pformat(news))
     for k in news:
       UploadStatus = 'download,'+k
       for sid in news[k]:
@@ -168,9 +194,14 @@ def dump_sponsered_scene(token):
         UploadStatus = f"download,{k},{ok_total},{new_total}"
         if os.path.exists(path) or os.path.exists(path2):
           ok_total += 1
-          log_info(f"Scene#{id} {game.get_scene(id)['Title']} already exists, skip")
+          log_info(f"Scene#{sid} {game.get_scene(sid)['Title']} already exists, skip")
           continue
-        res = game.get_request(f"/api/UScenes/{sid}", agent=se)
+        res = se.get(f"{game.ServerLocation}/api/UScenes/{sid}")
+        if res.status_code == 401 or res.status_code == 408:
+          return _G.ERRNO_UNAUTH
+        elif res.status_code == 403:
+          return _G.ERRNO_MAINTENANCE
+        res = res.json()
         data = res['r']
         data['MSceneDetailViewModel'] = sorted(data['MSceneDetailViewModel'], key=lambda o:o['GroupOrder'])
         with FLOCK:
@@ -179,20 +210,29 @@ def dump_sponsered_scene(token):
         saved.append(sid)
         ExistedScene.add(sid) # add to cache
         ok_total += 1
-        log_info(f"Scene#{id} {game.get_scene(id)['Title']} saved")
+        log_info(f"Scene#{sid} {game.get_scene(sid)['Title']} saved")
+    
+    # manually run rubifiing process
+    if not TRANSLATE_FILES:
+      return _G.ERRNO_OK
+
+    if not saved:
+      return _G.ERRNO_OK
     
     UploadStatus = 'process'
     ok_total = 0
     new_total = len(saved)
-    for sid in saved:
-      src = f"{_G.DCTmpFolder}/scenes/{sid}.json"
-      dst = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{sid}.json"
-      rbd = ruby.rubifiy_file(src)
-      UploadStatus = f"process,{ok_total},{new_total}"
-      with FLOCK:
-        with open(dst, 'w') as fp:
-          json.dump(rbd, fp)
-      ok_total += 1
+    csize = new_total // MaxWorkers
+    for chunk in utils.chunks(saved, csize):
+      th = Thread(target=rubify_scenes, args=(chunk,))
+      RubyWorkers.append(th)
+      th.start()
+    
+    _running = True
+    while _running:
+      sleep(1)
+      # print([th.is_alive() for th in RubyWorkers])
+      _running = not all([not th.is_alive() for th in RubyWorkers])
     
     UploadStatus = 'upload'
     ok_total = 0
@@ -207,7 +247,8 @@ def dump_sponsered_scene(token):
       ok_total += 1
     
     update_meta(nmeta, done)
-    upload_meta()
+    save_meta()
+    dm.upload_story_meta(copy(SceneMeta))
     update_scene_cache()
   except Exception as err:
     UploadStatus = 'failed'
@@ -249,10 +290,8 @@ def get_new_scenes(_type, scenes):
 def update_meta(new_meta, saved):
   global SceneMeta
   for ch in new_meta['main']:
-    och_idx = (
-      next(
-        i for (i, o) in enumerate(SceneMeta['main']) if o['MChapterId'] == ch['MChapterId']
-      ), 
+    och_idx = next(
+      (i for (i, o) in enumerate(SceneMeta['main']) if o['MChapterId'] == ch['MChapterId']),
       -1
     )
     if och_idx == -1:
@@ -262,10 +301,8 @@ def update_meta(new_meta, saved):
       sid = sc['MSceneId']
       if sid not in saved:
         continue
-      nidx = (
-        next(
-          i for (i, o) in enumerate(SceneMeta['main'][och_idx]['Scenes']) if o['MSceneId'] == sid
-        ), 
+      nidx = next(
+        (i for (i, o) in enumerate(SceneMeta['main'][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
       if nidx:
@@ -285,10 +322,8 @@ def update_meta(new_meta, saved):
   ### 
 
   for ch in new_meta['event']:
-    och_idx = (
-      next(
-        i for (i, o) in enumerate(SceneMeta['event']) if o['MChapterId'] == ch['MChapterId']
-      ), 
+    och_idx = next(
+      (i for (i, o) in enumerate(SceneMeta['event']) if o['MChapterId'] == ch['MChapterId']),
       -1
     )
     if och_idx == -1:
@@ -298,10 +333,8 @@ def update_meta(new_meta, saved):
       sid = sc['MSceneId']
       if sid not in saved:
         continue
-      nidx = (
-        next(
-          i for (i, o) in enumerate(SceneMeta['event'][och_idx]['Scenes']) if o['MSceneId'] == sid
-        ), 
+      nidx = next(
+        (i for (i, o) in enumerate(SceneMeta['event'][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
       if nidx:
@@ -321,20 +354,16 @@ def update_meta(new_meta, saved):
   ###
 
   for base in new_meta['character']:
-    bch_idx = (
-      next(
-        i for (i, o) in enumerate(SceneMeta['character']) if o['MCharacterBaseId'] == base['MCharacterBaseId']
-      ), 
+    bch_idx = next(
+      (i for (i, o) in enumerate(SceneMeta['character']) if o['MCharacterBaseId'] == base['MCharacterBaseId']),
       -1
     )
     if bch_idx == -1:
       SceneMeta['character'].append(base)
       continue
     for layer in base['CharacterScenes']:
-      lch_idx = (
-        next(
-          i for (i, o) in enumerate(SceneMeta['character'][bch_idx]['CharacterScenes']) if o['MCharacterId'] == base['MCharacterId']
-        ), 
+      lch_idx = next(
+        (i for (i, o) in enumerate(SceneMeta['character'][bch_idx]['CharacterScenes']) if o['MCharacterId'] == base['MCharacterId']),
         -1
       )
       if lch_idx == -1:
@@ -344,10 +373,8 @@ def update_meta(new_meta, saved):
         sid = sc['MSceneId']
         if sid not in saved:
           continue
-        nidx = (
-          next(
-            i for (i, o) in enumerate(SceneMeta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes']) if o['MSceneId'] == sid
-          ), 
+        nidx = next(
+          (i for (i, o) in enumerate(SceneMeta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes']) if o['MSceneId'] == sid),
           -1
         )
         if nidx:
@@ -355,6 +382,16 @@ def update_meta(new_meta, saved):
         else:
           SceneMeta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'].append(sc)
 
-def upload_meta():
+def save_meta():
   global SceneMeta
-  # TODO
+  for k, fname in _G.SCENE_METAS.items():
+    path = f"{_G.STATIC_FILE_DIRECTORY}/json/{fname}"
+    if os.path.exists(path):
+      with open(path, 'r') as fp:
+        with open(path+'.bak', 'w') as fp2:
+          json.dump(json.load(fp), fp2)
+    
+    with open(path, 'w') as fp:
+      json.dump(SceneMeta[k], fp)
+      log_info(f"{fname} saved")
+  
