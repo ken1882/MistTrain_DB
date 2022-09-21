@@ -260,6 +260,12 @@
   "Item": "Item",
   "Accessory": "Accessory",
   "ABStone": "Ability Stone",
+  "SponsorScene": "Sponsor Stories",
+  "SponsorSceneDesc": "Some stories/scenes might be missing due to the nature of gacha game, by clicking this button, it means you're allowing server to collect the scenes you've been unlocked.",
+  "SponsorSceneConfirm": "Are you sure to allow server to collect your unlocked scenes?",
+  "SponsorSceneHint": "Request sent, please do not leave this page before complete message shown",
+  "SponsorSceneDone": "Your scenes has been collected, thank you!",
+  "SponsorSceneLocked": "Server is processing other's scenes, please try again later",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

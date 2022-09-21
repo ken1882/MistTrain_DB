@@ -147,9 +147,6 @@ function setupDialogues(){
     textbox.append(phrase);
     container.append(textbox);
     parent.append(container);
-    if(!DialoguePlayer.currentBGM && dialog.BGM){
-      DialoguePlayer.setBGM(dialog.BGM);
-    }
   }
 }
 
@@ -174,6 +171,15 @@ function setVoiceIcon(id, state){
   }
 }
 
+function playLatestBGM(){
+  for(let i=CurrentDialogueIndex;i>=0;--i){
+    let bgm = DialogData[i].BGM;
+    if(!bgm){ continue; }
+    let dur = 1500;
+    DialoguePlayer.fadeInBGM(bgm, dur);
+  }
+}
+
 function toggleDialogPlay(target){
   if(($(target).attr('class') || '').includes('dialogbox-playing')){
     if(DialoguePlayer.currentBGM && DialoguePlayer.currentBGM.playing()){
@@ -183,9 +189,17 @@ function toggleDialogPlay(target){
   }
   else{
     if(DialoguePlayer.currentBGM && !DialoguePlayer.currentBGM.playing()){
-      DialoguePlayer.currentBGM.play();
+      let vols = DataManager.getSetting(DataManager.kVolume);
+      let audio = DialoguePlayer.currentBGM;
+      audio.play();
+      if(audio.volume() != vols[0]){
+        audio.fade(0.0, vols[0], 1000);
+      }
     }
     playDialogueNode(target);
+    if(!DialoguePlayer.currentBGM){
+      playLatestBGM();
+    }
   }
 }
 
@@ -234,10 +248,12 @@ function playDialogueNode(node){
   let bgm = DialogData[CurrentDialogueIndex].BGM;
   if(bgm){
     let dur = 1500;
-    if(DialoguePlayer.currentBGM){
+    if(DialoguePlayer.currentBGM && DialoguePlayer.currentBGM.id != bgm){
       DialoguePlayer.fadeOutBGM(null, dur);
     }
-    DialoguePlayer.fadeInBGM(bgm, dur);
+    if(DialoguePlayer.currentBGM.id != bgm){
+      DialoguePlayer.fadeInBGM(bgm, dur);
+    }
   }
 }
 

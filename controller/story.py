@@ -29,7 +29,7 @@ IsStoryInitCalled = False
 UploadLock    = False
 UploadStatus  = ''
 
-TRANSLATE_FILES = os.getenv('MTG_AUTO_RUBIFY')
+RUBIFY_STORY = os.getenv('MTG_AUTO_RUBIFY')
 
 SceneMeta   = {}
 MaxWorkers  = 8
@@ -212,18 +212,23 @@ def dump_sponspred_scene(token):
         ok_total += 1
         log_info(f"Scene#{sid} {game.get_scene(sid)['Title']} saved")
     
-    # manually run rubifiing process
-    if not TRANSLATE_FILES:
-      return _G.ERRNO_OK
-
+    save_sponsors(token)
     if not saved:
+      return _G.ERRNO_OK
+    
+    # if false, manually run rubifiing process,
+    # makes response much faster
+    if not RUBIFY_STORY:
+      tmp_meta = copy(SceneMeta)
+      update_meta(tmp_meta, nmeta, saved)
+      save_meta(tmp_meta, 't_')
       return _G.ERRNO_OK
     
     UploadStatus = 'process'
     ok_total = 0
     new_total = len(saved)
     csize = new_total // MaxWorkers
-    for chunk in utils.chunks(saved, csize):
+    for chunk in utils.chop(saved, csize):
       th = Thread(target=rubify_scenes, args=(chunk,))
       RubyWorkers.append(th)
       th.start()
@@ -246,8 +251,8 @@ def dump_sponspred_scene(token):
       done.append(sid)
       ok_total += 1
     
-    update_meta(nmeta, done)
-    save_meta()
+    update_meta(SceneMeta, nmeta, done)
+    save_meta(SceneMeta)
     dm.upload_story_meta(copy(SceneMeta))
     update_scene_cache()
   except Exception as err:
@@ -287,35 +292,34 @@ def get_new_scenes(_type, scenes):
           ret.append(sid)
   return ret
 
-def update_meta(new_meta, saved):
-  global SceneMeta
+def update_meta(old_meta, new_meta, saved):
   for ch in new_meta['main']:
     och_idx = next(
-      (i for (i, o) in enumerate(SceneMeta['main']) if o['MChapterId'] == ch['MChapterId']),
+      (i for (i, o) in enumerate(old_meta['main']) if o['MChapterId'] == ch['MChapterId']),
       -1
     )
     if och_idx == -1:
-      SceneMeta['main'].append(ch)
+      old_meta['main'].append(ch)
       continue
     for sc in ch['Scenes']:
       sid = sc['MSceneId']
       if sid not in saved:
         continue
       nidx = next(
-        (i for (i, o) in enumerate(SceneMeta['main'][och_idx]['Scenes']) if o['MSceneId'] == sid),
+        (i for (i, o) in enumerate(old_meta['main'][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
       if nidx:
-        SceneMeta['main'][och_idx]['Scenes'][nidx] = sc
+        old_meta['main'][och_idx]['Scenes'][nidx] = sc
       else:
-        SceneMeta['main'][och_idx]['Scenes'].append(sc)
-    SceneMeta['main'][och_idx]['Scenes'] = sorted(
-      SceneMeta['main'][och_idx]['Scenes'], 
+        old_meta['main'][och_idx]['Scenes'].append(sc)
+    old_meta['main'][och_idx]['Scenes'] = sorted(
+      old_meta['main'][och_idx]['Scenes'], 
       key=lambda o:o['MSceneId']
     )
   
-  SceneMeta['main'] = sorted(
-    SceneMeta['main'], 
+  old_meta['main'] = sorted(
+    old_meta['main'], 
     key=lambda o:o['MChapterId']
   )
   
@@ -323,31 +327,31 @@ def update_meta(new_meta, saved):
 
   for ch in new_meta['event']:
     och_idx = next(
-      (i for (i, o) in enumerate(SceneMeta['event']) if o['MChapterId'] == ch['MChapterId']),
+      (i for (i, o) in enumerate(old_meta['event']) if o['MChapterId'] == ch['MChapterId']),
       -1
     )
     if och_idx == -1:
-      SceneMeta['event'].append(ch)
+      old_meta['event'].append(ch)
       continue
     for sc in ch['Scenes']:
       sid = sc['MSceneId']
       if sid not in saved:
         continue
       nidx = next(
-        (i for (i, o) in enumerate(SceneMeta['event'][och_idx]['Scenes']) if o['MSceneId'] == sid),
+        (i for (i, o) in enumerate(old_meta['event'][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
       if nidx:
-        SceneMeta['event'][och_idx]['Scenes'][nidx] = sc
+        old_meta['event'][och_idx]['Scenes'][nidx] = sc
       else:
-        SceneMeta['event'][och_idx]['Scenes'].append(sc)
-    SceneMeta['event'][och_idx]['Scenes'] = sorted(
-      SceneMeta['event'][och_idx]['Scenes'], 
+        old_meta['event'][och_idx]['Scenes'].append(sc)
+    old_meta['event'][och_idx]['Scenes'] = sorted(
+      old_meta['event'][och_idx]['Scenes'], 
       key=lambda o:o['MSceneId']
     )
   
-  SceneMeta['event'] = sorted(
-    SceneMeta['event'], 
+  old_meta['event'] = sorted(
+    old_meta['event'], 
     key=lambda o:o['MChapterId']
   )
       
@@ -355,43 +359,62 @@ def update_meta(new_meta, saved):
 
   for base in new_meta['character']:
     bch_idx = next(
-      (i for (i, o) in enumerate(SceneMeta['character']) if o['MCharacterBaseId'] == base['MCharacterBaseId']),
+      (i for (i, o) in enumerate(old_meta['character']) if o['MCharacterBaseId'] == base['MCharacterBaseId']),
       -1
     )
     if bch_idx == -1:
-      SceneMeta['character'].append(base)
+      old_meta['character'].append(base)
       continue
     for layer in base['CharacterScenes']:
       lch_idx = next(
-        (i for (i, o) in enumerate(SceneMeta['character'][bch_idx]['CharacterScenes']) if o['MCharacterId'] == base['MCharacterId']),
+        (i for (i, o) in enumerate(old_meta['character'][bch_idx]['CharacterScenes']) if o['MCharacterId'] == layer['MCharacterId']),
         -1
       )
       if lch_idx == -1:
-        SceneMeta['character'][bch_idx]['CharacterScenes'].append(layer)
+        old_meta['character'][bch_idx]['CharacterScenes'].append(layer)
         continue
       for sc in layer['Scenes']:
         sid = sc['MSceneId']
         if sid not in saved:
           continue
         nidx = next(
-          (i for (i, o) in enumerate(SceneMeta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes']) if o['MSceneId'] == sid),
+          (i for (i, o) in enumerate(old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes']) if o['MSceneId'] == sid),
           -1
         )
         if nidx:
-          SceneMeta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'][nidx] = sc
+          old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'][nidx] = sc
         else:
-          SceneMeta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'].append(sc)
+          old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'].append(sc)
 
-def save_meta():
-  global SceneMeta
+def save_meta(meta, prefix=''):
   for k, fname in _G.SCENE_METAS.items():
-    path = f"{_G.STATIC_FILE_DIRECTORY}/json/{fname}"
+    path = f"{_G.STATIC_FILE_DIRECTORY}/json/{prefix}{fname}"
     if os.path.exists(path):
       with open(path, 'r') as fp:
         with open(path+'.bak', 'w') as fp2:
           json.dump(json.load(fp), fp2)
     
     with open(path, 'w') as fp:
-      json.dump(SceneMeta[k], fp)
+      json.dump(meta[k], fp)
       log_info(f"{fname} saved")
   
+
+def save_sponsors(token):
+  try:
+    p = game.get_profile(token)
+  except Exception:
+    return
+  name,uid = p['Name'],p['DisplayUserId']
+  dat = []
+  if os.path.exists(_G.SCENE_SPONSOR_ARCHIVE):
+    with open(_G.SCENE_SPONSOR_ARCHIVE, 'r') as fp:
+      dat = json.load(fp)
+    for d in dat:
+      if d['DisplayUserId'] == uid:
+        return
+  dat.append({
+    'Name': name,
+    'DisplayUserId': uid,
+  })
+  with open(_G.SCENE_SPONSOR_ARCHIVE, 'w') as fp:
+    json.dump(dat, fp)

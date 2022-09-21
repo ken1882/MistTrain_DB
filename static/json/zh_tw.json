@@ -260,6 +260,12 @@
   "Item": "物品",
   "Accessory": "飾品",
   "ABStone": "寶珠",
+  "SponsorScene": "贊助文本",
+  "SponsorSceneDesc": "您可以透過此按鈕來贊助缺失的文本，這代表伺服器將會收集您遊戲帳號中已經解鎖的劇情內容。",
+  "SponsorSceneConfirm": "您確定要讓伺服器收集您的劇情文本嗎?",
+  "SponsorSceneHint": "已傳送請求，在出現完成視窗前，請勿離開頁面",
+  "SponsorSceneDone": "已完成收集，感謝您的幫忙",
+  "SponsorSceneLocked": "伺服器正在處理其他人的文本，請稍後再試",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {

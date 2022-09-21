@@ -494,3 +494,11 @@ def get_scene(id):
     if id not in SceneDatabase:
       raise RuntimeError(f"Invalid scene id: {id}")
   return SceneDatabase[id]
+
+def get_profile(token):
+  se = requests.Session()
+  se.headers['Authorization'] = token
+  res  = se.get(f"{ServerLocation}/api/Users/Me").json()['r']
+  res2 = se.get(f"{ServerLocation}/api/Users/MyPreferences").json()['r']
+  ret = {**res, **res2}
+  return ret

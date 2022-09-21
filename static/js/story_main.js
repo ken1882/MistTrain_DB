@@ -143,7 +143,7 @@ function showChapterContent(event){
     let li = document.createElement('li');
     let node = document.createElement('a');
     let scene = SceneData[scenes[i].MSceneId];
-    $(node).attr('href', `/story_transcript/${scene.Id}`);
+    $(node).attr('href', `/story_transcript/${scene.Id}?t=m`);
     $(node).attr('target', '_blank');
     $(node).text(`${i+1}. ${scene.Title}`);
     li.append(node);

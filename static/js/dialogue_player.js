@@ -13,6 +13,9 @@ class DialoguePlayer{
    * @param {object} data - Scene data
    */
   static setup(data){
+    let u = new URLSearchParams(window.location.search);
+    this.sceneType  = u.get('t');
+    this.chapterId  = u.get('c');
     this.data = data;
     this.dialogues = data.MSceneDetailViewModel;
     this.sceneId = data.MSceneId;
@@ -31,14 +34,22 @@ class DialoguePlayer{
       if(!voice && !bgm){continue;}
       if(voice && !this.audios.hasOwnProperty(voice)){
         this.__se.push(voice);
+        let url = `${ASSET_HOST}/Sounds/Voices/Scenarios`;
+        if(this.sceneType == 'm'){
+          url += `/Mains/m_${this.sceneId}/${voice}.mp3`;
+        }
+        else if(this.sceneType == 'e'){
+          url += `/Events/${this.chapterId}/e_${this.sceneId}/${voice}.mp3`;
+        }
         this.audios[voice] = new Howl({
-          src: [`${ASSET_HOST}/Sounds/Voices/Scenarios/Mains/m_${this.sceneId}/${voice}.mp3`],
+          src: [url],
           volume: DataManager.getSetting(DataManager.kVolume)[1],
           onloaderror: (audio_id, errno)=>{
             console.error(`Unable to load audio ${audio_id} ERRNO=(${errno})`);
             delete this.audios[voice];
           }
         });
+        this.audios[voice].id = voice;
       }
       if(bgm && !this.audios.hasOwnProperty(bgm)){
         this.__bgm.push(bgm);
@@ -50,6 +61,7 @@ class DialoguePlayer{
             delete this.audios[bgm];
           }
         });
+        this.audios[bgm].id = bgm;
       }
     }
   }
@@ -80,7 +92,7 @@ class DialoguePlayer{
     }
     else if(this.__bgm.includes(id)){
       this.audios[id].volume(DataManager.getSetting(DataManager.kVolume)[0]);
-      this.currentBGM = audio;
+      // this.currentBGM = audio;
       audio.on('end', ()=>{this.currentBGM = null;});
       audio.on('stop', ()=>{this.currentBGM = null;});
     }
@@ -129,11 +141,13 @@ class DialoguePlayer{
   }
 
   static setBGM(id){
+    if(id == null){ return this.currentBGM = null; }
     this.currentBGM = this.audios[id];
     return this.currentBGM;
   }
 
   static fadeInBGM(id, duration=3000){
+    console.log('fadein bgm');
     let vols = DataManager.getSetting(DataManager.kVolume);
     let audio = this.audios[id];
     audio.volume(0);
@@ -145,12 +159,14 @@ class DialoguePlayer{
   }
   
   static fadeOutBGM(id=null, duration=3000){
-    let bgm = this.currentBGM;
+    console.log('fadeout bgm');
+    var bgm = this.currentBGM;
     if(id){ bgm = this.audios[id]; }
     if(!bgm){ return; }
     bgm.loop(false);
     bgm.once('fade', ()=>{ bgm.stop(); });
     bgm.fade(bgm.volume(), 0.0, duration);
+    this.currentBGM = null;
     return bgm;
   }
 }

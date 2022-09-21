@@ -300,6 +300,8 @@ SCENE_META_API = {
   'character': '/api/UScenes/ViewableCharacters'
 }
 
+SCENE_SPONSOR_ARCHIVE = f"{STATIC_FILE_DIRECTORY}/sponsors.json"
+
 DERPY_ESTIMATORS    = []
 
 # saved race history
