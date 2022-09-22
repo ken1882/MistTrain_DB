@@ -8,7 +8,7 @@ import json
 import pickle
 from _G import log_error,log_debug,log_info,log_warning
 from shutil import copyfile
-from datetime import datetime
+from datetime import datetime,timedelta
 from utils import handle_exception
 from multiprocessing import Lock
 import pytz
@@ -98,11 +98,15 @@ def get_cache(path):
 def load_derpy_db(year, month):
   filepath,filename = _G.MakeDerpyFilenamePair(year, month)
   dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{filepath}"
+  ttl  = datetime.now() - timedelta(days=32)
   if not _G.FlagUseCloudData:
     return dst_path
   files = get_folder_files()
   for file in files:
     if file['title'] != filename:
+      continue
+    if datetime(year, month, 1) < ttl and os.path.exists(dst_path):
+      log_info(f"{dst_path} already exists, skip")
       continue
     tmp_path = f"{_G.DCTmpFolder}/{filename}"
     log_info(f"Downloading {file['title']}")

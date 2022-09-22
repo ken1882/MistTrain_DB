@@ -35,9 +35,14 @@ def main():
             continue
         cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{sid}.json"
         if dm.get_cache(cpath):
+            _G.log_info(f"Scene already on cloud: {cpath}, skip")
             continue
         news.append(sid)
 
+    _G.log_info("New scenes:", news)
+    if not news:
+        _G.log_info('No new scenes, abort')
+        return
     new_total = len(news)
     csize = new_total // MaxWorkers
     for chunk in utils.chop(news, csize):
@@ -74,5 +79,33 @@ def main():
     story.save_meta(story.SceneMeta)
     dm.upload_story_meta(copy(story.SceneMeta))
 
+# patch scene status if exists
+def patch():
+    for ch in story.SceneMeta['main']:
+        for sc in ch['Scenes']:
+            sid = sc['MSceneId']
+            cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{sid}.json"
+            if not dm.get_cache(cpath):
+                continue
+            sc['Status'] = 1
+    for ch in story.SceneMeta['event']:
+        for sc in ch['Scenes']:
+            sid = sc['MSceneId']
+            cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{sid}.json"
+            if not dm.get_cache(cpath):
+                continue
+            sc['Status'] = 1
+    for base in story.SceneMeta['character']:
+        for layer in base['CharacterScenes']:
+            for sc in layer['Scenes']:
+                sid = sc['MSceneId']
+                cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{sid}.json"
+                if not dm.get_cache(cpath):
+                    continue
+                sc['Status'] = 1
+    story.save_meta(story.SceneMeta)
+    dm.upload_story_meta(copy(story.SceneMeta))
+
 if __name__ == '__main__':
     main()
+    patch()
