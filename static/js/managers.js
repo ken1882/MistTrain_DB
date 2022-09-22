@@ -484,6 +484,7 @@ const FieldSkillFrameHeight = 102;
       "/MasterData/MCharacterSkinViewModel.json": this.parseCharacterSkinData,
       "/MasterData/MTrainBoardViewModel.json": this.parseTrainBoardData,
       "/MasterData/MSceneViewModel.json": this.parseSceneData,
+      "/MasterData/MEventViewModel.json": this.parseEventData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
@@ -496,6 +497,17 @@ const FieldSkillFrameHeight = 102;
       "/MasterData/MSkillViewModel.json": this.parseSkillData,
       "/MasterData/MLinkSkillViewModel.json": this.parseLinkSkillData,
       "/MasterData/MChangeSkillViewModel.json": this.parseChangeSkillData,
+    }
+    for(let uri in handlers){
+      if(!handlers.hasOwnProperty(uri)){ continue; }
+      this.loadAssetDataArchive(uri, handlers[uri]);
+    }
+  }
+
+  static loadSceneData(){
+    let handlers = {
+      "/MasterData/MSceneViewModel.json": this.parseSceneData,
+      "/MasterData/MEventViewModel.json": this.parseEventData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
@@ -647,6 +659,14 @@ const FieldSkillFrameHeight = 102;
     for(let i=0;i<res.length;++i){
       let scene = res[i];
       this.SceneData[scene.Id] = scene;
+    }
+  }
+
+  static parseEventData(res){
+    this.EventData = {};
+    for(let i=0;i<res.length;++i){
+      let e = res[i];
+      this.EventData[e.EventId] = e;
     }
   }
 

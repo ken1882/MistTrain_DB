@@ -230,8 +230,8 @@
       if(!DataManager.isReady()){
         return setTimeout(initSceneSettings, 300);
       }
-      
       var play_speed = DataManager.getSetting('dialogueSpeed');
+      if(!play_speed){ play_speed = '1.0'; }
       var dia_dur    = DataManager.getSetting('dialogueDuration');
       var vols = (DataManager.getSetting(DataManager.kVolume) || [0.3,0.5,0.4]);
       for(var i=0;i<vols.length;++i){ vols[i] = parseInt(vols[i]*100); }

@@ -10,6 +10,7 @@ from _G import log_error,log_debug,log_info,log_warning
 from shutil import copyfile
 from datetime import datetime
 from utils import handle_exception
+from multiprocessing import Lock
 import pytz
 
 Database    = None
@@ -21,10 +22,15 @@ FLOCK = Lock()
 
 def init():
   global Database
-  try:
-    os.mkdir(_G.DCTmpFolder)
-  except FileExistsError:
-    pass
+  _mkdirs = [
+    _G.DCTmpFolder,
+    _G.SCENE_LOCAL_FOLDERNAME
+  ]
+  for d in _mkdirs:
+    try:
+      os.mkdir(d)
+    except FileExistsError:
+      pass
   if not _G.FlagUseCloudData:
     log_warning("Cloud data is disabled")
     return
@@ -221,6 +227,30 @@ def load_story_meta():
     copyfile(tmp_path, dst_path)
   return ret
 
+def upload_story_meta(meta):
+  if not _G.FlagUseCloudData:
+    log_warning("Attempting to upload while cloud disabled")
+    return True
+  for t in _G.SCENE_METAS:
+    if t not in meta:
+      continue
+    cfname = f"/{_G.SCENE_METAS[t]}"
+    target = get_cache(cfname)
+    if not target:
+      log_warning(f"Cloud file {cfname} does not exists, creating new file")
+      target = Database.CreateFile({
+        'title': cfname,
+        'parents': [{'kind': 'drive#fileLink', 'id': RootFolder['id']}],
+      })
+      set_cache(target)
+    else:
+      create_cloud_backup(target, RootFolder)
+    log_info(f"Uploading {target['title']}")
+    target.SetContentString(json.dumps(meta[t]))
+    target.Upload()
+  log_info("Story meta uploaded")
+      
+
 def get_scene(id):
   global FLOCK
   path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
@@ -233,6 +263,26 @@ def get_scene(id):
   with open(path, 'r') as fp:
     return json.load(fp)
 
+def save_scene(id, data):
+  global FLOCK
+  if not _G.FlagUseCloudData:
+    log_warning("Attempting to upload while cloud disabled")
+    return True
+  fname = f"{id}.json"
+  target = get_cache(f"/{_G.SCENE_CLOUD_FOLDERNAME}/{fname}")
+  if not target:
+    log_warning(f"Cloud file {fname} does not exists, creating new file")
+    target = Database.CreateFile({
+      'title': fname,
+      'parents': [{'kind': 'drive#fileLink', 'id': SceneFolder['id']}],
+    })
+    set_cache(target, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
+  else:
+    create_cloud_backup(target, SceneFolder)
+  log_info(f"Uploading {target['title']}")
+  target.SetContentString(json.dumps(data))
+  target.Upload()
+  return True
 
 if __name__ == '__main__':
   init()

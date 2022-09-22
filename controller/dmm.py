@@ -38,6 +38,7 @@ def login(username, password, remember=False):
         try:
             page = BS(res2.content, 'html.parser')
             ret['msg'] = page.select('#loginbutton_script_on')[0].find('p').text
+            log_info("Message:", ret['msg'])
         except Exception:
             pass
         ret['status'] = 401 if res2.status_code == 200 else res2.status_code

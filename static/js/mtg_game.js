@@ -170,7 +170,11 @@ function handleGameConnectionError(res){
         }
     }
     else{
-        // preserved
+        var t = window.prompt(Vocab.AskOuathLogin);
+        if(t.includes('Bearer')){
+            saveMTGToken(t);
+            verifyGameLogin(window.location.pathname);
+        }
     } 
 }
 

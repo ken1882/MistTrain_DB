@@ -9,3 +9,4 @@ Werkzeug==2.0.2
 python-dotenv==0.19.1
 redis==3.5.3
 beautifulsoup4==4.11.1
+flask-socketio==5.3.1

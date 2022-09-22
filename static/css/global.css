@@ -303,3 +303,8 @@ tbody tr td{
 .link-skill{
   color: yellowgreen;
 }
+
+.modal-content{
+  background-color: #2e2e2e;
+  color: #cccccc;
+}

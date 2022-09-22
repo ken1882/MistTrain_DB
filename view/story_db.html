@@ -113,16 +113,12 @@
       <span class="sr-only"></span>
     </div>
     <div id="event-section" style="display: none;">
-      <div>
-        <div class="card card-body">
-          <a id="header-events" class="btn btn-primary" data-bs-toggle="collapse" 
-            aria-controls="story-events" href="#story-events"
-            label="l-EventStory"
-          >_
-          </a>
-          <div class="collapse" id="story-events">
-          </div>
-        </div>
+      <div class="card card-body">
+        <a id="header-events" class="btn btn-primary" data-bs-toggle="collapse" 
+          aria-controls="story-events" data-bs-target=".story-events-collapse"
+          label="l-EventStory" 
+        >_
+        </a>
       </div>
     </div>
 
@@ -140,6 +136,36 @@
           >_
           </a>
           <div class="collapse" id="story-characters">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div id="sponsor-section">
+      <div>
+        <div class="card card-body">
+          <a id="header-sponsor" class="btn btn-primary" data-bs-toggle="collapse" 
+            aria-controls="story-sponsor" href="#story-sponsor"
+            label="l-SponsorScene"
+          >_
+          </a>
+          <div class="collapse" id="story-sponsor">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="loading-overlay" tabindex="-1" role="dialog" 
+      aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" label="l-LoadText">_</h5>
+          </div>
+          <div class="modal-body" label="l-SponsorSceneHint">
+            _
           </div>
         </div>
       </div>
