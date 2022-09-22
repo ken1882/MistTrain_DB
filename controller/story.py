@@ -268,6 +268,8 @@ def dump_sponspred_scene(token):
 
 def is_scene_missing(_type, sid, status):
   global SceneMeta,ExistedScene
+  if _type == 'event' and status == 1:
+    return True
   if sid in ExistedScene:
     return False
   if not is_scene_unlocked(_type, sid, status):
