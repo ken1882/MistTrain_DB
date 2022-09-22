@@ -132,12 +132,14 @@ def copy_meta_cache():
       copyfile(src, dst)
 
 def is_scene_unlocked(_type, id, status):
+  if status == 1:
+    return True
   if _type == 'main':
-    return (id % 100 > 10) or (status == 1)
+    return id % 100 > 10
   elif _type == 'event':
-    return status == 5
+    return status == 5 
   elif _type == 'character':
-    return (status == 1) or (status == 3)
+    return status == 3
   return False
 
 def rubify_scenes(sids):
@@ -293,6 +295,7 @@ def get_new_scenes(_type, scenes):
   return ret
 
 def update_meta(old_meta, new_meta, saved):
+  saved = [int(s) for s in saved]
   for ch in new_meta['main']:
     och_idx = next(
       (i for (i, o) in enumerate(old_meta['main']) if o['MChapterId'] == ch['MChapterId']),
@@ -309,10 +312,10 @@ def update_meta(old_meta, new_meta, saved):
         (i for (i, o) in enumerate(old_meta['main'][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
-      if nidx:
-        old_meta['main'][och_idx]['Scenes'][nidx] = sc
-      else:
+      if nidx == -1:
         old_meta['main'][och_idx]['Scenes'].append(sc)
+      else:
+        old_meta['main'][och_idx]['Scenes'][nidx] = sc
     old_meta['main'][och_idx]['Scenes'] = sorted(
       old_meta['main'][och_idx]['Scenes'], 
       key=lambda o:o['MSceneId']
@@ -341,10 +344,10 @@ def update_meta(old_meta, new_meta, saved):
         (i for (i, o) in enumerate(old_meta['event'][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
-      if nidx:
-        old_meta['event'][och_idx]['Scenes'][nidx] = sc
-      else:
+      if nidx == -1:
         old_meta['event'][och_idx]['Scenes'].append(sc)
+      else:
+        old_meta['event'][och_idx]['Scenes'][nidx] = sc
     old_meta['event'][och_idx]['Scenes'] = sorted(
       old_meta['event'][och_idx]['Scenes'], 
       key=lambda o:o['MSceneId']
@@ -381,10 +384,10 @@ def update_meta(old_meta, new_meta, saved):
           (i for (i, o) in enumerate(old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes']) if o['MSceneId'] == sid),
           -1
         )
-        if nidx:
-          old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'][nidx] = sc
-        else:
+        if nidx == -1:
           old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'].append(sc)
+        else:
+          old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'][nidx] = sc
 
 def save_meta(meta, prefix=''):
   for k, fname in _G.SCENE_METAS.items():

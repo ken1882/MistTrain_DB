@@ -29,6 +29,7 @@ def main():
     for f in files:
         try:
             sid = re.search(r"(\d+).json", f).groups()[0]
+            sid = int(sid)
         except Exception as err:
             utils.handle_exception(err)
             continue

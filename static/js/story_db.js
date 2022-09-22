@@ -87,13 +87,33 @@ function loadEventStory(){
       var chap_btn = $(document.createElement('a'));
       let sid = sc.MSceneId;
 
-      chap_btn.attr('class', 'btn btn-success collapse');
+      chap_btn.attr('class', 'btn collapse');
       chap_btn.attr('data-bs-toggle', 'collapse');
       chap_btn.attr('id', `${container_id}`);
       chap_btn.css('margin', '4px');
-      chap_btn.on('click', (_)=>{
-        window.open(`/story_transcript/${sid}?t=e&c=${eid}`, '_blank').focus();
-      });
+
+      if(AssetsManager.SceneData[sc.MSceneId].IsAdult){
+        chap_btn.addClass('btn-danger');
+        chap_btn.attr('data-toggle', 'tooltip');
+        chap_btn.attr('title', Vocab.SceneAdult);
+        chap_btn.on('click', (_)=>{
+          alert(Vocab.SceneAdult);
+        });
+      }
+      else if(sc.Status == 5 || sc.Status == 1){
+        chap_btn.addClass('btn-success');
+        chap_btn.on('click', (_)=>{
+          window.open(`/story_transcript/${sid}?t=e&c=${eid}`, '_blank').focus();
+        });
+      }
+      else{
+        chap_btn.addClass('btn-danger');
+        chap_btn.attr('data-toggle', 'tooltip');
+        chap_btn.attr('title', Vocab.SceneMissing);
+        chap_btn.on('click', (_)=>{
+          alert(Vocab.SceneMissing);
+        });
+      }
       var txt = AssetsManager.SceneData[sid].Title;
       chap_btn.text(`${j+1}. ${txt}`);
       chap_btn.append(chap_btn);

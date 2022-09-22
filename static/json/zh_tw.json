@@ -266,6 +266,8 @@
   "SponsorSceneHint": "已傳送請求，在出現完成視窗前，請勿離開頁面",
   "SponsorSceneDone": "已完成收集，感謝您的幫忙",
   "SponsorSceneLocked": "伺服器正在處理其他人的文本，請稍後再試",
+  "SceneMissing": "伺服器缺失該文本",
+  "SceneAdult": "成人畫面應在遊戲內觀賞",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {

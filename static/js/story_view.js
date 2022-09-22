@@ -251,7 +251,7 @@ function playDialogueNode(node){
     if(DialoguePlayer.currentBGM && DialoguePlayer.currentBGM.id != bgm){
       DialoguePlayer.fadeOutBGM(null, dur);
     }
-    if(DialoguePlayer.currentBGM.id != bgm){
+    if(!DialoguePlayer.currentBGM || DialoguePlayer.currentBGM.id != bgm){
       DialoguePlayer.fadeInBGM(bgm, dur);
     }
   }

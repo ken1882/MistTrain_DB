@@ -266,6 +266,8 @@
   "SponsorSceneHint": "Request sent, please do not leave this page before complete message shown",
   "SponsorSceneDone": "Your scenes has been collected, thank you!",
   "SponsorSceneLocked": "Server is processing other's scenes, please try again later",
+  "SceneMissing": "This story is unavailable at server",
+  "SceneAdult": "This is an adult scene and should be viewed in game",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {
