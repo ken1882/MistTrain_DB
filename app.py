@@ -198,6 +198,10 @@ def story_view(id=1):
 def fieldskill_index():
   return render_template('field_skill.html', navbar_content=get_navbar())
 
+@app.route('/spine_editor', methods=['GET'])
+def speditor_index():
+  return render_template('spine_editor.html', navbar_content=get_navbar())
+
 ## Auxiliary methods / API
 
 @app.route('/static/<path:path>')

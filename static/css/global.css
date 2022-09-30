@@ -308,3 +308,9 @@ tbody tr td{
   background-color: #2e2e2e;
   color: #cccccc;
 }
+
+.wrapper-editable{
+  border: solid 1px white;
+  resize: both;
+  overflow: hidden;
+}
