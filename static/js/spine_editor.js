@@ -1,12 +1,12 @@
 let SpineManager, ResizeListener;
 let oldCanvasSize;
-let SceneObjects = [];
+let HitboxWidth = 400;
 
 let lastFrameTime = Date.now() / 1000;
 
 function initSPEdit(){
     SpineManager = new Spine_AssetsManager(document.getElementById('main-canvas'));
-    SpineManager.viewportScale = [5, 5];
+
     // resize event will be called again due to inner canvas resize,
     // so use third element as detection flag
     oldCanvasSize = [SpineManager.canvas.width, SpineManager.canvas.height, false];
@@ -26,9 +26,10 @@ function initSPEdit(){
     ResizeListener.observe(document.getElementById('main-canvas-container'));
     $("#main-canvas-container").trigger('resize');
     let dw = parseInt(window.innerWidth * 0.9);
-    let dh = parseInt(window.innerHeight * 0.7);
+    let dh = parseInt(window.innerHeight * 0.8);
     $("#main-canvas-container").css('width', dw);
     $("#main-canvas-container").css('height', dh);
+    setupCavnasListener();
     setTimeout(() => {
         requestAnimationFrame(renderObjects);
     }, 1000);
@@ -42,23 +43,24 @@ function resizeCanvas(w, h){
 }
 
 function renderObjects(){
-    if(!SceneObjects){ return ; }
-
     var now = Date.now() / 1000;
     var delta = now - lastFrameTime;
 
     lastFrameTime = now;
     SpineManager.clear();
-
-    SpineManager.renderer.begin()
-    for(let i in SceneObjects){
-        if(!SceneObjects[i].ready){ continue; }
-        SceneObjects[i].update(delta);
-    }
-    SpineManager.renderer.end()
+    SpineManager.update(delta);
     requestAnimationFrame(renderObjects);
 }
 
+function setupCavnasListener(){
+    let canvas = SpineManager.canvas;
+    // $(canvas).on('click', (e)=>{
+    //     var rect = canvas.getBoundingClientRect();
+    //     var x = e.clientX - rect.left;
+    //     var y = e.clientY - rect.top;
+    //     console.log(x, y); 
+    // });
+}
 
 function getBattlerSpineResourcesData(id){
 	return {
@@ -124,10 +126,25 @@ function loadCharacter(type, id){
     return new MTG_Spine(SpineManager, rdat);
 }
 
+function resizeScale(sp){
+    window.spo = sp;
+    let scale = HitboxWidth / sp.bounds.size.x;
+    sp.skeleton.scaleX = scale;
+    sp.skeleton.scaleY = scale;
+    sp.updateBounds();
+    return sp;
+}
+
 function addCharacter(type, id){
     let sp = loadCharacter(type, id);
     if(!sp){ return ; }
-    SceneObjects.push(sp);
+    let proc = ()=>{
+        if(!sp.ready){ return setTimeout(proc, 500); }
+        resizeScale(sp);
+        SpineManager.addObject(sp);
+        sp.showHitbox = true;
+    };
+    proc();
     return sp;
 }
 
