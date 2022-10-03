@@ -50,7 +50,8 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
 
     EditUnactiveColor = new spine.Color(1.0, 0.0, 0.0, 1.0);
     EditActiveColor   = new spine.Color(0.3, 0.5, 1.0, 1.0);
-
+    ResizeFactor = 1000;
+    
     constructor(canvas){
         let gl = canvas.getContext('webgl2', {
             preserveDrawingBuffer: true,
@@ -78,6 +79,7 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
         this.lastMousePos = new spine.webgl.Vector3();
         this.mouseTarget = null;
         this.input = new spine.webgl.Input(this.canvas);
+        this.mouseResize = false;
         this.input.addListener({
             down: (x,y)=>{ 
                 this.handleInputDown(x,y); 
@@ -92,6 +94,21 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
                 this.handleInputMoved(x,y);
             }
 		});
+        $(document).on('keydown', (e)=>{
+            // console.log(e.key);
+            switch(e.key){
+            case 'shift':
+            case 'Shift':
+                this.mouseResize = true;
+            }
+        });
+        $(document).on('keyup', (e)=>{
+            switch(e.key){
+            case 'shift':
+            case 'Shift':
+                this.mouseResize = false;
+            }
+        });
     }
 
     initAttributes(){
@@ -125,7 +142,15 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
         let dy = this.mousePos.y - this.lastMousePos.y;
         if(dx == 0 && dy == 0){ return; }
         if(this.mouseTarget){
-            this.mouseTarget.move(dx, dy);
+            if(this.mouseResize){
+                let s = dx / this.ResizeFactor;
+                this.mouseTarget.skeleton.scaleX = Math.min(Math.max(0.1, this.mouseTarget.skeleton.scaleX+s), 3.0);
+                this.mouseTarget.skeleton.scaleY = Math.min(Math.max(0.1, this.mouseTarget.skeleton.scaleY+s), 3.0);
+                this.mouseTarget.updateBounds();
+            }
+            else{
+                this.mouseTarget.move(dx, dy);
+            }
         }
         this.lastMousePos.set(this.mousePos.x, this.mousePos.y, this.mousePos.z);
     }
@@ -318,6 +343,9 @@ class Spine_Character{
 }
 
 class MTG_Spine extends Spine_Character{
+    PATCH_TRANSLUCENT_SLOT = [
+        'Blush', 'cheek'
+    ]
     postSetup(){
         super.postSetup();
         // this.skeleton.scaleY = -1;
@@ -326,7 +354,7 @@ class MTG_Spine extends Spine_Character{
             let bdat = sdat.boneData;
             if(bdat.transformMode == 2){ bdat.transformMode = 1; }
 		    if(sdat.blendMode == 1){ sdat.blendMode = 3; }
-            if(sdat.name == 'Blush' && sdat.blendMode == 0){
+            if(this.PATCH_TRANSLUCENT_SLOT.includes(sdat.name) && sdat.blendMode == 0){
                 sdat.blendMode = 2;
             }
         }

@@ -349,8 +349,8 @@ const FieldSkillFrameHeight = 102;
     image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Layers/character-${idx}.png`;
     image.onload = () => {
       this.CharacterAvatarSet[idx] = image;
-      this.incReadyCounter();
       AssetsManager.loadCharacterAvatars(idx+1);
+      this.incReadyCounter();
     };
     image.onerror = ()=>{
       this.incReadyCounter();
@@ -723,7 +723,7 @@ const FieldSkillFrameHeight = 102;
       rect = this.CharacterAvatarClip[`${id}.png`].textureRect.flat();
     }
     let krarity = 'frm_thumb_common';
-    if(!frame_type){
+    if(!frame_type && this.CharacterData.hasOwnProperty(id)){
       switch(this.CharacterData[id].CharacterRarity){
         case 2:
           krarity = 'frm_thumb_rare_a';

@@ -268,6 +268,10 @@
   "SponsorSceneLocked": "伺服器正在處理其他人的文本，請稍後再試",
   "SceneMissing": "伺服器缺失該文本",
   "SceneAdult": "成人畫面應在遊戲內觀賞",
+  "Action": "動作",
+  "Move": "移動",
+  "Battler": "戰鬥人物",
+  "SPEditorAddHint": "請選擇要添加的角色模型",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
