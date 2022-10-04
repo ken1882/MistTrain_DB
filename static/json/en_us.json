@@ -272,6 +272,14 @@
   "Move": "Move",
   "Battler": "Battler",
   "SPEditorAddHint": "Select one of following modals to add",
+  "All": "All",
+  "NPC": "NPC",
+  "Character": "Character",
+  "CharacterObject": "Character object",
+  "BackgroundObject": "Background object",
+  "BackgroundColor": "Background color",
+  "ShowHitbox": "Show hitbox",
+
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

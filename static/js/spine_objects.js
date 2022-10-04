@@ -46,7 +46,7 @@ class Rect{
 }
 
 class Spine_AssetsManager extends spine.webgl.AssetManager{
-    BackgroundColor = [0.8, 0.8, 0.8, 1.0];
+    BackgroundColor = [0.8, 0.8, 0.8, 0];
 
     EditUnactiveColor = new spine.Color(1.0, 0.0, 0.0, 1.0);
     EditActiveColor   = new spine.Color(0.3, 0.5, 1.0, 1.0);
@@ -114,9 +114,9 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
     initAttributes(){
         this.premultipliedAlpha = true;
         this.viewportScale  = [1, 1];
-        this.showHitbox     = false;
         this.editLock       = false;
         this.visible        = true;
+        this.paused         = false;
     }
 
     handleInputDown(x, y){
@@ -184,6 +184,7 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
     }
 
     update(dt){
+        if(this.paused){ dt = 0; }
         this.renderer.begin()
         this.updateObjects(dt);
         this.renderer.end()
@@ -214,6 +215,7 @@ class Spine_Character{
     constructor(manager, kwargs={}){
         this._ready = false;
         this.manager = manager;
+        this.showHitbox = false;
         this.hitbox = new Rect(0, 0, 1, 1, 0, [1.0, 0, 0, 1.0]);
         this.visible = true;
         Object.assign(this, kwargs);
@@ -343,9 +345,22 @@ class Spine_Character{
 }
 
 class MTG_Spine extends Spine_Character{
-    PATCH_TRANSLUCENT_SLOT = [
-        'Blush', 'cheek'
-    ]
+    PATCH_BLEND_SLOT = {
+        1: [
+            /light/i
+        ],
+        2: [
+            /blush/i, /cheek/i, /nose/i, /shadow/i,
+            /bubble/i, /howa/i, /_highlight/i,
+
+            /^normal\s2$/i, // blush alternative name
+        ],
+        3: [
+            /body/i, /arm/i, /leg/i, /foot/i, 
+            /chest/i, /finger/i, /eye/i, /brow/i,
+            /mouth/i, /matsuge/i, /thigh/i,
+        ],
+    }
     postSetup(){
         super.postSetup();
         // this.skeleton.scaleY = -1;
@@ -353,9 +368,17 @@ class MTG_Spine extends Spine_Character{
             let sdat = this.skeleton.data.slots[i];
             let bdat = sdat.boneData;
             if(bdat.transformMode == 2){ bdat.transformMode = 1; }
-		    if(sdat.blendMode == 1){ sdat.blendMode = 3; }
-            if(this.PATCH_TRANSLUCENT_SLOT.includes(sdat.name) && sdat.blendMode == 0){
-                sdat.blendMode = 2;
+		    if(sdat.blendMode == 1 && !this.PATCH_BLEND_SLOT[1][0].exec(sdat.name)){
+                sdat.blendMode = 3;
+            }
+            if(sdat.blendMode == 0){
+                for(let m in this.PATCH_BLEND_SLOT){
+                    for(let re of this.PATCH_BLEND_SLOT[m]){
+                        if(re.exec(sdat.name)){
+                            sdat.blendMode = parseInt(m);
+                        }
+                    }
+                }
             }
         }
     }

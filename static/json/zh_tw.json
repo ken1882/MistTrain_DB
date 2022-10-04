@@ -272,6 +272,13 @@
   "Move": "移動",
   "Battler": "戰鬥人物",
   "SPEditorAddHint": "請選擇要添加的角色模型",
+  "All": "全部",
+  "NPC": "NPC",
+  "Character": "角色",
+  "CharacterObject": "角色物件",
+  "BackgroundObject": "背景物件",
+  "BackgroundColor": "背景顏色",
+  "ShowHitbox": "顯示邊界框",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {

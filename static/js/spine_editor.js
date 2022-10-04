@@ -5,6 +5,7 @@ let AvailableTypeCache  = {};
 
 let CurrentCharacterId = null;
 let lastFrameTime = Date.now() / 1000;
+let BackgroundColor = [0.8, 0.8, 0.8, 0];
 
 const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -20,6 +21,16 @@ const BICON_ARROW_UPDOWN = `<svg xmlns="http://www.w3.org/2000/svg" width="16" h
 <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
 </svg>`;
 
+const BICON_PAUSE = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-pause-circle" viewBox="0 0 16 16">
+<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+<path d="M5 6.25a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5zm3.5 0a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5z"/>
+</svg>`;
+
+const BICON_PLAY = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+<path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+</svg>`;
+
 const AVAILABLE_TYPE_BITSET = {
     'a': 1,
     'e': 2,
@@ -27,12 +38,19 @@ const AVAILABLE_TYPE_BITSET = {
     'b': 8,
 }
 
+let DrawableObjectTypeList = {
+    'character': [],
+    'npc': []
+};
+
+
 function initSPEdit(){
     if(!DataManager.isReady()){
         return setTimeout(initSPEdit, 100);
     }
     SpineManager = new Spine_AssetsManager(document.getElementById('main-canvas'));
-    
+    BackgroundColor = SpineManager.BackgroundColor;
+    $('#inp_bgcolor').val(rgb2hex(BackgroundColor));
     // resize event will be called again due to inner canvas resize,
     // so use third element as detection flag
     oldCanvasSize = [SpineManager.canvas.width, SpineManager.canvas.height, false];
@@ -59,6 +77,7 @@ function initSPEdit(){
     AssetsManager.loadCharacterAssets();
     setupCavnasListener();
     setupSPEditor();
+    setupOptions();
 }
 
 function setupSPEditor(){
@@ -85,7 +104,7 @@ function setupSPEditor(){
 function resizeCanvas(w, h){
     SpineManager.canvas.width = w;
     SpineManager.canvas.height = h;
-    SpineManager.clear();
+    SpineManager.clear(BackgroundColor);
     SpineManager.updateViewport();
 }
 
@@ -94,13 +113,49 @@ function renderObjects(){
     var delta = now - lastFrameTime;
 
     lastFrameTime = now;
-    SpineManager.clear();
+    SpineManager.clear(BackgroundColor);
     SpineManager.update(delta);
     requestAnimationFrame(renderObjects);
 }
 
+function setupOptions(){
+    setupTypeFilters();
+    $('#inp_bgcolor').on('change', (e)=>{
+        BackgroundColor = hex2rgb(e.target.value).concat(0);
+    });
+}
+
+function setupTypeFilters(){
+    let ch_list = $('#char-type-list');
+    let ly_list = $('#layer-type-list');
+    let ch_types = {
+        all: Vocab.All,
+        character: Vocab.Character,
+        npc: Vocab.NPC,
+    }
+    let ly_types = {
+        character: Vocab.CharacterObject,
+        back: Vocab.BackgroundObject,
+    }
+    for(let k in ch_types){
+        ch_list.append($('<option>',{
+            value: k,
+            text: ch_types[k]
+        }));
+    }
+    for(let k in ly_types){
+        ly_list.append($('<option>',{
+            value: k,
+            text: ly_types[k]
+        }));
+    }
+    ch_list.on('change', (e)=>{
+        switchDrawableList(e.target.value);
+    });
+}
+
 function setupCavnasListener(){
-    let canvas = SpineManager.canvas;
+    // let canvas = SpineManager.canvas;
     // $(canvas).on('click', (e)=>{
     //     var rect = canvas.getBoundingClientRect();
     //     var x = e.clientX - rect.left;
@@ -202,7 +257,7 @@ function addCharacter(type, id, callback=null){
         if(!sp.ready){ return setTimeout(proc, 500); }
         resizeScale(sp);
         SpineManager.addObject(sp);
-        sp.showHitbox = true;
+        sp.showHitbox = $('#ckb_showhitbox').prop('checked');
         if(callback){ callback(); }
     };
     proc();
@@ -223,9 +278,16 @@ function setupEditableCharacters(){
             ${BICON_PLUS}
             </button>
         `;
-        parent.append(createAvatarRow(id, btn_html));
+        let r = createAvatarRow(id, btn_html);
+        if(id < 1000){
+            DrawableObjectTypeList['npc'].push(r);
+        }
+        else{
+            DrawableObjectTypeList['character'].push(r);
+        }
     }
-    
+    switchDrawableList('all');
+
     $('#character-tbody').sortable({
         handle: '.btn-handler',
         change: onListMove,
@@ -330,6 +392,26 @@ function onLayerMove(e, u){
     
 }
 
+function switchDrawableList(t=null){
+    if(!t){ t = $('#char-type-list').val(); }
+    let tbody = $('#character-tbody');
+    for(let c of tbody.children()){
+        $(c).remove();
+    }
+    if(t == 'all'){
+        for(let k in DrawableObjectTypeList){
+            for(let c of DrawableObjectTypeList[k]){
+                tbody.append(c);
+            }
+        }
+        return;
+    }
+    if(!DrawableObjectTypeList.hasOwnProperty(t)){ return; }
+    for(let c of DrawableObjectTypeList[t]){
+        tbody.append(c);
+    }
+}
+
 function checkAvailableTypes(id){
     if(AvailableTypeCache.hasOwnProperty(id)){
         return AvailableTypeCache[id];
@@ -349,6 +431,74 @@ function checkAvailableTypes(id){
         AvailableTypeCache[id] >>= 16;
     });
     return 1 << 16;
+}
+
+function toggleSceneAnimationPause(){
+    SpineManager.paused ^= true;
+    if(SpineManager.paused){
+        $('#scene-anim-pause').html(BICON_PLAY);
+    }
+    else{
+        $('#scene-anim-pause').html(BICON_PAUSE);
+    }
+}
+
+function toggleHitboxDraw(b=null){
+    for(let sp of SpineManager.objects){
+        if(b == null){
+            sp.showHitbox ^= true;
+        }
+        else{
+            sp.showHitbox = b;
+        }
+    }
+}
+
+function prepareSceneAnimRecord(){
+
+}
+
+function createGlContextSnapshot(gl){
+	let width  = gl.drawingBufferWidth;
+	let height = gl.drawingBufferHeight;
+	let pixels = new Uint8Array(width * height * 4);
+	let tmp = new Uint8Array(width * height * 4)
+	let row = width * 4;
+	let end = (height - 1) * row;
+	
+	gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, tmp);
+	for(var i=0;i<tmp.length;i+=row){
+		pixels.set(tmp.subarray(i,i+row), end - i);
+	}
+
+	// alpha channel binarization
+	// for(var i=0;i<pixels.length;i+=4){
+	// 	if(pixels[i+3] < 0x70){pixels[i+3] = 0;}
+	// 	else{ pixels[i+3] = 0xff; }
+	// }
+
+	let canvas 		= document.createElement('canvas');
+	canvas.width 	= width;
+	canvas.height = height;
+	let context 	= canvas.getContext('2d');
+	let imgdata 	= context.createImageData(width, height);
+
+	for(var i=0;i<pixels.length;++i){
+		imgdata.data[i] = pixels[i];
+	}
+
+	context.putImageData(imgdata, 0, 0);
+	return canvas;
+}
+
+function exportSceneCanvas(){
+    let canvas = createGlContextSnapshot(SpineManager.gl);
+    window.open(canvas.toDataURL("image/png"));
+    canvas.remove();
+}
+
+function updateSceneSettings(){
+
 }
 
 window.addEventListener('load', initSPEdit);
