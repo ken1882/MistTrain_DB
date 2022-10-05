@@ -308,8 +308,8 @@ def is_response_ok(res):
     else:
       log_error(f"An error occurred during sending request to {res.url}:\n{res}\n{res.content}\n\n")
     return _G.ERRNO_FAILED
-  log_debug(res.content)
-  log_debug('\n')
+  # log_debug(res.content)
+  # log_debug('\n')
   return _G.ERRNO_OK
 
 def is_day_changing():
