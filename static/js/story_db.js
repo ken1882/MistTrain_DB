@@ -51,6 +51,15 @@ function loadMainStory(){
 
 function loadEventStory(){
   let parent = $("#event-section");
+  EventStoryData.sort((a, b)=>{
+    let ta = AssetsManager.EventData[a.MEventId];
+    let tb = AssetsManager.EventData[b.MEventId];
+    if(ta){ ta = new Date(ta.StartDate); }
+    else{ ta = new Date(0); }
+    if(tb){ tb = new Date(tb.StartDate); }
+    else{ tb = new Date(0); }
+    return new Date(ta) < new Date(tb);
+  });
   for(let i=0;i<EventStoryData.length;++i){
     let scene = EventStoryData[i];
     // Chapter container

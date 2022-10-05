@@ -361,3 +361,28 @@ function downloadJsonFile(data, filename){
   a.click();
   a.remove();
 }
+
+/**
+ * Convert hex color string to rgb value
+ * @param {string} h Hex color string, i.e. `#a1b2c3`
+ * @returns {Array<float>} [r, g, b]
+ */
+function hex2rgb(h){
+  let ch = parseInt(h.slice(1), 16);
+  let r  = ((ch & 0xff0000) >> 16) / 0xff;
+  let g  = ((ch & 0x00ff00) >>  8) / 0xff;
+  let b  = (ch & 0x0000ff) / 0xff;
+  return [r, g, b];
+}
+
+/**
+ * Convert hex color string to rgb value
+ * @param  {Array<float>} rgb [r, g, b]
+ * @returns {string} Hex color string, i.e. `#a1b2c3`
+ */
+function rgb2hex(rgb){
+  let r = parseInt(rgb[0]*0xff).toString(16);
+  let g = parseInt(rgb[1]*0xff).toString(16);
+  let b = parseInt(rgb[2]*0xff).toString(16);
+  return `#${r}${g}${b}`;
+}

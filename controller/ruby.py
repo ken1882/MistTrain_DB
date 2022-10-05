@@ -35,6 +35,8 @@ def rubifiy_japanese(text, fname='', depth=0):
   ret = text
   try:
     ret = res.content.decode()
+    if ret == '<div>500</div>':
+      raise RuntimeError('Server responded with 500')
   except Exception as err:
     print("An error occurred during rubifiy phrase:", err, 'original text:', text, sep='\n')
     if fname:
@@ -48,7 +50,7 @@ def rubifiy_japanese(text, fname='', depth=0):
       print("Response:", res.content, sep='\n')
   return f"<div>{ret}</div>"
 
-def rubifiy_file(file):
+def rubifiy_file(file, verbose=False):
   with open(file, 'r') as fp:
     data = json.load(fp)
     if 'r' in data:
@@ -79,6 +81,8 @@ def rubifiy_file(file):
     )
     for pair in correction:
       ruby = ruby.replace(pair[0], pair[1])
+    if verbose:
+      print(ruby)
     dialogs[i]['Ruby'] = ruby
   data['MSceneDetailViewModel'] = dialogs
   # Title

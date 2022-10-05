@@ -61,6 +61,7 @@
     "Idle_Normal_Close": "Eye closed",
     "Idle_Amazement": "Amazed",
     "Idle_Angry": "Angry",
+    "Idle_Arrange": "Special animation",
     "Idle_Happy": "Happy",
     "Idle_Sad": "Sad",
     "Idle_Shy": "Shy",
@@ -116,6 +117,7 @@
   "CharacterPainting": "Painting",
   "CharacterVoice": "Voices",
   "CharacterFigure": "Figure",
+  "Animation": "Animation",
   "LoopAnimation": "Loop",
   "ZoomIn": "Zoom in",
   "ZoomOut": "Zoom out",
@@ -268,6 +270,24 @@
   "SponsorSceneLocked": "Server is processing other's scenes, please try again later",
   "SceneMissing": "This story is unavailable at server",
   "SceneAdult": "This is an adult scene and should be viewed in game",
+  "Action": "Action",
+  "Move": "Move",
+  "Battler": "Battler",
+  "SPEditorAddHint": "Select one of following modals to add",
+  "All": "All",
+  "NPC": "NPC",
+  "Character": "Character",
+  "CharacterObject": "Character object",
+  "BackgroundObject": "Background object",
+  "BackgroundColor": "Background color",
+  "ShowHitbox": "Show hitbox",
+  "SceneEditor": "Scene Editor (beta)",
+  "MouseTool":{
+    "Desc": "Mouse tool",
+    "Move": "Move",
+    "Resize": "Resize"
+  },
+
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

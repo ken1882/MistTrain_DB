@@ -77,6 +77,7 @@ function setupSpineContent(){
   if(!__FlagBattlerCanvasReady || !__FlagCharacterCanvasReady){
     return setTimeout(setupSpineContent, 300);
   }
+  loadCharacterAnimations();
   loadBattlerAnimations();
   loadBattlerSkins();
   document.getElementById("char-zoomin").addEventListener('click', (e)=>{
@@ -97,10 +98,10 @@ function setupSpineContent(){
   $("#battler-utils").show();
 }
 
-function loadBattlerAnimations(){
+function loadCharacterAnimations(){
   var ch_anims = CharacterAnimState.data.skeletonData.animations;
-  var ba_anims = BattlerAnimState.data.skeletonData.animations;
   let list_cha = $("#char-act-list");
+  list_cha.children().remove();
   for(let i in ch_anims){
     let anim = ch_anims[i];
     let name = Vocab.CharacterAnimationName[anim.name];
@@ -111,7 +112,17 @@ function loadBattlerAnimations(){
     opt.innerText = name;
     list_cha.append(opt);
   }
+  
+  list_cha.on('change', (e)=>{
+    CharacterAnimState.setAnimation(0, e.target.value, true);
+  });
+
+}
+
+function loadBattlerAnimations(){
+  var ba_anims = BattlerAnimState.data.skeletonData.animations;
   let list_baa = $("#battler-act-list");
+  list_baa.children().remove();
   for(let i in ba_anims){
     let anim = ba_anims[i];
     let name = Vocab.CharacterAnimationName[anim.name];
@@ -128,9 +139,7 @@ function loadBattlerAnimations(){
     opt.innerText = name;
     list_baa.append(opt);
   }
-  list_cha.on('change', (e)=>{
-    CharacterAnimState.setAnimation(0, e.target.value, true);
-  });
+
   list_baa.on('change', (e)=>{
     BattlerAnimState.setAnimation(0, e.target.value, $("#ckb-loop-battler-anim").prop('checked'));
   });
@@ -754,6 +763,72 @@ function toggleBattlerAnimationPause(){
 	}
 }
 
+function prepareCharacterAnimRecord(){
+	let actlist = $("#char-act-list");
+  let val = actlist.prop('value');
+	actlist.prop('value', '');
+	actlist.one('change', (_)=>{
+    AnimationRecorder = setupCharacterAnimRecord();
+  });
+  // TODO: character anim export
+  // $("#btn-export-anim").prop('disabled', true);
+  // actlist.prop('disabled', true);
+  actlist.prop('value', val);
+  actlist.trigger('change');
+}
+
+function setupCharacterAnimRecord(){
+  let chunks = [];
+  let anim_stream = CharacterCanvas.captureStream();
+	rec = new MediaRecorder(anim_stream);
+	rec.ondataavailable = (e) => {
+		chunks.push(e.data);
+	};
+  rec.onstop = (_)=>{
+    exportCharacterAnimation( new Blob(chunks, {type: 'video/webm'}) );
+  };
+  
+  let rec_start_proc = ()=>{
+    if(CharacterAnimState.timeScale > 0){
+      rec.start();
+    }
+    else{
+      setTimeout(rec_start_proc, 100);
+    }
+  };
+
+  let listner = {
+    complete: (state)=>{
+      rec.stop();
+      CharacterAnimState.removeListener(listner);
+    }
+  };
+  CharacterAnimState.addListener(listner);
+  
+  rec_start_proc();
+	return rec;
+}
+
+function exportCharacterAnimation(blob){
+  let vid = document.createElement('video');
+  vid.src = URL.createObjectURL(blob);
+  vid.controls = true;
+  document.body.appendChild(vid);
+  const a = document.createElement('a');
+  a.download = 'character.webm';
+  try{
+    a.download = `${__CharacterId}_${CharacterAnimState.tracks[0].animation.name}.webm`
+  }
+  catch(_){}
+  a.href = vid.src;
+  a.textContent = Vocab['Download'];
+  document.body.appendChild(a);
+  // $("#btn-export-anim").prop('disabled', false);
+  // $("#battler-act-list").prop('disabled', false);
+  $('body,html').animate({
+    scrollTop: Math.max(0, a.offsetTop - (window.innerHeight - a.offsetHeight)/2)
+  }, 800);
+}
 
 (function(){
   window.addEventListener("load", initCharInfo);

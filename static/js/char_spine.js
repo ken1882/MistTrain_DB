@@ -86,6 +86,16 @@ function getHomepageActorSpineResourcesData(id){
 	}
 }
 
+function getAdventureActorSpineResourcesData(id){
+	return {
+		png: `${ASSET_HOST}/Spines/Adventures/${id}/${id}.png`,
+		atlas: `${ASSET_HOST}/Spines/Adventures/${id}/${id}.atlas`,
+		skel: `${ASSET_HOST}/Spines/Adventures/${id}/${id}.skel`,
+		name: id,
+		anim: DefaultCharacterAnimation
+	}
+}
+
 function loadBattlerSpineResources(rssdata){
 	BattlerAssetManager.loadTexture(rssdata.png);
 	BattlerAssetManager.loadText(rssdata.atlas);
@@ -146,6 +156,7 @@ function loadCharacterSpineData(rssdata){
 		let bone = CharacterAnimState.data.skeletonData.slots[i].boneData;
 		if(bone.transformMode == 2){ bone.transformMode = 0; }
 		if(sdat.blendMode == 1){ sdat.blendMode = 3; }
+		// if(sdat.blendMode == 0){ sdat.blendMode = 2; }
 	}
 	resizeCharacterCanvas();
 	requestAnimationFrame(renderCharacter);
