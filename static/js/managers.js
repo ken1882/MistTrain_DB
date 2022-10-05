@@ -282,6 +282,7 @@ const FieldSkillFrameHeight = 102;
     this.FieldSkillImageSet   = {};
     this.FieldSkillImageClip  = {};
     this.FieldSkillImageMap   = {};
+    this.initialized = true;
   }
 
   static loadCharacterAssets(){

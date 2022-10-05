@@ -254,8 +254,12 @@ function init(){
   loadSponsorScene();
 }
 
-(function(){
+(function preInit(){
+  if(!AssetsManager.initialized){
+    return setTimeout(preInit, 300);
+  }
   AssetsManager.loadSceneData();
   AssetsManager.requestAsset(1, loadStoryData);
-  window.addEventListener("load", init);
 })();
+
+window.addEventListener("load", init);

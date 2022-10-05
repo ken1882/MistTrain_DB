@@ -38,6 +38,9 @@ const __SvgAudioStop = `
 `;
 
 function init(){
+  if(!AssetsManager.initialized){
+    return setTimeout(init, 300);
+  }
   AssetsManager.loadCharacterAssets();
   loadTooltips();
   loadDialog();
@@ -336,13 +339,13 @@ function changeBackground(id){
   let bg = $('#bg-section'), bg2 = $('#bg-section2');
   let padding = 1;
 
-  bg.css('left', line.offsetLeft);
+  bg.css('left', 0);
   bg.css('top', line.offsetTop+padding);
-  bg.css('width', line.offsetWidth);
+  bg.css('width', '100%');
   bg.css('height', h+line.offsetTop-padding);
-  bg2.css('left', line.offsetLeft);
+  bg2.css('left', 0);
   bg2.css('top', line.offsetTop+padding);
-  bg2.css('width', line.offsetWidth);
+  bg2.css('width', '100%');
   bg2.css('height', h+line.offsetTop-padding);
   let oimg = bg.css('backgroundImage');
   if(oimg){
