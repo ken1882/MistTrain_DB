@@ -101,20 +101,22 @@ def load_derpy_db(year, month):
   ttl  = datetime.now() - timedelta(days=32)
   if not _G.FlagUseCloudData:
     return dst_path
-  files = get_folder_files()
-  for file in files:
-    if file['title'] != filename:
-      continue
-    if datetime(year, month, 1) < ttl and os.path.exists(dst_path):
-      log_info(f"{dst_path} already exists, skip")
-      continue
-    tmp_path = f"{_G.DCTmpFolder}/{filename}"
-    log_info(f"Downloading {file['title']}")
-    file.GetContentFile(tmp_path)
-    if os.path.exists(dst_path):
-      copyfile(dst_path, f"{dst_path}.bak")
-    copyfile(tmp_path, dst_path)
-    break
+  
+  if datetime(year, month, 1) < ttl and os.path.exists(dst_path):
+    log_info(f"{dst_path} already exists")
+    return dst_path
+  
+  target = get_cache(f"/{_G.DERPY_CLOUD_FOLDERNAME}/{filename}")
+  if not target:
+    log_warning(target, 'does not exists!')
+    return dst_path
+  
+  tmp_path = f"{_G.DCTmpFolder}/{filename}"
+  log_info(f"Downloading {target['title']}")
+  target.GetContentFile(tmp_path)
+  if os.path.exists(dst_path):
+    copyfile(dst_path, f"{dst_path}.bak")
+  copyfile(tmp_path, dst_path)
   return dst_path
 
 def load_all_derpy_db():
