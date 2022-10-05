@@ -8,6 +8,13 @@ body{
   margin-bottom: 100px;
 }
 
+.scene-background{
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
 a{
   text-decoration: underline;
   color: dodgerblue;
@@ -251,6 +258,7 @@ tbody tr td{
   padding: 8px;
   margin-bottom: 16px;
   min-height: 128px;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .dialogbox-playing{
@@ -289,6 +297,7 @@ tbody tr td{
   right: 0px;
   top: 40px;
   background-color: rgba(130,130,130,0.5);
+  z-index: 99;
 }
 
 .settings-right-fixed:hover{

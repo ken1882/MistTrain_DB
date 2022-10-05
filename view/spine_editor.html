@@ -105,7 +105,7 @@
 
 
     <div class="center" id="toolbar-upper">
-      <div style="display: inline-block; padding: 16px;">
+      <div style="display: inline-block; padding: 8px;">
         <p id="scene-anim-pause" style="cursor:pointer;" onclick="toggleSceneAnimationPause()">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-pause-circle" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -113,9 +113,14 @@
           </svg>
         </p>
       </div>
+      <p style="display: inline-block; padding: 8px;">
+        <span label="l-MouseTool-Desc"></span>
+        <select id="sel-mousetool">
+        </select>
+      </p>
       <button type="button" data-toggle="modal" data-target="#settingsModal" label="l-Settings">
       </button>
-      <p style="display: inline-block; padding: 16px;">
+      <p style="display: inline-block; padding: 8px;">
         <button id="btn-export-anim" label="l-ExportAnimation" onclick="prepareSceneAnimRecord()" disabled></button>
       </p>
       <button id="btn-saveframe" label="l-SaveFrame" onclick="exportSceneCanvas()"></button>
@@ -143,7 +148,7 @@
         <thead>
           <tr>
             <th class="avatar-col-header" label="l-Avatar"></th>
-            <th label="l-Name" data-field="fname"></th>
+            <th>Reserved</th>
             <th label="l-Action" class="col-md-2"></th>
             <th label="l-Move" class="col-md-2"></th>
           </tr>
@@ -164,7 +169,7 @@
           <thead>
             <tr>
               <th class="avatar-col-header" label="l-Avatar"></th>
-              <th label="l-Name" data-field="fname"></th>
+              <th label="l-Animation"></th>
               <th label="l-Action" class="col-md-2"></th>
               <th label="l-Move" class="col-md-2"></th>
             </tr>

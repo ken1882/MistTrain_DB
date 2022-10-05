@@ -177,11 +177,22 @@ function playLatestBGM(){
     if(!bgm){ continue; }
     let dur = 1500;
     DialoguePlayer.fadeInBGM(bgm, dur);
+    break;
+  }
+}
+
+function showLatestBackground(){
+  console.log(CurrentDialogueIndex);
+  for(let i=CurrentDialogueIndex;i>=0;--i){
+    let bgi = DialogData[i].BackgroundImage;
+    if(!bgi){ continue; }
+    changeBackground(bgi);
+    break;
   }
 }
 
 function toggleDialogPlay(target){
-  if(($(target).attr('class') || '').includes('dialogbox-playing')){
+  if(($($(target).children()[0]).attr('class') || '').includes('dialogbox-playing')){
     if(DialoguePlayer.currentBGM && DialoguePlayer.currentBGM.playing()){
       DialoguePlayer.currentBGM.pause();
     }
@@ -197,6 +208,7 @@ function toggleDialogPlay(target){
       }
     }
     playDialogueNode(target);
+    showLatestBackground();
     if(!DialoguePlayer.currentBGM){
       playLatestBGM();
     }
@@ -217,7 +229,7 @@ function playDialogueNode(node){
     return obj.GroupOrder == dia_ids[1] && obj.ViewOrder == dia_ids[2];
   });
   // highlight current playing node
-  $(node).addClass('dialogbox-playing');
+  $($(node).children()[0]).addClass('dialogbox-playing');
   if($("#ckb-autoscroll").prop('checked')){
     $('body,html').animate({
       scrollTop: Math.max(0, node.offsetTop - (window.innerHeight - node.offsetHeight)/2)
@@ -251,9 +263,16 @@ function playDialogueNode(node){
     if(DialoguePlayer.currentBGM && DialoguePlayer.currentBGM.id != bgm){
       DialoguePlayer.fadeOutBGM(null, dur);
     }
-    if(!DialoguePlayer.currentBGM || DialoguePlayer.currentBGM.id != bgm){
+    if(!DialoguePlayer.currentBGM || 
+      DialoguePlayer.currentBGM.id != bgm ||
+      !DialoguePlayer.currentBGM.playing()){
       DialoguePlayer.fadeInBGM(bgm, dur);
     }
+  }
+  // new background image
+  let bgi = DialogData[CurrentDialogueIndex].BackgroundImage;
+  if(bgi){
+    changeBackground(bgi);
   }
 }
 
@@ -273,7 +292,7 @@ function onAudioDialoguePlayEnd(){
 
 function stopDialogueNode(node){
   if(!node){return ;}
-  $(node).removeClass('dialogbox-playing');
+  $($(node).children()[0]).removeClass('dialogbox-playing');
   let aid = $(node).attr('audio-id');
   if(aid){ stopDialogVoice(aid); }
 }
@@ -304,6 +323,36 @@ function getPureDialoguePauseTime(text){
   ret += (text.match(/、/g) || []).length * 0.8;
   ret += (text.match(/…/g) || []).length * 0.3;
   return Math.min(Math.max(1+(factor/10), ret), 10+factor);
+}
+
+/**
+ * Change background with fadein-out effect
+ * @param {number} id Background id
+ */
+function changeBackground(id){
+  let src  = `${ASSET_HOST}/Textures/Backgrounds/Adventure/${id}.jpg`;
+  let line = document.getElementById('line');
+  let h = $('#log-section')[0].getBoundingClientRect().height;
+  let bg = $('#bg-section'), bg2 = $('#bg-section2');
+  let padding = 1;
+
+  bg.css('left', line.offsetLeft);
+  bg.css('top', line.offsetTop+padding);
+  bg.css('width', line.offsetWidth);
+  bg.css('height', h+line.offsetTop-padding);
+  bg2.css('left', line.offsetLeft);
+  bg2.css('top', line.offsetTop+padding);
+  bg2.css('width', line.offsetWidth);
+  bg2.css('height', h+line.offsetTop-padding);
+  let oimg = bg.css('backgroundImage');
+  if(oimg){
+    bg2.css('backgroundImage', oimg);
+    bg2.css('display', 'block');
+    bg2.fadeOut('slow');
+  }
+  bg.css('display', 'none');
+  bg.css('backgroundImage', `url(${src})`);
+  bg.fadeIn('slow');
 }
 
 (function (){

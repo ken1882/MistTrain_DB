@@ -94,21 +94,6 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
                 this.handleInputMoved(x,y);
             }
 		});
-        $(document).on('keydown', (e)=>{
-            // console.log(e.key);
-            switch(e.key){
-            case 'shift':
-            case 'Shift':
-                this.mouseResize = true;
-            }
-        });
-        $(document).on('keyup', (e)=>{
-            switch(e.key){
-            case 'shift':
-            case 'Shift':
-                this.mouseResize = false;
-            }
-        });
     }
 
     initAttributes(){
@@ -144,8 +129,8 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
         if(this.mouseTarget){
             if(this.mouseResize){
                 let s = dx / this.ResizeFactor;
-                this.mouseTarget.skeleton.scaleX = Math.min(Math.max(0.1, this.mouseTarget.skeleton.scaleX+s), 3.0);
-                this.mouseTarget.skeleton.scaleY = Math.min(Math.max(0.1, this.mouseTarget.skeleton.scaleY+s), 3.0);
+                this.mouseTarget.skeleton.scaleX = Math.min(Math.max(0.05, this.mouseTarget.skeleton.scaleX+s), 3.0);
+                this.mouseTarget.skeleton.scaleY = Math.min(Math.max(0.05, this.mouseTarget.skeleton.scaleY+s), 3.0);
                 this.mouseTarget.updateBounds();
             }
             else{
@@ -200,6 +185,11 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
 
     addObject(obj){
         this.objects.push(obj);
+        this.sortObjects();
+        
+    }
+
+    sortObjects(){
         this.objects.sort((a,b)=>{
             var az = 0, bz = 0;
             if(a.hitbox){az = a.hitbox.z; }
@@ -352,13 +342,15 @@ class MTG_Spine extends Spine_Character{
         2: [
             /blush/i, /cheek/i, /nose/i, /shadow/i,
             /bubble/i, /howa/i, /_highlight/i,
+            /^eF_\d+$/,
 
             /^normal\s2$/i, // blush alternative name
         ],
         3: [
             /body/i, /arm/i, /leg/i, /foot/i, 
-            /chest/i, /finger/i, /eye/i, /brow/i,
-            /mouth/i, /matsuge/i, /thigh/i,
+            /chest/i, /finger/i,
+            /eye(s)?$/i, /^eyes_hl$/i,
+            /brow/i, /mouth/i, /matsuge/i, /thigh/i,
         ],
     }
     postSetup(){

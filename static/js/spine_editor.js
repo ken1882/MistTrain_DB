@@ -6,6 +6,8 @@ let AvailableTypeCache  = {};
 let CurrentCharacterId = null;
 let lastFrameTime = Date.now() / 1000;
 let BackgroundColor = [0.8, 0.8, 0.8, 0];
+let AnimationRecorder;
+let MouseToolMode = 'move';
 
 const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -40,6 +42,7 @@ const AVAILABLE_TYPE_BITSET = {
 
 let DrawableObjectTypeList = {
     'character': [],
+    'character_ss': [],
     'npc': []
 };
 
@@ -123,6 +126,7 @@ function setupOptions(){
     $('#inp_bgcolor').on('change', (e)=>{
         BackgroundColor = hex2rgb(e.target.value).concat(0);
     });
+    setupMouseTools();
 }
 
 function setupTypeFilters(){
@@ -131,6 +135,7 @@ function setupTypeFilters(){
     let ch_types = {
         all: Vocab.All,
         character: Vocab.Character,
+        character_ss: Vocab.Character+' (SS)',
         npc: Vocab.NPC,
     }
     let ly_types = {
@@ -151,6 +156,39 @@ function setupTypeFilters(){
     }
     ch_list.on('change', (e)=>{
         switchDrawableList(e.target.value);
+    });
+}
+
+function setupMouseTools(){
+    let list = $('#sel-mousetool');
+    list.on('change', (e)=>{
+        MouseToolMode = e.target.value;
+        SpineManager.mouseResize = (MouseToolMode == 'resize');
+    });
+    let opt = $('<option>',{
+        value: 'move',
+        text: Vocab.MouseTool.Move,
+    });
+    list.append(opt);
+    opt = $('<option>',{
+        value: 'resize',
+        text: Vocab.MouseTool.Resize,
+    });
+    list.append(opt);
+
+    $(document).on('keydown', (e)=>{
+        switch(e.key){
+        case 'shift':
+        case 'Shift':
+            SpineManager.mouseResize = true;
+        }
+    });
+    $(document).on('keyup', (e)=>{
+        switch(e.key){
+        case 'shift':
+        case 'Shift':
+            SpineManager.mouseResize = false || MouseToolMode == 'resize';
+        }
     });
 }
 
@@ -258,7 +296,7 @@ function addCharacter(type, id, callback=null){
         resizeScale(sp);
         SpineManager.addObject(sp);
         sp.showHitbox = $('#ckb_showhitbox').prop('checked');
-        if(callback){ callback(); }
+        if(callback){ callback(sp); }
     };
     proc();
     return sp;
@@ -284,6 +322,9 @@ function setupEditableCharacters(){
         }
         else{
             DrawableObjectTypeList['character'].push(r);
+            if(id % 1000 > 400){
+                DrawableObjectTypeList['character_ss'].push(r);
+            }
         }
     }
     switchDrawableList('all');
@@ -355,7 +396,7 @@ function onTypeAddClick(t){
     </div>`;
     $('#layer-tbody').append(loader);
     let cid = CurrentCharacterId;
-    let proc = () => {
+    let proc = (sp) => {
         let btn_html = `
         <button class="btn btn-primary btn-handler" type="button" onclick="onLayerRemoveClick(this)">
         ${BICON_MINUS}
@@ -365,6 +406,22 @@ function onTypeAddClick(t){
         $(`#loader-${uid}`).remove();
         r.attr('pid', cid);
         r.attr('data-index', $('#layer-tbody').children().length);
+        let sel = document.createElement('select');
+        for(let anim of sp.skeleton.data.animations){
+            let an = Vocab.CharacterAnimationName[anim.name];
+            if(!an){ an = anim.name; }
+            $(sel).append($('<option>', {
+                value: anim.name,
+                text: an
+            }));
+            if(anim.name == sp.defaultAnimation){
+                $(sel).val(anim.name);
+            }
+        }
+        $(sel).on('change', (e)=>{
+            sp.animationState.setAnimation(0, e.target.value, true);
+        });
+        r.children()[1].append(sel);
         $('#layer-tbody').append(r);
     };
 
@@ -372,6 +429,7 @@ function onTypeAddClick(t){
     sp.plistId = CurrentCharacterId;
     CurrentCharacterId = null;
     $('#charadd-overlay').modal('hide');
+    $('#btn-export-anim').removeAttr('disabled');
 }
 
 function onLayerRemoveClick(e){
@@ -389,7 +447,23 @@ function onListMove(e, u){
 }
 
 function onLayerMove(e, u){
-    
+    setTimeout(() => {
+        let temp = Array(SpineManager.objects);
+        let list = [];
+        for(let ch of $('#layer-tbody').children()){
+            console.log(ch);
+            if($(ch).attr('data-index')){
+                list.push(ch)
+            }
+        }
+        for(let i=0;i<list.length;++i){
+            let oi = $(list[i]).attr('data-index');
+            console.log(`${oi} => ${i}`);
+            temp[i] = SpineManager.objects[oi];
+            $(list[i]).attr('data-index', i);
+        }
+        SpineManager.objects = temp;
+    }, 500);
 }
 
 function switchDrawableList(t=null){
@@ -399,7 +473,9 @@ function switchDrawableList(t=null){
         $(c).remove();
     }
     if(t == 'all'){
+        let dup = ['character_ss'];
         for(let k in DrawableObjectTypeList){
+            if(dup.includes(k)){ continue; }
             for(let c of DrawableObjectTypeList[k]){
                 tbody.append(c);
             }
@@ -454,12 +530,9 @@ function toggleHitboxDraw(b=null){
     }
 }
 
-function prepareSceneAnimRecord(){
-
-}
 
 function createGlContextSnapshot(gl){
-	let width  = gl.drawingBufferWidth;
+    let width  = gl.drawingBufferWidth;
 	let height = gl.drawingBufferHeight;
 	let pixels = new Uint8Array(width * height * 4);
 	let tmp = new Uint8Array(width * height * 4)
@@ -470,7 +543,7 @@ function createGlContextSnapshot(gl){
 	for(var i=0;i<tmp.length;i+=row){
 		pixels.set(tmp.subarray(i,i+row), end - i);
 	}
-
+    
 	// alpha channel binarization
 	// for(var i=0;i<pixels.length;i+=4){
 	// 	if(pixels[i+3] < 0x70){pixels[i+3] = 0;}
@@ -482,11 +555,11 @@ function createGlContextSnapshot(gl){
 	canvas.height = height;
 	let context 	= canvas.getContext('2d');
 	let imgdata 	= context.createImageData(width, height);
-
+    
 	for(var i=0;i<pixels.length;++i){
-		imgdata.data[i] = pixels[i];
+        imgdata.data[i] = pixels[i];
 	}
-
+    
 	context.putImageData(imgdata, 0, 0);
 	return canvas;
 }
@@ -498,7 +571,66 @@ function exportSceneCanvas(){
 }
 
 function updateSceneSettings(){
-
+    
 }
+
+function prepareSceneAnimRecord(){
+    AnimationRecorder = setupSceneAnimRecord();
+}
+
+function setupSceneAnimRecord(){
+    let chunks = [];
+    let anim_stream = SpineManager.canvas.captureStream();
+    rec = new MediaRecorder(anim_stream);
+    rec.ondataavailable = (e) => {
+        chunks.push(e.data);
+    };
+    rec.onstop = (_)=>{
+        exportSceneAnimation( new Blob(chunks, {type: 'video/webm'}) );
+    };
+    
+    let target = SpineManager.objects[0];
+    let rec_start_proc = ()=>{
+      if(target.animationState.timeScale > 0){
+        target.animationState.setAnimation(
+            0,
+            target.animationState.tracks[0].animation.name,
+            true
+        );
+        rec.start();
+      }
+      else{
+        setTimeout(rec_start_proc, 100);
+      }
+    };
+  
+    let listner = {
+      complete: (state)=>{
+        rec.stop();
+        target.animationState.removeListener(listner);
+      }
+    };
+    target.animationState.addListener(listner);
+    
+    rec_start_proc();
+    return rec;
+}
+
+function exportSceneAnimation(blob){
+    let vid = document.createElement('video');
+    vid.src = URL.createObjectURL(blob);
+    vid.controls = true;
+    document.body.appendChild(vid);
+    const a = document.createElement('a');
+    a.download = 'scene.webm';
+    a.href = vid.src;
+    a.textContent = Vocab['Download'];
+    document.body.appendChild(a);
+    $("#btn-export-anim").prop('disabled', false);
+    $("#battler-act-list").prop('disabled', false);
+    $('body,html').animate({
+      scrollTop: Math.max(0, a.offsetTop - (window.innerHeight - a.offsetHeight)/2)
+    }, 800);
+  }
 
 window.addEventListener('load', initSPEdit);
