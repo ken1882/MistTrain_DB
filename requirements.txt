@@ -1,6 +1,6 @@
 requests==2.26.0
 gunicorn
-scikit-learn==1.0.1
+scikit-learn==1.1.2
 pytz
 Flask==2.0.2
 PyDrive2==1.10.0
