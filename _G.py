@@ -319,10 +319,10 @@ def extract_derpy_features(race, character, feats='all'):
   n_uma = len(race['character'])
   if feats == 'all':
     return [
-      race['raceId'],
+      # race['raceId'],
       race['direction'],
       race['grade'],
-      n_uma,
+      # n_uma,
       character['range'],
       abs(race['type'] - character['forte']),
       race['weather'],
@@ -334,15 +334,15 @@ def extract_derpy_features(race, character, feats='all'):
       character['stamina'],
       character['number'],
       character['waku'],
-      character['mCharacterBaseId'],
+      # character['mCharacterBaseId'],
       character['country']
     ]
   elif feats == 'noreport':
     return [
-      race['raceId'],
+      # race['raceId'],
       race['direction'],
       race['grade'],
-      n_uma,
+      # n_uma,
       character['range'],
       abs(race['type'] - character['forte']),
       race['weather'],
@@ -353,7 +353,7 @@ def extract_derpy_features(race, character, feats='all'):
       character['stamina'],
       character['number'],
       character['waku'],
-      character['mCharacterBaseId'],
+      # character['mCharacterBaseId'],
       character['country']
     ]
   raise RuntimeError(f"Don't know how to extract features of {feats}")
