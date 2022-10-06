@@ -92,7 +92,7 @@ function setupSPEditor(){
     
     for(let k in AVAILABLE_TYPE_BITSET){
         $(`#btn-add-${k}`).on('click', (_)=>{
-            onTypeAddClick(`${k}`);
+            onTypeAddClick(CurrentCharacterId, `${k}`);
         });
     }
 
@@ -387,7 +387,7 @@ function onListAddClick(id){
     $('#charadd-overlay').modal('show');
 }
 
-function onTypeAddClick(t){
+function onTypeAddClick(cid, t){
     let uid = parseInt(Math.random() * 10**16);
     let loader = document.createElement('tr');
     $(loader).attr('id', `loader-${uid}`);
@@ -395,7 +395,6 @@ function onTypeAddClick(t){
         <span class="sr-only"></span>
     </div>`;
     $('#layer-tbody').append(loader);
-    let cid = CurrentCharacterId;
     let proc = (sp) => {
         let btn_html = `
         <button class="btn btn-primary btn-handler" type="button" onclick="onLayerRemoveClick(this)">
@@ -425,9 +424,8 @@ function onTypeAddClick(t){
         $('#layer-tbody').append(r);
     };
 
-    let sp = addCharacter(t, CurrentCharacterId, proc);
-    sp.plistId = CurrentCharacterId;
-    CurrentCharacterId = null;
+    let sp = addCharacter(t, cid, proc);
+    sp.plistId = cid;
     $('#charadd-overlay').modal('hide');
     $('#btn-export-anim').removeAttr('disabled');
 }
