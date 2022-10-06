@@ -187,6 +187,8 @@ function appendCharacterList(){
         maxn += data.LevelStatus[`Max${attr}`] / 100;
         maxn += AssetsManager.MaxGearStatusData[id][attr] / 100;
         // $(cells[i]).text(`${minn} / ${maxn}`);
+        minn  = (minn + 0.005).toFixed(2);
+        maxn  = (maxn + 0.005).toFixed(2);
         $(cells[i]).text(`${maxn}`);
       }
       catch(_){

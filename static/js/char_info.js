@@ -313,7 +313,7 @@ function fillCharacterBaseInfo(){
       maxn  = (maxn + 0.005).toFixed(2);
       let _html = `${minn}% / ${maxn}%`;
       if(tb_attrs[attr]){
-        extn = maxn + tb_attrs[attr] / 100;
+        extn = parseFloat(maxn) + tb_attrs[attr] / 100;
         extn = (extn + 0.005).toFixed(2);
         _html += `<span class="trainboard-skill"> → ${extn}%</span>`;
       }
