@@ -1,3 +1,5 @@
+let ModelAccuracy = [];
+
 function getRaceTable(data){
   let table = $(document.createElement('table'));
   table.attr('class', 'table');
@@ -277,6 +279,16 @@ function getUmatanTable(race){
   return table;
 }
 
+function getModelAccuracy(){
+  return $.ajax({
+    url: "/static/json/derpy_accuracy.json",
+    success: (res) => {
+      ModelAccuracy = res;
+    },
+    error: handleAjaxError,
+  });
+}
+
 function getNextRaceData(){
   $.ajax({
     url: "/api/GetNextRace",
@@ -292,10 +304,10 @@ function getNextRaceData(){
 
 function getPredictionMatrix(){
   $.ajax({
-    url: "/api/GetNextRacePredition",
+    url: "/api/GetNextRacePrediction",
     success: (res) => {
       debug_log(res);
-      fillPreditionMatrix(res);
+      fillPredictionMatrix(res);
     },
     error: handleAjaxError,
   });
@@ -348,7 +360,7 @@ function fillContent(race){
   $("#odds-section").attr('style', '');
 }
 
-function fillPreditionMatrix(data){
+function fillPredictionMatrix(data){
   let table = $(document.createElement('table'));
   table.attr('class', 'table');
   // table.attr('style', 'display: block;')
@@ -369,21 +381,50 @@ function fillPreditionMatrix(data){
   }
   table.append(thead);
   let tbody = $(document.createElement('tbody'));
+  let nth_mat = []
+  let scores = [];
   for(let i in data){
     let tbtr  = $(document.createElement('tr'));
     tbody.append(tbtr);
     let preditions = data[i];
+    let places = [];
     for(let j=0;j<=preditions.length;++j){
       var attr;
       if(j == 0){
-        attr = `${Vocab['Predition']} ${parseInt(i)+1} ▶`;
+        attr = `${Vocab['Prediction']} ${parseInt(i)+1} ▶`;
       }
-      else{ attr = preditions[j-1]; }
+      else{
+        attr = preditions[j-1]; 
+        places.push(attr);
+        if(i == 0){ scores.push(0); }
+      }
       let ele = $(document.createElement('th'));
       ele.text(`${attr}`);
       tbtr.append(ele);
     }
+    nth_mat.push(places);
   }
+  // final place summary
+  for(let i in nth_mat){
+    for(let j in nth_mat[i]){
+      scores[j] += (20 - nth_mat[i][j]) * (1+ModelAccuracy[i]);
+    }
+  }
+  console.log(scores);
+  scores_ord = clone(scores);
+  scores_ord.sort((a, b)=>{return a < b;})
+  let fstr  = $(document.createElement('tr'));
+  tbody.prepend(fstr);
+  let ftxts = [Vocab.FinalRanking+' ▶']
+  for(let i in scores){
+    ftxts.push(scores_ord.indexOf(scores[i])+1);
+  }
+  for(let ss of ftxts){
+    let ele = $(document.createElement('th'));
+    ele.text(`${ss}`);
+    fstr.append(ele);
+  }
+
   table.append(tbody);
   $("#uma-preditions").append(table);
   $("#loading-indicator3").remove();
@@ -406,4 +447,5 @@ function start(){
   getNextRaceData();
 }
 
+getModelAccuracy();
 window.addEventListener("load", start);

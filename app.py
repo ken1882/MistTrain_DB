@@ -228,9 +228,9 @@ def get_next_race():
     handle_exception(err)
   return jsonify({}),503
 
-@app.route('/api/GetNextRacePredition', methods=['GET'])
+@app.route('/api/GetNextRacePrediction', methods=['GET'])
 @req_derpy_ready
-def get_next_preditions():
+def get_next_predictions():
   try:
     result = derpy.get_next_prediction()
     code = 200

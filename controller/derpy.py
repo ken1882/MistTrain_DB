@@ -234,7 +234,7 @@ def get_next_prediction():
   if id == l_id:
     result = _G.GetCacheBinary('RacePreditCache.bin')
     if result:
-      log_debug("Return cached predition")
+      log_debug("Return cached prediction")
       return result
   
   log_info(f"Make prediction for race#{id}")
