@@ -114,6 +114,9 @@ function getClassName(obj){
  * > Clone object
  */
 function clone(obj){
+  if(obj.constructor == Array){
+    return Array.from(obj);
+  }
   let dup = Object.assign({}, obj);
   dup.constructor = obj.constructor;
   return dup;
