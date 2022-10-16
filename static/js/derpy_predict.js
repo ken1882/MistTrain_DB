@@ -1,4 +1,5 @@
 let ModelAccuracy = [];
+let NextRaceData = {};
 
 function getRaceTable(data){
   let table = $(document.createElement('table'));
@@ -294,6 +295,7 @@ function getNextRaceData(){
     url: "/api/GetNextRace",
     success: (res) => {
       debug_log(res);
+      NextRaceData = res;
       setupCountdown(res);
       fillContent(res);
       getPredictionMatrix();
@@ -396,7 +398,11 @@ function fillPredictionMatrix(data){
       else{
         attr = preditions[j-1]; 
         places.push(attr);
-        if(i == 0){ scores.push(0); }
+        if(i == 0){
+          // Score based on popularity
+          let base = (20 - NextRaceData.character[j-1].popularity) * (1+ModelAccuracy[0]);
+          scores.push(base);
+        }
       }
       let ele = $(document.createElement('th'));
       ele.text(`${attr}`);
@@ -407,7 +413,8 @@ function fillPredictionMatrix(data){
   // final place summary
   for(let i in nth_mat){
     for(let j in nth_mat[i]){
-      scores[j] += (20 - nth_mat[i][j]) * (1+ModelAccuracy[i]);
+      i = parseInt(i);
+      scores[j] += (20 - nth_mat[i][j]) * (1+ModelAccuracy[i+1]);
     }
   }
   console.log(scores);
