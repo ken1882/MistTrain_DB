@@ -58,7 +58,7 @@ function loadEventStory(){
     else{ ta = new Date(0); }
     if(tb){ tb = new Date(tb.StartDate); }
     else{ tb = new Date(0); }
-    return new Date(ta) < new Date(tb);
+    return new Date(tb) - new Date(ta);
   });
   for(let i=0;i<EventStoryData.length;++i){
     let scene = EventStoryData[i];

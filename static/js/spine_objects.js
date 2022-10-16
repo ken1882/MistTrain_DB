@@ -196,7 +196,7 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
             if(a.z){ az = a.z; }
             if(b.hitbox){bz = b.hitbox.z; }
             if(b.z){ bz = b.z; }
-            return az < bz;
+            return bz - az;
         });
     }
 }

@@ -309,7 +309,7 @@ function setupEditableCharacters(){
         id = parseInt(id.split('.')[0]);
         ids.push(id);
     }
-    ids.sort((a,b)=>{return a > b;})
+    ids.sort((a,b)=>{return a - b;})
     for(let id of ids){
         let btn_html = `
             <button class="btn btn-primary btn-handler" type="button" onclick="onListAddClick(${id})">
