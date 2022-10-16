@@ -412,7 +412,7 @@ function fillPredictionMatrix(data){
   }
   console.log(scores);
   scores_ord = clone(scores);
-  scores_ord.sort((a, b)=>{return a < b;})
+  scores_ord.sort((a, b)=>{return b - a;})
   let fstr  = $(document.createElement('tr'));
   tbody.prepend(fstr);
   let ftxts = [Vocab.FinalRanking+' ▶']
