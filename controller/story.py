@@ -155,9 +155,14 @@ def rubify_scenes(sids):
     with open(dst, 'w') as fp:
       json.dump(rbd, fp)
 
-def patch_scene(sids):
+def patch_scenes(sids):
   global IsStoryReady
-  game.load_database()
+  if not game.SceneDatabase:
+    game.load_database()
+  if not dm.Database:
+    dm.init()
+  if not IsStoryReady:
+    init()
   for sid in sids:
     log_info("Re-rubifing", sid)
     src = f"{_G.DCTmpFolder}/scenes/{sid}.json"
@@ -167,9 +172,6 @@ def patch_scene(sids):
         copyfile(dst, src)
       else:
         log_info(f"{src} not exists, pulling form cloud")
-        if not IsStoryReady:
-          dm.init()
-          init()
         with open(src, 'w') as fp:
           json.dump(dm.get_scene(sid), fp)
 
