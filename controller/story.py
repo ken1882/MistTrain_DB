@@ -157,6 +157,7 @@ def rubify_scenes(sids):
 
 def patch_scene(sids):
   global IsStoryReady
+  game.load_database()
   for sid in sids:
     log_info("Re-rubifing", sid)
     src = f"{_G.DCTmpFolder}/scenes/{sid}.json"
@@ -175,6 +176,8 @@ def patch_scene(sids):
     rbd = ruby.rubifiy_file(src)
     with open(dst, 'w') as fp:
       json.dump(rbd, fp)
+
+    dm.save_scene(sid, rbd)
 
 # save in tmp folder, add to cache 
 # and upload to gdrive after downloaded
