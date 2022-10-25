@@ -155,6 +155,27 @@ def rubify_scenes(sids):
     with open(dst, 'w') as fp:
       json.dump(rbd, fp)
 
+def patch_scene(sids):
+  global IsStoryReady
+  for sid in sids:
+    log_info("Re-rubifing", sid)
+    src = f"{_G.DCTmpFolder}/scenes/{sid}.json"
+    dst = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{sid}.json"
+    if not os.path.exists(src):
+      if os.path.exists(dst):
+        copyfile(dst, src)
+      else:
+        log_info(f"{src} not exists, pulling form cloud")
+        if not IsStoryReady:
+          dm.init()
+          init()
+        with open(src, 'w') as fp:
+          json.dump(dm.get_scene(sid), fp)
+
+    rbd = ruby.rubifiy_file(src)
+    with open(dst, 'w') as fp:
+      json.dump(rbd, fp)
+
 # save in tmp folder, add to cache 
 # and upload to gdrive after downloaded
 # file will need to be rubified before serving
