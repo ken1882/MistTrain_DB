@@ -629,6 +629,10 @@ function exportSceneAnimation(blob){
     $('body,html').animate({
       scrollTop: Math.max(0, a.offsetTop - (window.innerHeight - a.offsetHeight)/2)
     }, 800);
-  }
+}
+
+function setupGifExport(){
+       
+}
 
 window.addEventListener('load', initSPEdit);
