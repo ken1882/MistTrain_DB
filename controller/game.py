@@ -36,6 +36,7 @@ PostHeaders = {
 }
 
 ServerList = (
+  'https://mist-production-api-001.mist-train-girls.com',
   'https://app-misttrain-prod-001.azurewebsites.net',
   'https://app-misttrain-prod-002.azurewebsites.net',
   'https://mist-train-east5.azurewebsites.net',
@@ -81,21 +82,50 @@ GAME_POST_HEADERS = {
 Session.headers = GAME_POST_HEADERS
 
 
-def determine_server():
-  global Session,ServerList,ServerLocation
-  for uri in ServerList:
-    try:
-      log_info("Trying to connect to server", uri)
-      res = requests.post(f"{uri}/api/Login")
-      if res.status_code == 401:
-        ServerLocation = uri
-        log_info("Server location set to", uri)
-        return ServerLocation
-      log_info("Failed with", res, res.content)
-    except Exception as res:
-      log_error(res)
-  log_warning("Unable to get a live server")
-  return _G.ERRNO_MAINTENANCE
+def determine_server(depth=0):
+  global Session,ServerLocation
+  if depth > 3:
+    log_error("Failed to dynamically resolve host, use predefined list instead")
+    for uri in ServerList:
+      try:
+        log_info("Trying to connect to server", uri)
+        res = requests.post(f"{uri}/api/Login")
+        if res.status_code == 401:
+          ServerLocation = uri
+          log_info("Server location set to", uri)
+          return ServerLocation
+        log_info("Failed with", res, res.content)
+      except Exception as res:
+        log_error(res)
+    log_warning("Unable to get a live server")
+    return _G.ERRNO_MAINTENANCE
+
+  res  = Session.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
+  page = res.content.decode('utf8')
+  try:
+    inf_raw = re.search(r"var gadgetInfo = {((?:.*?|\n)*?)};", page).group(0)
+  except Exception:
+    login_dmm()
+    sync_token()
+    return determine_server(depth+1)
+
+  inf     = {}
+  for line in inf_raw.split('\n'):
+    line = [l.strip() for l in line.split(':')]
+    if len(line) < 2:
+      continue
+    inf[line[0].lower()] = literal_eval(line[1].strip()[:-1])
+  
+  inf['url'] = unescape(unquote(inf['url']))
+  inf['st']  = unquote(inf['st'])
+  tmp  = inf['url'].split('&url=')[-1].split('&st=')
+  _url = [u for u in tmp if u[:4] == 'http'][0]
+  urld = urlparse(_url)
+  
+  Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+  ServerLocation = f"{urld.scheme}://{urld.hostname}"
+  
+  return ServerLocation if ServerLocation else _G.ERRNO_MAINTENANCE
     
 def check_login():
   global Session,ServerLocation
