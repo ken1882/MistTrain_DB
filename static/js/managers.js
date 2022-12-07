@@ -1,5 +1,5 @@
-const ASSET_HOST = 'https://assets.mist-train-girls.com/production-client-web-assets';
-const STATIC_HOST = 'https://assets.mist-train-girls.com/production-client-web-static';
+const ASSET_HOST = 'https://assets4.mist-train-girls.com/production-client-web-assets';
+const STATIC_HOST = 'https://assets4.mist-train-girls.com/production-client-web-static';
 
 const CharacterAvatarWidth  = 94;
 const CharacterAvatarHeight = 94;
