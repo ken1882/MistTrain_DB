@@ -202,7 +202,7 @@ def dump_sponspred_scene(token):
     nmeta = {}
     for k,uri in _G.SCENE_META_API.items():
       # get metas
-      res = se.get(f"{game.ServerLocation}/{uri}")
+      res = se.get(f"{game.ServerLocation}{uri}")
       if res.status_code == 401 or res.status_code == 408:
         return _G.ERRNO_UNAUTH
       elif res.status_code == 403:
