@@ -2,7 +2,7 @@ let B64ck = '';
 let Token = '';
 let LoginLock = false, TotpLock = false;
 
-const DEFAULT_SERVER = 'https://app-misttrain-prod-001.azurewebsites.net';
+const DEFAULT_SERVER = 'https://mist-production-api-001.mist-train-girls.com';
 
 function login(){
     if(LoginLock){ return ;}
