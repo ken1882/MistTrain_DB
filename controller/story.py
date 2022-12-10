@@ -207,7 +207,11 @@ def dump_sponspred_scene(token):
         return _G.ERRNO_UNAUTH
       elif res.status_code == 403:
         return _G.ERRNO_MAINTENANCE
-      res = res.json()
+      try:
+        res = res.json()
+      except Exception as err:
+        log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
+        return _G.ERRNO_FAILED
       # get missing scenes
       news[k] = get_new_scenes(k, res['r'])
       new_total += len(news[k])
