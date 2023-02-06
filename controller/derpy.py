@@ -137,6 +137,7 @@ def save_race_history(updated_month=[]):
   log_info("Race history saved")
 
 def update_race_history_db():
+  log_info("Updating race history")
   max_scan_time  = timedelta(days=1)
   min_scan_time  = timedelta(minutes=30)
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
