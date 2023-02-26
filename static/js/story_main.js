@@ -248,6 +248,10 @@ function loadPinAssets(){
     image.onload = ()=>{
       AssetsManager.incReadyCounter();
     };
+    image.onerror = ()=>{
+      console.error(`Failed to load image: ${image.src}`);
+      AssetsManager.incReadyCounter();
+    };
     TopPinAssets[pid] = image;
     ChapterPinIdMap[i] = pid;
   }
