@@ -486,6 +486,7 @@ const FieldSkillFrameHeight = 102;
       "/MasterData/MTrainBoardViewModel.json": this.parseTrainBoardData,
       "/MasterData/MSceneViewModel.json": this.parseSceneData,
       "/MasterData/MEventViewModel.json": this.parseEventData,
+      "/MasterData/LevelsViewModel.json": this.parseLevelData,
     }
     for(let uri in handlers){
       if(!handlers.hasOwnProperty(uri)){ continue; }
@@ -587,6 +588,16 @@ const FieldSkillFrameHeight = 102;
   
   static parseIconClipData(res){
     this.IconClipData = res;
+  }
+
+  static parseLevelData(res){
+    this.CharacterLevelData = {};
+    for(let i of res){
+      if(!this.CharacterLevelData.hasOwnProperty(i.MCharacterId)){
+        this.CharacterLevelData[i.MCharacterId] = Array(101);
+      }
+      this.CharacterLevelData[i.MCharacterId][i.Level] = i;
+    }
   }
 
   static parseSkillData(res){

@@ -6,11 +6,15 @@ let AnimationStream = null;
 let AnimationRecorder = null;
 let PlayFullSkillAnimation = true;
 
+const SKILL_SRC_NONE = 0;
+const SKILL_SRC_TB   = 1;
+const SKILL_SRC_LB   = 2;
+
 const EFF_CHANGE_SKILL = 100;
 const WEAPON_ATTRIBUTE = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 const SKILL_POWER_RANK = [
   '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'US'
-]
+];
 const TYPE_SKILL_DISTANCE = [
   'none',
   'close',
@@ -222,6 +226,10 @@ function loadCharacterVoices(){
   });
 }
 
+function getCharacterLevelStatus(lv){
+  return AssetsManager.CharacterLevelData[__CharacterId][lv].Status;
+}
+
 function fillCharacterBaseInfo(){
   if(!DataManager.isReady()){
     return setTimeout(fillCharacterBaseInfo, 100);
@@ -300,22 +308,40 @@ function fillCharacterBaseInfo(){
       catch(_){ }
     }
   }
+  let limit_break_stat = null;
+  $('#status-title').text(Vocab['InitMax']);
+  if(data.CharacterRarity == 4){
+    limit_break_stat = getCharacterLevelStatus(100);
+    $('#status-title').text(Vocab['InitMaxLB']);
+  }
   for(let i=1;i<attr_names.length;++i){
     $(`#th-status-${i}`).text(attr_names[i]);
     let attr = head_attrs[i];
     let base = 100;
-    let minn = base, maxn = base, extn = 0;
+    let minn = base, maxn = base, extn = 0, extn2 = 0;
+    let lmbn = base;
     try{
       minn += data.LevelStatus[`Min${attr}`] / 100;
       maxn += data.LevelStatus[`Max${attr}`] / 100;
       maxn += AssetsManager.MaxGearStatusData[__CharacterId][attr] / 100;
-      minn  = (minn + 0.005).toFixed(2);
-      maxn  = (maxn + 0.005).toFixed(2);
+      minn  = (minn + 0.000).toFixed(2);
+      maxn  = (maxn + 0.000).toFixed(2);
       let _html = `${minn}% / ${maxn}%`;
+      if(limit_break_stat){
+        lmbn += limit_break_stat[attr] / 100 + AssetsManager.MaxGearStatusData[__CharacterId][attr] / 100;
+        lmbn  = (lmbn + 0.000).toFixed(2);
+        _html += ` / ${lmbn}%`;
+      }
       if(tb_attrs[attr]){
         extn = parseFloat(maxn) + tb_attrs[attr] / 100;
         extn = (extn + 0.005).toFixed(2);
-        _html += `<span class="trainboard-skill"> → ${extn}%</span>`;
+        _html += `<span class="trainboard-skill"> → ${extn}%`;
+        if(limit_break_stat){
+          extn2 = parseFloat(lmbn) + tb_attrs[attr] / 100;
+          extn2 = (extn2 + 0.005).toFixed(2);
+          _html += ` / ${extn2}%`;
+        }
+        _html += `</span>`;
       }
       $(`#td-status-${i}`).html(_html);
     }
@@ -370,16 +396,32 @@ function getAllSkills(character_data){
 
 function getAllAbilities(character_data){
   let data = character_data;
-  let pskills = [data.AbilityMSkill1Id, data.AbilityMSkill2Id, data.AbilityMSkill3Id];
+  let pskills = [
+    [SKILL_SRC_NONE, data.AbilityMSkill1Id],
+    [SKILL_SRC_NONE, data.AbilityMSkill2Id],
+    [SKILL_SRC_NONE, data.AbilityMSkill3Id],
+  ];
   if(AssetsManager.TrainBoardData.hasOwnProperty(__CharacterId)){
     let train_boards = AssetsManager.TrainBoardData[__CharacterId].TrainBoardOarders;
     for(let board of train_boards){
       for(let entry of board.MTrainBoardDetails){
         if(entry.TrainBoardDetailAdditionalAbility){
-          pskills.push(entry.TrainBoardDetailAdditionalAbility.AdditionalMAbilityId);
+          pskills.push(
+            [SKILL_SRC_TB, entry.TrainBoardDetailAdditionalAbility.AdditionalMAbilityId]
+          );
         }
       }
     }
+  }
+  if(data.ExtraAbilityMSkill1Id){
+    pskills.push(
+      [SKILL_SRC_LB, data.ExtraAbilityMSkill1Id]
+    );
+  }
+  if(data.ExtraAbilityMSkill2Id){
+    pskills.push(
+      [SKILL_SRC_LB, data.ExtraAbilityMSkill2Id]
+    );
   }
   return pskills;
 }
@@ -426,7 +468,8 @@ function fillCharacterSkillInfo(){
     swapSkillDescription(i, sid);
   }
   for(let i in pskills){
-    let skill = AssetsManager.SkillData[pskills[i]];
+    let src     = pskills[i][0];
+    let skill   = AssetsManager.SkillData[pskills[i][1]];
     let node    = document.createElement('tr');
     let sname   = document.createElement('td');
     let seffect = document.createElement('td');
@@ -434,9 +477,8 @@ function fillCharacterSkillInfo(){
     node.id     = `ability-node-${i}`;
     sname.id    = `ability-name-${i}`;
     seffect.id  = `ability-effect-${i}`;
-    if(i > 3){
-      $(node).addClass('trainboard-skill');
-    }
+    if(src == SKILL_SRC_TB){ $(node).addClass('trainboard-skill'); }
+    else if(src == SKILL_SRC_LB){ $(node).addClass('special-skill'); }
     $(node).append(sname);
     $(node).append(seffect);
     $("#tbody-passive-skill").append(node);
@@ -547,7 +589,7 @@ function swapAbilityDescription(ori_aid, aft_aid){
 function setupChangableSkills(){
   let data = AssetsManager.CharacterData[__CharacterId];
   let askills = getAllSkills(data);
-  let pskills = getAllAbilities(data);
+  
   // Change Skill
   // This assumes change skills are one to one, may be bugged in future
   for(let sid of askills){
