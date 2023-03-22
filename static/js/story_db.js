@@ -91,6 +91,8 @@ function loadEventStory(){
     var chapter_container = $(document.createElement('div'));
     chapter_container.attr('id', `${container_id}`);
     let eid = scene.MEventId || 0;
+    scene.Scenes = scene.Scenes.sort((a,b)=>{return a.MSceneId - b.MSceneId;})
+    console.log(scene.Scenes);
     for(let j=0;j<scene.Scenes.length;++j){
       var sc = scene.Scenes[j];
       var chap_btn = $(document.createElement('a'));
@@ -224,22 +226,22 @@ function hideSponsorOverlay(){
 }
 
 function loadStoryData(){
-  $.ajax({
-    url: "/static/json/mainstory_data.json",
-    success: (res) => {
-      MainStoryData = res;
-      AssetsManager.incReadyCounter();
-    },
-    error: handleAjaxError,
-  });
-  $.ajax({
-    url: '/static/json/event_scene.json',
-    success: (res) => {
-      EventStoryData = res;
-      AssetsManager.incReadyCounter();
-    },
-    error: handleAjaxError,
-  });
+  return [
+    $.ajax({
+      url: "/static/json/mainstory_data.json",
+      success: (res) => {
+        MainStoryData = res;
+      },
+      error: handleAjaxError,
+    }),
+    $.ajax({
+      url: '/static/json/event_scene.json',
+      success: (res) => {
+        EventStoryData = res;
+      },
+      error: handleAjaxError,
+    }),
+  ];
 }
 
 function init(){
@@ -259,8 +261,7 @@ function preInit(){
     return setTimeout(preInit, 300);
   }
   AssetsManager.loadSceneData();
-  AssetsManager.requestAsset(1, loadStoryData);
-  init();
+  Promise.all(loadStoryData()).then(init);
 }
 
 window.addEventListener("load", preInit);

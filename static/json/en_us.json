@@ -154,6 +154,7 @@
   "GrowthTendency": "Growth Tendency",
   "StatusInflation": "Status Inflation",
   "InitMax": "(Initial/Maxed)",
+  "InitMaxLB": "(Initial/Maxed/LB)",
   "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
   "StatusName": {
     "HP": "HP",

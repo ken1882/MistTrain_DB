@@ -202,12 +202,16 @@ def dump_sponspred_scene(token):
     nmeta = {}
     for k,uri in _G.SCENE_META_API.items():
       # get metas
-      res = se.get(f"{game.ServerLocation}/{uri}")
+      res = se.get(f"{game.ServerLocation}{uri}")
       if res.status_code == 401 or res.status_code == 408:
         return _G.ERRNO_UNAUTH
       elif res.status_code == 403:
         return _G.ERRNO_MAINTENANCE
-      res = res.json()
+      try:
+        res = res.json()
+      except Exception as err:
+        log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
+        return _G.ERRNO_FAILED
       # get missing scenes
       news[k] = get_new_scenes(k, res['r'])
       new_total += len(news[k])
@@ -229,9 +233,17 @@ def dump_sponspred_scene(token):
           return _G.ERRNO_UNAUTH
         elif res.status_code == 403:
           return _G.ERRNO_MAINTENANCE
-        res = res.json()
+        try:
+          res = res.json()
+        except Exception as err:
+          log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
+          return _G.ERRNO_FAILED
         data = res['r']
-        data['MSceneDetailViewModel'] = sorted(data['MSceneDetailViewModel'], key=lambda o:o['GroupOrder'])
+        if 'MSceneDetailViewModel' in data:
+          data['MSceneDetailViewModel'] = sorted(data['MSceneDetailViewModel'], key=lambda o:o['GroupOrder'])
+        else:
+          _G.log_warning(f"Scene#{sid} does not contain any information:\n", data)
+          data['MSceneDetailViewModel'] = []
         with FLOCK:
           with open(path, 'w') as fp:
             json.dump(data, fp)
