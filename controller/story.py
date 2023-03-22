@@ -239,7 +239,11 @@ def dump_sponspred_scene(token):
           log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
           return _G.ERRNO_FAILED
         data = res['r']
-        data['MSceneDetailViewModel'] = sorted(data['MSceneDetailViewModel'], key=lambda o:o['GroupOrder'])
+        if 'MSceneDetailViewModel' in data:
+          data['MSceneDetailViewModel'] = sorted(data['MSceneDetailViewModel'], key=lambda o:o['GroupOrder'])
+        else:
+          _G.log_warning(f"Scene#{sid} does not contain any information:\n", data)
+          data['MSceneDetailViewModel'] = []
         with FLOCK:
           with open(path, 'w') as fp:
             json.dump(data, fp)
