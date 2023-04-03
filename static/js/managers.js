@@ -10,6 +10,12 @@ const FieldSkillImageHeight = 94;
 const FieldSkillFrameWidth  = 214;
 const FieldSkillFrameHeight = 102;
 
+const ITYPE_WEAPON      = 1;
+const ITYPE_ARMOR       = 2;
+const ITYPE_ACCESSORY   = 3;
+const ITYPE_CONSUMABLE  = 4;
+const ITYPE_ABSTONE     = 5;
+
 /**---------------------------------------------------------------------------
  * > DataManager:
  *    The static class that manages data and settings.
@@ -282,6 +288,16 @@ const FieldSkillFrameHeight = 102;
     this.FieldSkillImageSet   = {};
     this.FieldSkillImageClip  = {};
     this.FieldSkillImageMap   = {};
+    this.WeaponImageSet       = {};
+    this.WeaponImageClip      = {};
+    this.WeaponImageMap       = {};
+    this.ArmorImageSet        = {};
+    this.ArmorImageClip       = {};
+    this.ArmorImageMap        = {};
+    this.AccessoryImageSet    = {};
+    this.AccessoryImageClip   = {};
+    this.AccessoryImageMap    = {};
+    
     this.initialized = true;
   }
 
@@ -334,7 +350,130 @@ const FieldSkillFrameHeight = 102;
       success: (res) => { 
         AssetsManager.parseFieldSkillImageClip(res, idx);
         this.incReadyCounter();
-        AssetsManager.loadFieldSkillImageClip(idx+1);
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
+  static loadEquipmentArchive(){
+    this.loadAssetDataArchive('/static/json/iconinfo.json', this.parseIconClipData);
+    this.WeaponData     = {};
+    this.ArmorData      = {};
+    this.AccessoryData  = {};
+    this.AbStoneData    = {};
+    this.loadEquipmentAssets(1, ITYPE_WEAPON);
+    this.loadEquipmentAssets(1, ITYPE_ARMOR);
+    this.loadEquipmentAssets(1, ITYPE_ACCESSORY);
+    this.loadEquipmentData(ITYPE_WEAPON);
+    this.loadEquipmentData(ITYPE_ARMOR);
+    this.loadEquipmentData(ITYPE_ACCESSORY);
+    this.loadLevelSkillData();
+    this.setupEquipmentCanvas();
+    this.queueAssetRequest(()=>{
+      this.loadEquipmentData(ITYPE_ABSTONE);
+    });
+  }
+
+  static loadEquipmentData(type){
+    this.__readyReq += 1;
+    let url = `${STATIC_HOST}/MasterData`;
+    let ok_handler = null;
+    if(type == ITYPE_WEAPON){
+      url += `/MWeaponViewModel.json`;
+      ok_handler = (res)=>{
+        for(let dat of res){
+          this.WeaponData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      };
+    }
+    else if(type == ITYPE_ARMOR){
+      url += `/MArmorViewModel.json`;
+      ok_handler = (res)=>{
+        for(let dat of res){
+          this.ArmorData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      };
+    }
+    else if(type == ITYPE_ACCESSORY){
+      url += `/MAccessoryViewModel.json`;
+      ok_handler = (res)=>{
+        for(let dat of res){
+          this.AccessoryData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      };
+    }
+    else if(type == ITYPE_ABSTONE){
+      url += `/MAbilityStoneViewModel.json`;
+      ok_handler = (res)=>{
+        this.parseAbStoneData(res);
+      };
+    }
+    $.ajax({
+      url: url,
+      success: ok_handler,
+      error: handleAjaxError,
+    })
+  }
+
+  static loadEquipmentAssets(idx, type){
+    this.__readyReq += 1;
+    let image = new Image();
+    image.crossOrigin = "anonymous";
+    image.onerror = ()=>{
+      this.incReadyCounter();
+    }
+    if(type == ITYPE_WEAPON){
+      image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Weapons/weapon-${idx}.png?`;
+      image.onload = () => {
+        this.WeaponImageSet[idx] = image;
+        this.incReadyCounter();
+        AssetsManager.loadEquipmentImageClip(idx, type);
+        AssetsManager.loadEquipmentAssets(idx+1, type);
+      };
+    }
+    else if(type == ITYPE_ARMOR){
+      image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Armors/armor-${idx}.png?`;
+      image.onload = () => {
+        this.ArmorImageSet[idx] = image;
+        this.incReadyCounter();
+        AssetsManager.loadEquipmentImageClip(idx, type);
+        AssetsManager.loadEquipmentAssets(idx+1, type);
+      };
+    }
+    else if(type == ITYPE_ACCESSORY){
+      image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Accessories/accessory-${idx}.png?`;
+      image.onload = () => {
+        this.AccessoryImageSet[idx] = image;
+        this.incReadyCounter();
+        AssetsManager.loadEquipmentImageClip(idx, type);
+        AssetsManager.loadEquipmentAssets(idx+1, type);
+      };
+    }
+  }
+
+  static loadEquipmentImageClip(idx, type){
+    this.__readyReq += 1;
+    let url = `${ASSET_HOST}/Textures/Icons/Atlas`;
+    if(type == ITYPE_WEAPON){
+      url += `/Weapons/weapon-${idx}.plist`;
+    }
+    else if(type == ITYPE_ARMOR){
+      url += `/Armors/armor-${idx}.plist`;
+    }
+    else if(type == ITYPE_ACCESSORY){
+      url += `/Accessories/accessory-${idx}.plist`;
+    }
+    $.ajax({
+      url: url,
+      success: (res) => {
+        AssetsManager.parseEquipmentImageClip(res, idx, type);
+        this.incReadyCounter();
       },
       error: (res)=>{
         if(res.status == 404){this.incReadyCounter();}
@@ -343,6 +482,47 @@ const FieldSkillFrameHeight = 102;
     });
   }
   
+  static loadLevelSkillData(){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `${STATIC_HOST}/MasterData/MLevelUpSkillViewModel.json`,
+      success: (res) => {
+        this.parseLevelSkillData(res);
+        this.incReadyCounter();
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
+  static parseLevelSkillData(res){
+    this.LevelSkillData = {};
+    for(let i=0;i<res.length;++i){
+      let dat = res[i];
+      if(!this.LevelSkillData.hasOwnProperty(dat.MLevelUpSkillGroupId)){
+        this.LevelSkillData[dat.MLevelUpSkillGroupId] = [];
+      }
+      this.LevelSkillData[dat.MLevelUpSkillGroupId][dat.Level] = dat;
+    }
+  }
+
+  static parseAbStoneData(res){
+    for(let dat of res){
+      dat.AbilityVariations = {};
+      for(let gsid of dat.MLevelUpSkillGroupIds){
+        dat.AbilityVariations[gsid] = [];
+        for(let mls of AssetsManager.LevelSkillData[gsid]){
+          if(!mls){ continue; }
+          dat.AbilityVariations[gsid][mls.Level] = AssetsManager.SkillData[mls.MSkillId];
+        }
+      }
+      this.AbStoneData[dat.Id] = dat;
+    }
+    this.incReadyCounter();
+  }
+
   static loadCharacterAvatars(idx=1){
     this.__readyReq += 1;
     let image = new Image();
@@ -692,6 +872,28 @@ const FieldSkillFrameHeight = 102;
     }
   }
 
+  static parseEquipmentImageClip(xml, idx, type){
+    let root = xml.children[0].children[0];
+    let data = this.parseXMLKeyValueDict(root);
+    for(let i in data.frames){
+      if(!data.frames.hasOwnProperty(i)){ continue; }
+      switch(type){
+        case ITYPE_WEAPON:
+          this.WeaponImageClip[i] = data.frames[i];
+          this.WeaponImageMap[i] = idx;
+          break;
+        case ITYPE_ARMOR:
+          this.ArmorImageClip[i] = data.frames[i];
+          this.ArmorImageMap[i] = idx;
+          break;
+        case ITYPE_ACCESSORY:
+          this.AccessoryImageClip[i] = data.frames[i];
+          this.AccessoryImageMap[i] = idx;
+          break;
+      }
+    }
+  }
+
   static setupCharacterSkin(){
     this.DressedCharacterMap = {};
     for(let mbchid in this.CharacterSkinData){
@@ -724,11 +926,8 @@ const FieldSkillFrameHeight = 102;
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    // let img2 = document.createElement('img');
     $(img).attr('class', 'avatar');
-    // $(img2).attr('class', 'avatar-frame');
     block.append(img);
-    // block.append(img2);
     let avatar_key = `${id}.png`;
     let rect = null;
     if(this.CharacterAvatarClip.hasOwnProperty(avatar_key)){
@@ -774,7 +973,6 @@ const FieldSkillFrameHeight = 102;
     return container;
   }
 
-
   static setupFieldSkillCanvas(){
     this.__readyReq += 1;
     this.FieldSkillCanvas  = document.createElement("canvas");
@@ -790,11 +988,8 @@ const FieldSkillFrameHeight = 102;
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    // let img2 = document.createElement('img');
     $(img).attr('class', 'fieldskill-image');
-    // $(img2).attr('class', 'fieldskill-frame');
     block.append(img);
-    // block.append(img2);
     let image_key = `${id}.png`;
     let rect = null;
     if(this.FieldSkillImageClip.hasOwnProperty(image_key)){
@@ -849,11 +1044,186 @@ const FieldSkillFrameHeight = 102;
     return container;
   }
 
+  static setupEquipmentCanvas(){
+    this.__readyReq += 1;
+    this.EquipmentCanvas  = document.createElement("canvas");
+    this.EquipmentCanvas.width  = CharacterAvatarWidth;
+    this.EquipmentCanvas.height = CharacterAvatarHeight;
+    this.EquipmentContext = this.EquipmentCanvas.getContext('2d');
+    this.incReadyCounter();
+  }
+
+  /**
+   * WARNING: Avatar/Weapon/Armor/Accessory are shared with same drawing canvas
+   */
+  static createEquipmentImageNode(id, type, frame_type=null){
+    let container = $(document.createElement('div'));
+    container.attr('class', 'avatar-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    $(img).attr('class', 'equipment-image');
+    block.append(img);
+    let image_key = `${id}.png`;
+    let rect = null;
+    let clip_data = {};
+    let equipment_data = {};
+    let equipment_map  = {};
+    let equipment_set  = {};
+    switch(type){
+      case ITYPE_WEAPON:
+        clip_data = this.WeaponImageClip;
+        equipment_data = this.WeaponData;
+        equipment_set = this.WeaponImageSet;
+        equipment_map = this.WeaponImageMap;
+        break;
+      case ITYPE_ARMOR:
+        clip_data = this.ArmorImageClip;
+        equipment_data = this.ArmorData;
+        equipment_set = this.ArmorImageSet;
+        equipment_map = this.ArmorImageMap;
+        break;
+      case ITYPE_ACCESSORY:
+        clip_data = this.AccessoryImageClip;
+        equipment_data = this.AccessoryData;
+        equipment_set = this.AccessoryImageSet;
+        equipment_map = this.AccessoryImageMap;
+        break;
+    }
+    if(clip_data.hasOwnProperty(image_key)){
+      rect = clip_data[`${id}.png`].textureRect.flat();
+    }
+    else{ return null; }
+    let krarity = 'frm_thumb_common';
+    if(!frame_type && equipment_data.hasOwnProperty(id)){
+      switch(equipment_data[id].EquipmentRarity){
+        case 2:
+          krarity = 'frm_thumb_rare_a';
+          break;
+        case 3:
+          krarity = 'frm_thumb_rare_s';
+          break;
+        case 4:
+          krarity = 'frm_thumb_rare_ss';
+          break;
+      }
+    }
+    let rect2 = null;
+    try{
+      rect2 = this.IconClipData[krarity].content.rect;
+    }catch(e){
+      console.error(e);
+    }
+    this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
+    if(rect){
+      let src_idx = equipment_map[image_key];
+      clipImage(
+        this.AvatarCanvas, equipment_set[src_idx], img, 
+        rect[0], rect[1], rect[2], rect[3],
+        this.FramePadding, this.FramePadding,
+        CharacterAvatarWidth, CharacterAvatarHeight,
+      );
+    }
+    if(rect2){
+      clipImage(
+        this.AvatarCanvas, this.PartyFrameSet, img, 
+        rect2[0], rect2[1], rect2[2], rect2[3], 
+        0, 0, rect2[2], rect2[3]
+      );
+    }
+    return container;
+  }
+
   static isStageLoaded(){
     return this.__readyCnt >= this.__readyReq;
   }
 
   static isReady(){ 
     return !this.__requestQueue.length && this.isStageLoaded();
+  }
+}
+
+
+/**---------------------------------------------------------------------------
+ * > ItemManager:
+ *    The static class that manages items.
+ * @namespace
+ */
+class ItemManager{
+  /*-------------------------------------------------------------------------*/
+  constructor(){
+    throw new Error("This is a static class")
+  }
+
+  /**
+   * Get list of weapon ability stones that only has highest level of one ability
+   */
+  static getPureWeaponAbstones(){
+    if(!this.pureWeaponAbstones){
+      this.pureWeaponAbstones = [];
+      for(let i in AssetsManager.AbStoneData){
+        if(!AssetsManager.AbStoneData.hasOwnProperty(i)){ continue; }
+        let astone = AssetsManager.AbStoneData[i];
+        if(astone.AbilityStoneEquipType != ITYPE_WEAPON){ continue; }
+        for(let aid in astone.AbilityVariations){
+          if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
+          let mskills = astone.AbilityVariations[aid];
+          let tskill = mskills[mskills.length-1];
+          if(!tskill){ continue; }
+          let dat = clone(tskill);
+          dat.MAbilityStone = clone(astone);
+          this.pureWeaponAbstones.push(dat);
+        }
+      }
+    }
+    return this.pureWeaponAbstones;
+  }
+
+  /**
+   * Get list of armor ability stones that only has highest level of one ability
+   */
+  static getPureArmorAbstones(){
+    if(!this.pureArmorAbstones){
+      this.pureArmorAbstones = [];
+      for(let i in AssetsManager.AbStoneData){
+        if(!AssetsManager.AbStoneData.hasOwnProperty(i)){ continue; }
+        let astone = AssetsManager.AbStoneData[i];
+        if(astone.AbilityStoneEquipType != ITYPE_ARMOR){ continue; }
+        for(let aid in astone.AbilityVariations){
+          if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
+          let mskills = astone.AbilityVariations[aid];
+          let tskill = mskills[mskills.length-1];
+          if(!tskill){ continue; }
+          let dat = clone(tskill)
+          dat.MAbilityStone = clone(astone);
+          this.pureArmorAbstones.push(dat);
+        }
+      }
+    }
+    return this.pureArmorAbstones;
+  }
+
+  /**
+   * Get list of accessory ability stones that only has highest level of one ability
+   */
+  static getPureAccessoryAbstones(){
+    if(!this.pureAccessoryAbstones){
+      this.pureAccessoryAbstones = [];
+      for(let i in AssetsManager.AbStoneData){
+        if(!AssetsManager.AbStoneData.hasOwnProperty(i)){ continue; }
+        let astone = AssetsManager.AbStoneData[i];
+        if(astone.AbilityStoneEquipType != ITYPE_ACCESSORY){ continue; }
+        for(let aid in astone.AbilityVariations){
+          if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
+          let mskills = astone.AbilityVariations[aid];
+          let tskill = mskills[mskills.length-1];
+          if(!tskill){ continue; }
+          let dat = clone(tskill)
+          dat.MAbilityStone = clone(astone);
+          this.pureAccessoryAbstones.push(dat);
+        }
+      }
+    }
+    return this.pureAccessoryAbstones;
   }
 }

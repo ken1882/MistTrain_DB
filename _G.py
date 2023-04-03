@@ -38,7 +38,7 @@ FlagRunning = True
 FlagPaused  = False
 FlagWorking = False
 FlagProcessingUserInput = False
-FlagUseCloudData = True
+FlagUseCloudData = False
 if os.getenv('MTG_USE_CLOUD_DATA'):
   FlagUseCloudData = True
 

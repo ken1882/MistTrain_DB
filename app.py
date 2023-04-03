@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__, template_folder='view')
 app.initialized = False
-app.config['TEMPLATES_AUTO_RELOAD '] = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 ori_render_template = render_template
 def render_template(*args, **kwargs):
@@ -201,6 +201,10 @@ def fieldskill_index():
 @app.route('/spine_editor', methods=['GET'])
 def speditor_index():
   return render_template('spine_editor.html', navbar_content=get_navbar())
+
+@app.route('/party_builder', methods=['GET'])
+def partybuilder_index():
+  return render_template('party_builder.html', navbar_content=get_navbar())
 
 ## Auxiliary methods / API
 

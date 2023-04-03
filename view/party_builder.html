@@ -2,24 +2,33 @@
 <html>
   <head>
     <title>ミストレ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+    <script src="{{ url_for('static', filename='js/gl-matrix-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+    <script src="{{ url_for('static', filename='js/spine-all.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/howler.min.js') }}"></script>
+    
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vocab.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mtg_game.js') }}"></script>
-
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css') }}">
+    <link href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css" rel="stylesheet">
 
-    <script src="{{ url_for('static', filename='js/derpy_db.js') }}"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    
     <script>
-      let __BaseDerpyDataFilePath = '/static/{{db_path}}';
-
       window.addEventListener("load", ()=>{
         DataManager.initialize();
         AssetsManager.initialize();
@@ -28,25 +37,59 @@
         init_totop_button();
       });
     </script>
+    <script src="{{ url_for('static', filename='js/party_builder.js') }}"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       {{ navbar_content | safe }}
     </nav>
-
+    <br>
     <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
       <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571057658/cd-top-arrow.svg">
     </button>
-
-    <br>
     
-    <div id="history-monthly">
-      <!-- 
+    <div>
         <div class="spinner-border center" id="loading-indicator">
-          <span class="sr-only"></span>
-        </div>
-       -->
+        <span class="sr-only"></span>
     </div>
+
+    <div id="party-index" class="center">
+        <table id="fieldskill-table" class="table table-bordered"
+          style="max-width: 95%; margin: auto;"
+        >
+          <thead>
+            <tr>
+              <th id="fieldskill-1"></th>
+              <th id="fieldskill-2"></th>
+              <th id="fieldskill-3"></th>
+              <th id="fieldskill-4"></th>
+              <th id="formation"></th>
+              <th id="ex-status"></th>
+            </tr>
+          </thead>
+        </table>
+        <table id="party-table" class="table table-bordered"
+          style="max-width: 95%; margin: auto;"
+        >
+          <thead>
+            <tr>
+              <th class="avatar-col-header" label="l-Avatar"></th>
+              <th label="l-Name" data-field="fname"></th>
+              <th label="l-Weapon" data-field="fweapon"></th>
+              <th label="l-ABStone" data-field="fweaponabs"></th>
+              <th label="l-Armor" data-field="farmor"></th>
+              <th label="l-ABStone" data-field="farmorabs"></th>
+              <th label="l-Accessory" data-field="faccessory"></th>
+              <th label="l-ABStone" data-field="faccessoryabs"></th>
+              <th label="l-AddSkill" data-field="faddskill"></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
     
   </body>
+ 
+
 </html>

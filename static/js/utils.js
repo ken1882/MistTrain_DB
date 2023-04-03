@@ -389,3 +389,63 @@ function rgb2hex(rgb){
   let b = parseInt(rgb[2]*0xff).toString(16);
   return `#${r}${g}${b}`;
 }
+
+/**
+ * Application specified functions
+ */
+
+function changeLanguage(){
+  DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
+  window.location = window.location.href.split("?")[0];
+  window.location.reload();
+}
+
+function init_navbar(){
+  if(!DataManager.isReady()){
+    setTimeout(() => {
+      init_navbar();
+    }, 300);
+  }
+  let node = $("#languageText");
+  node.innerText = Vocab.currentLanguageName;        
+  node = $("#languageOptions");
+  for(let i in Vocab.SupportedLanguages){
+    let lang = Vocab.SupportedLanguages[i];
+    let existed = Array.from($("#languageOptions")[0].options);
+    if(existed.findIndex((n)=>{ return n.value == lang.key }) != -1){
+      continue;
+    }
+    node.append($('<option>',{
+      value: lang.key,
+      text: lang.name
+    }));
+  }
+  node.val(DataManager.language);
+}
+
+function init_totop_button(){
+  let button = document.getElementById("btn-back-to-top");
+  button.style.opacity = '0.5';
+
+  window.onscroll = () => {
+    if(document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
+      button.style.display = "block";
+    }
+    else{
+      button.style.display = "none";
+    }
+  };
+
+  button.addEventListener("click", () => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  });
+
+  button.addEventListener("mouseover", ()=>{
+    button.style.opacity = "1";          
+  });
+
+  button.addEventListener("mouseout", ()=>{
+    button.style.opacity = "0.5";
+  });
+}
