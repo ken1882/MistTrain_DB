@@ -27,6 +27,8 @@
 
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     
     <script>
       window.addEventListener("load", ()=>{
@@ -53,7 +55,7 @@
         <span class="sr-only"></span>
     </div>
 
-    <div id="party-index" class="center">
+    <div id="party-index" class="center" style="display: none">
         <table id="fieldskill-table" class="table table-bordered"
           style="max-width: 95%; margin: auto;"
         >
@@ -68,23 +70,10 @@
             </tr>
           </thead>
         </table>
-        <table id="party-table" class="table table-bordered"
+        <table id="party-table" class="table table-bordered table-responsive"
           style="max-width: 95%; margin: auto;"
         >
-          <thead>
-            <tr>
-              <th class="avatar-col-header" label="l-Avatar"></th>
-              <th label="l-Name" data-field="fname"></th>
-              <th label="l-Weapon" data-field="fweapon"></th>
-              <th label="l-ABStone" data-field="fweaponabs"></th>
-              <th label="l-Armor" data-field="farmor"></th>
-              <th label="l-ABStone" data-field="farmorabs"></th>
-              <th label="l-Accessory" data-field="faccessory"></th>
-              <th label="l-ABStone" data-field="faccessoryabs"></th>
-              <th label="l-AddSkill" data-field="faddskill"></th>
-            </tr>
-          </thead>
-          <tbody>
+          <tbody id="party-table-body">
           </tbody>
         </table>
       </div>

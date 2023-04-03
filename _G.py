@@ -183,6 +183,7 @@ ITYPE_GEM         = 8
 ITYPE_GEAR        = 10  # aka character pieces
 ITYPE_GEAR2       = 11
 ITYPE_ABSTONE2    = 12
+ITYPE_SKILL       = 31
 
 ITYPE_NAMES = {
   ITYPE_WEAPON: '武器',

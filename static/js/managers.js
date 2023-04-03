@@ -15,6 +15,7 @@ const ITYPE_ARMOR       = 2;
 const ITYPE_ACCESSORY   = 3;
 const ITYPE_CONSUMABLE  = 4;
 const ITYPE_ABSTONE     = 5;
+const ITYPE_SKILL       = 31;
 
 /**---------------------------------------------------------------------------
  * > DataManager:
@@ -364,6 +365,7 @@ const ITYPE_ABSTONE     = 5;
     this.ArmorData      = {};
     this.AccessoryData  = {};
     this.AbStoneData    = {};
+    this.loadEmptyPlaceholders();
     this.loadEquipmentAssets(1, ITYPE_WEAPON);
     this.loadEquipmentAssets(1, ITYPE_ARMOR);
     this.loadEquipmentAssets(1, ITYPE_ACCESSORY);
@@ -375,6 +377,35 @@ const ITYPE_ABSTONE     = 5;
     this.queueAssetRequest(()=>{
       this.loadEquipmentData(ITYPE_ABSTONE);
     });
+  }
+
+  static loadEmptyPlaceholders(){
+    this.__readyReq += 7;
+    this.emptyPlaceholder = {
+      character: new Image(),
+      weapon: new Image(),
+      armor: new Image(),
+      accessory: new Image(),
+      abstone: new Image(),
+      skill: new Image(),
+      fieldskill: new Image(),
+      rentalskill: new Image(),
+    }
+    this.emptyPlaceholder.character.src   = '/static/assets/character_empty.png';
+    this.emptyPlaceholder.weapon.src      = '/static/assets/weapon_empty.png';
+    this.emptyPlaceholder.armor.src       = '/static/assets/armor_empty.png';
+    this.emptyPlaceholder.accessory.src   = '/static/assets/accessory_empty.png';
+    this.emptyPlaceholder.abstone.src     = '/static/assets/abstone_empty.png';
+    this.emptyPlaceholder.skill.src       = '/static/assets/skill_empty.png';
+    this.emptyPlaceholder.fieldskill.src  = '/static/assets/ptskill_empty.png';
+    this.emptyPlaceholder.rentalskill.src = '/static/assets/rental_empty.png';
+    for(const img in this.emptyPlaceholder) {
+      if(this.emptyPlaceholder.hasOwnProperty(img)){
+        this.emptyPlaceholder[img].onload = ()=>{
+          this.incReadyCounter();
+        };
+      }
+    }
   }
 
   static loadEquipmentData(type){
@@ -933,6 +964,13 @@ const ITYPE_ABSTONE     = 5;
     if(this.CharacterAvatarClip.hasOwnProperty(avatar_key)){
       rect = this.CharacterAvatarClip[`${id}.png`].textureRect.flat();
     }
+    else if(id < 0){
+      rect = [0, 0, 96, 96];
+    }
+    else{
+      console.warn(`Incomplete character data: ${id}`)
+      return ;
+    }
     let krarity = 'frm_thumb_common';
     if(!frame_type && this.CharacterData.hasOwnProperty(id)){
       switch(this.CharacterData[id].CharacterRarity){
@@ -948,16 +986,25 @@ const ITYPE_ABSTONE     = 5;
       }
     }
     let rect2 = null;
-    try{
-      rect2 = this.IconClipData[krarity].content.rect;
-    }catch(e){
-      console.error(e);
+    if(id >= 0){
+      try{
+        rect2 = this.IconClipData[krarity].content.rect;
+      }catch(e){
+        console.error(e);
+      }
     }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
     if(rect){
-      let src_idx = this.CharacterAvatarMap[avatar_key];
+      let src_img = null;
+      if(id == -1){
+        src_img = this.emptyPlaceholder.character;
+      }
+      else{
+        let src_idx = this.CharacterAvatarMap[avatar_key];
+        src_img = this.CharacterAvatarSet[src_idx];
+      }
       clipImage(
-        this.AvatarCanvas, this.CharacterAvatarSet[src_idx], img, 
+        this.AvatarCanvas, src_img, img, 
         rect[0], rect[1], rect[2], rect[3],
         this.FramePadding, this.FramePadding,
         CharacterAvatarWidth, CharacterAvatarHeight,
@@ -995,9 +1042,15 @@ const ITYPE_ABSTONE     = 5;
     if(this.FieldSkillImageClip.hasOwnProperty(image_key)){
       rect = this.FieldSkillImageClip[`${id}.png`].textureRect.flat();
     }
-    else{ return null; }
+    else if(id < 0){
+      rect = [0, 0, 204, 96];
+    }
+    else{
+      console.warn(`Incomplete ptskill data: ${id}`)
+      return ;
+    }
     let krarity = 'frm_thumb__ptskill_rare_b';
-    if(!frame_type){
+    if(!frame_type && this.FieldSkillData.hasOwnProperty(id)){
       switch(this.FieldSkillData[id].Rarity){
         case 2:
           krarity = 'frm_thumb__ptskill_rare_a';
@@ -1011,22 +1064,36 @@ const ITYPE_ABSTONE     = 5;
       }
     }
     let rect2 = null;
-    try{
-      rect2 = this.IconClipData[krarity].content.rect;
-    }catch(e){
-      console.error(e);
+    if(id >= 0){
+      try{
+        rect2 = this.IconClipData[krarity].content.rect;
+      }catch(e){
+        console.error(e);
+      }
     }
     let canvas  = this.FieldSkillCanvas;
     let context = this.FieldSkillContext;
-    let rotated = this.FieldSkillImageClip[image_key].textureRotated;
     context.clearRect(0, 0, canvas.width, canvas.height);
     if(rect){
-      let src_idx = this.FieldSkillImageMap[image_key];
-      if(rotated){
-        context.translate(0, canvas.height);
+      let src_img = null;
+      let rotated = false;
+      if(id == -1){
+        src_img = this.emptyPlaceholder.fieldskill;
+      }
+      else if(id == -2){
+        src_img = this.emptyPlaceholder.rentalskill;
+      }
+      else{
+        let src_idx = this.FieldSkillImageMap[image_key];
+        console.log(image_key);
+        rotated = this.FieldSkillImageClip[image_key].textureRotated;
+        if(rotated){
+          context.translate(0, canvas.height);
+        }
+        src_img = this.FieldSkillImageSet[src_idx];
       }
       clipImage(
-        canvas, this.FieldSkillImageSet[src_idx], img, 
+        canvas, src_img, img, 
         rect[0], rect[1], rotated ? rect[3] : rect[2], rotated ? rect[2] : rect[3],
         this.FramePadding, this.FramePadding,
         rotated ? FieldSkillImageHeight : FieldSkillImageWidth, 
@@ -1056,13 +1123,13 @@ const ITYPE_ABSTONE     = 5;
   /**
    * WARNING: Avatar/Weapon/Armor/Accessory are shared with same drawing canvas
    */
-  static createEquipmentImageNode(id, type, frame_type=null){
+  static createEquipmentImageNode(id, type, frame_type=null, image_class=null){
     let container = $(document.createElement('div'));
     container.attr('class', 'avatar-container');
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    $(img).attr('class', 'equipment-image');
+    $(img).attr('class', image_class || 'equipment-image');
     block.append(img);
     let image_key = `${id}.png`;
     let rect = null;
@@ -1093,7 +1160,13 @@ const ITYPE_ABSTONE     = 5;
     if(clip_data.hasOwnProperty(image_key)){
       rect = clip_data[`${id}.png`].textureRect.flat();
     }
-    else{ return null; }
+    else if(id < 0){
+      rect = [0, 0, 96, 96];
+    }
+    else{
+      console.warn(`Incomplete equipment data: ${id} (type=${type})`)
+      return ;
+    }
     let krarity = 'frm_thumb_common';
     if(!frame_type && equipment_data.hasOwnProperty(id)){
       switch(equipment_data[id].EquipmentRarity){
@@ -1109,16 +1182,37 @@ const ITYPE_ABSTONE     = 5;
       }
     }
     let rect2 = null;
-    try{
-      rect2 = this.IconClipData[krarity].content.rect;
-    }catch(e){
-      console.error(e);
+    if(id >= 0){
+      try{
+        rect2 = this.IconClipData[krarity].content.rect;
+      }catch(e){
+        console.error(e);
+      }
     }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
     if(rect){
-      let src_idx = equipment_map[image_key];
+      let src_img = null;
+      if(id == -ITYPE_WEAPON){
+        src_img = this.emptyPlaceholder.weapon;
+      }
+      else if(id == -ITYPE_ARMOR){
+        src_img = this.emptyPlaceholder.armor;
+      }
+      else if(id == -ITYPE_ACCESSORY){
+        src_img = this.emptyPlaceholder.accessory;
+      }
+      else if(id == -ITYPE_ABSTONE){
+        src_img = this.emptyPlaceholder.abstone;
+      }
+      else if(id == -ITYPE_SKILL){
+        src_img = this.emptyPlaceholder.skill;
+      }
+      else{
+        let src_idx = equipment_map[image_key];
+        src_img = equipment_set[src_idx]
+      }
       clipImage(
-        this.AvatarCanvas, equipment_set[src_idx], img, 
+        this.AvatarCanvas, src_img, img, 
         rect[0], rect[1], rect[2], rect[3],
         this.FramePadding, this.FramePadding,
         CharacterAvatarWidth, CharacterAvatarHeight,
