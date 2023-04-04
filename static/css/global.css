@@ -126,7 +126,7 @@ tbody tr td{
 }
 
 .abstone-cell{
-  width: 140px;
+  width: 160px;
   vertical-align: top;
 }
 
@@ -352,4 +352,9 @@ tbody tr td{
 
 .clickable{
   cursor:pointer;
+}
+
+.modal-action{
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.6);
 }

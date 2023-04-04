@@ -41,7 +41,7 @@ class Game_Inventory{
         this.setupItemsTab();
         this.container.on("hidden.bs.modal", ()=>{
             if(this.currentType !== undefined){
-                this.tabs[this.currentType].remove();
+                this.tabs[this.currentType].detach();
             }
         });
         this.modal = new bootstrap.Modal(this.container[0]);
@@ -167,7 +167,7 @@ class Game_Inventory{
     createEditorActionIcon(id){
         let ret = $(document.createElement('td'));
         let btn_html = `
-            <button class="btn btn-primary btn-handler" type="button" onclick="onFieldSkillAdd(${id})">
+            <button class="btn btn-primary btn-handler" type="button" onclick="onEditorAction(${id})">
             ${BICON_PLUS}
             </button>
         `;
@@ -242,7 +242,7 @@ class Game_Inventory{
                 let irariry = instance.Rarity || instance.EquipmentRarity || instance.CharacterRarity;
                 if(irariry != rarity){ continue; }
                 if(this.__htmlCache[type_id].hasOwnProperty(id)){
-                    tbody.append(this.__htmlCache[type_id][id]);
+                    tbody.prepend(this.__htmlCache[type_id][id]);
                     continue;
                 }
                 let img = null;
@@ -341,7 +341,7 @@ class Game_Inventory{
                 let irariry = instance.MAbilityStone.Rarity;
                 if(irariry != rarity){ continue; }
                 if(this.__htmlCache[type_id].hasOwnProperty(id)){
-                    tbody.append(this.__htmlCache[type_id][id]);
+                    tbody.prepend(this.__htmlCache[type_id][id]);
                     continue;
                 }
                 let desc = instance.Description;
@@ -357,7 +357,7 @@ class Game_Inventory{
                 let act = this.createEditorActionIcon(id);
                 row.append(act);
                 this.__htmlCache[type_id][id] = row;
-                tbody.append(row);
+                tbody.prepend(row);
             }
             this.tabTable[type_name][category].append(tbody);
         }

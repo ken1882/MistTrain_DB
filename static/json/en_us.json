@@ -299,6 +299,10 @@
   "Lv": "Lv.",
   "Bookmark": "Bookmark",
   "Description": "Description",
+  "AddBookmark": "Add to bookmark",
+  "Choose": "Choose",
+  "Ability": "Ability",
+  "None": "None",
 
   "ItemType": {
     "0": "Character",
@@ -332,7 +336,10 @@
     "28": "",
     "29": "Formation",
     "30": "PT Skill",
-    "31": "Skill"
+    "31": "Skill",
+    "105": "Weapon Ability Stone",
+    "205": "Armor Ability Stone",
+    "305": "Accessory Ability Stone"
   },
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

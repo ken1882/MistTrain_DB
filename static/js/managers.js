@@ -385,6 +385,7 @@ const ITYPE_SKILL       = 31;
     this.loadEquipmentData(ITYPE_WEAPON);
     this.loadEquipmentData(ITYPE_ARMOR);
     this.loadEquipmentData(ITYPE_ACCESSORY);
+    this.loadEquipmentSkillGroup();
     this.loadLevelSkillData();
     this.setupEquipmentCanvas();
     this.queueAssetRequest(()=>{
@@ -538,6 +539,18 @@ const ITYPE_SKILL       = 31;
         if(res.status == 404){this.incReadyCounter();}
         else{ handleAjaxError(res); }
       },
+    });
+  }
+
+  static loadEquipmentSkillGroup(){
+    this.EquipmentSkillGroup = {};
+    this.loadAssetDataArchive('/MasterData/MEquipmentSkillRateViewModel.json', (res)=>{
+      for(let inf of res){
+        if(!this.EquipmentSkillGroup.hasOwnProperty(inf.MEquipmentSkillRateGroupId)){
+          this.EquipmentSkillGroup[inf.MEquipmentSkillRateGroupId] = [];
+        }
+        this.EquipmentSkillGroup[inf.MEquipmentSkillRateGroupId].push(inf);
+      }
     });
   }
 

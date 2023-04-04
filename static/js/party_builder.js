@@ -8,6 +8,9 @@ const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 </svg>`;
 
 let Inventory = null;
+let ActionModal = null;
+let currentSelectedNode = null;
+let currentSelectedId = 0;
 
 function init(){
     AssetsManager.loadCharacterAssets();
@@ -21,7 +24,7 @@ function init(){
 function attachInventorySelector(node, type){
     node.addClass('clickable');
     node.click((e)=>{
-        window.currentSelectedNode = e.target;
+        currentSelectedNode = node;
         Inventory.show(type);
     });
 }
@@ -184,6 +187,42 @@ function onMemberMove(e, u){
 
 }
 
+function onEditorAction(id){
+    document.getElementById('skill-group-select').innerHTML = '';
+    currentSelectedId = id;
+    let node = currentSelectedNode[0].parentElement;
+    if(!node.id.includes('abstone')){
+        if(node.id.includes('weapon')){
+            let gid = AssetsManager.WeaponData[id].MEquipmentSkillRateGroupId;
+            if(gid){
+                setupAbilityGroup(gid);
+            }
+        }
+        else if(node.id.includes('armor')){
+            let gid = AssetsManager.ArmorData[id].MEquipmentSkillRateGroupId;
+            if(gid){
+                setupAbilityGroup(gid);
+            }
+        }
+        else if(node.id.includes('accessory')){
+            let gid = AssetsManager.AccessoryData[id].MEquipmentSkillRateGroupId;
+            if(gid){
+                setupAbilityGroup(gid);
+            }
+        }
+    }
+    ActionModal.show();
+}
+
+function onEditorChoose(){
+    let node = currentSelectedNode[0].parentElement;
+    if(node.id.includes('abstone')){
+        onAbStoneAdd(currentSelectedId, node);
+    }
+    ActionModal.hide();
+    Inventory.hide();
+}
+
 function onCharacterAdd(id){
     
 }
@@ -196,8 +235,32 @@ function onArmorAdd(id){
     
 }
 
-function onAbStoneAdd(id){
-    
+function onAbStoneAdd(id, node){
+    let item = $(document.createElement('p'));
+    item.text(AssetsManager.SkillData[id].Name);
+    let cancel = $(document.createElement('span'));
+    cancel.addClass('clickable');
+    cancel.click(()=>{
+        item.remove();
+    });
+    cancel.html('&times;');
+    item.append(cancel);
+    $(node).prepend(item);
+}
+
+function setupAbilityGroup(gid){
+    if(!AssetsManager.EquipmentSkillGroup.hasOwnProperty(gid)){ return ; }
+    let node = $('#skill-group-select');
+    for(let obj of AssetsManager.EquipmentSkillGroup[gid]){
+        let name = Vocab['None'];
+        if(AssetsManager.SkillData.hasOwnProperty(obj.MSkillId)){
+            name = AssetsManager.SkillData[obj.MSkillId].Name;
+        }
+        let opt = $(document.createElement('option'));
+        opt.attr('value', name);
+        opt.text(name);
+        node.append(opt);
+    }
 }
 
 function onSkillAdd(id){
@@ -224,6 +287,7 @@ function setup(){
     $("#loading-indicator").remove();
     $("#party-index").css('display', '');
     Inventory = new Game_Inventory('inventory');
+    ActionModal = new bootstrap.Modal($('#modal-action'));
 }
 
 (function(){
