@@ -10,11 +10,23 @@ const FieldSkillImageHeight = 94;
 const FieldSkillFrameWidth  = 214;
 const FieldSkillFrameHeight = 102;
 
+const ITYPE_CHARACTER   = 0;
 const ITYPE_WEAPON      = 1;
 const ITYPE_ARMOR       = 2;
 const ITYPE_ACCESSORY   = 3;
 const ITYPE_CONSUMABLE  = 4;
 const ITYPE_ABSTONE     = 5;
+const ITYPE_GOLD        = 6;
+const ITYPE_FREEGEM     = 7;
+const ITYPE_GEM         = 8;
+const ITYPE_GEAR        = 10; // aka character pieces
+const ITYPE_GEAR2       = 11;
+const ITYPE_ABSTONE2    = 12;
+const ITYPE_SKIN        = 13;
+const ITYPE_MUSIC       = 14;
+const ITYPE_ADD_SKILL   = 15;
+const ITYPE_EXP         = 16;
+const ITYPE_FIELD_SKILL = 30;
 const ITYPE_SKILL       = 31;
 
 /**---------------------------------------------------------------------------
@@ -951,13 +963,13 @@ const ITYPE_SKILL       = 31;
 
   static get FramePadding(){ return 4; }
 
-  static createCharacterAvatarNode(id, frame_type=null){
+  static createCharacterAvatarNode(id, frame_type=null, options={}){
     let container = $(document.createElement('div'));
-    container.attr('class', 'avatar-container');
+    container.attr('class', options['container_class'] || 'avatar-container');
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    $(img).attr('class', 'avatar');
+    $(img).attr('class', options['image_class'] || 'avatar');
     block.append(img);
     let avatar_key = `${id}.png`;
     let rect = null;
@@ -1123,13 +1135,13 @@ const ITYPE_SKILL       = 31;
   /**
    * WARNING: Avatar/Weapon/Armor/Accessory are shared with same drawing canvas
    */
-  static createEquipmentImageNode(id, type, frame_type=null, image_class=null){
+  static createEquipmentImageNode(id, type, frame_type=null, options={}){
     let container = $(document.createElement('div'));
-    container.attr('class', 'avatar-container');
+    container.attr('class', options['container_class'] || 'avatar-container');
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    $(img).attr('class', image_class || 'equipment-image');
+    $(img).attr('class', options['image_class'] || 'equipment-image');
     block.append(img);
     let image_key = `${id}.png`;
     let rect = null;

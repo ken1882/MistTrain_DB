@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     
+    <script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
     <script>
       window.addEventListener("load", ()=>{
         DataManager.initialize();
@@ -56,6 +57,12 @@
     </div>
 
     <div id="party-index" class="center" style="display: none">
+        <table id="party-table" class="table table-bordered table-responsive"
+          style="max-width: 95%; margin: auto;"
+        >
+          <tbody id="party-table-body">
+          </tbody>
+        </table>
         <table id="fieldskill-table" class="table table-bordered"
           style="max-width: 95%; margin: auto;"
         >
@@ -80,14 +87,98 @@
             </tr>
           </thead>
         </table>
-        <table id="party-table" class="table table-bordered table-responsive"
-          style="max-width: 95%; margin: auto;"
-        >
-          <tbody id="party-table-body">
-          </tbody>
-        </table>
+        
       </div>
-    
+      
+      <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Open Table
+  </button>
+  
+  Modal
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tabbed Table</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Table 1</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Table 2</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Larry</td>
+                    <td>the Bird</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Username</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+        </div>
+       </div>
+    </div>
+  </div></div> -->
+  
   </body>
  
 

@@ -125,6 +125,18 @@ tbody tr td{
   padding: 4px;
 }
 
+.abstone-cell{
+  width: 140px;
+}
+
+.abstone-container {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  padding: 4px 4px 4px 4px;
+}
+
 /* .fieldskill-col-header{
   width: 220px;
 } */
@@ -331,4 +343,8 @@ tbody tr td{
   border: solid 1px white;
   resize: both;
   overflow: hidden;
+}
+
+.clickable{
+  cursor:pointer;
 }

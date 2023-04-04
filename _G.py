@@ -172,6 +172,7 @@ SSCOPE_ALLY  = 2
 STYPE_NORMAL_ATTACK = 5
 
 # Item constants
+ITYPE_CHARACTER   = 0
 ITYPE_WEAPON      = 1
 ITYPE_ARMOR       = 2
 ITYPE_ACCESORY    = 3
@@ -183,6 +184,11 @@ ITYPE_GEM         = 8
 ITYPE_GEAR        = 10  # aka character pieces
 ITYPE_GEAR2       = 11
 ITYPE_ABSTONE2    = 12
+ITYPE_SKIN        = 13
+ITYPE_MUSIC       = 14
+ITYPE_ADD_SKILL   = 15
+ITYPE_EXP         = 16
+ITYPE_FIELD_SKILL = 30
 ITYPE_SKILL       = 31
 
 ITYPE_NAMES = {
