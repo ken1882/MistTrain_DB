@@ -26,6 +26,7 @@ const ITYPE_SKIN        = 13;
 const ITYPE_MUSIC       = 14;
 const ITYPE_ADD_SKILL   = 15;
 const ITYPE_EXP         = 16;
+const ITYPE_FORMATION   = 29;
 const ITYPE_FIELD_SKILL = 30;
 const ITYPE_SKILL       = 31;
 
@@ -1097,7 +1098,6 @@ const ITYPE_SKILL       = 31;
       }
       else{
         let src_idx = this.FieldSkillImageMap[image_key];
-        console.log(image_key);
         rotated = this.FieldSkillImageClip[image_key].textureRotated;
         if(rotated){
           context.translate(0, canvas.height);

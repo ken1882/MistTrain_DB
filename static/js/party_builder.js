@@ -2,6 +2,11 @@ const BICON_ARROW_UPDOWN = `<svg xmlns="http://www.w3.org/2000/svg" width="16" h
 <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
 </svg>`;
 
+const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+<path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+</svg>`;
+
 let Inventory = null;
 
 function init(){
@@ -22,8 +27,8 @@ function attachInventorySelector(node, type){
 }
 
 function addPartyPlaceholders(){
-    const PT_RENTAL = -2
-    const PT_SELF   = -1
+    const PT_RENTAL = -2;
+    const PT_SELF   = -1;
     for(let i=1;i<=4;++i){
         let node = $(`#fieldskill-${i}`);
         let t = (i == 4 ? PT_RENTAL : PT_SELF)
@@ -82,7 +87,7 @@ function addPartyPlaceholders(){
                             'image_class': 'abstone-add-icon'
                         }
                     );
-                    attachInventorySelector(abs, ITYPE_ABSTONE);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_WEAPON));
                     cell.append(abs);
                     break;
                 case 3:
@@ -106,7 +111,7 @@ function addPartyPlaceholders(){
                             'image_class': 'abstone-add-icon'
                         }
                     );
-                    attachInventorySelector(abs, ITYPE_ABSTONE);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ARMOR));
                     cell.append(abs);
                     break;
                 case 5:
@@ -130,7 +135,7 @@ function addPartyPlaceholders(){
                             'image_class': 'abstone-add-icon'
                         }
                     );
-                    attachInventorySelector(abs, ITYPE_ABSTONE);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY));
                     cell.append(abs);
                     break;
                 case 7:
@@ -176,6 +181,34 @@ function addPartyPlaceholders(){
 }
 
 function onMemberMove(e, u){
+
+}
+
+function onCharacterAdd(id){
+    
+}
+
+function onWeaponAdd(id){
+    
+}
+
+function onArmorAdd(id){
+    
+}
+
+function onAbStoneAdd(id){
+    
+}
+
+function onSkillAdd(id){
+    
+}
+
+function onFieldSkillAdd(id){
+    
+}
+
+function onFormationAdd(id){
 
 }
 

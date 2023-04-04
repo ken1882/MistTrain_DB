@@ -376,7 +376,7 @@ function onListAddClick(id){
     if(t >= 0xffff){
         return setTimeout(() => {
             onListAddClick(id);
-        }, 500);;
+        }, 500);
     }
     for(let k in AVAILABLE_TYPE_BITSET){
         if(t & AVAILABLE_TYPE_BITSET[k]){
