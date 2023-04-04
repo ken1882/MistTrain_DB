@@ -358,3 +358,8 @@ tbody tr td{
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.6);
 }
+
+.item-label{
+  padding-top: 4px;
+  margin-bottom: 0;
+}

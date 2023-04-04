@@ -9,6 +9,10 @@ const FieldSkillImageWidth  = 202;
 const FieldSkillImageHeight = 94;
 const FieldSkillFrameWidth  = 214;
 const FieldSkillFrameHeight = 102;
+const FormationBaseWidth    = 98;
+const FormationBaseHeight   = 98;
+const FormationPosWidth     = 18;
+const FormationPosHeight    = 18;
 
 const ITYPE_CHARACTER   = 0;
 const ITYPE_WEAPON      = 1;
@@ -357,6 +361,17 @@ const ITYPE_SKILL       = 31;
     }
   }
 
+  static loadFormationArchive(){
+    this.__readyReq += 1;
+    this.setupFormationCanvas();
+    this.FormationData = {};
+    this.loadAssetDataArchive('/MasterData/MFormationViewModel.json', (res)=>{
+      for(let inf of res){
+        this.FormationData[inf.Id] = inf;
+      }
+    });
+  }
+
   static loadFieldSkillImageClip(idx=1){
     this.__readyReq += 1;
     $.ajax({
@@ -386,6 +401,7 @@ const ITYPE_SKILL       = 31;
     this.loadEquipmentData(ITYPE_ARMOR);
     this.loadEquipmentData(ITYPE_ACCESSORY);
     this.loadEquipmentSkillGroup();
+    this.loadUltimateWeapons();
     this.loadLevelSkillData();
     this.setupEquipmentCanvas();
     this.queueAssetRequest(()=>{
@@ -464,6 +480,25 @@ const ITYPE_SKILL       = 31;
       success: ok_handler,
       error: handleAjaxError,
     })
+  }
+
+  static loadUltimateWeapons(){
+    this.UltimateWeaponGroup = {};
+    this.loadAssetDataArchive('/MasterData/MUltimateWeaponGroupViewModel.json', (res)=>{
+      for(let inf of res){
+        inf = inf.MUltimateWeapons;
+        for(let wp of inf){
+          if(!this.UltimateWeaponGroup.hasOwnProperty(wp.MWeaponId)){
+            this.UltimateWeaponGroup[wp.MWeaponId] = {};
+          }
+          for(let abg of wp.MUltimateWeaponPointAbilityGroups){
+            for(let ability of abg.MUltimateWeaponPointAbilities){
+              this.UltimateWeaponGroup[wp.MWeaponId][ability.Id] = ability;
+            }
+          }
+        }
+      }
+    });
   }
 
   static loadEquipmentAssets(idx, type){
@@ -975,6 +1010,32 @@ const ITYPE_SKILL       = 31;
     this.incReadyCounter();
   }
 
+  static setupFormationCanvas(){
+    this.__readyReq += 1;
+    this.FormationCanvas = document.createElement('canvas');
+    this.FormationCanvas.width  = FormationBaseWidth;
+    this.FormationCanvas.height = FormationBaseHeight;
+    this.FormationContext = this.FormationCanvas.getContext('2d');
+    this.FormationBaseImage = new Image();
+    this.FormationBaseImage.src = '/static/assets/formation_base.png';
+    this.FormationBaseImage.onload = ()=>{ this.__readyCnt+=1; }
+    this.FormationPosImage = {
+      1: [],
+      2: [],
+      3: []
+    };
+    for(let i=1;i<=3;++i){
+      for(let j=0;j<5;++j){
+        this.__readyReq += 1;
+        let img = new Image();
+        img.src = `/static/assets/formation_position_${i}${j}.png`;
+        img.onload = ()=>{ this.__readyCnt+=1; }
+        this.FormationPosImage[i].push(img);
+      }
+    }
+    this.incReadyCounter();
+  }
+
   static get FramePadding(){ return 4; }
 
   static createCharacterAvatarNode(id, frame_type=null, options={}){
@@ -1253,6 +1314,37 @@ const ITYPE_SKILL       = 31;
     return container;
   }
 
+  static createFormationNode(id, options={}){
+    let container = $(document.createElement('div'));
+    container.attr('class', options['container_class'] || 'avatar-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    $(img).attr('class', options['image_class'] || 'equipment-image');
+    block.append(img);
+    this.FormationContext.clearRect(0, 0, this.FormationCanvas.width, this.FormationCanvas.height);
+    clipImage(
+      this.FormationCanvas, this.FormationBaseImage, img, 
+      0, 0, FormationBaseWidth, FormationBaseHeight,
+      0, 0
+    );
+    let data  = this.FormationData[id];
+    let slots = data.MFormationSlots;
+    let sx = 2, sy = 2;
+    let dx = 19, dy = 19;
+    for(let inf of slots){
+      let cx = sx + dx*inf.X;
+      let cy = sy + dy*inf.Y;
+      let pos_img = this.FormationPosImage[data.Rank][inf.SlotNo-1];
+      clipImage(
+        this.FormationCanvas, pos_img, img,
+        0, 0, FormationPosWidth, FormationPosHeight,
+        cx, cy
+      )
+    }
+    return container;
+  }
+
   static isStageLoaded(){
     return this.__readyCnt >= this.__readyReq;
   }
@@ -1344,5 +1436,9 @@ class ItemManager{
       }
     }
     return this.pureAccessoryAbstones;
+  }
+
+  static isUltimateWeapon(id){
+    return Object.keys(AssetsManager.UltimateWeaponGroup).includes(`${id}`);
   }
 }

@@ -291,6 +291,10 @@ function canvasStringToArr(ss) {
   return arr;
 }
 
+function todigits(ss){
+  return ss.replace(/\D/g, '');
+}
+
 function clipImage(canvas, image, target, cx, cy, cw, ch, dx=null, dy=null, dw=null, dh=null, rotate=null){
   if(dx == null){ dx = 0; }
   if(dy == null){ dy = 0; }

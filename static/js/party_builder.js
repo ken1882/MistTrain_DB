@@ -7,10 +7,12 @@ const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
 </svg>`;
 
-let Inventory = null;
+let Inventory   = null;
 let ActionModal = null;
 let currentSelectedNode = null;
-let currentSelectedId = 0;
+let currentSelectedId   = 0;
+let emptyPlaceholder    = {};
+let characterLevel      = [50, 50, 50, 50, 50, 50];
 
 function init(){
     AssetsManager.loadCharacterAssets();
@@ -18,15 +20,34 @@ function init(){
     AssetsManager.loadSkillArchive();
     AssetsManager.loadFieldSkillArchive();
     AssetsManager.loadEquipmentArchive();
+    AssetsManager.loadFormationArchive();
     setup();
 }
 
 function attachInventorySelector(node, type){
     node.addClass('clickable');
-    node.click((e)=>{
+    node.click((_)=>{
         currentSelectedNode = node;
         Inventory.show(type);
     });
+}
+
+function createLevelInput(i){
+    let plv = $(document.createElement('span'));
+    plv.text(`${Vocab['Lv']} : `);
+    let lv = $(document.createElement('input'));
+    lv.attr('id', `lv-character-${i}`).css('width', '80px');
+    lv.attr('type', 'number').attr('value', '50').attr('min', '1').attr('max', '100');
+    lv.change((e)=>{
+        let minn = parseInt(e.target.min);
+        let maxn = parseInt(e.target.max);
+        let val = parseInt(todigits(e.target.value) || '0');
+        val = Math.min(maxn, Math.max(minn, val));
+        e.target.value = val;
+        characterLevel[i] = val;
+    });
+    lv.val(characterLevel[i]);
+    return [plv, lv]
 }
 
 function addPartyPlaceholders(){
@@ -42,9 +63,7 @@ function addPartyPlaceholders(){
         node.append(icon);
         node.append(label);
     }
-    let img = new Image();
-    img.src = '/static/assets/formation_base.png';
-    $('#formation-container').append(img);
+    onFormationAdd(1, $('#formation-container')[0]);
     for(let i=1;i<=5;++i){
         let tbody = $('#party-table-body');
         let row = $(document.createElement('tr'));
@@ -61,13 +80,9 @@ function addPartyPlaceholders(){
                     cell.append(icon);
                     // cell.append(document.createElement('br'));
                     cell.css('width', '280px');
-                    let plv = $(document.createElement('span'));
-                    plv.text(`${Vocab['Lv']} : `);
-                    cell.append(plv);
-                    let lv = $(document.createElement('input'));
-                    lv.attr('id', `lv-character-${i}`);
-                    lv.attr('type', 'number').attr('value', '50').css('width', '80px');
-                    cell.append(lv);
+                    let eles = createLevelInput(i);
+                    cell.append(eles[0]);
+                    cell.append(eles[1]);
                     break;
                 case 1:
                     cell.attr('id', `weapon-${i}`);
@@ -159,7 +174,7 @@ function addPartyPlaceholders(){
                         let inp = $(document.createElement('input'));
                         inp.attr('type', 'number');
                         inp.css('width', '50px');
-                        inp.attr('value', SP_HOLDER[k]);
+                        inp.attr('value', SP_HOLDER[k]).attr('min', 0).attr('max', 20);
                         psk.append(inp);
                         if(k==1){ cell.append(document.createElement('br')); }
                         else{
@@ -197,6 +212,9 @@ function onEditorAction(id){
             if(gid){
                 setupAbilityGroup(gid);
             }
+            else if(ItemManager.isUltimateWeapon(id)){
+                setupUltimateAbilityGroup(id);
+            }
         }
         else if(node.id.includes('armor')){
             let gid = AssetsManager.ArmorData[id].MEquipmentSkillRateGroupId;
@@ -219,20 +237,71 @@ function onEditorChoose(){
     if(node.id.includes('abstone')){
         onAbStoneAdd(currentSelectedId, node);
     }
+    else if(node.id.includes('fieldskill')){
+        onFieldSkillAdd(currentSelectedId, node);
+    }
+    else if(node.id.includes('character')){
+        onCharacterAdd(currentSelectedId, node);
+    }
+    else if(node.id.includes('weapon')){
+        onWeaponAdd(currentSelectedId, node);
+    }
+    else if(node.id.includes('armor')){
+        onArmorAdd(currentSelectedId, node);
+    }
+    else if(node.id.includes('accessory')){
+        onAccessoryAdd(currentSelectedId, node);
+    }
+    else if(node.id.includes('formation')){
+        onFormationAdd(currentSelectedId, node);
+    }
+
     ActionModal.hide();
     Inventory.hide();
 }
 
-function onCharacterAdd(id){
-    
+function onCharacterAdd(id, node){
+    node.innerHTML = '';
+    let icon = AssetsManager.createCharacterAvatarNode(id)
+    attachInventorySelector(icon, ITYPE_CHARACTER);
+    $(node).append(icon);
+    let idx = parseInt(todigits(node.id));
+    let eles = createLevelInput(idx);
+    $(node).append(eles[0]);
+    $(node).append(eles[1]);
 }
 
-function onWeaponAdd(id){
-    
+function onWeaponAdd(id, node){
+    node.innerHTML = '';
+    let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_WEAPON)
+    attachInventorySelector(icon, ITYPE_WEAPON);
+    $(node).append(icon);
+    let name = $('#skill-group-select').val();
+    let label = $(document.createElement('p')).text(name);
+    label.addClass('item-label');
+    $(node).append(label);
 }
 
-function onArmorAdd(id){
-    
+function onArmorAdd(id, node){
+    node.innerHTML = '';
+    let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ARMOR)
+    attachInventorySelector(icon, ITYPE_ARMOR);
+    $(node).append(icon);
+    let name = $('#skill-group-select').val();
+    let label = $(document.createElement('p')).text(name);
+    label.addClass('item-label');
+    $(node).append(label);
+}
+
+function onAccessoryAdd(id, node){
+    node.innerHTML = '';
+    let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ACCESSORY)
+    attachInventorySelector(icon, ITYPE_ACCESSORY);
+    $(node).append(icon);
+    let name = $('#skill-group-select').val();
+    let label = $(document.createElement('p')).text(name);
+    label.addClass('item-label');
+    $(node).append(label);
 }
 
 function onAbStoneAdd(id, node){
@@ -263,16 +332,43 @@ function setupAbilityGroup(gid){
     }
 }
 
-function onSkillAdd(id){
+function setupUltimateAbilityGroup(id){
+    if(!AssetsManager.UltimateWeaponGroup.hasOwnProperty(id)){ return ; }
+    let node = $('#skill-group-select');
+    for(let aid in AssetsManager.UltimateWeaponGroup[id]){
+        if(!AssetsManager.UltimateWeaponGroup[id].hasOwnProperty(aid)){ continue; }
+        let name = AssetsManager.UltimateWeaponGroup[id][aid].Name;
+        let opt = $(document.createElement('option'));
+        opt.attr('value', name);
+        opt.text(name);
+        node.append(opt);
+    }
+}
+
+function onSkillAdd(id, node){
     
 }
 
-function onFieldSkillAdd(id){
-    
+function onFieldSkillAdd(id, node){
+    node.innerHTML = '';
+    let pt = AssetsManager.createFieldSkillImageNode(id)
+    attachInventorySelector(pt, ITYPE_FIELD_SKILL);
+    $(node).append(pt);
+    let name = AssetsManager.FieldSkillData[id].Name;
+    let label = $(document.createElement('p')).text(name);
+    label.addClass('item-label');
+    $(node).append(label);
 }
 
-function onFormationAdd(id){
-
+function onFormationAdd(id, node){
+    node.innerHTML = '';
+    let pt = AssetsManager.createFormationNode(id)
+    attachInventorySelector(pt, ITYPE_FORMATION);
+    $(node).append(pt);
+    let name = AssetsManager.FormationData[id].Name;
+    let label = $(document.createElement('p')).text(name);
+    label.addClass('item-label');
+    $(node).append(label);
 }
 
 function setup(){

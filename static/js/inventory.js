@@ -55,6 +55,7 @@ class Game_Inventory{
         this.setupAccessoryTab();
         this.setupAbstoneTab();
         this.setupFieldSkillTab();
+        this.setupFormationTab();
     }
     
     setup(){
@@ -164,6 +165,21 @@ class Game_Inventory{
         this.tabs[ITYPE_FIELD_SKILL] = body;
     }
 
+    setupFormationTab(){
+        let categories = [
+            Vocab['Bookmark'],
+            `${Vocab['Rank']}_1`,
+            `${Vocab['Rank']}_2`,
+            `${Vocab['Rank']}_3`,
+        ];
+        let handlers = this.getCommonHandlers();
+        handlers[categories[1]] = handlers['A'];
+        handlers[categories[2]] = handlers['S'];
+        handlers[categories[3]] = handlers['SS'];
+        let body = this.createTabBody('formation', categories, handlers);
+        this.tabs[ITYPE_FORMATION] = body;
+    }
+
     createEditorActionIcon(id){
         let ret = $(document.createElement('td'));
         let btn_html = `
@@ -213,7 +229,7 @@ class Game_Inventory{
                 data = AssetsManager.FieldSkillData;
                 break;
             case 'formation':
-                return this.loadFormation();
+                return this.loadFormation(category);
         }
         if(!this.__htmlCache.hasOwnProperty(type_id)){
             this.__htmlCache[type_id] = {};
@@ -364,7 +380,66 @@ class Game_Inventory{
     }
 
     loadFormation(category){
-
+        let type_name = 'formation';
+        let type_id   = ITYPE_FORMATION;
+        if(!this.tabTable.hasOwnProperty(type_name)){
+            this.tabTable[type_name] = {};
+        }
+        if(!this.__htmlCache.hasOwnProperty(type_id)){
+            this.__htmlCache[type_id] = {};
+        }
+        let rarity = 4;
+        switch(category){
+            case `${Vocab['Rank']}_1`:
+                rarity = 1;
+                break;
+            case `${Vocab['Rank']}_2`:
+                rarity = 2;
+                break;
+            case `${Vocab['Rank']}_3`:
+                rarity = 3;
+                break;
+            case Vocab['Bookmark']:
+                rarity = 0;
+                break;
+        }
+        if(rarity > 0 && this.tabTable[type_name][category][0].childElementCount < 2){
+            let tbody = $(document.createElement('tbody'));
+            for(let id in AssetsManager.FormationData){
+                if(!AssetsManager.FormationData.hasOwnProperty(id)){ continue; }
+                let instance = AssetsManager.FormationData[id];
+                let irariry = instance.Rank;
+                if(irariry != rarity){ continue; }
+                if(this.__htmlCache[type_id].hasOwnProperty(id)){
+                    tbody.prepend(this.__htmlCache[type_id][id]);
+                    continue;
+                }
+                let desc = '';
+                let name = instance.Name;
+                let row = $(document.createElement('tr'));
+                let cells = [];
+                let lines = [''];
+                for(let i=0;i<3;++i){
+                    cells.push($(document.createElement('td')));
+                    row.append(cells[i]);
+                }
+                for(let slot of instance.MFormationSlots){
+                    lines[slot.SlotNo] = `[${slot.SlotNo}] ${slot.Description || ''}`;
+                }
+                for(let line of lines){
+                    if(!line.length){ continue; }
+                    desc += line.replaceAll('\\n', ' ')+'<br>';
+                }
+                cells[0].append(AssetsManager.createFormationNode(id));
+                cells[1].text(name);
+                cells[2].html(desc);
+                let act = this.createEditorActionIcon(id);
+                row.append(act);
+                this.__htmlCache[type_id][id] = row;
+                tbody.prepend(row);
+            }
+            this.tabTable[type_name][category].append(tbody);
+        }
     }
     
 
