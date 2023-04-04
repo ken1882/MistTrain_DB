@@ -121,6 +121,10 @@ tbody tr td{
   height: 48px;
 }
 
+.party-cell{
+  padding: 4px;
+}
+
 /* .fieldskill-col-header{
   width: 220px;
 } */

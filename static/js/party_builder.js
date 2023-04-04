@@ -12,32 +12,42 @@ function init(){
 }
 
 function addPartyPlaceholders(){
+    const PT_RENTAL = -2
+    const PT_SELF   = -1
     for(let i=1;i<=4;++i){
         let node = $(`#fieldskill-${i}`);
-        node.append(AssetsManager.createFieldSkillImageNode(i==4?-2:-1));
+        let t = (i == 4 ? PT_RENTAL : PT_SELF)
+        let label = $(document.createElement('p'));
+        label.attr('id', `label-fieldskill-${i}`);
+        node.append(AssetsManager.createFieldSkillImageNode(t));
+        node.append(label);
     }
+    let img = new Image();
+    img.src = '/static/assets/formation_base.png';
+    $('#formation-container').append(img);
     for(let i=1;i<=5;++i){
         let tbody = $('#party-table-body');
         let row = $(document.createElement('tr'));
-        for(let j=0;j<9;++j){
+        for(let j=0;j<10;++j){
             let cell = $(document.createElement('td'));
-            let label = document.createElement('p');
+            let label = $(document.createElement('p'));
+            cell.addClass('party-cell');
             switch(j){
                 case 0:
                     cell.attr('id', `character-${i}`);
                     cell.append(AssetsManager.createCharacterAvatarNode(-1));
-                    cell.attr('id', `character-${i}-label`);
+                    label.attr('id', `character-${i}-label`);
                     cell.append(label);
                     break;
                 case 1:
                     cell.attr('id', `weapon-${i}`);
                     cell.append(AssetsManager.createEquipmentImageNode(-ITYPE_WEAPON, ITYPE_WEAPON));
-                    cell.attr('id', `weapon-${i}-label`);
+                    label.attr('id', `weapon-${i}-label`);
                     cell.append(label);
                     break;
                 case 2:
                     cell.attr('id', `abstone-weapon-${i}`);
-                    cell.attr('id', `abstone-weapon-${i}-label`);
+                    label.attr('id', `abstone-weapon-${i}-label`);
                     cell.append(label);
                     var abs = AssetsManager.createEquipmentImageNode(
                         -ITYPE_ABSTONE, ITYPE_ABSTONE,
@@ -48,12 +58,12 @@ function addPartyPlaceholders(){
                 case 3:
                     cell.attr('id', `armor-${i}`);
                     cell.append(AssetsManager.createEquipmentImageNode(-ITYPE_ARMOR, ITYPE_ARMOR));
-                    cell.attr('id', `armor-${i}-label`);
+                    label.attr('id', `armor-${i}-label`);
                     cell.append(label);
                     break;
                 case 4:
                     cell.attr('id', `abstone-armor-${i}`);
-                    cell.attr('id', `abstone-armor-${i}-label`);
+                    label.attr('id', `abstone-armor-${i}-label`);
                     cell.append(label);
                     var abs = AssetsManager.createEquipmentImageNode(
                         -ITYPE_ABSTONE, ITYPE_ABSTONE,
@@ -64,12 +74,12 @@ function addPartyPlaceholders(){
                 case 5:
                     cell.attr('id', `accessory-${i}`);
                     cell.append(AssetsManager.createEquipmentImageNode(-ITYPE_ACCESSORY, ITYPE_ACCESSORY));
-                    cell.attr('id', `accessory-${i}-label`);
+                    label.attr('id', `accessory-${i}-label`);
                     cell.append(label);
                     break;
                 case 6:
                     cell.attr('id', `abstone-accessory-${i}`);
-                    cell.attr('id', `abstone-accessory-${i}-label`);
+                    label.attr('id', `abstone-accessory-${i}-label`);
                     cell.append(label);
                     var abs = AssetsManager.createEquipmentImageNode(
                         -ITYPE_ABSTONE, ITYPE_ABSTONE,
@@ -80,10 +90,30 @@ function addPartyPlaceholders(){
                 case 7:
                     cell.attr('id', `add-skill-${i}`);
                     cell.append(AssetsManager.createEquipmentImageNode(-ITYPE_SKILL, ITYPE_SKILL));
-                    cell.attr('id', `add-skill-${i}-label`);
+                    label.attr('id', `add-skill-${i}-label`);
                     cell.append(label);
                     break;
                 case 8:
+                    const SP_HOLDER = [4, 6, 10, 0];
+                    cell.css('width', '240px');
+                    for(let k=0;k<4;++k){
+                        let psk = $(document.createElement('span'));
+                        psk.text(`${Vocab['SP']} ${k+1}: `);
+                        cell.append(psk);
+                        let inp = $(document.createElement('input'));
+                        inp.attr('type', 'number');
+                        inp.css('width', '50px');
+                        inp.attr('value', SP_HOLDER[k]);
+                        psk.append(inp);
+                        if(k==1){ cell.append(document.createElement('br')); }
+                        else{
+                            let spacing = $(document.createElement('span'));
+                            spacing.text(' ');
+                            cell.append(spacing);
+                        }
+                    }
+                    break;
+                case 9:
                     cell.html(`
                         <a class="btn btn-primary btn-handler" type="button">
                         ${BICON_ARROW_UPDOWN}

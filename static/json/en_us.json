@@ -291,6 +291,11 @@
   },
   "PartyBuilder": "Party Builder",
   "AddSkill": "Additional Skill",
+  "ExStatus": "Ex-Status",
+  "Others": "Others",
+  "HP": "HP",
+  "Skill": "Skill",
+  "SP": "SP",
 
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

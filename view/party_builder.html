@@ -61,12 +61,22 @@
         >
           <thead>
             <tr>
-              <th id="fieldskill-1"></th>
-              <th id="fieldskill-2"></th>
-              <th id="fieldskill-3"></th>
-              <th id="fieldskill-4"></th>
-              <th id="formation"></th>
-              <th id="ex-status"></th>
+                <th id="fieldskill-1"></th>
+                <th id="fieldskill-2"></th>
+                <th id="fieldskill-3"></th>
+                <th id="fieldskill-4"></th>
+                <th id="formation">
+                    <a id="formation-container"></a>
+                    <p label="formation-label"></p>
+                </th>
+                <th id="ex-status" style="text-align: left;">
+                    <p label="l-ExStatus" style="font-weight: bold;"></p>
+                    <span label="l-HP"></span><span>: </span>
+                    <input type="number" value="0" id="ex-hp" style="width: 80px;">
+                    <p></p>
+                    <span label="l-Others"></span><span>: </span>
+                    <input type="number" value="0" id="ex-stat" style="width: 80px;">
+                </th>
             </tr>
           </thead>
         </table>

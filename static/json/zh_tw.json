@@ -290,6 +290,11 @@
     "Resize": "縮放"
   },
   "PartyBuilder": "隊伍模擬器",
+  "ExStatus": "極限能力值",
+  "Others": "其他",
+  "HP": "HP",
+  "Skill": "技能",
+  "SP": "SP",
 
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {
