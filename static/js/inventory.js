@@ -356,7 +356,9 @@ class Game_Inventory{
             this.tabTable[type_name][category].append(tbody);
         }
         if(type_id == ITYPE_CHARACTER){
-            this.updateCharacterFilter();
+            setTimeout(() => {
+                this.updateCharacterFilter();
+            }, 500);
         }
     }
 
