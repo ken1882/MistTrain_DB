@@ -11,8 +11,13 @@ let Inventory   = null;
 let ActionModal = null;
 let currentSelectedNode = null;
 let currentSelectedId   = 0;
+let currentAddSkillNode = null;
 let emptyPlaceholder    = {};
 let characterLevel      = [50, 50, 50, 50, 50, 50];
+let partyData = {
+    1: {}, 2: {}, 3: {}, 4: {}, 5: {},
+};
+
 
 function init(){
     AssetsManager.loadCharacterAssets();
@@ -27,8 +32,36 @@ function init(){
 function attachInventorySelector(node, type){
     node.addClass('clickable');
     node.click((_)=>{
+        let idx = todigits(node[0].parentElement.id);
+        if(type == ITYPE_SKILL){
+            if(!partyData[idx].hasOwnProperty('character') || !partyData[idx].character){
+                alert(Vocab['SelectCharacterFirst']);
+                return ;
+            }
+            let skill_ids = ItemManager.getCharacterSkills(partyData[idx].character);
+            let ar = [];
+            let ch = AssetsManager.CharacterData[partyData[idx].character];
+            let owned_skills = [
+                ch.MSkill1Id,
+                ch.MSkill2Id,
+                ch.MSkill3Id,
+            ];
+            for(let id of skill_ids){
+                if(!owned_skills.includes(id)){
+                    ar.push(id);
+                }
+            }
+            currentAddSkillNode = Inventory.loadSkill(ar);
+        }
         currentSelectedNode = node;
         Inventory.show(type);
+        let filter = {}
+        if(partyData[idx].character){
+            filter = {
+                'WeaponEquipType': AssetsManager.CharacterData[partyData[idx].character].MCharacterBase.WeaponEquipType,
+            }
+        }
+        Inventory.applyFilter(filter);
     });
 }
 
@@ -158,8 +191,8 @@ function addPartyPlaceholders(){
                     break;
                 case 7:
                     cell.attr('id', `add-skill-${i}`);
-                    icon = AssetsManager.createEquipmentImageNode(-ITYPE_SKILL, ITYPE_SKILL);
-                    // attachInventorySelector(icon, ITYPE_SKILL);
+                    icon = AssetsManager.createSkillIconImageNode(-1);
+                    attachInventorySelector(icon, ITYPE_SKILL);
                     cell.append(icon);
                     label.attr('id', `add-skill-${i}-label`);
                     cell.append(label);
@@ -190,6 +223,7 @@ function addPartyPlaceholders(){
                         ${BICON_ARROW_UPDOWN}
                         </a>
                     `);
+                    cell.addClass('action-cell');
                     break;
             }
             row.append(cell);
@@ -255,6 +289,9 @@ function onEditorChoose(){
     else if(node.id.includes('formation')){
         onFormationAdd(currentSelectedId, node);
     }
+    else if(node.id.includes('skill')){
+        onSkillAdd(currentSelectedId, node);
+    }
 
     ActionModal.hide();
     Inventory.hide();
@@ -262,6 +299,9 @@ function onEditorChoose(){
 
 function onCharacterAdd(id, node){
     node.innerHTML = '';
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        id = -1;
+    }
     let icon = AssetsManager.createCharacterAvatarNode(id)
     attachInventorySelector(icon, ITYPE_CHARACTER);
     $(node).append(icon);
@@ -269,10 +309,14 @@ function onCharacterAdd(id, node){
     let eles = createLevelInput(idx);
     $(node).append(eles[0]);
     $(node).append(eles[1]);
+    partyData[idx].character = id < 0 ? 0 : id;
 }
 
 function onWeaponAdd(id, node){
     node.innerHTML = '';
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        id = -ITYPE_WEAPON;
+    }
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_WEAPON)
     attachInventorySelector(icon, ITYPE_WEAPON);
     $(node).append(icon);
@@ -280,10 +324,15 @@ function onWeaponAdd(id, node){
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
+    let idx = parseInt(todigits(node.id));
+    partyData[idx].weapon = id < 0 ? 0 : id;
 }
 
 function onArmorAdd(id, node){
     node.innerHTML = '';
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        id = -ITYPE_ARMOR;
+    }
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ARMOR)
     attachInventorySelector(icon, ITYPE_ARMOR);
     $(node).append(icon);
@@ -291,10 +340,15 @@ function onArmorAdd(id, node){
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
+    let idx = parseInt(todigits(node.id));
+    partyData[idx].armor = id < 0 ? 0 : id;
 }
 
 function onAccessoryAdd(id, node){
     node.innerHTML = '';
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        id = -ITYPE_ARMOR;
+    }
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ACCESSORY)
     attachInventorySelector(icon, ITYPE_ACCESSORY);
     $(node).append(icon);
@@ -302,9 +356,14 @@ function onAccessoryAdd(id, node){
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
+    let idx = parseInt(todigits(node.id));
+    partyData[idx].accessory = id < 0 ? 0 : id;
 }
 
 function onAbStoneAdd(id, node){
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        return ;
+    }
     let item = $(document.createElement('p'));
     item.text(AssetsManager.SkillData[id].Name);
     let cancel = $(document.createElement('span'));
@@ -315,6 +374,17 @@ function onAbStoneAdd(id, node){
     cancel.html('&times;');
     item.append(cancel);
     $(node).prepend(item);
+    let idx = parseInt(todigits(node.id));
+    id = id < 0 ? 0 : id;
+    if(node.id.includes('weapon')){
+        partyData[idx].weaponAbStone = id;
+    }
+    else if(node.id.includes('armor')){
+        partyData[idx].armorAbStone = id;
+    }
+    else if(node.id.includes('accessory')){
+        partyData[idx].accessoryAbStone = id;
+    }
 }
 
 function setupAbilityGroup(gid){
@@ -346,21 +416,40 @@ function setupUltimateAbilityGroup(id){
 }
 
 function onSkillAdd(id, node){
-    
-}
-
-function onFieldSkillAdd(id, node){
     node.innerHTML = '';
-    let pt = AssetsManager.createFieldSkillImageNode(id)
-    attachInventorySelector(pt, ITYPE_FIELD_SKILL);
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        id = -1;
+    }
+    let pt = AssetsManager.createSkillIconImageNode(id)
+    attachInventorySelector(pt, ITYPE_SKILL);
     $(node).append(pt);
-    let name = AssetsManager.FieldSkillData[id].Name;
-    let label = $(document.createElement('p')).text(name);
+    let label = $(document.createElement('p'));
+    if(id > 0){
+        let name = Inventory.createDecoratedSkillNameNode(id);
+        label.append(name)
+    }
     label.addClass('item-label');
     $(node).append(label);
 }
 
+function onFieldSkillAdd(id, node){
+    node.innerHTML = '';
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        id = todigits(node.id) == 4 ? -2 : -1;
+    }
+    let pt = AssetsManager.createFieldSkillImageNode(id)
+    attachInventorySelector(pt, ITYPE_FIELD_SKILL);
+    $(node).append(pt);
+    let name = id > 0 ? AssetsManager.FieldSkillData[id].Name : '';
+    let label = $(document.createElement('p')).text(name);
+    // label.addClass('item-label');
+    $(node).append(label);
+}
+
 function onFormationAdd(id, node){
+    if(id == Game_Inventory.ITEM_REMOVE_ID){
+        return;
+    }
     node.innerHTML = '';
     let pt = AssetsManager.createFormationNode(id)
     attachInventorySelector(pt, ITYPE_FORMATION);
@@ -384,6 +473,11 @@ function setup(){
     $("#party-index").css('display', '');
     Inventory = new Game_Inventory('inventory');
     ActionModal = new bootstrap.Modal($('#modal-action'));
+    Inventory.container.on("hidden.bs.modal", ()=>{
+        if(Inventory.currentType == ITYPE_SKILL && currentAddSkillNode){
+            currentAddSkillNode.remove();
+        }
+    });
 }
 
 (function(){

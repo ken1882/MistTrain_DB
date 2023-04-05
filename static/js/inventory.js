@@ -2,6 +2,7 @@
  * This class manages items and provide search functions
  */
 class Game_Inventory{
+    
     constructor(id, options={}){
         this.id = id;
         this.options = options;
@@ -56,12 +57,15 @@ class Game_Inventory{
         this.setupAbstoneTab();
         this.setupFieldSkillTab();
         this.setupFormationTab();
+        this.setupSkillTab();
     }
     
     setup(){
         this.__htmlCache = {};
         this.tabTable    = {};
         this.currentAbStoneType = ITYPE_WEAPON;
+        this.removeItemImage = new Image();
+        this.removeItemImage.src = '/static/assets/icon_remove.png';
     }
 
     createTabBody(type_name, categories, handlers){
@@ -87,6 +91,7 @@ class Game_Inventory{
             a.attr('aria-selected', i==0? 'true' : 'false');
             a.click(()=>{
                 this.loadItem(type_name, cat);
+                this.applyFilter(this.filter);
             });
             let container = $(document.createElement('div'));
             container.addClass('tab-pane fade').attr('id', `tab-${type_name}-${cat}`);
@@ -179,6 +184,13 @@ class Game_Inventory{
         let body = this.createTabBody('formation', categories, handlers);
         this.tabs[ITYPE_FORMATION] = body;
     }
+    
+    setupSkillTab(){
+        let handlers = this.getCommonHandlers();
+        handlers[Vocab['Skill']] = handlers['A'];
+        let body = this.createTabBody('skill', [Vocab['Skill']], handlers);
+        this.tabs[ITYPE_SKILL] = body;
+    }
 
     createEditorActionIcon(id){
         let ret = $(document.createElement('td'));
@@ -193,6 +205,21 @@ class Game_Inventory{
 
     static hashAbStoneType(type){
         return 100*type + ITYPE_ABSTONE;
+    }
+
+    createRemoveItem(){
+        let row = $(document.createElement('tr'));
+        let cells = [];
+        for(let i=0;i<3;++i){
+            cells.push($(document.createElement('td')));
+            row.append(cells[i]);
+        }
+        // cells[0].append(this.removeItemImage);
+        cells[1].text(Vocab['Remove']);
+        cells[2].text(Vocab['EditorRemoveInfo']);
+        let act = this.createEditorActionIcon(Game_Inventory.ITEM_REMOVE_ID);
+        row.append(act);
+        return row;
     }
 
     loadItem(type_name, category){
@@ -230,6 +257,9 @@ class Game_Inventory{
                 break;
             case 'formation':
                 return this.loadFormation(category);
+            case 'skill':
+                // Should be called outside with given list of skill ids to display
+                return ;
         }
         if(!this.__htmlCache.hasOwnProperty(type_id)){
             this.__htmlCache[type_id] = {};
@@ -285,6 +315,8 @@ class Game_Inventory{
                 }
                 if(!img){ continue; }
                 let row = $(document.createElement('tr'));
+                row.addClass('inventory-item-row');
+                row.attr('id', `${type_name}_${id}`)
                 let cells = [];
                 for(let i=0;i<3;++i){
                     cells.push($(document.createElement('td')));
@@ -298,6 +330,11 @@ class Game_Inventory{
                 this.__htmlCache[type_id][id] = row;
                 tbody.prepend(row);
             }
+            this.tabTable[type_name][category].append(tbody);
+        }
+        else if(rarity == 0 && this.tabTable[type_name][category][0].childElementCount < 2){
+            let tbody = $(document.createElement('tbody'));
+            tbody.append(this.createRemoveItem());
             this.tabTable[type_name][category].append(tbody);
         }
     }
@@ -340,6 +377,9 @@ class Game_Inventory{
         }
         if(rarity > 0 && this.tabTable[type_name][category][0].childElementCount < 2){
             let tbody = $(document.createElement('tbody'));
+            if(category == Vocab['Bookmark']){
+                tbody.append(this.createRemoveItem());
+            }
             let data = [];
             switch(attachment_id){
                 case ITYPE_WEAPON:
@@ -405,6 +445,9 @@ class Game_Inventory{
         }
         if(rarity > 0 && this.tabTable[type_name][category][0].childElementCount < 2){
             let tbody = $(document.createElement('tbody'));
+            if(category == Vocab['Bookmark']){
+                tbody.append(this.createRemoveItem());
+            }
             for(let id in AssetsManager.FormationData){
                 if(!AssetsManager.FormationData.hasOwnProperty(id)){ continue; }
                 let instance = AssetsManager.FormationData[id];
@@ -442,6 +485,58 @@ class Game_Inventory{
         }
     }
     
+    loadSkill(ids){
+        let type_name = 'skill';
+        let type_id   = ITYPE_SKILL;
+        let category  = Vocab['Skill'];
+        if(!this.tabTable.hasOwnProperty(type_name)){
+            this.tabTable[type_name] = {};
+        }
+        if(!this.__htmlCache.hasOwnProperty(type_id)){
+            this.__htmlCache[type_id] = {};
+        }
+        let tbody = $(document.createElement('tbody'));
+        for(let id of ids){
+            if(!AssetsManager.SkillData.hasOwnProperty(id)){ continue; }
+            let instance = AssetsManager.SkillData[id];
+            if(this.__htmlCache[type_id].hasOwnProperty(id)){
+                tbody.append(this.__htmlCache[type_id][id]);
+                continue;
+            }
+            let desc = instance.Description;
+            let row = $(document.createElement('tr'));
+            let cells = [];
+            for(let i=0;i<3;++i){
+                cells.push($(document.createElement('td')));
+                row.append(cells[i]);
+            }
+            cells[0].append(AssetsManager.createSkillIconImageNode(id));
+            cells[1].append(this.createDecoratedSkillNameNode(id));
+            cells[2].html(desc);
+            let act = this.createEditorActionIcon(id);
+            row.append(act);
+            this.__htmlCache[type_id][id] = row;
+            tbody.prepend(row);
+        }
+        tbody.prepend(this.createRemoveItem());
+        this.tabTable[type_name][category].append(tbody);
+        return tbody;
+    }
+
+    createDecoratedSkillNameNode(id){
+        let ret = $(document.createElement('span'));
+        let text = '';
+        let skill = AssetsManager.SkillData[id];
+        text += `[${Game_Inventory.SKILL_POWER_RANK[skill.SkillPowerRank]}]`;
+        text += ` ${skill.Name}`;
+        ret.text(text);
+        if(AssetsManager.LinkSkillData.hasOwnProperty(id)){
+            let link_icon = document.createElement('span');
+            link_icon.innerHTML = Game_Inventory.ICON_SVG_LINK;
+            ret.prepend(link_icon)
+        }
+        return ret;
+    }
 
     setItemType(type){
         this.dialog_content.append(this.tabs[type]);
@@ -468,4 +563,43 @@ class Game_Inventory{
     addToPage(){
         $('body').append(this.container);
     }
+
+    applyFilter(filter={}){
+        this.filter = filter || {};
+        let rows = document.getElementsByClassName('inventory-item-row');
+        for(let r of rows){
+            $(r).show();
+        }
+        if(filter['WeaponEquipType']){
+            let wtype = filter['WeaponEquipType'];
+            for(let r of rows){
+                let id = $(r).attr('id');
+                if(id && id.includes('weapon')){
+                    id = todigits(id);
+                    if(AssetsManager.WeaponData[id].WeaponEquipType != wtype){
+                        $(r).hide();
+                    }
+                }
+            }
+        }
+    }
+
+    static get ICON_SVG_LINK(){
+        return `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16" 
+        style="border: dashed 2px; padding: 2px;"
+        >
+        <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+        <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+        </svg>
+        `;
+    }
+
+    static get SKILL_POWER_RANK(){
+        return [
+            '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'US'
+        ];
+    }
+
+    static get ITEM_REMOVE_ID(){ return -0xff; }
 }

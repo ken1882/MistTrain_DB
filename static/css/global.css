@@ -122,6 +122,7 @@ tbody tr td{
 }
 
 .party-cell{
+  width: 160px;
   padding: 4px;
 }
 
@@ -362,4 +363,12 @@ tbody tr td{
 .item-label{
   padding-top: 4px;
   margin-bottom: 0;
+}
+
+.equipment-image{
+  padding: 0;
+}
+
+.action-cell{
+  width: 60px;
 }

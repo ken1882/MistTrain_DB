@@ -303,6 +303,9 @@
   "Ability": "能力",
   "None": "無",
   "Rank": "階級",
+  "SelectCharacterFirst": "請先選擇角色",
+  "Remove": "移除",
+  "EditorRemoveInfo": "移除編輯器上當前已選擇的物件",
 
   "ItemType": {
     "0": "角色",

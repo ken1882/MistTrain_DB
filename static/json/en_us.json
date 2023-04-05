@@ -304,6 +304,9 @@
   "Ability": "Ability",
   "None": "None",
   "Rank": "Rank",
+  "SelectCharacterFirst": "Please select character first",
+  "Remove": "Remove",
+  "EditorRemoveInfo": "Remove currently selected object from editor",
 
   "ItemType": {
     "0": "Character",

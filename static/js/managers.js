@@ -13,6 +13,8 @@ const FormationBaseWidth    = 98;
 const FormationBaseHeight   = 98;
 const FormationPosWidth     = 18;
 const FormationPosHeight    = 18;
+const SkillIconFrameWidth   = 100;
+const SkillIconFrameHeight  = 100;
 
 const ITYPE_CHARACTER   = 0;
 const ITYPE_WEAPON      = 1;
@@ -315,6 +317,9 @@ const ITYPE_SKILL       = 31;
     this.AccessoryImageSet    = {};
     this.AccessoryImageClip   = {};
     this.AccessoryImageMap    = {};
+    this.SkillIconImageSet    = {};
+    this.SkillIconImageClip   = {};
+    this.SkillIconImageMap    = {};
     
     this.initialized = true;
   }
@@ -776,6 +781,7 @@ const ITYPE_SKILL       = 31;
       if(!handlers.hasOwnProperty(uri)){ continue; }
       this.loadAssetDataArchive(uri, handlers[uri]);
     }
+    this.loadSkillIconAsset();
   }
 
   static loadSceneData(){
@@ -1018,7 +1024,7 @@ const ITYPE_SKILL       = 31;
     this.FormationContext = this.FormationCanvas.getContext('2d');
     this.FormationBaseImage = new Image();
     this.FormationBaseImage.src = '/static/assets/formation_base.png';
-    this.FormationBaseImage.onload = ()=>{ this.__readyCnt+=1; }
+    this.FormationBaseImage.onload = ()=>{ this.incReadyCounter(); }
     this.FormationPosImage = {
       1: [],
       2: [],
@@ -1029,7 +1035,7 @@ const ITYPE_SKILL       = 31;
         this.__readyReq += 1;
         let img = new Image();
         img.src = `/static/assets/formation_position_${i}${j}.png`;
-        img.onload = ()=>{ this.__readyCnt+=1; }
+        img.onload = ()=>{ this.incReadyCounter(); }
         this.FormationPosImage[i].push(img);
       }
     }
@@ -1116,7 +1122,7 @@ const ITYPE_SKILL       = 31;
     this.incReadyCounter();
   }
 
-  static createFieldSkillImageNode(id, frame_type=null){
+  static createFieldSkillImageNode(id, frame_type=null, options={}){
     let container = $(document.createElement('div'));
     container.attr('class', 'fieldskill-container');
     let block = $(document.createElement('a'));
@@ -1215,7 +1221,7 @@ const ITYPE_SKILL       = 31;
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    $(img).attr('class', options['image_class'] || 'equipment-image');
+    $(img).attr('class', options['image_class'] || 'avatar');
     block.append(img);
     let image_key = `${id}.png`;
     let rect = null;
@@ -1345,6 +1351,102 @@ const ITYPE_SKILL       = 31;
     return container;
   }
 
+  static loadSkillIconAsset(idx=1){
+    this.__readyReq += 2;
+    let image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Skills/skill-${idx}.png`;
+    image.onload = () => {
+      this.SkillIconImageSet[idx] = image;
+      this.incReadyCounter();
+      AssetsManager.loadSkillIconClip(idx);
+      AssetsManager.loadSkillIconAsset(idx+1);
+    };
+    image.onerror = ()=>{
+      this.incReadyCounter();
+    }
+    this.SkillIconFrame = new Image();
+    this.SkillIconFrame.src = '/static/assets/skill_frame.png';
+    this.SkillIconFrame.onload = ()=>{ this.incReadyCounter(); }
+  }
+
+  static loadSkillIconClip(idx=1){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `${ASSET_HOST}/Textures/Icons/Atlas/Skills/skill-${idx}.plist`,
+      success: (res) => { 
+        AssetsManager.parseSkillIconClip(res, idx);
+        this.incReadyCounter();
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
+  static parseSkillIconClip(xml, idx){
+    let root = xml.children[0].children[0];
+    let data = this.parseXMLKeyValueDict(root);
+    for(let i in data.frames){
+      if(!data.frames.hasOwnProperty(i)){ continue; }
+      this.SkillIconImageClip[i] = data.frames[i];
+      this.SkillIconImageMap[i] = idx;
+    }
+  }
+
+  /**
+   * WARNING: Shared canvas with avatar and equpiments
+   */
+  static createSkillIconImageNode(id, options={}){
+    let container = $(document.createElement('div'));
+    container.attr('class', options['container_class'] || 'avatar-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    $(img).attr('class', options['image_class'] || 'equipment-image');
+    block.append(img);
+    let image_key = `${id}.png`;
+    let rect = null;
+    if(this.SkillIconImageClip.hasOwnProperty(image_key)){
+      rect = this.SkillIconImageClip[`${id}.png`].textureRect.flat();
+    }
+    else if(id < 0){
+      rect = [0, 0, 96, 96];
+    }
+    else{
+      console.warn(`Incomplete skill data: ${id}`)
+      return ;
+    }
+    let canvas  = this.AvatarCanvas;
+    let context = this.AvatarContext;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    if(rect){
+      let src_img = null;
+      if(id == -1){
+        src_img = this.emptyPlaceholder.skill;
+      }
+      else{
+        let src_idx = this.SkillIconImageMap[image_key];
+        src_img = this.SkillIconImageSet[src_idx];
+        clipImage(
+          this.AvatarCanvas, this.SkillIconFrame, img, 
+          0, 0, SkillIconFrameWidth, SkillIconFrameHeight,
+          0, 0
+        );
+      }
+      clipImage(
+        this.AvatarCanvas, src_img, img, 
+        rect[0], rect[1], rect[2], rect[3],
+        2, 2,
+        CharacterAvatarWidth, CharacterAvatarHeight,
+      );
+    }
+    return container;
+  }
+
+
+
   static isStageLoaded(){
     return this.__readyCnt >= this.__readyReq;
   }
@@ -1440,5 +1542,46 @@ class ItemManager{
 
   static isUltimateWeapon(id){
     return Object.keys(AssetsManager.UltimateWeaponGroup).includes(`${id}`);
+  }
+
+  /**
+   * Return list of skill ids belong to a character cross all layers
+   */
+  static getCharacterSkills(id){
+    let chid = parseInt(id/1000);
+    let layers = [];
+    let rarity = 200, cnt = 1;
+    while(rarity < 500){
+      let _id = chid*1000+rarity+cnt;
+      if(AssetsManager.CharacterData.hasOwnProperty(_id)){
+        layers.push(_id)
+        cnt += 1;
+      }
+      else{
+        rarity += 100;
+        cnt = 1;
+      }
+    }
+    let ret = [];
+    for(let lid of layers){
+      ret = ret.concat(this.getLayerSkills(lid));
+    }
+    return ret;
+  }
+
+  static getLayerSkills(id){
+    let data = AssetsManager.CharacterData[id];
+    let askills = [data.MSkill1Id, data.MSkill2Id, data.MSkill3Id];
+    if(AssetsManager.TrainBoardData.hasOwnProperty(id)){
+      let train_boards = AssetsManager.TrainBoardData[id].TrainBoardOarders;
+      for(let board of train_boards){
+        for(let entry of board.MTrainBoardDetails){
+          if(entry.TrainBoardDetailAdditionalSkill){
+            askills.push(entry.TrainBoardDetailAdditionalSkill.AdditionalMSkillId);
+          }
+        }
+      }
+    }
+    return askills;
   }
 }
