@@ -372,3 +372,10 @@ tbody tr td{
 .action-cell{
   width: 60px;
 }
+
+.inventory-filter-item{
+  padding: 4px;
+  margin-bottom: 0;
+  float: right;
+  clear: right;
+}

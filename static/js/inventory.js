@@ -134,6 +134,24 @@ class Game_Inventory{
         let categories = [Vocab['Bookmark'], 'SS', 'S', 'A'];
         let body = this.createTabBody('character', categories, this.getCommonHandlers());
         this.tabs[ITYPE_CHARACTER] = body;
+        let ul = $(body.children()[0]);
+        let spacing = $(document.createElement('li'));
+        spacing.css('padding', '16px');
+        ul.append(spacing);
+        for(let i=0;i<9;++i){
+            let li = $(document.createElement('li'));
+            let ckb = $(document.createElement('input'));
+            ckb.attr('type', 'checkbox').attr('id', `ckb_wtype_${i+1}`);
+            li.html(`
+                <label for="ckb_wtype_${i+1}">${Vocab.WeaponTypeList[i+1]}</label>
+            `);
+            ckb.change(()=>{
+                this.updateCharacterFilter();
+            });
+            li.prepend(ckb);
+            li.addClass('inventory-filter-item');
+            ul.append(li);
+        }
     }
 
     setupWeaponTab(){
@@ -336,6 +354,9 @@ class Game_Inventory{
             let tbody = $(document.createElement('tbody'));
             tbody.append(this.createRemoveItem());
             this.tabTable[type_name][category].append(tbody);
+        }
+        if(type_id == ITYPE_CHARACTER){
+            this.updateCharacterFilter();
         }
     }
 
@@ -579,6 +600,26 @@ class Game_Inventory{
                     if(AssetsManager.WeaponData[id].WeaponEquipType != wtype){
                         $(r).hide();
                     }
+                }
+            }
+        }
+    }
+
+    updateCharacterFilter(){
+        let rows = document.getElementsByClassName('inventory-item-row');
+        let enabled = [false];
+        for(let i=1;i<=9;++i){
+            enabled.push($(`#ckb_wtype_${i}`).prop('checked'));
+        }
+        for(let r of rows){
+            let id = $(r).attr('id');
+            if(id && id.includes('character')){
+                id = todigits(id);
+                if(enabled[AssetsManager.CharacterData[id].MCharacterBase.WeaponEquipType]){
+                    $(r).show();
+                }
+                else{
+                    $(r).hide();
                 }
             }
         }
