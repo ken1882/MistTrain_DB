@@ -116,6 +116,33 @@ tbody tr td{
   width: 100px;
 }
 
+.abstone-add-icon{
+  width: 48px;
+  height: 48px;
+}
+
+.party-cell{
+  width: 160px;
+  padding: 4px;
+}
+
+.abstone-cell{
+  width: 160px;
+  vertical-align: top;
+}
+
+.abstone-container {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  padding: 4px 4px 4px 4px;
+}
+
+.inventory-popup {
+  max-width: 70%;
+}
+
 /* .fieldskill-col-header{
   width: 220px;
 } */
@@ -322,4 +349,33 @@ tbody tr td{
   border: solid 1px white;
   resize: both;
   overflow: hidden;
+}
+
+.clickable{
+  cursor:pointer;
+}
+
+.modal-action{
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.item-label{
+  padding-top: 4px;
+  margin-bottom: 0;
+}
+
+.equipment-image{
+  padding: 0;
+}
+
+.action-cell{
+  width: 60px;
+}
+
+.inventory-filter-item{
+  padding: 4px;
+  margin-bottom: 0;
+  float: right;
+  clear: right;
 }

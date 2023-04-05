@@ -24,58 +24,7 @@
     
     <script>
       var __SceneId = '{{ sc_id }}';
-
-      function changeLanguage(){
-        DataManager.changeSetting(DataManager.kLanguage, $("#languageOptions").val());
-        window.location = window.location.href.split("?")[0];
-      }
-
-      function init_navbar(){
-        if(!DataManager.isReady()){
-          setTimeout(() => {
-            init_navbar();
-          }, 300);
-        }
-        let node = $("#languageText");
-        node.innerText = Vocab.currentLanguageName;        
-        node = $("#languageOptions");
-        for(let i in Vocab.SupportedLanguages){
-          let lang = Vocab.SupportedLanguages[i];
-          node.append($('<option>',{
-            value: lang.key,
-            text: lang.name
-          }));
-        }
-        node.val(DataManager.language);
-      }
       
-      function init_totop_button(){
-        let button = document.getElementById("btn-back-to-top");
-        button.style.opacity = '0.5';
-
-        window.onscroll = () => {
-          if(document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
-            button.style.display = "block";
-          }
-          else{
-            button.style.display = "none";
-          }
-        };
-
-        button.addEventListener("click", () => {
-          document.body.scrollTop = 0;
-          document.documentElement.scrollTop = 0;
-        });
-
-        button.addEventListener("mouseover", ()=>{
-          button.style.opacity = "1";          
-        });
-
-        button.addEventListener("mouseout", ()=>{
-          button.style.opacity = "0.5";
-        });
-      }
-
       window.addEventListener("load", ()=>{
         DataManager.initialize();
         AssetsManager.initialize();

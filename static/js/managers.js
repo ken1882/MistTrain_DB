@@ -9,6 +9,32 @@ const FieldSkillImageWidth  = 202;
 const FieldSkillImageHeight = 94;
 const FieldSkillFrameWidth  = 214;
 const FieldSkillFrameHeight = 102;
+const FormationBaseWidth    = 98;
+const FormationBaseHeight   = 98;
+const FormationPosWidth     = 18;
+const FormationPosHeight    = 18;
+const SkillIconFrameWidth   = 100;
+const SkillIconFrameHeight  = 100;
+
+const ITYPE_CHARACTER   = 0;
+const ITYPE_WEAPON      = 1;
+const ITYPE_ARMOR       = 2;
+const ITYPE_ACCESSORY   = 3;
+const ITYPE_CONSUMABLE  = 4;
+const ITYPE_ABSTONE     = 5;
+const ITYPE_GOLD        = 6;
+const ITYPE_FREEGEM     = 7;
+const ITYPE_GEM         = 8;
+const ITYPE_GEAR        = 10; // aka character pieces
+const ITYPE_GEAR2       = 11;
+const ITYPE_ABSTONE2    = 12;
+const ITYPE_SKIN        = 13;
+const ITYPE_MUSIC       = 14;
+const ITYPE_ADD_SKILL   = 15;
+const ITYPE_EXP         = 16;
+const ITYPE_FORMATION   = 29;
+const ITYPE_FIELD_SKILL = 30;
+const ITYPE_SKILL       = 31;
 
 /**---------------------------------------------------------------------------
  * > DataManager:
@@ -282,6 +308,19 @@ const FieldSkillFrameHeight = 102;
     this.FieldSkillImageSet   = {};
     this.FieldSkillImageClip  = {};
     this.FieldSkillImageMap   = {};
+    this.WeaponImageSet       = {};
+    this.WeaponImageClip      = {};
+    this.WeaponImageMap       = {};
+    this.ArmorImageSet        = {};
+    this.ArmorImageClip       = {};
+    this.ArmorImageMap        = {};
+    this.AccessoryImageSet    = {};
+    this.AccessoryImageClip   = {};
+    this.AccessoryImageMap    = {};
+    this.SkillIconImageSet    = {};
+    this.SkillIconImageClip   = {};
+    this.SkillIconImageMap    = {};
+    
     this.initialized = true;
   }
 
@@ -327,6 +366,17 @@ const FieldSkillFrameHeight = 102;
     }
   }
 
+  static loadFormationArchive(){
+    this.__readyReq += 1;
+    this.setupFormationCanvas();
+    this.FormationData = {};
+    this.loadAssetDataArchive('/MasterData/MFormationViewModel.json', (res)=>{
+      for(let inf of res){
+        this.FormationData[inf.Id] = inf;
+      }
+    });
+  }
+
   static loadFieldSkillImageClip(idx=1){
     this.__readyReq += 1;
     $.ajax({
@@ -334,7 +384,181 @@ const FieldSkillFrameHeight = 102;
       success: (res) => { 
         AssetsManager.parseFieldSkillImageClip(res, idx);
         this.incReadyCounter();
-        AssetsManager.loadFieldSkillImageClip(idx+1);
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
+  static loadEquipmentArchive(){
+    this.loadAssetDataArchive('/static/json/iconinfo.json', this.parseIconClipData);
+    this.WeaponData     = {};
+    this.ArmorData      = {};
+    this.AccessoryData  = {};
+    this.AbStoneData    = {};
+    this.loadEmptyPlaceholders();
+    this.loadEquipmentAssets(1, ITYPE_WEAPON);
+    this.loadEquipmentAssets(1, ITYPE_ARMOR);
+    this.loadEquipmentAssets(1, ITYPE_ACCESSORY);
+    this.loadEquipmentData(ITYPE_WEAPON);
+    this.loadEquipmentData(ITYPE_ARMOR);
+    this.loadEquipmentData(ITYPE_ACCESSORY);
+    this.loadEquipmentSkillGroup();
+    this.loadUltimateWeapons();
+    this.loadLevelSkillData();
+    this.setupEquipmentCanvas();
+    this.queueAssetRequest(()=>{
+      this.loadEquipmentData(ITYPE_ABSTONE);
+    });
+  }
+
+  static loadEmptyPlaceholders(){
+    this.__readyReq += 7;
+    this.emptyPlaceholder = {
+      character: new Image(),
+      weapon: new Image(),
+      armor: new Image(),
+      accessory: new Image(),
+      abstone: new Image(),
+      skill: new Image(),
+      fieldskill: new Image(),
+      rentalskill: new Image(),
+    }
+    this.emptyPlaceholder.character.src   = '/static/assets/character_empty.png';
+    this.emptyPlaceholder.weapon.src      = '/static/assets/weapon_empty.png';
+    this.emptyPlaceholder.armor.src       = '/static/assets/armor_empty.png';
+    this.emptyPlaceholder.accessory.src   = '/static/assets/accessory_empty.png';
+    this.emptyPlaceholder.abstone.src     = '/static/assets/abstone_empty.png';
+    this.emptyPlaceholder.skill.src       = '/static/assets/skill_empty.png';
+    this.emptyPlaceholder.fieldskill.src  = '/static/assets/ptskill_empty.png';
+    this.emptyPlaceholder.rentalskill.src = '/static/assets/rental_empty.png';
+    for(const img in this.emptyPlaceholder) {
+      if(this.emptyPlaceholder.hasOwnProperty(img)){
+        this.emptyPlaceholder[img].onload = ()=>{
+          this.incReadyCounter();
+        };
+      }
+    }
+  }
+
+  static loadEquipmentData(type){
+    this.__readyReq += 1;
+    let url = `${STATIC_HOST}/MasterData`;
+    let ok_handler = null;
+    if(type == ITYPE_WEAPON){
+      url += `/MWeaponViewModel.json`;
+      ok_handler = (res)=>{
+        for(let dat of res){
+          this.WeaponData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      };
+    }
+    else if(type == ITYPE_ARMOR){
+      url += `/MArmorViewModel.json`;
+      ok_handler = (res)=>{
+        for(let dat of res){
+          this.ArmorData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      };
+    }
+    else if(type == ITYPE_ACCESSORY){
+      url += `/MAccessoryViewModel.json`;
+      ok_handler = (res)=>{
+        for(let dat of res){
+          this.AccessoryData[dat.Id] = dat;
+        }
+        this.incReadyCounter();
+      };
+    }
+    else if(type == ITYPE_ABSTONE){
+      url += `/MAbilityStoneViewModel.json`;
+      ok_handler = (res)=>{
+        this.parseAbStoneData(res);
+      };
+    }
+    $.ajax({
+      url: url,
+      success: ok_handler,
+      error: handleAjaxError,
+    })
+  }
+
+  static loadUltimateWeapons(){
+    this.UltimateWeaponGroup = {};
+    this.loadAssetDataArchive('/MasterData/MUltimateWeaponGroupViewModel.json', (res)=>{
+      for(let inf of res){
+        inf = inf.MUltimateWeapons;
+        for(let wp of inf){
+          if(!this.UltimateWeaponGroup.hasOwnProperty(wp.MWeaponId)){
+            this.UltimateWeaponGroup[wp.MWeaponId] = {};
+          }
+          for(let abg of wp.MUltimateWeaponPointAbilityGroups){
+            for(let ability of abg.MUltimateWeaponPointAbilities){
+              this.UltimateWeaponGroup[wp.MWeaponId][ability.Id] = ability;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  static loadEquipmentAssets(idx, type){
+    this.__readyReq += 1;
+    let image = new Image();
+    image.crossOrigin = "anonymous";
+    image.onerror = ()=>{
+      this.incReadyCounter();
+    }
+    if(type == ITYPE_WEAPON){
+      image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Weapons/weapon-${idx}.png?`;
+      image.onload = () => {
+        this.WeaponImageSet[idx] = image;
+        this.incReadyCounter();
+        AssetsManager.loadEquipmentImageClip(idx, type);
+        AssetsManager.loadEquipmentAssets(idx+1, type);
+      };
+    }
+    else if(type == ITYPE_ARMOR){
+      image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Armors/armor-${idx}.png?`;
+      image.onload = () => {
+        this.ArmorImageSet[idx] = image;
+        this.incReadyCounter();
+        AssetsManager.loadEquipmentImageClip(idx, type);
+        AssetsManager.loadEquipmentAssets(idx+1, type);
+      };
+    }
+    else if(type == ITYPE_ACCESSORY){
+      image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Accessories/accessory-${idx}.png?`;
+      image.onload = () => {
+        this.AccessoryImageSet[idx] = image;
+        this.incReadyCounter();
+        AssetsManager.loadEquipmentImageClip(idx, type);
+        AssetsManager.loadEquipmentAssets(idx+1, type);
+      };
+    }
+  }
+
+  static loadEquipmentImageClip(idx, type){
+    this.__readyReq += 1;
+    let url = `${ASSET_HOST}/Textures/Icons/Atlas`;
+    if(type == ITYPE_WEAPON){
+      url += `/Weapons/weapon-${idx}.plist`;
+    }
+    else if(type == ITYPE_ARMOR){
+      url += `/Armors/armor-${idx}.plist`;
+    }
+    else if(type == ITYPE_ACCESSORY){
+      url += `/Accessories/accessory-${idx}.plist`;
+    }
+    $.ajax({
+      url: url,
+      success: (res) => {
+        AssetsManager.parseEquipmentImageClip(res, idx, type);
+        this.incReadyCounter();
       },
       error: (res)=>{
         if(res.status == 404){this.incReadyCounter();}
@@ -343,6 +567,59 @@ const FieldSkillFrameHeight = 102;
     });
   }
   
+  static loadLevelSkillData(){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `${STATIC_HOST}/MasterData/MLevelUpSkillViewModel.json`,
+      success: (res) => {
+        this.parseLevelSkillData(res);
+        this.incReadyCounter();
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
+  static loadEquipmentSkillGroup(){
+    this.EquipmentSkillGroup = {};
+    this.loadAssetDataArchive('/MasterData/MEquipmentSkillRateViewModel.json', (res)=>{
+      for(let inf of res){
+        if(!this.EquipmentSkillGroup.hasOwnProperty(inf.MEquipmentSkillRateGroupId)){
+          this.EquipmentSkillGroup[inf.MEquipmentSkillRateGroupId] = [];
+        }
+        this.EquipmentSkillGroup[inf.MEquipmentSkillRateGroupId].push(inf);
+      }
+    });
+  }
+
+  static parseLevelSkillData(res){
+    this.LevelSkillData = {};
+    for(let i=0;i<res.length;++i){
+      let dat = res[i];
+      if(!this.LevelSkillData.hasOwnProperty(dat.MLevelUpSkillGroupId)){
+        this.LevelSkillData[dat.MLevelUpSkillGroupId] = [];
+      }
+      this.LevelSkillData[dat.MLevelUpSkillGroupId][dat.Level] = dat;
+    }
+  }
+
+  static parseAbStoneData(res){
+    for(let dat of res){
+      dat.AbilityVariations = {};
+      for(let gsid of dat.MLevelUpSkillGroupIds){
+        dat.AbilityVariations[gsid] = [];
+        for(let mls of AssetsManager.LevelSkillData[gsid]){
+          if(!mls){ continue; }
+          dat.AbilityVariations[gsid][mls.Level] = AssetsManager.SkillData[mls.MSkillId];
+        }
+      }
+      this.AbStoneData[dat.Id] = dat;
+    }
+    this.incReadyCounter();
+  }
+
   static loadCharacterAvatars(idx=1){
     this.__readyReq += 1;
     let image = new Image();
@@ -504,6 +781,7 @@ const FieldSkillFrameHeight = 102;
       if(!handlers.hasOwnProperty(uri)){ continue; }
       this.loadAssetDataArchive(uri, handlers[uri]);
     }
+    this.loadSkillIconAsset();
   }
 
   static loadSceneData(){
@@ -692,6 +970,28 @@ const FieldSkillFrameHeight = 102;
     }
   }
 
+  static parseEquipmentImageClip(xml, idx, type){
+    let root = xml.children[0].children[0];
+    let data = this.parseXMLKeyValueDict(root);
+    for(let i in data.frames){
+      if(!data.frames.hasOwnProperty(i)){ continue; }
+      switch(type){
+        case ITYPE_WEAPON:
+          this.WeaponImageClip[i] = data.frames[i];
+          this.WeaponImageMap[i] = idx;
+          break;
+        case ITYPE_ARMOR:
+          this.ArmorImageClip[i] = data.frames[i];
+          this.ArmorImageMap[i] = idx;
+          break;
+        case ITYPE_ACCESSORY:
+          this.AccessoryImageClip[i] = data.frames[i];
+          this.AccessoryImageMap[i] = idx;
+          break;
+      }
+    }
+  }
+
   static setupCharacterSkin(){
     this.DressedCharacterMap = {};
     for(let mbchid in this.CharacterSkinData){
@@ -716,23 +1016,53 @@ const FieldSkillFrameHeight = 102;
     this.incReadyCounter();
   }
 
+  static setupFormationCanvas(){
+    this.__readyReq += 1;
+    this.FormationCanvas = document.createElement('canvas');
+    this.FormationCanvas.width  = FormationBaseWidth;
+    this.FormationCanvas.height = FormationBaseHeight;
+    this.FormationContext = this.FormationCanvas.getContext('2d');
+    this.FormationBaseImage = new Image();
+    this.FormationBaseImage.src = '/static/assets/formation_base.png';
+    this.FormationBaseImage.onload = ()=>{ this.incReadyCounter(); }
+    this.FormationPosImage = {
+      1: [],
+      2: [],
+      3: []
+    };
+    for(let i=1;i<=3;++i){
+      for(let j=0;j<5;++j){
+        this.__readyReq += 1;
+        let img = new Image();
+        img.src = `/static/assets/formation_position_${i}${j}.png`;
+        img.onload = ()=>{ this.incReadyCounter(); }
+        this.FormationPosImage[i].push(img);
+      }
+    }
+    this.incReadyCounter();
+  }
+
   static get FramePadding(){ return 4; }
 
-  static createCharacterAvatarNode(id, frame_type=null){
+  static createCharacterAvatarNode(id, frame_type=null, options={}){
     let container = $(document.createElement('div'));
-    container.attr('class', 'avatar-container');
+    container.attr('class', options['container_class'] || 'avatar-container');
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    // let img2 = document.createElement('img');
-    $(img).attr('class', 'avatar');
-    // $(img2).attr('class', 'avatar-frame');
+    $(img).attr('class', options['image_class'] || 'avatar');
     block.append(img);
-    // block.append(img2);
     let avatar_key = `${id}.png`;
     let rect = null;
     if(this.CharacterAvatarClip.hasOwnProperty(avatar_key)){
       rect = this.CharacterAvatarClip[`${id}.png`].textureRect.flat();
+    }
+    else if(id < 0){
+      rect = [0, 0, 96, 96];
+    }
+    else{
+      console.warn(`Incomplete character data: ${id}`)
+      return ;
     }
     let krarity = 'frm_thumb_common';
     if(!frame_type && this.CharacterData.hasOwnProperty(id)){
@@ -749,16 +1079,25 @@ const FieldSkillFrameHeight = 102;
       }
     }
     let rect2 = null;
-    try{
-      rect2 = this.IconClipData[krarity].content.rect;
-    }catch(e){
-      console.error(e);
+    if(id >= 0){
+      try{
+        rect2 = this.IconClipData[krarity].content.rect;
+      }catch(e){
+        console.error(e);
+      }
     }
     this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
     if(rect){
-      let src_idx = this.CharacterAvatarMap[avatar_key];
+      let src_img = null;
+      if(id == -1){
+        src_img = this.emptyPlaceholder.character;
+      }
+      else{
+        let src_idx = this.CharacterAvatarMap[avatar_key];
+        src_img = this.CharacterAvatarSet[src_idx];
+      }
       clipImage(
-        this.AvatarCanvas, this.CharacterAvatarSet[src_idx], img, 
+        this.AvatarCanvas, src_img, img, 
         rect[0], rect[1], rect[2], rect[3],
         this.FramePadding, this.FramePadding,
         CharacterAvatarWidth, CharacterAvatarHeight,
@@ -774,7 +1113,6 @@ const FieldSkillFrameHeight = 102;
     return container;
   }
 
-
   static setupFieldSkillCanvas(){
     this.__readyReq += 1;
     this.FieldSkillCanvas  = document.createElement("canvas");
@@ -784,25 +1122,28 @@ const FieldSkillFrameHeight = 102;
     this.incReadyCounter();
   }
 
-  static createFieldSkillImageNode(id, frame_type=null){
+  static createFieldSkillImageNode(id, frame_type=null, options={}){
     let container = $(document.createElement('div'));
     container.attr('class', 'fieldskill-container');
     let block = $(document.createElement('a'));
     container.append(block);
     let img = document.createElement('img');
-    // let img2 = document.createElement('img');
     $(img).attr('class', 'fieldskill-image');
-    // $(img2).attr('class', 'fieldskill-frame');
     block.append(img);
-    // block.append(img2);
     let image_key = `${id}.png`;
     let rect = null;
     if(this.FieldSkillImageClip.hasOwnProperty(image_key)){
       rect = this.FieldSkillImageClip[`${id}.png`].textureRect.flat();
     }
-    else{ return null; }
+    else if(id < 0){
+      rect = [0, 0, 204, 96];
+    }
+    else{
+      console.warn(`Incomplete ptskill data: ${id}`)
+      return ;
+    }
     let krarity = 'frm_thumb__ptskill_rare_b';
-    if(!frame_type){
+    if(!frame_type && this.FieldSkillData.hasOwnProperty(id)){
       switch(this.FieldSkillData[id].Rarity){
         case 2:
           krarity = 'frm_thumb__ptskill_rare_a';
@@ -816,22 +1157,35 @@ const FieldSkillFrameHeight = 102;
       }
     }
     let rect2 = null;
-    try{
-      rect2 = this.IconClipData[krarity].content.rect;
-    }catch(e){
-      console.error(e);
+    if(id >= 0){
+      try{
+        rect2 = this.IconClipData[krarity].content.rect;
+      }catch(e){
+        console.error(e);
+      }
     }
     let canvas  = this.FieldSkillCanvas;
     let context = this.FieldSkillContext;
-    let rotated = this.FieldSkillImageClip[image_key].textureRotated;
     context.clearRect(0, 0, canvas.width, canvas.height);
     if(rect){
-      let src_idx = this.FieldSkillImageMap[image_key];
-      if(rotated){
-        context.translate(0, canvas.height);
+      let src_img = null;
+      let rotated = false;
+      if(id == -1){
+        src_img = this.emptyPlaceholder.fieldskill;
+      }
+      else if(id == -2){
+        src_img = this.emptyPlaceholder.rentalskill;
+      }
+      else{
+        let src_idx = this.FieldSkillImageMap[image_key];
+        rotated = this.FieldSkillImageClip[image_key].textureRotated;
+        if(rotated){
+          context.translate(0, canvas.height);
+        }
+        src_img = this.FieldSkillImageSet[src_idx];
       }
       clipImage(
-        canvas, this.FieldSkillImageSet[src_idx], img, 
+        canvas, src_img, img, 
         rect[0], rect[1], rotated ? rect[3] : rect[2], rotated ? rect[2] : rect[3],
         this.FramePadding, this.FramePadding,
         rotated ? FieldSkillImageHeight : FieldSkillImageWidth, 
@@ -849,11 +1203,385 @@ const FieldSkillFrameHeight = 102;
     return container;
   }
 
+  static setupEquipmentCanvas(){
+    this.__readyReq += 1;
+    this.EquipmentCanvas  = document.createElement("canvas");
+    this.EquipmentCanvas.width  = CharacterAvatarWidth;
+    this.EquipmentCanvas.height = CharacterAvatarHeight;
+    this.EquipmentContext = this.EquipmentCanvas.getContext('2d');
+    this.incReadyCounter();
+  }
+
+  /**
+   * WARNING: Avatar/Weapon/Armor/Accessory are shared with same drawing canvas
+   */
+  static createEquipmentImageNode(id, type, frame_type=null, options={}){
+    let container = $(document.createElement('div'));
+    container.attr('class', options['container_class'] || 'avatar-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    $(img).attr('class', options['image_class'] || 'avatar');
+    block.append(img);
+    let image_key = `${id}.png`;
+    let rect = null;
+    let clip_data = {};
+    let equipment_data = {};
+    let equipment_map  = {};
+    let equipment_set  = {};
+    switch(type){
+      case ITYPE_WEAPON:
+        clip_data = this.WeaponImageClip;
+        equipment_data = this.WeaponData;
+        equipment_set = this.WeaponImageSet;
+        equipment_map = this.WeaponImageMap;
+        break;
+      case ITYPE_ARMOR:
+        clip_data = this.ArmorImageClip;
+        equipment_data = this.ArmorData;
+        equipment_set = this.ArmorImageSet;
+        equipment_map = this.ArmorImageMap;
+        break;
+      case ITYPE_ACCESSORY:
+        clip_data = this.AccessoryImageClip;
+        equipment_data = this.AccessoryData;
+        equipment_set = this.AccessoryImageSet;
+        equipment_map = this.AccessoryImageMap;
+        break;
+    }
+    if(clip_data.hasOwnProperty(image_key)){
+      rect = clip_data[`${id}.png`].textureRect.flat();
+    }
+    else if(id < 0){
+      rect = [0, 0, 96, 96];
+    }
+    else{
+      console.warn(`Incomplete equipment data: ${id} (type=${type})`)
+      return ;
+    }
+    let krarity = 'frm_thumb_common';
+    if(!frame_type && equipment_data.hasOwnProperty(id)){
+      switch(equipment_data[id].EquipmentRarity){
+        case 2:
+          krarity = 'frm_thumb_rare_a';
+          break;
+        case 3:
+          krarity = 'frm_thumb_rare_s';
+          break;
+        case 4:
+          krarity = 'frm_thumb_rare_ss';
+          break;
+      }
+    }
+    let rect2 = null;
+    if(id >= 0){
+      try{
+        rect2 = this.IconClipData[krarity].content.rect;
+      }catch(e){
+        console.error(e);
+      }
+    }
+    this.AvatarContext.clearRect(0, 0, this.AvatarCanvas.width, this.AvatarCanvas.height);
+    if(rect){
+      let src_img = null;
+      if(id == -ITYPE_WEAPON){
+        src_img = this.emptyPlaceholder.weapon;
+      }
+      else if(id == -ITYPE_ARMOR){
+        src_img = this.emptyPlaceholder.armor;
+      }
+      else if(id == -ITYPE_ACCESSORY){
+        src_img = this.emptyPlaceholder.accessory;
+      }
+      else if(id == -ITYPE_ABSTONE){
+        src_img = this.emptyPlaceholder.abstone;
+      }
+      else if(id == -ITYPE_SKILL){
+        src_img = this.emptyPlaceholder.skill;
+      }
+      else{
+        let src_idx = equipment_map[image_key];
+        src_img = equipment_set[src_idx]
+      }
+      clipImage(
+        this.AvatarCanvas, src_img, img, 
+        rect[0], rect[1], rect[2], rect[3],
+        this.FramePadding, this.FramePadding,
+        CharacterAvatarWidth, CharacterAvatarHeight,
+      );
+    }
+    if(rect2){
+      clipImage(
+        this.AvatarCanvas, this.PartyFrameSet, img, 
+        rect2[0], rect2[1], rect2[2], rect2[3], 
+        0, 0, rect2[2], rect2[3]
+      );
+    }
+    return container;
+  }
+
+  static createFormationNode(id, options={}){
+    let container = $(document.createElement('div'));
+    container.attr('class', options['container_class'] || 'avatar-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    $(img).attr('class', options['image_class'] || 'equipment-image');
+    block.append(img);
+    this.FormationContext.clearRect(0, 0, this.FormationCanvas.width, this.FormationCanvas.height);
+    clipImage(
+      this.FormationCanvas, this.FormationBaseImage, img, 
+      0, 0, FormationBaseWidth, FormationBaseHeight,
+      0, 0
+    );
+    let data  = this.FormationData[id];
+    let slots = data.MFormationSlots;
+    let sx = 2, sy = 2;
+    let dx = 19, dy = 19;
+    for(let inf of slots){
+      let cx = sx + dx*inf.X;
+      let cy = sy + dy*inf.Y;
+      let pos_img = this.FormationPosImage[data.Rank][inf.SlotNo-1];
+      clipImage(
+        this.FormationCanvas, pos_img, img,
+        0, 0, FormationPosWidth, FormationPosHeight,
+        cx, cy
+      )
+    }
+    return container;
+  }
+
+  static loadSkillIconAsset(idx=1){
+    this.__readyReq += 2;
+    let image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = `${ASSET_HOST}/Textures/Icons/Atlas/Skills/skill-${idx}.png`;
+    image.onload = () => {
+      this.SkillIconImageSet[idx] = image;
+      this.incReadyCounter();
+      AssetsManager.loadSkillIconClip(idx);
+      AssetsManager.loadSkillIconAsset(idx+1);
+    };
+    image.onerror = ()=>{
+      this.incReadyCounter();
+    }
+    this.SkillIconFrame = new Image();
+    this.SkillIconFrame.src = '/static/assets/skill_frame.png';
+    this.SkillIconFrame.onload = ()=>{ this.incReadyCounter(); }
+  }
+
+  static loadSkillIconClip(idx=1){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `${ASSET_HOST}/Textures/Icons/Atlas/Skills/skill-${idx}.plist`,
+      success: (res) => { 
+        AssetsManager.parseSkillIconClip(res, idx);
+        this.incReadyCounter();
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
+  static parseSkillIconClip(xml, idx){
+    let root = xml.children[0].children[0];
+    let data = this.parseXMLKeyValueDict(root);
+    for(let i in data.frames){
+      if(!data.frames.hasOwnProperty(i)){ continue; }
+      this.SkillIconImageClip[i] = data.frames[i];
+      this.SkillIconImageMap[i] = idx;
+    }
+  }
+
+  /**
+   * WARNING: Shared canvas with avatar and equpiments
+   */
+  static createSkillIconImageNode(id, options={}){
+    let container = $(document.createElement('div'));
+    container.attr('class', options['container_class'] || 'avatar-container');
+    let block = $(document.createElement('a'));
+    container.append(block);
+    let img = document.createElement('img');
+    $(img).attr('class', options['image_class'] || 'equipment-image');
+    block.append(img);
+    let image_key = `${id}.png`;
+    let rect = null;
+    if(this.SkillIconImageClip.hasOwnProperty(image_key)){
+      rect = this.SkillIconImageClip[`${id}.png`].textureRect.flat();
+    }
+    else if(id < 0){
+      rect = [0, 0, 96, 96];
+    }
+    else{
+      console.warn(`Incomplete skill data: ${id}`)
+      return ;
+    }
+    let canvas  = this.AvatarCanvas;
+    let context = this.AvatarContext;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    if(rect){
+      let src_img = null;
+      if(id == -1){
+        src_img = this.emptyPlaceholder.skill;
+      }
+      else{
+        let src_idx = this.SkillIconImageMap[image_key];
+        src_img = this.SkillIconImageSet[src_idx];
+        clipImage(
+          this.AvatarCanvas, this.SkillIconFrame, img, 
+          0, 0, SkillIconFrameWidth, SkillIconFrameHeight,
+          0, 0
+        );
+      }
+      clipImage(
+        this.AvatarCanvas, src_img, img, 
+        rect[0], rect[1], rect[2], rect[3],
+        2, 2,
+        CharacterAvatarWidth, CharacterAvatarHeight,
+      );
+    }
+    return container;
+  }
+
+
+
   static isStageLoaded(){
     return this.__readyCnt >= this.__readyReq;
   }
 
   static isReady(){ 
     return !this.__requestQueue.length && this.isStageLoaded();
+  }
+}
+
+
+/**---------------------------------------------------------------------------
+ * > ItemManager:
+ *    The static class that manages items.
+ * @namespace
+ */
+class ItemManager{
+  /*-------------------------------------------------------------------------*/
+  constructor(){
+    throw new Error("This is a static class")
+  }
+
+  /**
+   * Get list of weapon ability stones that only has highest level of one ability
+   */
+  static getPureWeaponAbstones(){
+    if(!this.pureWeaponAbstones){
+      this.pureWeaponAbstones = [];
+      for(let i in AssetsManager.AbStoneData){
+        if(!AssetsManager.AbStoneData.hasOwnProperty(i)){ continue; }
+        let astone = AssetsManager.AbStoneData[i];
+        if(astone.AbilityStoneEquipType != ITYPE_WEAPON){ continue; }
+        for(let aid in astone.AbilityVariations){
+          if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
+          let mskills = astone.AbilityVariations[aid];
+          let tskill = mskills[mskills.length-1];
+          if(!tskill){ continue; }
+          let dat = clone(tskill);
+          dat.MAbilityStone = clone(astone);
+          this.pureWeaponAbstones.push(dat);
+        }
+      }
+    }
+    return this.pureWeaponAbstones;
+  }
+
+  /**
+   * Get list of armor ability stones that only has highest level of one ability
+   */
+  static getPureArmorAbstones(){
+    if(!this.pureArmorAbstones){
+      this.pureArmorAbstones = [];
+      for(let i in AssetsManager.AbStoneData){
+        if(!AssetsManager.AbStoneData.hasOwnProperty(i)){ continue; }
+        let astone = AssetsManager.AbStoneData[i];
+        if(astone.AbilityStoneEquipType != ITYPE_ARMOR){ continue; }
+        for(let aid in astone.AbilityVariations){
+          if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
+          let mskills = astone.AbilityVariations[aid];
+          let tskill = mskills[mskills.length-1];
+          if(!tskill){ continue; }
+          let dat = clone(tskill)
+          dat.MAbilityStone = clone(astone);
+          this.pureArmorAbstones.push(dat);
+        }
+      }
+    }
+    return this.pureArmorAbstones;
+  }
+
+  /**
+   * Get list of accessory ability stones that only has highest level of one ability
+   */
+  static getPureAccessoryAbstones(){
+    if(!this.pureAccessoryAbstones){
+      this.pureAccessoryAbstones = [];
+      for(let i in AssetsManager.AbStoneData){
+        if(!AssetsManager.AbStoneData.hasOwnProperty(i)){ continue; }
+        let astone = AssetsManager.AbStoneData[i];
+        if(astone.AbilityStoneEquipType != ITYPE_ACCESSORY){ continue; }
+        for(let aid in astone.AbilityVariations){
+          if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
+          let mskills = astone.AbilityVariations[aid];
+          let tskill = mskills[mskills.length-1];
+          if(!tskill){ continue; }
+          let dat = clone(tskill)
+          dat.MAbilityStone = clone(astone);
+          this.pureAccessoryAbstones.push(dat);
+        }
+      }
+    }
+    return this.pureAccessoryAbstones;
+  }
+
+  static isUltimateWeapon(id){
+    return Object.keys(AssetsManager.UltimateWeaponGroup).includes(`${id}`);
+  }
+
+  /**
+   * Return list of skill ids belong to a character cross all layers
+   */
+  static getCharacterSkills(id){
+    let chid = parseInt(id/1000);
+    let layers = [];
+    let rarity = 200, cnt = 1;
+    while(rarity < 500){
+      let _id = chid*1000+rarity+cnt;
+      if(AssetsManager.CharacterData.hasOwnProperty(_id)){
+        layers.push(_id)
+        cnt += 1;
+      }
+      else{
+        rarity += 100;
+        cnt = 1;
+      }
+    }
+    let ret = [];
+    for(let lid of layers){
+      ret = ret.concat(this.getLayerSkills(lid));
+    }
+    return ret;
+  }
+
+  static getLayerSkills(id){
+    let data = AssetsManager.CharacterData[id];
+    let askills = [data.MSkill1Id, data.MSkill2Id, data.MSkill3Id];
+    if(AssetsManager.TrainBoardData.hasOwnProperty(id)){
+      let train_boards = AssetsManager.TrainBoardData[id].TrainBoardOarders;
+      for(let board of train_boards){
+        for(let entry of board.MTrainBoardDetails){
+          if(entry.TrainBoardDetailAdditionalSkill){
+            askills.push(entry.TrainBoardDetailAdditionalSkill.AdditionalMSkillId);
+          }
+        }
+      }
+    }
+    return askills;
   }
 }

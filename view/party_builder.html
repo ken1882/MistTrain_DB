@@ -9,8 +9,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     
+    <script src="{{ url_for('static', filename='js/gl-matrix-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+    <script src="{{ url_for('static', filename='js/spine-all.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/howler.min.js') }}"></script>
     
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/managers.js') }}"></script>
@@ -23,7 +27,10 @@
 
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     
+    <script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
     <script>
       window.addEventListener("load", ()=>{
         DataManager.initialize();
@@ -33,51 +40,70 @@
         init_totop_button();
       });
     </script>
-    <script src="{{ url_for('static', filename='js/field_skill.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/party_builder.js') }}"></script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       {{ navbar_content | safe }}
     </nav>
     <br>
-    
     <button type="button" class="btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
       <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1571057658/cd-top-arrow.svg">
     </button>
-
     
-    <div class="center h1" label='l-FieldSkillDB'></div>
-    <br>
-    <div style="text-align: right; margin-right: 8px;">
-      <span id="hit-count">(HIT: 0/0)</span>
+    <div>
+        <div class="spinner-border center" id="loading-indicator">
+        <span class="sr-only"></span>
     </div>
-    <hr>
-    
-    <div id="fieldskill-list" class="center">
-        <table id="fieldskill-table" class="table table-bordered"
-            style="max-width: 95%; margin: auto;"
-            data-search="true"
-            data-show-multi-sort="true"
+
+    <div id="party-index" class="center" style="display: none">
+        <table id="party-table" class="table table-bordered table-responsive"
+          style="max-width: 95%; margin: auto;"
         >
-            <thead>
-                <tr>
-                    <th class="fieldskill-col-header" label="l-Image"></th>
-                    <th label="l-Name" class="col-2" data-field="fname"></th>
-                    <th label="l-Rarity" data-field="frarity"></th>
-                    <th label="l-Cost" data-field="fcost"></th>
-                    <th id="th-effect-1" class="col-2" data-field="feffect1"></th>
-                    <th id="th-effect-2" class="col-2" data-field="feffect2"></th>
-                    <th id="th-effect-3" class="col-2" data-field="feffect3"></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
+          <tbody id="party-table-body">
+          </tbody>
         </table>
-    </div>
-
-    <div class="spinner-border center" id="loading-indicator">
-    <span class="sr-only"></span>
-    </div>
-    
+        <table id="fieldskill-table" class="table table-bordered"
+          style="max-width: 95%; margin: auto;"
+        >
+          <thead>
+            <tr>
+                <th id="fieldskill-1"></th>
+                <th id="fieldskill-2"></th>
+                <th id="fieldskill-3"></th>
+                <th id="fieldskill-4"></th>
+                <th id="formation">
+                    <a id="formation-container"></a>
+                    <p label="formation-label"></p>
+                </th>
+                <th id="ex-status" style="text-align: left; vertical-align: top;">
+                    <p label="l-ExStatus" style="font-weight: bold;"></p>
+                    <span label="l-HP"></span><span>: </span>
+                    <input type="number" value="0" id="ex-hp" style="width: 80px;">
+                    <p></p>
+                    <span label="l-Others"></span><span>: </span>
+                    <input type="number" value="0" id="ex-stat" style="width: 80px;">
+                </th>
+            </tr>
+          </thead>
+        </table>
+        
+      </div>
+      
   </body>
+  
+  <div class="modal fade modal-action" id="modal-action" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+            <label for="skill-group-select" label="l-Ability"></label>
+            <select id="skill-group-select"></select>
+            <hr>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" label="l-Cancel"></button>
+            <button type="button" class="btn btn-primary" label="l-AddBookmark" onclick="alert(Vocab['Unimplemented'])"></button>
+            <button type="button" class="btn btn-primary" label="l-Choose" onclick="onEditorChoose()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
 </html>

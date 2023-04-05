@@ -237,7 +237,7 @@ function fillCharacterBaseInfo(){
   let data = AssetsManager.CharacterData[__CharacterId];
   let chname = Vocab.CharacterName[__CharacterId];
   if(!chname){
-    chname = `${data.Name} ${data.MCharacterBase.Name}`
+    chname = `${data.Name} ${data.MCharacterBase.Name}`;
   }
   let wtype = data.MCharacterBase.WeaponEquipType;
   $("#character-title").text(chname);
