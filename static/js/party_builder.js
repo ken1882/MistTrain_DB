@@ -240,7 +240,7 @@ function onEditorAction(id){
     document.getElementById('skill-group-select').innerHTML = '';
     currentSelectedId = id;
     let node = currentSelectedNode[0].parentElement;
-    if(!node.id.includes('abstone')){
+    if(!node.id.includes('abstone') && id > 0){
         if(node.id.includes('weapon')){
             let gid = AssetsManager.WeaponData[id].MEquipmentSkillRateGroupId;
             if(gid){

@@ -307,6 +307,7 @@
   "SelectCharacterFirst": "Please select character first",
   "Remove": "Remove",
   "EditorRemoveInfo": "Remove currently selected object from editor",
+  "Unimplemented": "Feature unimplemented, please stay tuned",
 
   "ItemType": {
     "0": "Character",

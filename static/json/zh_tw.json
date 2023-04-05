@@ -306,6 +306,7 @@
   "SelectCharacterFirst": "請先選擇角色",
   "Remove": "移除",
   "EditorRemoveInfo": "移除編輯器上當前已選擇的物件",
+  "Unimplemented": "該功能尚未完成, 敬請期待",
 
   "ItemType": {
     "0": "角色",

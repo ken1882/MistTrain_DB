@@ -1,4 +1,5 @@
 [
   {"key": "en_us", "name": "English (US)"},
-  {"key": "zh_tw", "name": "繁體中文"}
+  {"key": "zh_tw", "name": "繁體中文"},
+  {"key": "ja_jp", "name": "日本語 (機械翻訳)"}
 ]
