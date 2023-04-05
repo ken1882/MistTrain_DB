@@ -27,7 +27,10 @@
 
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     
+    <script src="{{ url_for('static', filename='js/inventory.js') }}"></script>
     <script>
       window.addEventListener("load", ()=>{
         DataManager.initialize();
@@ -53,43 +56,54 @@
         <span class="sr-only"></span>
     </div>
 
-    <div id="party-index" class="center">
+    <div id="party-index" class="center" style="display: none">
+        <table id="party-table" class="table table-bordered table-responsive"
+          style="max-width: 95%; margin: auto;"
+        >
+          <tbody id="party-table-body">
+          </tbody>
+        </table>
         <table id="fieldskill-table" class="table table-bordered"
           style="max-width: 95%; margin: auto;"
         >
           <thead>
             <tr>
-              <th id="fieldskill-1"></th>
-              <th id="fieldskill-2"></th>
-              <th id="fieldskill-3"></th>
-              <th id="fieldskill-4"></th>
-              <th id="formation"></th>
-              <th id="ex-status"></th>
+                <th id="fieldskill-1"></th>
+                <th id="fieldskill-2"></th>
+                <th id="fieldskill-3"></th>
+                <th id="fieldskill-4"></th>
+                <th id="formation">
+                    <a id="formation-container"></a>
+                    <p label="formation-label"></p>
+                </th>
+                <th id="ex-status" style="text-align: left; vertical-align: top;">
+                    <p label="l-ExStatus" style="font-weight: bold;"></p>
+                    <span label="l-HP"></span><span>: </span>
+                    <input type="number" value="0" id="ex-hp" style="width: 80px;">
+                    <p></p>
+                    <span label="l-Others"></span><span>: </span>
+                    <input type="number" value="0" id="ex-stat" style="width: 80px;">
+                </th>
             </tr>
           </thead>
         </table>
-        <table id="party-table" class="table table-bordered"
-          style="max-width: 95%; margin: auto;"
-        >
-          <thead>
-            <tr>
-              <th class="avatar-col-header" label="l-Avatar"></th>
-              <th label="l-Name" data-field="fname"></th>
-              <th label="l-Weapon" data-field="fweapon"></th>
-              <th label="l-ABStone" data-field="fweaponabs"></th>
-              <th label="l-Armor" data-field="farmor"></th>
-              <th label="l-ABStone" data-field="farmorabs"></th>
-              <th label="l-Accessory" data-field="faccessory"></th>
-              <th label="l-ABStone" data-field="faccessoryabs"></th>
-              <th label="l-AddSkill" data-field="faddskill"></th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+        
       </div>
-    
+      
   </body>
- 
-
+  
+  <div class="modal fade modal-action" id="modal-action" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+            <label for="skill-group-select" label="l-Ability"></label>
+            <select id="skill-group-select"></select>
+            <hr>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" label="l-Cancel"></button>
+            <button type="button" class="btn btn-primary" label="l-AddBookmark" onclick="alert(Vocab['Unimplemented'])"></button>
+            <button type="button" class="btn btn-primary" label="l-Choose" onclick="onEditorChoose()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
 </html>
