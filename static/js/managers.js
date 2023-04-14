@@ -79,7 +79,9 @@ const ITYPE_SKILL       = 31;
     this.kArmors         = 'MTG_ARMORS';
     this.kItems          = 'MTG_ITEMS';
     this.kAccessories    = 'MTG_ACCESSORIES';
-    this.kAbstone        = 'MTG_ABSTONE';
+    this.kAbstones       = 'MTG_ABSTONES';
+    this.kPartyPresets   = 'MTG_PARTY_PRESETS';
+    this.kCharacterSets  = 'MTG_CHARACTER_SETS';
   }
   /*-------------------------------------------------------------------------*/
   static loadDatabase(){
@@ -277,12 +279,25 @@ const ITYPE_SKILL       = 31;
   }
   /*-------------------------------------------------------------------------*/
   static get dataAbstone(){
-    return this.getSetting(this.kAbstone) || [];
+    return this.getSetting(this.kAbstones) || [];
   }
   static set dataAbstone(val){
-    this.changeSetting(this.kAbstone, val);
+    this.changeSetting(this.kAbstones, val);
   }
   /*-------------------------------------------------------------------------*/
+  static get partyPresets(){
+    return this.getSetting(this.kPartyPresets) || [];
+  }
+  static set partyPresets(val){
+    this.changeSetting(this.kPartyPresets, val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get characterSets(){
+    return this.getSetting(this.kCharacterSets) || [];
+  }
+  static set characterSets(val){
+    this.changeSetting(this.kCharacterSets, val);
+  }
 }
 
 /**---------------------------------------------------------------------------
