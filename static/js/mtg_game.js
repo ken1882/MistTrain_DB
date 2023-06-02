@@ -299,3 +299,21 @@ function loadInventory(){
         FlagConnLock = false;
     });
 }
+
+function isLoggedIn(){
+    let xhr = new XMLHttpRequest();
+    let host = getMTGServer();
+    if(!host){ return false; }
+    if(!getMTGToken()){ return false; }
+    xhr.open('GET', getMTGServer()+'/api/Users/Me', false);
+    xhr.setRequestHeader('Accept', 'application/json, text/javascript, */*; q=0.01');
+    xhr.setRequestHeader('Accept-Encoding', 'gzip, deflate, br');
+    xhr.setRequestHeader('Connection', 'keep-alive');
+    xhr.setRequestHeader('Origin', ORIGIN_MASQUERADE);
+    xhr.setRequestHeader('Referer', ORIGIN_MASQUERADE);
+    xhr.setRequestHeader('Authorization', getMTGToken());
+    xhr.send(null);
+    let ret_code = xhr.status;
+    xhr.abort()
+    return ret_code == 200;
+}

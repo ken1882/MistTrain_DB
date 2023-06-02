@@ -508,12 +508,14 @@ const ITYPE_SKILL       = 31;
       for(let inf of res){
         inf = inf.MUltimateWeapons;
         for(let wp of inf){
-          if(!this.UltimateWeaponGroup.hasOwnProperty(wp.MWeaponId)){
-            this.UltimateWeaponGroup[wp.MWeaponId] = {};
-          }
+          this.UltimateWeaponGroup[wp.Id] = wp;
+          this.UltimateWeaponGroup[wp.MWeaponId] = wp;
+          this.UltimateWeaponGroup[wp.Id].AbilityGroups = {};
+          this.UltimateWeaponGroup[wp.MWeaponId].AbilityGroups = {};
           for(let abg of wp.MUltimateWeaponPointAbilityGroups){
             for(let ability of abg.MUltimateWeaponPointAbilities){
-              this.UltimateWeaponGroup[wp.MWeaponId][ability.Id] = ability;
+              this.UltimateWeaponGroup[wp.Id].AbilityGroups[ability.Id] = ability;
+              this.UltimateWeaponGroup[wp.MWeaponId].AbilityGroups[ability.Id] = ability;
             }
           }
         }

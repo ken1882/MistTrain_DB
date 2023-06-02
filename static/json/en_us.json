@@ -308,7 +308,12 @@
   "Remove": "Remove",
   "EditorRemoveInfo": "Remove currently selected object from editor",
   "Unimplemented": "Feature unimplemented, please stay tuned",
-
+  "Party": "Party",
+  "PartyPreset": "Party preset",
+  "EquipmentPreset": "Equipment preset",
+  "PartyGroups": "Party groups",
+  "SavePartyToGame": "Save to this party (overwrite)",
+  "LoadPartyFromGame": "Load from this party",
   "ItemType": {
     "0": "Character",
     "1": "Weapon",

@@ -52,20 +52,16 @@
     </button>
     
     <div>
-        <div class="spinner-border center" id="loading-indicator">
-        <span class="sr-only"></span>
+      <div class="spinner-border center" id="loading-indicator">
+      <span class="sr-only"></span>
     </div>
 
     <div id="party-index" class="center" style="display: none">
-        <table id="party-table" class="table table-bordered table-responsive"
-          style="max-width: 95%; margin: auto;"
-        >
+        <table id="party-table" class="table table-bordered table-responsive table-centered">
           <tbody id="party-table-body">
           </tbody>
         </table>
-        <table id="fieldskill-table" class="table table-bordered"
-          style="max-width: 95%; margin: auto;"
-        >
+        <table id="fieldskill-table" class="table table-bordered table-centered">
           <thead>
             <tr>
                 <th id="fieldskill-1"></th>
@@ -89,6 +85,44 @@
         </table>
         
       </div>
+      <hr>
+      <div id="party-tabs" class="tab-container" style="display: none;">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link tab-major" data-toggle="tab" href="#party-preset" label="l-PartyPreset"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link tab-major" data-toggle="tab" href="#equipment-preset" label="l-EquipmentPreset"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link tab-major" data-toggle="tab" href="#party-groups" label="l-PartyGroups"></a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade" id="party-preset">
+            PP
+          </div>
+          <div class="tab-pane fade" id="equipment-preset">
+            EP
+          </div>
+          <div class="tab-pane fade" id="party-groups">
+            <div id="party-group-selector-container">
+              <label for="party-group-selector" label="l-PartyGroups"></label>
+              <select id="party-group-selector" class="select-major">
+                <option value="0"></option>
+              </select>
+            </div>
+            <div id="party-group-table-container">
+              <table id="party-group-table" class="table table-bordered table-responsive table-centered">
+              <tbody id="party-group-table-body">
+
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
       
   </body>
   
@@ -99,9 +133,25 @@
             <label for="skill-group-select" label="l-Ability"></label>
             <select id="skill-group-select"></select>
             <hr>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" label="l-Cancel"></button>
-            <button type="button" class="btn btn-primary" label="l-AddBookmark" onclick="alert(Vocab['Unimplemented'])"></button>
-            <button type="button" class="btn btn-primary" label="l-Choose" onclick="onEditorChoose()"></button>
+            <button type="button" class="btn btn-secondary btn-major" data-bs-dismiss="modal" label="l-Cancel"></button>
+            <button type="button" class="btn btn-primary btn-major" label="l-AddBookmark" onclick="alert(Vocab['Unimplemented'])"></button>
+            <button type="button" class="btn btn-primary btn-major" label="l-Choose" onclick="onEditorChoose()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade modal-action" id="modal-action-2" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+            <button type="button" class="btn btn-secondary btn-major" data-bs-dismiss="modal" label="l-Cancel"></button>
+            <button type="button" class="btn btn-primary btn-major" label="l-SavePartyToGame" onclick="alert(Vocab['Unimplemented'])"></button>
+            <button type="button" class="btn btn-primary btn-major" label="l-LoadPartyFromGame" onclick="applyFromGameParty()"></button>
+            <div>
+              <div class="spinner-border center" id="loading-indicator-2">
+              <span class="sr-only"></span>
+            </div>
         </div>
       </div>
     </div>

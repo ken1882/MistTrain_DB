@@ -9,6 +9,7 @@ const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 
 let Inventory   = null;
 let ActionModal = null;
+let PartyGroupActionModal = null;
 let currentSelectedNode = null;
 let currentSelectedId   = 0;
 let currentAddSkillNode = null;
@@ -17,7 +18,12 @@ let characterLevel      = [50, 50, 50, 50, 50, 50];
 let partyData = {
     1: {}, 2: {}, 3: {}, 4: {}, 5: {},
 };
+let UltimateWeaponData = {};
+let UltimateWeaponMaxGen = 1;
 
+let GroupName = new Array(11);
+let GroupData = new Array(11);
+let CurrentPartyData = {};
 
 function init(){
     AssetsManager.loadCharacterAssets();
@@ -205,6 +211,7 @@ function addPartyPlaceholders(){
                         psk.text(`${Vocab['SP']} ${k+1}: `);
                         cell.append(psk);
                         let inp = $(document.createElement('input'));
+                        inp.attr('id', `spcost-${i}-${k}`);
                         inp.attr('type', 'number');
                         inp.css('width', '50px');
                         inp.attr('value', SP_HOLDER[k]).attr('min', 0).attr('max', 20);
@@ -298,6 +305,8 @@ function onEditorChoose(){
 }
 
 function onCharacterAdd(id, node){
+    if(id == 0){ return; }
+    node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         id = -1;
@@ -312,7 +321,9 @@ function onCharacterAdd(id, node){
     partyData[idx].character = id < 0 ? 0 : id;
 }
 
-function onWeaponAdd(id, node){
+function onWeaponAdd(id, node, skill_name=null){
+    if(id == 0){ return; }
+    node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         id = -ITYPE_WEAPON;
@@ -320,7 +331,10 @@ function onWeaponAdd(id, node){
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_WEAPON)
     attachInventorySelector(icon, ITYPE_WEAPON);
     $(node).append(icon);
-    let name = $('#skill-group-select').val();
+    let name = skill_name;
+    if(name === null){
+        name = $('#skill-group-select').val()
+    }
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
@@ -328,7 +342,9 @@ function onWeaponAdd(id, node){
     partyData[idx].weapon = id < 0 ? 0 : id;
 }
 
-function onArmorAdd(id, node){
+function onArmorAdd(id, node, skill_name=null){
+    if(id == 0){ return; }
+    node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         id = -ITYPE_ARMOR;
@@ -336,7 +352,10 @@ function onArmorAdd(id, node){
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ARMOR)
     attachInventorySelector(icon, ITYPE_ARMOR);
     $(node).append(icon);
-    let name = $('#skill-group-select').val();
+    let name = skill_name;
+    if(name === null){
+        name = $('#skill-group-select').val()
+    }
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
@@ -344,7 +363,9 @@ function onArmorAdd(id, node){
     partyData[idx].armor = id < 0 ? 0 : id;
 }
 
-function onAccessoryAdd(id, node){
+function onAccessoryAdd(id, node, skill_name=null){
+    if(id == 0){ return; }
+    node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         id = -ITYPE_ARMOR;
@@ -352,7 +373,10 @@ function onAccessoryAdd(id, node){
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ACCESSORY)
     attachInventorySelector(icon, ITYPE_ACCESSORY);
     $(node).append(icon);
-    let name = $('#skill-group-select').val();
+    let name = skill_name;
+    if(name === null){
+        name = $('#skill-group-select').val()
+    }
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
@@ -360,12 +384,25 @@ function onAccessoryAdd(id, node){
     partyData[idx].accessory = id < 0 ? 0 : id;
 }
 
-function onAbStoneAdd(id, node){
+/**
+ * 
+ * @param {*} id skill id of ability stone
+ * @param {*} node node to append the info row
+ * @param {*} abs_name Some abstones does not have attached MSkillId, the name of the skill is the name of the abstone itself
+ */
+function onAbStoneAdd(id, node, abs_name=null){
+    if(id == 0 && !abs_name){ return; }
+    node = $(node)[0];
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         return ;
     }
     let item = $(document.createElement('p'));
-    item.text(AssetsManager.SkillData[id].Name);
+    if(!id){
+        item.text(abs_name || '?');
+    }
+    else{
+        item.text(AssetsManager.SkillData[id].Name);
+    }
     let cancel = $(document.createElement('span'));
     cancel.addClass('clickable');
     cancel.click(()=>{
@@ -405,9 +442,9 @@ function setupAbilityGroup(gid){
 function setupUltimateAbilityGroup(id){
     if(!AssetsManager.UltimateWeaponGroup.hasOwnProperty(id)){ return ; }
     let node = $('#skill-group-select');
-    for(let aid in AssetsManager.UltimateWeaponGroup[id]){
-        if(!AssetsManager.UltimateWeaponGroup[id].hasOwnProperty(aid)){ continue; }
-        let name = AssetsManager.UltimateWeaponGroup[id][aid].Name;
+    for(let aid in AssetsManager.UltimateWeaponGroup[id].AbilityGroups){
+        if(!AssetsManager.UltimateWeaponGroup[id].AbilityGroups.hasOwnProperty(aid)){ continue; }
+        let name = AssetsManager.UltimateWeaponGroup[id].AbilityGroups[aid].Name;
         let opt = $(document.createElement('option'));
         opt.attr('value', name);
         opt.text(name);
@@ -416,6 +453,8 @@ function setupUltimateAbilityGroup(id){
 }
 
 function onSkillAdd(id, node){
+    if(id == 0){ return; }
+    node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         id = -1;
@@ -433,6 +472,8 @@ function onSkillAdd(id, node){
 }
 
 function onFieldSkillAdd(id, node){
+    if(id == 0){ return; }
+    node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         id = todigits(node.id) == 4 ? -2 : -1;
@@ -450,6 +491,7 @@ function onFormationAdd(id, node){
     if(id == Game_Inventory.ITEM_REMOVE_ID){
         return;
     }
+    node = $(node)[0];
     node.innerHTML = '';
     let pt = AssetsManager.createFormationNode(id)
     attachInventorySelector(pt, ITYPE_FORMATION);
@@ -458,6 +500,235 @@ function onFormationAdd(id, node){
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
+}
+
+function clearSlot(idx){
+    let rmid = Game_Inventory.ITEM_REMOVE_ID;
+    onCharacterAdd(rmid, $(`#character-${idx}`));
+    onWeaponAdd(rmid, $(`#weapon-${idx}`));
+    onArmorAdd(rmid, $(`#armor-${idx}`));
+    onAccessoryAdd(rmid, $(`#accessory-${idx}`));
+    onSkillAdd(rmid, $(`#add-skill-${idx}`));
+    for(let node of $(`#abstone-weapon-${idx}`).children()){
+        if(node.tagName.toLowerCase() != 'p'){ continue; }
+        if(node.id.length < 1){ node.remove(); }
+    }
+    for(let node of $(`#abstone-armor-${idx}`).children()){
+        if(node.tagName.toLowerCase() != 'p'){ continue; }
+        if(node.id.length < 1){ node.remove(); }
+    }
+    for(let node of $(`#abstone-accessory-${idx}`).children()){
+        if(node.tagName.toLowerCase() != 'p'){ continue; }
+        if(node.id.length < 1){ node.remove(); }
+    }
+}
+
+function loadPartyGroups(){
+    let group_list = $('#party-group-list');
+    if(!isLoggedIn()){
+        let opt = $(document.createElement('option'));
+        opt.text(Vocab['GameLoginFailed']);
+        group_list.append(opt);
+        $("#loading-indicator-2").remove();
+        return ;
+    }
+    let proms = [];
+    proms.push(sendMTG({
+        url: '/api/UParty/GetUPartyGroupNames',
+        method: 'GET',
+        success: (res) => {
+            let group_list = $('#party-group-selector');
+            for(let i=0;i<10;++i){
+                GroupName[i+1] = res.r[i];
+                let opt = $(document.createElement('option'));
+                opt.text(res.r[i].Name);
+                opt.prop('value', i+1);
+                group_list.append(opt);
+            }
+            group_list.on('change', ()=>{
+                let v = group_list.prop('value');
+                if(v){ onPartyGroupChange(v); }
+            });
+        },
+        error: (res)=>{ console.error(res) },
+    }));
+    for(let i=1; i<=10; ++i){
+        proms.push(sendMTG({
+            url: `/api/UParties/${i}`,
+            method: 'GET',
+            success: (res) => {
+                GroupData[i] = res.r.UParties;
+            },
+            error: (res)=>{ console.error(res) },
+        }));
+    }
+    proms.concat(fetchInventory());
+    for(let i=1; i<=UltimateWeaponMaxGen; ++i){
+        proms.push(sendMTG({
+            // This api only returns its id, not MWeaponId
+            url: `/api/UltimateWeapon/GetUUltimateWeaponGroup/${i}`,
+            method: 'GET',
+            success: (res) => {
+                for(let uwp of res.r.UUltimateWeaponInfoViewModels){
+                    UltimateWeaponData[uwp.MUltimateWeaponId] = uwp;
+                    UltimateWeaponData[uwp.MUltimateWeaponId].AbilityGroups = {};
+                    for(let ability of uwp.UltimateWeaponPointAbilityinfoViewModels){
+                        UltimateWeaponData[uwp.MUltimateWeaponId].AbilityGroups[ability.MUltimateWeaponPointAbilityId] = ability;
+                    }
+                }
+            },
+            error: (res)=>{ console.error(res) },
+        }));
+    }
+    Promise.all(proms).then(()=>{
+        $("#loading-indicator-2").remove();
+    }).catch(() => {
+        console.log("Ajax failed");
+        alert(Vocab.GameLoginFailed+'\n\n'+Vocab.GameLoginFailed2);
+        handleGameConnectionError();
+    });
+}
+
+function onPartyGroupChange(idx){
+    let tbody = $('#party-group-table-body');
+    tbody.html('');
+    for(let party of GroupData[idx]){
+        let row = $(document.createElement('tr'));
+        tbody.append(row);
+        let cells = [];
+        for(let i=0;i<7;++i){
+            let cell = $(document.createElement('td'));
+            cell.addClass('cell-centered');
+            cells.push(cell);
+            row.append(cell);
+        }
+        let pname = party.Name || `${Vocab['Party']}#${party.PartyNo}`;
+        cells[0].append($(document.createElement('p')).text(pname));
+        for(let i=1;i<=5;++i){
+            let char = party.UCharacterSlots[i-1].UCharacter;
+            let mchid = -1;
+            if(char){
+                mchid = char.MCharacterId;
+            }
+            cells[i].append(AssetsManager.createCharacterAvatarNode(mchid));
+        }
+        let action_btn = $(document.createElement('a'));
+        action_btn.addClass('btn btn-primary btn-handler').prop('type', 'button');
+        action_btn.html(BICON_PLUS);
+        action_btn.on('click', ()=>{
+            onPartyGroupAction(party);
+        })
+        cells[6].append(action_btn);
+    }
+    
+}
+
+function onPartyGroupAction(party){
+    CurrentPartyData = party;
+    PartyGroupActionModal.show();
+}
+
+function applyFromGameParty(){
+    for(let slot of CurrentPartyData.UCharacterSlots){
+        let idx = slot.SlotNo;
+        clearSlot(slot.SlotNo);
+        let char = slot.UCharacter;
+        if(!char){ continue; }
+        onCharacterAdd(char.MCharacterId, $(`#character-${idx}`));
+        $(`#lv-character-${idx}`).val(char.Level);
+        $('#ex-hp').val(char.UCharacterBaseViewModel.ExStatus.HP);
+        $('#ex-stat').val(char.UCharacterBaseViewModel.ExStatus.Speed); // others are same
+        for(let j=1;j<=3;++j){
+            let uskill = char[`USkill${j}`];
+            let sp_cost = AssetsManager.SkillData[uskill.MSkillId].SPCost - uskill.Stage;
+            sp_cost += slot[`USkill${j}SPFiexdValue`];
+            $(`#spcost-${idx}-${j-1}`).val(sp_cost);
+        }
+        let weapon = slot.UWeapon;
+        if(weapon){
+            let skid = weapon.MSkillId;
+            let skname = '';
+            if(skid){ skname = AssetsManager.SkillData[skid].Name; }
+            // Ultimate weapon
+            if(AssetsManager.UltimateWeaponGroup.hasOwnProperty(weapon.MWeaponId))
+            {
+                let uwp = null;
+                for(let id in AssetsManager.UltimateWeaponGroup){
+                    if(!AssetsManager.UltimateWeaponGroup.hasOwnProperty(id)){ continue; }
+                    let obj = AssetsManager.UltimateWeaponGroup[id];
+                    if(obj.MWeaponId == weapon.MWeaponId){
+                        uwp = UltimateWeaponData[obj.Id];
+                        break;
+                    }
+                }
+                let equipped = [];
+                for(let ability of uwp.UltimateWeaponPointAbilityinfoViewModels){
+                    if(ability.EquipSlotNo){
+                        let aname = AssetsManager.UltimateWeaponGroup[weapon.MWeaponId].AbilityGroups[ability.MUltimateWeaponPointAbilityId].Name;
+                        equipped.push(aname);
+                    }
+                }
+                skname = equipped.join(',');
+            }
+            else{
+                // AbStone data is missing, need to get from UWeapons/Armors/Accessories
+                for(let item of DataManager.dataWeapons){
+                    if(item.Id != weapon.Id){ continue; }
+                    if(!item.AbilityStoneSlots){ continue; }
+                    for(let st of item.AbilityStoneSlots){
+                        let lvsk = AssetsManager.LevelSkillData[st.MLevelUpSkillGroupId];
+                        let skid = lvsk[lvsk.length-1].MSkillId;
+                        onAbStoneAdd(skid, $(`#abstone-weapon-${idx}`));
+                    }
+                }
+            }
+            onWeaponAdd(weapon.MWeaponId, $(`#weapon-${idx}`), skname);
+        }
+        let armor = slot.UArmor;
+        if(armor){
+            let skid = armor.MSkillId;
+            let skname = '';
+            if(skid){ skname = AssetsManager.SkillData[skid].Name; }
+            onArmorAdd(armor.MArmorId, $(`#armor-${idx}`), skname);
+            for(let item of DataManager.dataArmors){
+                if(item.Id != armor.Id){ continue; }
+                if(!item.AbilityStoneSlots){ continue; }
+                for(let st of item.AbilityStoneSlots){
+                    let lvsk = AssetsManager.LevelSkillData[st.MLevelUpSkillGroupId];
+                    let skid = lvsk[lvsk.length-1].MSkillId;
+                    onAbStoneAdd(skid, $(`#abstone-armor-${idx}`));
+                }
+            }
+        }
+        let accessory = slot.UAccessory;
+        if(accessory){
+            let skid = accessory.MSkillId;
+            let skname = '';
+            if(skid){ skname = AssetsManager.SkillData[skid].Name; }
+            onAccessoryAdd(accessory.MAccessoryId, $(`#accessory-${idx}`), skname);
+            for(let item of DataManager.dataAccessories){
+                if(item.Id != accessory.Id){ continue; }
+                if(!item.AbilityStoneSlots){ continue; }
+                for(let st of item.AbilityStoneSlots){
+                    let lvsk = AssetsManager.LevelSkillData[st.MLevelUpSkillGroupId];
+                    let skid = lvsk[lvsk.length-1].MSkillId;
+                    onAbStoneAdd(skid, $(`#abstone-accessory-${idx}`), AssetsManager.AbStoneData[st.MAbilityStoneId].Name);
+                }
+            }
+        }
+        let add_skill = slot.USkill;
+        if(add_skill){
+            onSkillAdd(add_skill.MSkillId, $(`#add-skill-${idx}`));
+            let sp_cost = AssetsManager.SkillData[add_skill.MSkillId].SPCost - add_skill.Stage;
+            sp_cost += slot[`USkill4SPFiexdValue`];
+            $(`#spcost-${idx}-3`).val(sp_cost);
+        }
+    }
+    onFieldSkillAdd(CurrentPartyData.MFieldSkill1Id, $('#fieldskill-1'));
+    onFieldSkillAdd(CurrentPartyData.MFieldSkill2Id, $('#fieldskill-2'));
+    onFieldSkillAdd(CurrentPartyData.MFieldSkill3Id, $('#fieldskill-3'));
+    onFormationAdd(CurrentPartyData.MFormationId, $('#formation'));
+    PartyGroupActionModal.hide();
 }
 
 function setup(){
@@ -471,13 +742,16 @@ function setup(){
     });
     $("#loading-indicator").remove();
     $("#party-index").css('display', '');
+    $("#party-tabs").css('display', '');
     Inventory = new Game_Inventory('inventory');
     ActionModal = new bootstrap.Modal($('#modal-action'));
+    PartyGroupActionModal = new bootstrap.Modal($('#modal-action-2'));
     Inventory.container.on("hidden.bs.modal", ()=>{
         if(Inventory.currentType == ITYPE_SKILL && currentAddSkillNode){
             currentAddSkillNode.remove();
         }
     });
+    loadPartyGroups();
 }
 
 (function(){
