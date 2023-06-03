@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup as BS
 from base64 import b64encode,b64decode
 from html import unescape
 from urllib.parse import unquote,urlparse,urlencode
+from cryptography.hazmat.primitives import serialization,hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
 import pytz
 
 def login(username, password, remember=False):
@@ -156,3 +158,30 @@ def login_game(b64ck):
     ret['server'] = server_host
     ret['status'] = 200
     return ret
+
+def decrypt_token(a, b):
+    try:
+        private_key = serialization.load_pem_private_key(os.getenv('MTG_TOKEN_PVKEY').encode(), password=None)
+    except Exception as err:
+        handle_exception(err)
+        return _G.ERRNO_UNAVAILABLE
+    try:
+        ret_a = private_key.decrypt(
+            b64decode(a.encode()),
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        ).decode()
+        ret_b = private_key.decrypt(
+            b64decode(b.encode()),
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        ).decode()
+    except Exception:
+        return _G.ERRNO_UNAUTH
+    return ret_a+ret_b[1:] if ret_a[-1] == ret_b[0] else ret_a+ret_b

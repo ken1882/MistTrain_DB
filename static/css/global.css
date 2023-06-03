@@ -425,3 +425,7 @@ tbody tr td{
   font-size: larger;
   margin: 8px;
 }
+
+.text-major{
+  font-size: larger;
+}

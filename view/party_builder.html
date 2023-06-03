@@ -97,20 +97,23 @@
           <li class="nav-item">
             <a class="nav-link tab-major" data-toggle="tab" href="#party-groups" label="l-PartyGroups"></a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link tab-major" data-toggle="tab" href="#equipment-settings" label="l-Settings"></a>
+          </li>
         </ul>
 
         <div class="tab-content">
           <div class="tab-pane fade" id="party-preset">
-            PP
+            <p label="l-Unimplemented"></p>
           </div>
           <div class="tab-pane fade" id="equipment-preset">
-            EP
+            <p label="l-Unimplemented"></p>
           </div>
           <div class="tab-pane fade" id="party-groups">
             <div id="party-group-selector-container">
               <label for="party-group-selector" label="l-PartyGroups"></label>
               <select id="party-group-selector" class="select-major">
-                <option value="0"></option>
+                <option id="party-group-selector-placeholder" value="0"></option>
               </select>
             </div>
             <div id="party-group-table-container">
@@ -119,6 +122,46 @@
 
               </tbody>
             </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="equipment-settings">
+            <br>
+            <div>
+              <span label="l-EquipmentMethod" class="text-major"></span>
+              <br>
+              <label for="eqm-opt-1">
+                <input type="radio" id="eqm-opt-1" name="option" value="1">
+                <span label="l-EquipmentMethodDescA"></span>
+              </label><br>
+              <label for="eqm-opt-2">
+                <input type="radio" id="eqm-opt-2" name="option" value="2">
+                <span label="l-EquipmentMethodDescB"></span>
+              </label>
+            </div>
+            <br>
+            <div>
+              <span label="l-EquipmentJewelMethod" class="text-major"></span>
+              <br>
+              <label for="eqjm-opt-1">
+                <input type="radio" id="eqjm-opt-1" name="option" value="1">
+                <span label="l-EquipmentJewelMethodDescA"></span>
+              </label><br>
+              <label for="eqjm-opt-2">
+                <input type="radio" id="eqjm-opt-2" name="option" value="2">
+                <span label="l-EquipmentJewelMethodDescB"></span>
+              </label><br>
+              <label for="eqjm-opt-3">
+                <input type="radio" id="eqjm-opt-3" name="option" value="3">
+                <span label="l-EquipmentJewelMethodDescC"></span>
+              </label><br>
+              <label for="eqjm-opt-4">
+                <input type="radio" id="eqjm-opt-4" name="option" value="4">
+                <span label="l-EquipmentJewelMethodDescD"></span>
+              </label><br>
+              <label for="eqjm-opt-5">
+                <input type="radio" id="eqjm-opt-5" name="option" value="5">
+                <span label="l-EquipmentJewelMethodDescE"></span>
+              </label>
             </div>
           </div>
         </div>

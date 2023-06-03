@@ -524,11 +524,8 @@ function clearSlot(idx){
 }
 
 function loadPartyGroups(){
-    let group_list = $('#party-group-list');
     if(!isLoggedIn()){
-        let opt = $(document.createElement('option'));
-        opt.text(Vocab['GameLoginFailed']);
-        group_list.append(opt);
+        $('#party-group-selector-placeholder').text(Vocab['GameLoginFailed']);
         $("#loading-indicator-2").remove();
         return ;
     }

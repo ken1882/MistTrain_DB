@@ -9,6 +9,7 @@ function init_mtggame(){
     if(!DataManager.isReady()){
         return setTimeout(init_mtggame, 500);
     }
+    injectExtensionTokenInput();
     reloadProfile();
     $("#chk-conn").on('click', checkGameConnection);
     $("#conn-chars").on('click', loadCharacters);
@@ -22,6 +23,63 @@ function init_mtggame(){
 }
 window.addEventListener('load', init_mtggame);
 
+function injectExtensionTokenInput(){
+    let ina = $(document.createElement('input'));
+    let inb = $(document.createElement('input'));
+    ina.prop('type', 'hidden').prop('id', 'inp-ext-token-a');
+    inb.prop('type', 'hidden').prop('id', 'inp-ext-token-b');
+    ina.on('change', onExtensionInputChange);
+    inb.on('change', onExtensionInputChange);
+    $('body').append(ina);
+    $('body').append(inb);
+}
+
+function onExtensionInputChange(){
+    let ta = $('#inp-ext-token-a').val();
+    let tb = $('#inp-ext-token-b').val();
+    if(ta && tb && !isLoggedIn()){
+        FlagConnLock = true;
+        $("#conn-icon").css('display', 'none');
+        $("#conid-game").css('display', '');
+        $.ajax({
+            url: "/api/GetOAuthToken",
+            method: 'POST',
+            data: {
+                token_a: ta,
+                token_b: tb
+            },
+            success: (res) => {
+                saveMTGServer(res.server);
+                saveMTGToken(res.token);
+                Promise.all(fetchPlayerProfile()).then(()=>{
+                    reloadProfile();
+                    let p = DataManager.playerProfile;
+                    FlagConnLock = false;
+                }).catch(() => {
+                    console.log("Ajax failed");
+                    reloadProfile();
+                    FlagConnLock = false;
+                });
+            },
+            error: (res) => {
+                console.log(res);
+                if(res.status == 429){
+                    alert(Vocab.RateLimited);
+                }
+                else{
+                    var ret = res.responseJSON;
+                    var msg = Vocab.LoginFailed;
+                    if(ret.msg){
+                        msg += "\n\n"+ret.msg;
+                    }
+                    alert(msg);
+                }
+                FlagConnLock = false;
+                window.location = window.location;
+            },
+        });
+    }
+}
 
 function checkGameConnection(){
     if(FlagConnLock){ return ; }
