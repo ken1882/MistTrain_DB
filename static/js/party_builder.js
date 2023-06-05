@@ -24,6 +24,12 @@ let UltimateWeaponMaxGen = 1;
 let GroupName = new Array(11);
 let GroupData = new Array(11);
 let CurrentPartyData = {};
+let RegisteredItems = {
+    weapons: [],
+    armors: [],
+    accessories: [],
+    abstones: []
+}
 
 function init(){
     AssetsManager.loadCharacterAssets();

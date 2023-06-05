@@ -326,6 +326,7 @@
   "MissingItemsDesc": "If you do not own the character / formation / PT cards, it will be skipped",
   "MissingAddSkillDesc": "If your character yet to learn the additional skill equipped in the editor, it will not be equipped",
   "MissingSkillSPDesc": "If the skill SP cannot be adjusted, it will be skipped",
+  "OnlyShowOwned": "Only display owned items",
   "ItemType": {
     "0": "Character",
     "1": "Weapon",

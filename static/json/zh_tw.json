@@ -325,6 +325,7 @@
   "MissingItemsDesc": "尚未擁有的 角色/陣形/PT 將被跳過不保存至遊戲",
   "MissingAddSkillDesc": "若該角色尚未習得編輯器中的追加技能, 將被跳過不保存至遊戲",
   "MissingSkillSPDesc": "若技能所需的 SP 無法調整，將被跳過不保存至遊戲",
+  "OnlyShowOwned": "只顯示已擁有的項目",
   "ItemType": {
     "0": "角色",
     "1": "武器",
