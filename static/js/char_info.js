@@ -407,7 +407,11 @@ function getAllAbilities(character_data){
       for(let entry of board.MTrainBoardDetails){
         if(entry.TrainBoardDetailAdditionalAbility){
           pskills.push(
-            [SKILL_SRC_TB, entry.TrainBoardDetailAdditionalAbility.AdditionalMAbilityId]
+            [
+              SKILL_SRC_TB,
+              entry.TrainBoardDetailAdditionalAbility.AdditionalMAbilityId ||
+              entry.TrainBoardDetailAdditionalAbility.AdditionalMSkillId
+            ]
           );
         }
       }
@@ -468,12 +472,13 @@ function fillCharacterSkillInfo(){
     swapSkillDescription(i, sid);
   }
   for(let i in pskills){
+    console.log(pskills)
     let src     = pskills[i][0];
     let skill   = AssetsManager.SkillData[pskills[i][1]];
     let node    = document.createElement('tr');
     let sname   = document.createElement('td');
     let seffect = document.createElement('td');
-    let aid = skill.Id;
+    let aid     = skill.Id;
     node.id     = `ability-node-${i}`;
     sname.id    = `ability-name-${i}`;
     seffect.id  = `ability-effect-${i}`;
@@ -663,17 +668,20 @@ function setTrainboardSwappableEntry(node_prefix, ori_id, aft_id, swap_callback)
     let node = $(`#${node_prefix}-node-${aft_id}`);
     if(node.attr('class') == 'trainboard-skill'){
       node.removeClass('trainboard-skill');
+      node.addClass(node.prop('ori-cls'));
     }
     else{
+      node.prop('ori-cls', node.prop('class'));
       node.addClass('trainboard-skill');
+      node.removeClass(node.prop('ori-cls'));
     }
     if($(swap_icon).attr('class') == 'trainboard-skill'){
       $(swap_icon).removeClass('trainboard-skill');
-      $(swap_icon).addClass('normal-skill');
+      $(swap_icon).addClass(node.prop('ori-cls'));
     }
     else{
       $(swap_icon).addClass('trainboard-skill');
-      $(swap_icon).removeClass('normal-skill');
+      $(swap_icon).removeClass(node.prop('ori-cls'));
     }
     ori_id ^= aft_id;
     aft_id ^= ori_id;
