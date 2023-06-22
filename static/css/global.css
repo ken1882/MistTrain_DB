@@ -187,6 +187,14 @@ tbody tr td{
   max-width: 25%;
 }
 
+.party-group-select{
+  float: left;
+  vertical-align: top;
+  margin-top: 16px;
+  margin-left: 5%;
+  max-width: 20%;
+}
+
 .main-selectable{
   vertical-align: top;
   margin-top: 16px;
@@ -378,4 +386,46 @@ tbody tr td{
   margin-bottom: 0;
   float: right;
   clear: right;
+}
+
+.tab-container{
+  display: block;
+  max-width: 95%;
+  margin: auto;
+}
+
+.tab-major{
+  color: aqua;
+  font-size: larger;
+}
+
+.select-major{
+  margin: 4px;
+  padding: 12px;
+  font-size: larger;
+  width: 280px;
+}
+.select-major option{
+  padding: 12px;
+  font-size: larger;
+}
+
+.table-centered{
+  max-width: 95%;
+  margin: auto;
+}
+
+.cell-centered{
+  text-align: center;
+  margin: auto;
+}
+
+.btn-major{
+  padding: 8px;
+  font-size: larger;
+  margin: 8px;
+}
+
+.text-major{
+  font-size: larger;
 }

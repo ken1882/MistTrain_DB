@@ -261,11 +261,24 @@ def spnosor_scene():
     return jsonify({'msg': 'Locked'}),409
   if msg == _G.ERRNO_UNAUTH:
     return jsonify({'msg': 'Unauthorized'}),401
-  if msg == _G.ERRNO_UNAUTH:
+  if msg == _G.ERRNO_UNAVAILABLE:
     return jsonify({'msg': 'Maintenance'}),403
   elif msg == _G.ERRNO_OK:
     return jsonify({'msg': 'OK'}),200
   return jsonify({'msg': 'Error'}),500
+
+@app.route('/api/GetOAuthToken', methods=['POST'])
+def decrypt_token():
+  token_a = request.form.get('token_a')
+  token_b = request.form.get('token_b')
+  msg = dmm.decrypt_token(token_a, token_b)
+  if msg == _G.ERROR_LOCKED:
+    return jsonify({'msg': 'Locked'}),409
+  if msg == _G.ERRNO_UNAUTH:
+    return jsonify({'msg': 'Unauthorized'}),401
+  if msg == _G.ERRNO_UNAVAILABLE:
+    return jsonify({'msg': 'Maintenance'}),403
+  return jsonify({'msg': 'OK', 'token': msg, 'server': game.ServerLocation}),200
 
 ## Main functions
 
