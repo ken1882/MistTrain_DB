@@ -680,8 +680,8 @@ function applyFromGameParty(){
                     if(!item.AbilityStoneSlots){ continue; }
                     for(let st of item.AbilityStoneSlots){
                         let lvsk = AssetsManager.LevelSkillData[st.MLevelUpSkillGroupId];
-                        let skid = lvsk[lvsk.length-1].MSkillId;
-                        onAbStoneAdd(skid, $(`#abstone-weapon-${idx}`));
+                        let st_name = AssetsManager.AbStoneData[st.MAbilityStoneId].Name;
+                        onAbStoneAdd(skid, $(`#abstone-weapon-${idx}`), st_name);
                     }
                 }
             }
@@ -699,7 +699,8 @@ function applyFromGameParty(){
                 for(let st of item.AbilityStoneSlots){
                     let lvsk = AssetsManager.LevelSkillData[st.MLevelUpSkillGroupId];
                     let skid = lvsk[lvsk.length-1].MSkillId;
-                    onAbStoneAdd(skid, $(`#abstone-armor-${idx}`));
+                    let st_name = AssetsManager.AbStoneData[st.MAbilityStoneId].Name;
+                    onAbStoneAdd(skid, $(`#abstone-armor-${idx}`), st_name);
                 }
             }
         }
@@ -715,7 +716,8 @@ function applyFromGameParty(){
                 for(let st of item.AbilityStoneSlots){
                     let lvsk = AssetsManager.LevelSkillData[st.MLevelUpSkillGroupId];
                     let skid = lvsk[lvsk.length-1].MSkillId;
-                    onAbStoneAdd(skid, $(`#abstone-accessory-${idx}`), AssetsManager.AbStoneData[st.MAbilityStoneId].Name);
+                    let st_name = AssetsManager.AbStoneData[st.MAbilityStoneId].Name;
+                    onAbStoneAdd(skid, $(`#abstone-accessory-${idx}`), st_name);
                 }
             }
         }
