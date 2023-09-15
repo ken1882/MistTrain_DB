@@ -155,7 +155,7 @@
   "StatusInflation": "數值補正",
   "InitMax": "(初始/滿等)",
   "InitMaxLB": "(初始/滿等/極限突破)",
-  "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+  "RarityList": ["C", "B", "A", "S", "SS", "UR", "UE", "UL"],
   "StatusName": {
     "HP": "HP",
     "Strength": "物攻",

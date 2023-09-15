@@ -1093,6 +1093,9 @@ const ITYPE_SKILL       = 31;
         case 4:
           krarity = 'frm_thumb_rare_ss';
           break;
+        case 5:
+          krarity = 'frm_thumb_rare_ur';
+          break;
       }
     }
     let rect2 = null;
@@ -1170,6 +1173,9 @@ const ITYPE_SKILL       = 31;
           break;
         case 4:
           krarity = 'frm_thumb__ptskill_rare_ss';
+          break;
+        case 5:
+          krarity = 'frm_thumb__ptskill_rare_ur';
           break;
       }
     }
@@ -1287,6 +1293,9 @@ const ITYPE_SKILL       = 31;
           break;
         case 4:
           krarity = 'frm_thumb_rare_ss';
+          break;
+        case 5:
+          krarity = 'frm_thumb_rare_ur';
           break;
       }
     }

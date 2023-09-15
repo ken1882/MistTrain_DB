@@ -1,4 +1,5 @@
 let FieldSkillNodes = {};
+let MaxEffectsCount = 3;
 
 function init(){
     AssetsManager.loadPartyFrames();
@@ -11,7 +12,8 @@ function setup(){
     if(!DataManager.isReady() || !AssetsManager.isReady()){
         return setTimeout(setup, 300);
     }
-    for(let i=1;i<=3;++i){
+    setupMaxEffects()
+    for(let i=1;i<=MaxEffectsCount;++i){
         $(`#th-effect-${i}`).text(Vocab['Effect']+ ` ${i}`);
     }
     insertFieldSkills();
@@ -68,6 +70,28 @@ function setupTableUtils(){
     $(".fixed-table-container").css('padding-bottom', '50px');
 }
 
+function setupMaxEffects(){
+    for(let i in AssetsManager.FieldSkillData){
+        for(let j=1;j<99;++j){
+            let attr = `AbilityMSkill${j}Id`;
+            if(AssetsManager.FieldSkillData[i].hasOwnProperty(attr)){
+                MaxEffectsCount = Math.max(MaxEffectsCount, j);
+            }
+            else{
+                break;
+            }
+        }
+    }
+    let tr = $("#fieldskill-trhead");
+    for(let i=1;i<=MaxEffectsCount;++i){
+        let th = $(document.createElement("th"));
+        th.attr('id', `th-effect-${i}`);
+        th.attr('data-field', `feffect${i}`);
+        th.addClass('col-2');
+        tr.append(th);
+    }
+}
+
 function insertFieldSkills(){
     let parent = $('#fieldskill-table');
     for(let i in AssetsManager.FieldSkillData){
@@ -77,7 +101,7 @@ function insertFieldSkills(){
         tr.id = `fieldskill-${i}`;
         FieldSkillNodes[i] = tr;
         let cells = [];
-        for(let i=0;i<4+3;++i){
+        for(let i=0;i<4+MaxEffectsCount;++i){
             let node = document.createElement('td');
             cells.push(node);
             tr.append(node);
@@ -93,7 +117,7 @@ function insertFieldSkills(){
         $(cells[1]).text(ptname);
         $(cells[2]).text(Vocab.RarityList[data.Rarity]);
         $(cells[3]).text(data.Cost);
-        for(let j=1;j<=3;++j){
+        for(let j=1;j<=MaxEffectsCount;++j){
             let attr = `AbilityMSkill${j}Id`;
             let sid = data[attr];
             if(!sid){ continue; }
