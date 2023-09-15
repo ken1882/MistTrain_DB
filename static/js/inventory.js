@@ -646,7 +646,7 @@ class Game_Inventory{
 
     static get SKILL_POWER_RANK(){
         return [
-            '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'US'
+            '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'UR', 'US'
         ];
     }
 

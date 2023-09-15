@@ -155,7 +155,7 @@
     "StatusInflation": "ステータス上昇",
     "InitMax": "(初期/最大)",
     "InitMaxLB": "(初期/最大/LB)",
-    "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+    "RarityList": ["C", "B", "A", "S", "SS", "UR", "UE", "UL"],
     "StatusName": {
         "HP": "HP",
         "Strength": "物理攻撃力",
