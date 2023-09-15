@@ -155,7 +155,7 @@
   "StatusInflation": "Status Inflation",
   "InitMax": "(Initial/Maxed)",
   "InitMaxLB": "(Initial/Maxed/LB)",
-  "RarityList": ["C", "B", "A", "S", "SS", "SSS"],
+  "RarityList": ["C", "B", "A", "S", "SS", "UR", "UE", "UL"],
   "StatusName": {
     "HP": "HP",
     "Strength": "P.Atk",

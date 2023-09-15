@@ -83,6 +83,34 @@
       ]
     }
   },
+  "frm_thumb_rare_ur": {
+    "__type__":"cc.SpriteFrame",
+    "group": "party1",
+    "content":{
+      "name":"frm_thumb_rare_ur",
+      "texture":"e1dEMK+fdKX7B7rB3k5zA9",
+      "rect":[
+        218,
+        512,
+        102,
+        102
+      ],
+      "offset":[
+        0,
+        0
+      ],
+      "originalSize":[
+        102,
+        102
+      ],
+      "capInsets":[
+        36,
+        28,
+        36,
+        58
+      ]
+    }
+  },
   "frm_thumb_abiity": {
     "__type__":"cc.SpriteFrame",
     "content":{
@@ -352,6 +380,33 @@
       "rect":[
         433,
         105,
+        210,
+        102
+      ],
+      "offset":[
+        0,
+        0
+      ],
+      "originalSize":[
+        210,
+        102
+      ],
+      "capInsets":[
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "frm_thumb__ptskill_rare_ur": {
+    "__type__":"cc.SpriteFrame",
+    "content":{
+      "name":"frm_thumb__ptskill_rare_ur",
+      "texture":"e1dEMK+fdKX7B7rB3k5zA9",
+      "rect":[
+        1,
+        512,
         210,
         102
       ],
