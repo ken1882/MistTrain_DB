@@ -13,7 +13,7 @@ const SKILL_SRC_LB   = 2;
 const EFF_CHANGE_SKILL = 100;
 const WEAPON_ATTRIBUTE = [0, 2, 1, 1, 3, 2, 1, 3, 2, 3];
 const SKILL_POWER_RANK = [
-  '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'UR', 'UE', 'UL'
+  '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'UR', 'UE', 'UL'
 ];
 const TYPE_SKILL_DISTANCE = [
   'none',
