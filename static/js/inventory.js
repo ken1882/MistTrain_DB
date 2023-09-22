@@ -645,8 +645,11 @@ class Game_Inventory{
     }
 
     static get SKILL_POWER_RANK(){
+        if(window.SKILL_POWER_RANK){
+            return window.SKILL_POWER_RANK;
+        }
         return [
-            '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'UR', 'US'
+            '-', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'UR', 'UE', 'UL'
         ];
     }
 
