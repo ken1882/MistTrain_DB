@@ -67,9 +67,12 @@ function loadDialog(){
   AssetsManager.requestSingletonAssets(
     ()=>{
       $.ajax({
-        url: `/api/GetStoryDetail/${__SceneId}`,
+        url: `/api/GetStoryDetail/${__SceneId}?lang=${DataManager.language}`,
         success: (res)=>{
           SceneData = res;
+          if(!SceneData){
+            alert(Vocab.SceneMissing)
+          }
           setTimeout(() => {AssetsManager.incReadyCounter();}, 1000);
         },
         error: handleAjaxError,

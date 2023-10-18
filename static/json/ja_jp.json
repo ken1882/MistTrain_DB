@@ -387,6 +387,9 @@
     "MainStoryChapterTitle": {
         "0": "mAreaId: stageName"
     },
+    "EventStoryChapterTitle": {
+        "0": "MChapterId: Title"
+      },
     "SceneTitle": {
       "0": "シーン ID: シーンタイトル"
     }

@@ -453,6 +453,9 @@
     "67": "梅特洛艾森古拉德編",
     "68": "梅特洛艾森古拉德編"
   },
+  "EventStoryChapterTitle": {
+    "0": "MChapterId: Title"
+  },
   "SceneTitle": {
     "0": "劇情 ID: 劇情標題",
     "300101":"聖伊麗絲的魔鬼教官",

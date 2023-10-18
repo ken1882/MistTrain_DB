@@ -263,17 +263,33 @@ def upload_story_meta(meta):
     target.SetContentString(json.dumps(meta[t]))
     target.Upload()
   log_info("Story meta uploaded")
-      
 
-def get_scene(id):
+def download_scene(cpath, lpath):
   global FLOCK
-  path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
-  if not os.path.exists(path):
-    with FLOCK:
+  with FLOCK:
+    log_info(f"Downloading {cpath}")
+    file = get_cache(cpath)
+    if file:
+      file.GetContentFile(lpath)
+
+def get_scene(id, lang=''):
+  path = ''
+  # try fetch translated file
+  if lang and lang in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME:
+    path = f"{_G.STATIC_FILE_DIRECTORY}/scenes_{lang}/{id}.json"
+    if not os.path.exists(path): # download from cloud if no local copy
+      cpath = f"/{_G.SCENE_CLOUD_TRANSLATED_FOLDERNAME[lang]}/{id}.json"
+      download_scene(cpath, path)
+    if not os.path.exists(path): # not translated
+      path = ''
+      log_info(f"Scene#{id} is not translated to {lang} yet")
+  if not path:
+    path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
+    if not os.path.exists(path):
       cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
-      log_info(f"Downloading {cpath}")
-      file = get_cache(cpath)
-      file.GetContentFile(path)
+      download_scene(cpath, path)
+  if not os.path.exists(path):
+    return {}
   with open(path, 'r') as fp:
     return json.load(fp)
 
