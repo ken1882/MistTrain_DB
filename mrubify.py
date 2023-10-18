@@ -23,6 +23,7 @@ RubyWorkers = []
 def main():
     game.load_database()
     dm.init()
+    dm.update_cache()
     story.init()
     files = glob(f"{_G.DCTmpFolder}/scenes/*.json")
     news  = []
