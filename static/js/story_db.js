@@ -73,8 +73,8 @@ function loadEventStory(){
     let img = document.createElement('img');
     let final_src = `${ASSET_HOST}/Textures/Banners/Theater/events/${scene.MChapterId}.png`;
     img.onerror = (e)=>{
-      if(e.src != final_src){
-        e.src = final_src;
+      if(e.target.src != final_src){
+        $(`#event-banner-${scene.MChapterId}`).attr('src', final_src)
       }
     }
     if(DataManager.language == 'ja_jp'){
@@ -84,6 +84,7 @@ function loadEventStory(){
       img.src = `/static/assets/scene_banners_${DataManager.language}/${scene.MChapterId}.png`;
     }
     $(img).css('max-height', '60px');
+    $(img).attr('id', `event-banner-${scene.MChapterId}`);
     let desc = document.createElement('span');
     let text = scene.Title;
     if(Vocab.EventStoryChapterTitle.hasOwnProperty(scene.MChapterId)){
