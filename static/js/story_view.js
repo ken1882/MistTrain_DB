@@ -67,9 +67,12 @@ function loadDialog(){
   AssetsManager.requestSingletonAssets(
     ()=>{
       $.ajax({
-        url: `/api/GetStoryDetail/${__SceneId}`,
+        url: `/api/GetStoryDetail/${__SceneId}?lang=${DataManager.language}`,
         success: (res)=>{
           SceneData = res;
+          if(!SceneData){
+            alert(Vocab.SceneMissing)
+          }
           setTimeout(() => {AssetsManager.incReadyCounter();}, 1000);
         },
         error: handleAjaxError,
@@ -102,7 +105,12 @@ function findSpeakerCharacterId(dialog){
 function setupDialogues(){
   DialogData = SceneData.MSceneDetailViewModel;
   DialoguePlayer.setup(SceneData);
-  $("#scene-title")[0].innerHTML += SceneData.Title;
+  if(Vocab.SceneTitle.hasOwnProperty(SceneData.MSceneId)){
+    $("#scene-title")[0].innerHTML += Vocab.SceneTitle[SceneData.MSceneId];
+  }
+  else{
+    $("#scene-title")[0].innerHTML += SceneData.Title;
+  }
   let parent = $("#log-section");
   for(let i in DialogData){
     let dialog = DialogData[i];
@@ -111,7 +119,14 @@ function setupDialogues(){
     let textbox = document.createElement('div');
     $(textbox).attr('class', 'dialogbox');
     let phrase = document.createElement('div');
-    phrase.innerHTML = dialog.Ruby.replaceAll('＊', '<br>');
+    let content = ''
+    if(dialog.hasOwnProperty('Ruby')){
+      content = dialog.Ruby;
+    }
+    else{
+      content = dialog.Phrase;
+    }
+    phrase.innerHTML = content.replaceAll('＊', '<br>');
     if(dialog['Name']){
       phrase.innerHTML = `<span style="color:greenyellow;"><b>${dialog['Name']}：</b></span><br>` + phrase.innerHTML;
       let mchid = findSpeakerCharacterId(dialog);

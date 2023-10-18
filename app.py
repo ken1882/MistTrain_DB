@@ -246,8 +246,9 @@ def get_next_predictions():
 @app.route('/api/GetStoryDetail/<id>', methods=['GET'])
 @req_story_ready
 def get_story_content(id):
+  lang = request.args.get('lang')
   try:
-    return jsonify(dm.get_scene(id)),200
+    return jsonify(dm.get_scene(id, lang)),200
   except (TypeError, KeyError) as err:
     handle_exception(err)
   return jsonify({}),503

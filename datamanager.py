@@ -17,6 +17,8 @@ Database    = None
 RootFolder  = None
 SceneFolder = None
 DerpyFolder = None
+SceneFolderTranslated = {}
+
 __FileCache = {}
 FLOCK = Lock()
 
@@ -45,13 +47,15 @@ def init():
   log_info("Cloud initialized")
 
 def update_cache(folder=None):
-  global Database,RootFolder,SceneFolder,DerpyFolder
+  global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated
   log_db_info()
   if not folder: # update all
     files = get_folder_files()
     RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
     SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
     DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
+    for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
+      SceneFolderTranslated[lang] = next((f for f in files if f['title'] == fname), None)
   else:
     files = get_folder_files(folder)
   
@@ -65,6 +69,10 @@ def update_cache(folder=None):
       set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
     elif fpid == SceneFolder['id']:
       set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
+    else:
+      for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
+        if fpid == SceneFolderTranslated[lang]['id']:
+          set_cache(f, f"/{fname}")
   log_info(f"Cloud cache of {folder['title'] if folder else 'root'} updated")
 
 def log_db_info():
@@ -210,14 +218,14 @@ def load_derpy_estimators():
         _G.DERPY_ESTIMATORS.append(bin)
         break
 
-def load_story_meta():
+def load_story_meta(data_dir='json'):
   s_main  = f"/{_G.SCENE_METAS['main']}"
   s_event = f"/{_G.SCENE_METAS['event']}"
   s_chars = f"/{_G.SCENE_METAS['character']}"
   metas = [s_main, s_event, s_chars]
   ret = []
   for filename in metas:
-    dst_path = f"{_G.STATIC_FILE_DIRECTORY}/json{filename}"
+    dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{data_dir}{filename}"
     ret.append(dst_path)
     if not _G.FlagUseCloudData:
       continue
@@ -255,17 +263,33 @@ def upload_story_meta(meta):
     target.SetContentString(json.dumps(meta[t]))
     target.Upload()
   log_info("Story meta uploaded")
-      
 
-def get_scene(id):
+def download_scene(cpath, lpath):
   global FLOCK
-  path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
-  if not os.path.exists(path):
-    with FLOCK:
+  with FLOCK:
+    log_info(f"Downloading {cpath}")
+    file = get_cache(cpath)
+    if file:
+      file.GetContentFile(lpath)
+
+def get_scene(id, lang=''):
+  path = ''
+  # try fetch translated file
+  if lang and lang in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME:
+    path = f"{_G.STATIC_FILE_DIRECTORY}/scenes_{lang}/{id}.json"
+    if not os.path.exists(path): # download from cloud if no local copy
+      cpath = f"/{_G.SCENE_CLOUD_TRANSLATED_FOLDERNAME[lang]}/{id}.json"
+      download_scene(cpath, path)
+    if not os.path.exists(path): # not translated
+      path = ''
+      log_info(f"Scene#{id} is not translated to {lang} yet")
+  if not path:
+    path = f"{_G.STATIC_FILE_DIRECTORY}/scenes/{id}.json"
+    if not os.path.exists(path):
       cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{id}.json"
-      log_info(f"Downloading {cpath}")
-      file = get_cache(cpath)
-      file.GetContentFile(path)
+      download_scene(cpath, path)
+  if not os.path.exists(path):
+    return {}
   with open(path, 'r') as fp:
     return json.load(fp)
 

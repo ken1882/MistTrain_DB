@@ -6,5 +6,5 @@ __pycache__/
 *.bak
 static/json/*_derpy_warehouse.json
 static/json/*scene.json
-static/scenes/*.json
-!static/scenes/0.json
+static/scenes*/*.json
+!static/scenes*/0.json

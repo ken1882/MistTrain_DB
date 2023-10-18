@@ -382,5 +382,14 @@
   },
   "FieldSkillName": {
     "0": "PT Id: PT Name"
+  },
+  "MainStoryChapterTitle": {
+    "0": "mAreaId: stageName"
+  },
+  "EventStoryChapterTitle": {
+    "0": "MChapterId: Title"
+  },
+  "SceneTitle": {
+    "0": "Scene ID: Scene Title"
   }
 }

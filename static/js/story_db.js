@@ -71,10 +71,25 @@ function loadEventStory(){
     let node = $(document.createElement('a'));
     node.attr('class', 'btn btn-secondary');
     let img = document.createElement('img');
+    let final_src = `${ASSET_HOST}/Textures/Banners/Theater/events/${scene.MChapterId}.png`;
+    img.onerror = (e)=>{
+      if(e.target.src != final_src){
+        $(`#event-banner-${scene.MChapterId}`).attr('src', final_src)
+      }
+    }
+    if(DataManager.language == 'ja_jp'){
+      img.src = final_src;
+    }
+    else{
+      img.src = `/static/assets/scene_banners_${DataManager.language}/${scene.MChapterId}.png`;
+    }
     $(img).css('max-height', '60px');
-    img.src = `${ASSET_HOST}/Textures/Banners/Theater/events/${scene.MChapterId}.png`;
+    $(img).attr('id', `event-banner-${scene.MChapterId}`);
     let desc = document.createElement('span');
     let text = scene.Title;
+    if(Vocab.EventStoryChapterTitle.hasOwnProperty(scene.MChapterId)){
+      text = Vocab.EventStoryChapterTitle[scene.MChapterId]
+    }
     $(desc).css('padding', '4px');
     $(desc).text(text);
     node.append(img);
@@ -92,7 +107,6 @@ function loadEventStory(){
     chapter_container.attr('id', `${container_id}`);
     let eid = scene.MEventId || 0;
     scene.Scenes = scene.Scenes.sort((a,b)=>{return a.MSceneId - b.MSceneId;})
-    console.log(scene.Scenes);
     for(let j=0;j<scene.Scenes.length;++j){
       var sc = scene.Scenes[j];
       var chap_btn = $(document.createElement('a'));
@@ -126,6 +140,9 @@ function loadEventStory(){
         });
       }
       var txt = AssetsManager.SceneData[sid].Title;
+      if(Vocab.SceneTitle.hasOwnProperty(sid)){
+        txt = Vocab.SceneTitle[sid];
+      }
       chap_btn.text(`${j+1}. ${txt}`);
       chap_btn.append(chap_btn);
       chapter_container.append(chap_btn);

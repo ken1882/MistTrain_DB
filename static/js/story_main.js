@@ -132,7 +132,12 @@ function setupChapterPins(response){
 function showChapterContent(event){
   let chid = event.target.parentElement.id.split('-').reverse()[0];
   let title = Vocab['StoryChapter'].replace("%i", chid) + ' ';
-  title += WorldPinData[chid*2].stageName;
+  if(Vocab.MainStoryChapterTitle.hasOwnProperty(chid*2)){
+    title += Vocab.MainStoryChapterTitle[chid*2];
+  }
+  else{
+    title += WorldPinData[chid*2].stageName;
+  }
   $("#chapter-title").text(title);
   let parent = $("#chapter-storylist");
   parent[0].innerHTML = '';
@@ -140,14 +145,17 @@ function showChapterContent(event){
   let scenes  = chapter.Scenes.sort((a,b) => {
     return a.MSceneId - b.MSceneId;
   });
-  console.log(scenes);
   for(let i=0;i<scenes.length;++i){
     let li = document.createElement('li');
     let node = document.createElement('a');
     let scene = SceneData[scenes[i].MSceneId];
     $(node).attr('href', `/story_transcript/${scene.Id}?t=m`);
     $(node).attr('target', '_blank');
-    $(node).text(`${i+1}. ${scene.Title}`);
+    let txt = scene.Title;
+    if(Vocab.SceneTitle.hasOwnProperty(scene.Id)){
+      txt = Vocab.SceneTitle[scene.Id];
+    }
+    $(node).text(`${i+1}. ${txt}`);
     li.append(node);
     parent.append(li);
   }

@@ -38,7 +38,7 @@ FlagRunning = True
 FlagPaused  = False
 FlagWorking = False
 FlagProcessingUserInput = False
-FlagUseCloudData = True
+FlagUseCloudData = False
 if os.getenv('MTG_USE_CLOUD_DATA'):
   FlagUseCloudData = True
 
@@ -283,6 +283,12 @@ DerpyUpdateHour = [12,20,23]
 CLOUD_ROOT_FOLDERNAME = 'MistTrainDB'
 SCENE_CLOUD_FOLDERNAME = 'Scene'
 SCENE_LOCAL_FOLDERNAME = '.tmp/scenes'
+SCENE_CLOUD_TRANSLATED_FOLDERNAME = {
+  'zh_tw': 'Scene_zhtw'
+}
+SCENE_LOCAL_TRANSLATED_FOLDERNAME = {
+  'zh_tw': '.tmp/scenes_zhtw'
+}
 DERPY_CLOUD_FOLDERNAME = 'Derpy'
 DERPY_CLOUD_ESTIMATORS = [
   'rfr_fit_order_False-feats_all.mod',
