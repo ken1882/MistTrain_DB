@@ -284,6 +284,7 @@ def decrypt_token():
 ## Main functions
 
 def setup():
+  dm.update_cache()
   derpy.init()
   story.init()
   if not _G.FlagUseCloudData:

@@ -64,7 +64,7 @@ def req_story_ready(func):
       IsStoryInitCalled = True
       th = Thread(target=init)
       th.start()
-    if not IsStoryReady:
+    if not IsStoryReady or not dm.CacheBooted:
       return render_template('notready.html',
         navbar_content=utils.load_navbar(),
       )

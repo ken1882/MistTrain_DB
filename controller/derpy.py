@@ -11,6 +11,8 @@ from time import mktime,strptime
 import utils
 import pytz
 from threading import Thread
+from time import sleep
+
 pp = PrettyPrinter(indent=2)
 
 IsDerpyReady = False
@@ -19,6 +21,9 @@ IsDerpyInitCalled = False
 def init():
   global IsDerpyReady,IsDerpyInitCalled
   IsDerpyInitCalled = True
+  while not dm.CacheBooted:
+    log_warning("[Derpy] Data cache unbooted, waiting for 10 seconds")
+    sleep(10)
   races = load_database()
   _G.DerpySavedRaceContent = races
   for k,month_races in races.items():
@@ -35,7 +40,7 @@ def req_derpy_ready(func):
       IsDerpyInitCalled = True
       th = Thread(target=init)
       th.start()
-    if not IsDerpyReady:
+    if not IsDerpyReady or not dm.CacheBooted:
       return render_template('notready.html',
         navbar_content=utils.load_navbar(),
       )

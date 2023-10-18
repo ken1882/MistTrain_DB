@@ -51,6 +51,9 @@ UPDATE_HOUR = 4 # 4 am
 def init():
   global IsStoryReady,IsStoryInitCalled
   IsStoryInitCalled = True
+  while not dm.CacheBooted:
+    log_warning("[Story] Data cache unbooted, waiting for 10 seconds")
+    sleep(10)
   load_metas()
   # copy_meta_cache()
   IsStoryReady = True

@@ -17,6 +17,7 @@ Database    = None
 RootFolder  = None
 SceneFolder = None
 DerpyFolder = None
+CacheBooted = False
 SceneFolderTranslated = {}
 
 __FileCache = {}
@@ -43,11 +44,10 @@ def init():
     scopes=["https://www.googleapis.com/auth/drive"]
   )
   Database = GoogleDrive(gauth)
-  update_cache()
   log_info("Cloud initialized")
 
 def update_cache(folder=None):
-  global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated
+  global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated,CacheBooted
   log_db_info()
   if not folder: # update all
     files = get_folder_files()
@@ -74,6 +74,8 @@ def update_cache(folder=None):
         if fpid == SceneFolderTranslated[lang]['id']:
           set_cache(f, f"/{fname}")
   log_info(f"Cloud cache of {folder['title'] if folder else 'root'} updated")
+  if not folder:
+    CacheBooted = True
 
 def log_db_info():
   global Database
