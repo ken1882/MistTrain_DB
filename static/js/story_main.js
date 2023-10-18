@@ -133,7 +133,7 @@ function showChapterContent(event){
   let chid = event.target.parentElement.id.split('-').reverse()[0];
   let title = Vocab['StoryChapter'].replace("%i", chid) + ' ';
   if(Vocab.MainStoryChapterTitle.hasOwnProperty(chid*2)){
-    title += Vocab.MainStoryChapterTitle[chid*2].stageName;
+    title += Vocab.MainStoryChapterTitle[chid*2];
   }
   else{
     title += WorldPinData[chid*2].stageName;
@@ -145,7 +145,6 @@ function showChapterContent(event){
   let scenes  = chapter.Scenes.sort((a,b) => {
     return a.MSceneId - b.MSceneId;
   });
-  console.log(scenes);
   for(let i=0;i<scenes.length;++i){
     let li = document.createElement('li');
     let node = document.createElement('a');

@@ -181,6 +181,7 @@ def dump_sponspred_scene(token):
   UploadStatus = 'init' # ret for polling status query
   saved = []
   game.ServerLocation = 'https://zh-tw.misttraingirls.johren.games'
+  _G.STATIC_HOST = 'https://cdn2-mistglobal-prod-tw.azureedge.net/prod-client-web-static-tw2-15-1'
   try:
     UploadLock = True
     se = requests.Session()
@@ -214,7 +215,7 @@ def dump_sponspred_scene(token):
         path  = f"{_G.DCTmpFolder}/jh_scenes/{sid}.json"
         path2 = f"{_G.STATIC_FILE_DIRECTORY}/jh_scenes/{sid}.json"
         UploadStatus = f"download,{k},{ok_total},{new_total}"
-        if os.path.exists(path) or os.path.exists(path2):
+        if (os.path.exists(path) and os.path.getsize(path) > 999) or (os.path.exists(path2) and os.path.getsize(path2) > 999):
           ok_total += 1
           log_info(f"Scene#{sid} {game.get_scene(sid)['Title']} already exists, skip")
           continue
@@ -424,7 +425,33 @@ def get_missing_scene_names():
   _G.STATIC_HOST = 'https://cdn2-mistglobal-prod-tw.azureedge.net/prod-client-web-static-tw2-15-1'
   game.load_database()
   files = glob(f"{_G.DCTmpFolder}/jh_scenes/*.json")
+  scenes = set()
   for f in files:
     sid = int(re.search('\d+', f).group())
-    if os.path.getsize(f) < 2222:
+    scenes.add(sid)
+    with open(f, 'r') as fp:
+      if 'm' in json.load(fp):
         print(f"Scene#{sid} {game.get_scene(sid)['Title']}")
+  for _,dat in game.CharacterDatabase.items():
+    for sc in dat['MCharacterScenes']:
+      if sc['MSceneId'] not in scenes:
+        print(f"{dat['Name']} {dat['MCharacterBase']['Name']}")
+        print(f"Scene#{sid} {game.get_scene(sc['MSceneId'])['Title']}")
+
+def verify_collected_scenes():
+  _G.STATIC_HOST = 'https://cdn2-mistglobal-prod-tw.azureedge.net/prod-client-web-static-tw2-15-1'
+  game.load_database()
+  files = glob(f"{_G.DCTmpFolder}/jh_scenes/*.json")
+  failed = set()
+  for f in files:
+    sid = int(re.search('\d+', f).group())
+    try:
+      with open(f, 'r') as fp:
+        dat = json.load(fp)
+        if not dat['MSceneDetailViewModel']:
+          failed.add(sid)
+    except Exception:
+      pass
+  print("(Probably) Failed scenes:")
+  for i in failed:
+    print(f"Scene#{i} {game.get_scene(i)['Title']}")
