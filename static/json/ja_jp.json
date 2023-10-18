@@ -383,5 +383,11 @@
     },
     "FieldSkillName": {
         "0": "PT ID: PT名"
+    },
+    "MainStoryChapterTitle": {
+        "0": "mAreaId: stageName"
+    },
+    "SceneTitle": {
+      "0": "シーン ID: シーンタイトル"
     }
 }

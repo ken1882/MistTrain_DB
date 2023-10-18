@@ -17,6 +17,8 @@ Database    = None
 RootFolder  = None
 SceneFolder = None
 DerpyFolder = None
+SceneFolderTranslated = {}
+
 __FileCache = {}
 FLOCK = Lock()
 
@@ -45,13 +47,15 @@ def init():
   log_info("Cloud initialized")
 
 def update_cache(folder=None):
-  global Database,RootFolder,SceneFolder,DerpyFolder
+  global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated
   log_db_info()
   if not folder: # update all
     files = get_folder_files()
     RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
     SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
     DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
+    for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
+      SceneFolderTranslated[lang] = next((f for f in files if f['title'] == fname), None)
   else:
     files = get_folder_files(folder)
   
@@ -65,6 +69,10 @@ def update_cache(folder=None):
       set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
     elif fpid == SceneFolder['id']:
       set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
+    else:
+      for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
+        if fpid == SceneFolderTranslated[lang]['id']:
+          set_cache(f, f"/{fname}")
   log_info(f"Cloud cache of {folder['title'] if folder else 'root'} updated")
 
 def log_db_info():
