@@ -273,6 +273,8 @@ def download_scene(cpath, lpath):
     file = get_cache(cpath)
     if file:
       file.GetContentFile(lpath)
+    else:
+      log_info(f"Not found: {cpath}")
 
 def get_scene(id, lang=''):
   path = ''

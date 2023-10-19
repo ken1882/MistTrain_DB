@@ -4,7 +4,7 @@ import controller.game as game
 import controller.ruby as ruby
 import datamanager as dm
 from flask import render_template
-from copy import deepcopy
+from copy import copy,deepcopy
 from datetime import date, datetime, timedelta
 from pprint import PrettyPrinter,pformat
 from _G import log_warning,log_debug,log_error,log_info
@@ -36,6 +36,9 @@ MaxWorkers  = 8
 RubyWorkers = []
 ExistedScene = set()
 
+# For frontend to determine whether character has all scene unlocked
+CharacterSceneCache = {}
+
 MaruHeaders = {
   'Accept-Encoding': 'gzip, deflate, br',
   'Accept': 'text/plain, */*; q=0.01',
@@ -45,7 +48,7 @@ MaruHeaders = {
   'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
 }
 
-FlagUpdated = False
+FlagDailyUpdated = False
 UPDATE_HOUR = 4 # 4 am
 
 def init():
@@ -54,7 +57,7 @@ def init():
   while not dm.CacheBooted:
     log_warning("[Story] Data cache unbooted, waiting for 10 seconds")
     sleep(10)
-  load_metas()
+  update_cache()
   # copy_meta_cache()
   IsStoryReady = True
 
@@ -73,6 +76,10 @@ def req_story_ready(func):
   wrapper.__name__ = func.__name__
   return wrapper
 
+def update_cache():
+  load_metas()
+  update_scene_cache()
+
 def load_metas():
   global SceneMeta
   files = dm.load_story_meta()
@@ -86,7 +93,8 @@ def load_metas():
   update_scene_cache()
 
 def update_scene_cache():
-  global SceneMeta,ExistedScene
+  global SceneMeta,ExistedScene,CharacterSceneCache
+  game.load_database()
   for ch in SceneMeta['main']:
     for sc in ch['Scenes']:
       sid = sc['MSceneId']
@@ -106,17 +114,32 @@ def update_scene_cache():
         if is_scene_unlocked('character', sid, sc['Status']):
           ExistedScene.add(sid)
 
+  for chid in game.CharacterDatabase:
+    layer = game.CharacterDatabase[chid]
+    CharacterSceneCache[chid] = {}
+    for sc in layer['MCharacterScenes']:
+      sid = sc['MSceneId']
+      if sid in ExistedScene:
+        CharacterSceneCache[chid][sid] = True
+      else:
+        CharacterSceneCache[chid][sid] = False
+
+
 def check_new_available():
-  global FlagUpdated
+  global FlagDailyUpdated
   curt = game.localt2jpt(datetime.now())
   if curt.hour != UPDATE_HOUR:
-    FlagUpdated = False
+    FlagDailyUpdated = False
     return
-  if FlagUpdated:
+  if FlagDailyUpdated:
     return
-  load_metas()
+  update_cache()
+  log_info(f"Updating scene cache")
   dm.update_cache(dm.SceneFolder)
-  FlagUpdated = True
+  for lang,folder in dm.SceneFolderTranslated:
+      log_info(f"Updating scene cache of {lang}")
+      dm.update_cache(folder)
+  FlagDailyUpdated = True
   log_info("Story meta updated")
 
 def rubifiy_japanese(text):

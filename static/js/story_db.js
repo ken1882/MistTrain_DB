@@ -40,6 +40,7 @@ function loadMainStory(){
     let node = $(document.createElement('a'));
     node.attr('class', 'btn btn-secondary');
     node.attr('href', `/mainstory_map/${i+1}`);
+    node.attr('target', '_blank');
     let text = Vocab['MainStoryVolume'];
     text = text.replace('%i', i+1);
     node.text(text);
@@ -160,16 +161,6 @@ function loadEventStory(){
 }
 
 function loadCharacterStory(){
-  let parent = $("#story-characters");
-  var section = $(document.createElement('div'));
-  var title = $(document.createElement('a'));
-  section.attr('class', 'card card-body');
-  title.attr('class', 'btn btn-secondary');
-  title.attr('data-bs-toggle', 'collapse');
-  title.text(Vocab['UnderConstruction'])
-  section.append(title);
-  parent.append(section);
-
   registerCollapseIndicator($("#header-characters"));
   $("#loading-indicator3").remove();
   $("#character-section").attr('style', '');

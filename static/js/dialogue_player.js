@@ -41,6 +41,9 @@ class DialoguePlayer{
         else if(this.sceneType == 'e'){
           url += `/Events/${this.chapterId}/e_${this.sceneId}/${voice}.mp3`;
         }
+        else if(this.sceneType == 'c'){
+          url += `/Characters/${this.chapterId}/c_${this.sceneId}/${voice}.mp3`;
+        }
         this.audios[voice] = new Howl({
           src: [url],
           volume: DataManager.getSetting(DataManager.kVolume)[1],
