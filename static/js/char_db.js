@@ -32,7 +32,7 @@ function loadPreferredDisplay(){
     viewChangeGrid();
   }
   updateHitCount();
-  updateOwnedCharacters();
+  updateViewableCharacters();
 }
 
 function setup(){
@@ -49,10 +49,10 @@ function setup(){
     $('#bedroom-button').css('display', '');
     $('#bedroom-button').attr('disabled', null);
   }
-  $("#ckb-unowned").on('change', ()=>{updateOwnedCharacters();});
+  $("#ckb-unowned").on('change', ()=>{updateViewableCharacters();});
 }
 
-function updateOwnedCharacters(){
+function updateViewableCharacters(){
   let flag = $('#ckb-unowned').prop('checked');
   let chars = DataManager.dataCharacters;
   for(let id in CharacterAvatarNode){
@@ -307,7 +307,7 @@ function reloadAvatars(){
     if(!node.css('display') != 'none'){ cnt += 1;}
   }
   updateHitCount();
-  updateOwnedCharacters();
+  updateViewableCharacters();
 }
 
 function updateHitCount(){

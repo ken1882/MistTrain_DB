@@ -327,6 +327,7 @@
     "MissingAddSkillDesc": "編集エディターに装備された追加スキルをまだ習得していない場合、装備されません",
     "MissingSkillSPDesc": "スキルSPを調整できない場合、スキップされます",
     "OnlyShowOwned": "所持している項目のみ表示",
+    "ClickOpenInNewTab": "新しいタブで開くにはここをクリック",
     "ItemType": {
         "0": "キャラクター",
         "1": "武器",

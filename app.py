@@ -176,6 +176,10 @@ def character_bedroom(id):
 def story_transcript_index():
   return render_template('story_db.html', navbar_content=get_navbar())
 
+@app.route('/character_scene', methods=['GET'])
+@req_story_ready
+def character_scene_db_index():
+  return render_template('character_scene_db.html', navbar_content=get_navbar())
 
 @app.route('/mainstory_map/<volume>', methods=['GET'])
 @req_story_ready
@@ -253,6 +257,14 @@ def get_story_content(id):
     handle_exception(err)
   return jsonify({}),503
 
+@app.route('/api/AvailableCharacterScene', methods=['GET'])
+@req_story_ready
+def get_available_character_scene():
+  try:
+    return jsonify(story.CharacterSceneCache),200
+  except (TypeError, KeyError) as err:
+    handle_exception(err)
+  return jsonify({}),500
 
 @app.route('/api/SponsorScenes', methods=['POST'])
 def spnosor_scene():
