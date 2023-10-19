@@ -136,7 +136,7 @@ def check_new_available():
   update_cache()
   log_info(f"Updating scene cache")
   dm.update_cache(dm.SceneFolder)
-  for lang,folder in dm.SceneFolderTranslated:
+  for lang,folder in dm.SceneFolderTranslated.items():
       log_info(f"Updating scene cache of {lang}")
       dm.update_cache(folder)
   FlagDailyUpdated = True
