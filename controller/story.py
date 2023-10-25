@@ -90,7 +90,6 @@ def load_metas():
         with open(path, 'r') as fp:
           SceneMeta[k] = json.load(fp)
           log_info(f"{fname} ready")
-  update_scene_cache()
 
 def update_scene_cache():
   global SceneMeta,ExistedScene,CharacterSceneCache
