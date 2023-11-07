@@ -329,6 +329,7 @@
   "OnlyShowOwned": "Only display owned items",
   "ClickOpenInNewTab": "Click here to open in new tab",
   "AddNewPreset": "Add new preset",
+  "EnterPresetName": "Please enter new preset name",
   "ItemType": {
     "0": "Character",
     "1": "Weapon",

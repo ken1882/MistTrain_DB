@@ -328,6 +328,7 @@
   "OnlyShowOwned": "只顯示已擁有的項目",
   "ClickOpenInNewTab": "點此在新分頁開啟",
   "AddNewPreset": "新增預設",
+  "EnterPresetName": "請輸入新的預設名稱",
   "ItemType": {
     "0": "角色",
     "1": "武器",

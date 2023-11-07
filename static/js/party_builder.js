@@ -35,7 +35,7 @@ let RegisteredItems = {
     accessories: [],
     abstones: []
 };
-let EquipmentPresetData = [];
+let EquipmentPresetData = {};
 let EquipmentPresetCnt  = 0;
 let CurrentSelectorWBData = null;
 let CurrentSelectorWBIndex = null;
@@ -79,7 +79,7 @@ function attachInventorySelector(node, type, wb_data=null, wb_idx=null){
         currentSelectedNode = node;
         Inventory.show(type);
         let filter = {}
-        if(wb_data && wb_data[wb_idx].character){
+        if(wb_data && (wb_data[wb_idx].character || 0) > 0){
             filter = {
                 'WeaponEquipType': AssetsManager.CharacterData[wb_data[wb_idx].character].MCharacterBase.WeaponEquipType,
             }
@@ -830,79 +830,113 @@ function setupSettings(){
 function setupEquipPreset(){
     let tbody = $('#equipment-preset-table-body');
     tbody.html('');
-    let kEquipmentPreset = 'equipPresets';
-    let EquipmentPresets = JSON.parse(DataManager.getSetting(kEquipmentPreset) || '[]');
-    for(let i in EquipmentPresets){
-        EquipmentPresetCnt += 1;
-        let preset = EquipmentPresets[i];
-        let row = $(document.createElement('tr'));
-        row.attr('id', `preset-${EquipmentPresetCnt}`);
-        tbody.append(row);
-        let cells = [];
-        for(let i=0;i<8;++i){
-            let cell = $(document.createElement('td'));
-            cell.addClass('cell-centered');
-            cells.push(cell);
-            row.append(cell);
-        }
-        cells[0].append($(document.createElement('p')).text(preset.name));
-        let wpnode = AssetsManager.createEquipmentImageNode(preset.weapon, ITYPE_WEAPON);
-        attachInventorySelector(wpnode, ITYPE_WEAPON, EquipmentPresetData, i);
-        cells[1].append(wpnode);
-        let wpasnode = AssetsManager.createEquipmentImageNode(
-            -ITYPE_ABSTONE, ITYPE_ABSTONE,
-            null,
-            {
-                'container_class': 'abstone-container',
-                'image_class': 'abstone-add-icon'
-            }
-        );
-        attachInventorySelector(wpasnode, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), EquipmentPresetData, i);
-        cells[2].append(wpasnode);
-        
-        let arnode = AssetsManager.createEquipmentImageNode(preset.armor, ITYPE_ARMOR);
-        attachInventorySelector(arnode, ITYPE_ARMOR, EquipmentPresetData, i);
-        cells[3].append(arnode);
-        let arasnode = AssetsManager.createEquipmentImageNode(
-            -ITYPE_ABSTONE, ITYPE_ABSTONE,
-            null,
-            {
-                'container_class': 'abstone-container',
-                'image_class': 'abstone-add-icon'
-            }
-        );
-        attachInventorySelector(arasnode, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), EquipmentPresetData, i);
-        cells[4].append(arasnode);
-
-        let acnode = AssetsManager.createEquipmentImageNode(preset.accessory, ITYPE_ACCESSORY);
-        attachInventorySelector(acnode, ITYPE_ACCESSORY, EquipmentPresetData, i);
-        cells[5].append(wpnode);
-        let acasnode = AssetsManager.createEquipmentImageNode(
-            -ITYPE_ABSTONE, ITYPE_ABSTONE,
-            null,
-            {
-                'container_class': 'abstone-container',
-                'image_class': 'abstone-add-icon'
-            }
-        );
-        attachInventorySelector(acasnode, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), EquipmentPresetData, i);
-        cells[6].append(acasnode);
-        let remove_btn = $(document.createElement('a'));
-        remove_btn.addClass('btn btn-primary btn-handler').prop('type', 'button');
-        remove_btn.html(BICON_MINUS);
-        remove_btn.on('click', ()=>{
-            $(`#preset-${EquipmentPresetCnt}`).remove();
-        })
-        cells[6].append(remove_btn);
+    EquipmentPresetCnt  = 0;
+    let data = JSON.parse(DataManager.getSetting('EquipmentPresetData'));
+    for(let d of data){
+        insertNewEquipmentPreset(d);
     }
 }
 
-function insertNewEquipmentPreset(){
+function createNewPreset(){
+    let n = prompt(Vocab.EnterPresetName);
+    insertNewEquipmentPreset({name: n});
+}
+
+function insertNewEquipmentPreset(data){
+    EquipmentPresetCnt += 1;
     let preset = {
+        name: `#${EquipmentPresetCnt}`,
+        id: EquipmentPresetCnt,
         character: -1,
         weapon: -ITYPE_WEAPON,
-        
+        armor: -ITYPE_ARMOR,
+        accessory: -ITYPE_ACCESSORY,
+        weaponAbStone: [],
+        armorAbStone: [],
+        accessoryAbStone: [],
     }
+    preset = {...preset, ...data};
+    EquipmentPresetData[EquipmentPresetCnt] = preset;
+    let tbody = $('#equipment-preset-table-body');
+    let row = $(document.createElement('tr'));
+    row.attr('id', `preset-${EquipmentPresetCnt}`);
+    tbody.append(row);
+    let cells = [];
+    for(let i=0;i<8;++i){
+        let cell = $(document.createElement('td'));
+        cell.addClass('cell-centered');
+        cells.push(cell);
+        row.append(cell);
+    }
+    cells[0].attr('id', `preset-name-${EquipmentPresetCnt}`);
+    cells[0].append($(document.createElement('p')).text(preset.name));
+    let wpnode = AssetsManager.createEquipmentImageNode(preset.weapon, ITYPE_WEAPON);
+    attachInventorySelector(wpnode, ITYPE_WEAPON, EquipmentPresetData, EquipmentPresetCnt);
+    cells[1].attr('id', `preset-weapon-${EquipmentPresetCnt}`);
+    cells[1].append(wpnode);
+    let wpasnode = AssetsManager.createEquipmentImageNode(
+        -ITYPE_ABSTONE, ITYPE_ABSTONE,
+        null,
+        {
+            'container_class': 'abstone-container',
+            'image_class': 'abstone-add-icon'
+        }
+    );
+    attachInventorySelector(wpasnode, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), EquipmentPresetData, EquipmentPresetCnt);
+    cells[2].attr('id', `preset-abstone-weapon-${EquipmentPresetCnt}`);
+    cells[2].append(wpasnode);
+    for(let id of preset.weaponAbStone){
+        onAbStoneAdd(id, wpasnode);
+    }
+    
+    let arnode = AssetsManager.createEquipmentImageNode(preset.armor, ITYPE_ARMOR);
+    attachInventorySelector(arnode, ITYPE_ARMOR, EquipmentPresetData, EquipmentPresetCnt);
+    cells[3].attr('id', `preset-armor-${EquipmentPresetCnt}`);
+    cells[3].append(arnode);
+    let arasnode = AssetsManager.createEquipmentImageNode(
+        -ITYPE_ABSTONE, ITYPE_ABSTONE,
+        null,
+        {
+            'container_class': 'abstone-container',
+            'image_class': 'abstone-add-icon'
+        }
+    );
+    attachInventorySelector(arasnode, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), EquipmentPresetData, EquipmentPresetCnt);
+    cells[4].attr('id', `preset-abstone-armor-${EquipmentPresetCnt}`);
+    cells[4].append(arasnode);
+    for(let id of preset.armorAbStone){
+        onAbStoneAdd(id, arasnode);
+    }
+
+    let acnode = AssetsManager.createEquipmentImageNode(preset.accessory, ITYPE_ACCESSORY);
+    attachInventorySelector(acnode, ITYPE_ACCESSORY, EquipmentPresetData, EquipmentPresetCnt);
+    cells[5].attr('id', `preset-accessory-${EquipmentPresetCnt}`);
+    cells[5].append(acnode);
+    let acasnode = AssetsManager.createEquipmentImageNode(
+        -ITYPE_ABSTONE, ITYPE_ABSTONE,
+        null,
+        {
+            'container_class': 'abstone-container',
+            'image_class': 'abstone-add-icon'
+        }
+    );
+    attachInventorySelector(acasnode, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), EquipmentPresetData, EquipmentPresetCnt);
+    cells[6].attr('id', `preset-abstone-accessory-${EquipmentPresetCnt}`);
+    cells[6].append(acasnode);
+    for(let id of preset.accessoryAbStone){
+        onAbStoneAdd(id, acasnode);
+    }
+
+    let remove_btn = $(document.createElement('a'));
+    remove_btn.addClass('btn btn-primary btn-handler').prop('type', 'button');
+    remove_btn.html(BICON_MINUS);
+    let i = EquipmentPresetCnt;
+    remove_btn.on('click', ()=>{
+        $(`#preset-${i}`).remove();
+        delete EquipmentPresetData[i];
+    });
+    cells[7].attr('id', `preset-remove-${EquipmentPresetCnt}`);
+    cells[7].append(remove_btn);
 }
 
 function isArmor(item){ return item.hasOwnProperty('MArmorId'); }
