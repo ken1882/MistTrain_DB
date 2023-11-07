@@ -313,11 +313,15 @@ def loop_game_listner():
     _G.wait(_G.SERVER_TICK_INTERVAL)
     try:
       derpy.update_race_history_db()
-      story.check_new_available()
-    except (TypeError, KeyError) as err:
+    except Exception as err:
       log_warning("Server seems is under maintenance")
       handle_exception(err)
-    #log_debug("Server ticked")
+    try:
+      story.check_new_available()
+    except Exception as err:
+      log_error("Error while updating story cache")
+      handle_exception(err)
+    # log_debug("Server ticked")
 
 
 if not app.initialized:
