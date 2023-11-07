@@ -79,6 +79,8 @@ def update_cache(folder=None):
 
 def log_db_info():
   global Database
+  if not Database:
+    return
   about = Database.GetAbout()
   string  = '\n' + '=' * 42 + '\n'
   string += f"Current username: {about['name']}\n"

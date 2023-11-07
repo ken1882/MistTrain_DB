@@ -439,6 +439,7 @@ class Game_Inventory{
                 }
                 cells[1].text(name);
                 cells[2].text(desc.replaceAll('/n', ' '));
+                cells[2].html(desc.replaceAll('\n', '<br>'));
                 let act = this.createEditorActionIcon(id);
                 row.append(act);
                 this.__htmlCache[type_id][id] = row;

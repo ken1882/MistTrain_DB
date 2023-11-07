@@ -328,6 +328,7 @@
   "MissingSkillSPDesc": "If the skill SP cannot be adjusted, it will be skipped",
   "OnlyShowOwned": "Only display owned items",
   "ClickOpenInNewTab": "Click here to open in new tab",
+  "AddNewPreset": "Add new preset",
   "ItemType": {
     "0": "Character",
     "1": "Weapon",

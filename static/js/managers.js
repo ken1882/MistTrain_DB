@@ -298,6 +298,22 @@ const ITYPE_SKILL       = 31;
   static set characterSets(val){
     this.changeSetting(this.kCharacterSets, val);
   }
+  /*-------------------------------------------------------------------------*/
+  static get buildEquipmentPerf(){
+    return this.getSetting('EquipmentMethod') || 0;
+  }
+  static set buildEquipmentPerf(val){
+    this.changeSetting('EquipmentMethod', val);
+  }
+  /*-------------------------------------------------------------------------*/
+  static get buildAbstonePerf(){
+    let ret = this.getSetting('EquipmentJewelMethod');
+    if(ret == null){ ret = 1; }
+    return ret;
+  }
+  static set buildAbstonePerf(val){
+    this.changeSetting('EquipmentJewelMethod', val);
+  }
 }
 
 /**---------------------------------------------------------------------------
@@ -492,6 +508,7 @@ const ITYPE_SKILL       = 31;
     else if(type == ITYPE_ABSTONE){
       url += `/MAbilityStoneViewModel.json`;
       ok_handler = (res)=>{
+        this.loadSeriesSetData();
         this.parseAbStoneData(res);
       };
     }
@@ -599,6 +616,21 @@ const ITYPE_SKILL       = 31;
     });
   }
 
+  static loadSeriesSetData(){
+    this.__readyReq += 1;
+    $.ajax({
+      url: `${STATIC_HOST}/MasterData/MSeriesSetViewModel.json`,
+      success: (res) => {
+        this.parseSeriesSetData(res);
+        this.incReadyCounter();
+      },
+      error: (res)=>{
+        if(res.status == 404){this.incReadyCounter();}
+        else{ handleAjaxError(res); }
+      },
+    });
+  }
+
   static loadEquipmentSkillGroup(){
     this.EquipmentSkillGroup = {};
     this.loadAssetDataArchive('/MasterData/MEquipmentSkillRateViewModel.json', (res)=>{
@@ -622,6 +654,32 @@ const ITYPE_SKILL       = 31;
     }
   }
 
+  static parseSeriesSetData(res){
+    this.SeriesSetData = {};
+    for(let i=0;i<res.length;++i){
+      let dat = res[i];
+      this.SeriesSetData[dat.MSeriesSetId] = dat;
+    }
+    if(this.AbStoneData && this.SkillData){
+      for(let id in this.AbStoneData){
+        for(let gsid in this.AbStoneData[id].AbilityVariations){
+          for(let mls of this.AbStoneData[id].AbilityVariations[gsid]){
+            if(!mls){ continue; }
+            let sk  = {};
+            if(mls.MSkillId){
+              sk = this.SkillData[mls.MSkillId];
+            }
+            else if(mls.MSeriesSetId){
+              sk = this.SkillData[this.SeriesSetData[mls.MSeriesSetId].MSkill1Id];
+              sk.seriesSetId = mls.MSeriesSetId;
+            }
+            this.AbStoneData[id].AbilityVariations[gsid][mls.Level] = sk;
+          }
+        }
+      }
+    }
+  }
+
   static parseAbStoneData(res){
     for(let dat of res){
       dat.AbilityVariations = {};
@@ -629,7 +687,7 @@ const ITYPE_SKILL       = 31;
         dat.AbilityVariations[gsid] = [];
         for(let mls of AssetsManager.LevelSkillData[gsid]){
           if(!mls){ continue; }
-          dat.AbilityVariations[gsid][mls.Level] = AssetsManager.SkillData[mls.MSkillId];
+          dat.AbilityVariations[gsid][mls.Level] = mls;
         }
       }
       this.AbStoneData[dat.Id] = dat;
@@ -1433,9 +1491,12 @@ const ITYPE_SKILL       = 31;
     $(img).attr('class', options['image_class'] || 'equipment-image');
     block.append(img);
     let image_key = `${id}.png`;
+    if(AssetsManager.SkillData.hasOwnProperty(id) && AssetsManager.SkillData[id].AssetKey){
+      image_key = AssetsManager.SkillData[id].AssetKey+'.png';
+    }
     let rect = null;
     if(this.SkillIconImageClip.hasOwnProperty(image_key)){
-      rect = this.SkillIconImageClip[`${id}.png`].textureRect.flat();
+      rect = this.SkillIconImageClip[image_key].textureRect.flat();
     }
     else if(id < 0){
       rect = [0, 0, 96, 96];
@@ -1508,7 +1569,10 @@ class ItemManager{
           if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
           let mskills = astone.AbilityVariations[aid];
           let tskill = mskills[mskills.length-1];
-          if(!tskill){ continue; }
+          if(!tskill){
+            console.log(astone);
+            continue;
+          }
           let dat = clone(tskill);
           dat.MAbilityStone = clone(astone);
           this.pureWeaponAbstones.push(dat);
@@ -1532,7 +1596,10 @@ class ItemManager{
           if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
           let mskills = astone.AbilityVariations[aid];
           let tskill = mskills[mskills.length-1];
-          if(!tskill){ continue; }
+          if(!tskill){
+            console.log(astone);
+            continue;
+          }
           let dat = clone(tskill)
           dat.MAbilityStone = clone(astone);
           this.pureArmorAbstones.push(dat);
@@ -1556,8 +1623,26 @@ class ItemManager{
           if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
           let mskills = astone.AbilityVariations[aid];
           let tskill = mskills[mskills.length-1];
-          if(!tskill){ continue; }
+          if(!tskill){
+            continue;
+          }
           let dat = clone(tskill)
+          if(tskill.seriesSetId){
+            if(this.pureAccessoryAbstones.find((m)=>m.seriesSetId==tskill.seriesSetId)){
+              continue;
+            }
+            dat = clone(astone);
+            dat.Description = '';
+            let sdat = AssetsManager.SeriesSetData[tskill.seriesSetId];
+            for(let i=1;i<10;++i){
+              let skname = `MSkill${i}Id`
+              if(!sdat.hasOwnProperty(skname)){ break; }
+              dat.Description += `[${i}] `+AssetsManager.SkillData[sdat[skname]].Name + ': ';
+              dat.Description += AssetsManager.SkillData[sdat[skname]].Description + '\n';
+            }
+            dat.Id *= 0.001;
+            dat.seriesSetId = tskill.seriesSetId;
+          }
           dat.MAbilityStone = clone(astone);
           this.pureAccessoryAbstones.push(dat);
         }

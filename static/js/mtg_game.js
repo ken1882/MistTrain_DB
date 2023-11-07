@@ -316,6 +316,17 @@ function fetchInventory(){
     ];
 }
 
+function fetchBackgroundParty(){
+    return sendMTG({
+        url: '/api/Battle/GetBackGroundAutoPlayProgress',
+        method: 'GET',
+        success: (res) => {
+            DataManager.dataBackgroundParty = res.r;
+        },
+        error: (res)=>{console.error(res)},
+    });
+}
+
 function loadCharacters(){
     if(FlagConnLock){ return ;}
     if(!getMTGServer()){
