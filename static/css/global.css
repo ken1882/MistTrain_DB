@@ -134,7 +134,7 @@ tbody tr td{
 .abstone-container {
   display: inline-block;
   position: relative;
-  width: 50px;
+  width: inherit;
   height: 50px;
   padding: 4px 4px 4px 4px;
 }

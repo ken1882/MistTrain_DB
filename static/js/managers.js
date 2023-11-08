@@ -1569,11 +1569,23 @@ class ItemManager{
           if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
           let mskills = astone.AbilityVariations[aid];
           let tskill = mskills[mskills.length-1];
-          if(!tskill){
-            console.log(astone);
-            continue;
+          let dat = clone(tskill)
+          if(tskill.seriesSetId){
+            if(this.pureWeaponAbstones.find((m)=>m.seriesSetId==tskill.seriesSetId)){
+              continue;
+            }
+            dat = clone(astone);
+            dat.Description = '';
+            let sdat = AssetsManager.SeriesSetData[tskill.seriesSetId];
+            for(let i=1;i<10;++i){
+              let skname = `MSkill${i}Id`
+              if(!sdat.hasOwnProperty(skname)){ break; }
+              dat.Description += `[${i}] `+AssetsManager.SkillData[sdat[skname]].Name + ': ';
+              dat.Description += AssetsManager.SkillData[sdat[skname]].Description + '\n';
+            }
+            dat.Id *= 0.001;
+            dat.seriesSetId = tskill.seriesSetId;
           }
-          let dat = clone(tskill);
           dat.MAbilityStone = clone(astone);
           this.pureWeaponAbstones.push(dat);
         }
@@ -1596,11 +1608,23 @@ class ItemManager{
           if(!astone.AbilityVariations.hasOwnProperty(aid)){ continue; }
           let mskills = astone.AbilityVariations[aid];
           let tskill = mskills[mskills.length-1];
-          if(!tskill){
-            console.log(astone);
-            continue;
-          }
           let dat = clone(tskill)
+          if(tskill.seriesSetId){
+            if(this.pureArmorAbstones.find((m)=>m.seriesSetId==tskill.seriesSetId)){
+              continue;
+            }
+            dat = clone(astone);
+            dat.Description = '';
+            let sdat = AssetsManager.SeriesSetData[tskill.seriesSetId];
+            for(let i=1;i<10;++i){
+              let skname = `MSkill${i}Id`
+              if(!sdat.hasOwnProperty(skname)){ break; }
+              dat.Description += `[${i}] `+AssetsManager.SkillData[sdat[skname]].Name + ': ';
+              dat.Description += AssetsManager.SkillData[sdat[skname]].Description + '\n';
+            }
+            dat.Id *= 0.001;
+            dat.seriesSetId = tskill.seriesSetId;
+          }
           dat.MAbilityStone = clone(astone);
           this.pureArmorAbstones.push(dat);
         }

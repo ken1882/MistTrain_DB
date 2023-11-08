@@ -54,7 +54,10 @@ function init(){
 
 function attachInventorySelector(node, type, wb_data=null, wb_idx=null){
     node.addClass('clickable');
-    node.click((_)=>{
+    node.click((e)=>{
+        if(!['IMG', 'A'].includes(e.target.tagName)){
+            return;
+        }
         CurrentSelectorWBData = wb_data;
         CurrentSelectorWBIndex = wb_idx;
         console.log(CurrentSelectorWBData, CurrentSelectorWBIndex);
@@ -134,8 +137,8 @@ function addPartyPlaceholders(){
                 case 0:
                     cell.attr('id', `character-${i}`);
                     icon = AssetsManager.createCharacterAvatarNode(-1);
-                    attachInventorySelector(icon, ITYPE_CHARACTER, partyData, i);
                     cell.append(icon);
+                    attachInventorySelector(icon, ITYPE_CHARACTER, partyData, i);
                     // cell.append(document.createElement('br'));
                     cell.css('width', '280px');
                     let eles = createLevelInput(i);
@@ -145,8 +148,8 @@ function addPartyPlaceholders(){
                 case 1:
                     cell.attr('id', `weapon-${i}`);
                     icon = AssetsManager.createEquipmentImageNode(-ITYPE_WEAPON, ITYPE_WEAPON);
-                    attachInventorySelector(icon, ITYPE_WEAPON, partyData, i);
                     cell.append(icon);
+                    attachInventorySelector(icon, ITYPE_WEAPON, partyData, i);
                     label.attr('id', `weapon-${i}-label`);
                     cell.append(label);
                     break;
@@ -163,14 +166,14 @@ function addPartyPlaceholders(){
                             'image_class': 'abstone-add-icon'
                         }
                     );
-                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), partyData, i);
                     cell.append(abs);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), partyData, i);
                     break;
                 case 3:
                     cell.attr('id', `armor-${i}`);
                     icon = AssetsManager.createEquipmentImageNode(-ITYPE_ARMOR, ITYPE_ARMOR);
-                    attachInventorySelector(icon, ITYPE_ARMOR, partyData, i);
                     cell.append(icon);
+                    attachInventorySelector(icon, ITYPE_ARMOR, partyData, i);
                     label.attr('id', `armor-${i}-label`);
                     cell.append(label);
                     break;
@@ -187,14 +190,14 @@ function addPartyPlaceholders(){
                             'image_class': 'abstone-add-icon'
                         }
                     );
-                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), partyData, i);
                     cell.append(abs);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), partyData, i);
                     break;
                 case 5:
                     cell.attr('id', `accessory-${i}`);
                     icon = AssetsManager.createEquipmentImageNode(-ITYPE_ACCESSORY, ITYPE_ACCESSORY);
-                    attachInventorySelector(icon, ITYPE_ACCESSORY, partyData, i);
                     cell.append(icon);
+                    attachInventorySelector(icon, ITYPE_ACCESSORY, partyData, i);
                     label.attr('id', `accessory-${i}-label`);
                     cell.append(label);
                     break;
@@ -211,14 +214,14 @@ function addPartyPlaceholders(){
                             'image_class': 'abstone-add-icon'
                         }
                     );
-                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), partyData, i);
                     cell.append(abs);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), partyData, i);
                     break;
                 case 7:
                     cell.attr('id', `add-skill-${i}`);
                     icon = AssetsManager.createSkillIconImageNode(-1);
-                    attachInventorySelector(icon, ITYPE_SKILL, partyData, i);
                     cell.append(icon);
+                    attachInventorySelector(icon, ITYPE_SKILL, partyData, i);
                     label.attr('id', `add-skill-${i}-label`);
                     cell.append(label);
                     break;
@@ -331,8 +334,8 @@ function onCharacterAdd(id, node){
         id = -1;
     }
     let icon = AssetsManager.createCharacterAvatarNode(id)
-    attachInventorySelector(icon, ITYPE_CHARACTER, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
+    attachInventorySelector(icon, ITYPE_CHARACTER, CurrentSelectorWBData, CurrentSelectorWBIndex);
     if(CurrentSelectorWBIndex){
         let eles = createLevelInput(CurrentSelectorWBIndex);
         $(node).append(eles[0]);
@@ -341,7 +344,7 @@ function onCharacterAdd(id, node){
     CurrentSelectorWBData[CurrentSelectorWBIndex].character = id < 0 ? 0 : id;
 }
 
-function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined){
+function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined, do_wb=true){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -349,8 +352,8 @@ function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined){
         id = -ITYPE_WEAPON;
     }
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_WEAPON)
-    attachInventorySelector(icon, ITYPE_WEAPON, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
+    attachInventorySelector(icon, ITYPE_WEAPON, CurrentSelectorWBData, CurrentSelectorWBIndex);
     if(ability_id === undefined){
         ability_id = $('#skill-group-select').val();
     }
@@ -361,10 +364,33 @@ function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined){
             name = AssetsManager.SkillData[ability_id].Name;
         }
     }
-    let label = $(document.createElement('p')).text(name);
-    label.addClass('item-label');
-    $(node).append(label);
-    if(CurrentSelectorWBData){
+    if(AssetsManager.WeaponData.hasOwnProperty(id)){
+        let gid = AssetsManager.WeaponData[id].MEquipmentSkillRateGroupId;
+        let sel = $(document.createElement('select'));
+        if(gid){
+            setupAbilityGroup(gid, sel);
+        }
+        else if(ItemManager.isUltimateWeapon(id)){
+            setupUltimateAbilityGroup(id, sel);
+        }
+        if(ability_id){
+            sel.val(ItemManager.isUltimateWeapon(id) ? -ability_id : ability_id);
+        }
+        sel.on('change', (e)=>{
+            let node = $(e.target);
+            CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbility = node.val();
+            CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbilityName = node.find('option:selected').text();
+        });
+        let selc = $(document.createElement('div'));
+        selc.append(sel);
+        $(node).append(selc);
+    }
+    else{
+        let label = $(document.createElement('p')).text(name);
+        label.addClass('item-label');
+        $(node).append(label);
+    }
+    if(do_wb && CurrentSelectorWBData){
         CurrentSelectorWBData[CurrentSelectorWBIndex].weapon = id < 0 ? 0 : id;
         CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbility = ability_id;
         CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbilityName = name;
@@ -374,7 +400,7 @@ function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined){
     }
 }
 
-function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined){
+function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined, do_wb=true){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -382,8 +408,8 @@ function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined){
         id = -ITYPE_ARMOR;
     }
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ARMOR)
-    attachInventorySelector(icon, ITYPE_ARMOR, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
+    attachInventorySelector(icon, ITYPE_ARMOR, CurrentSelectorWBData, CurrentSelectorWBIndex);
     if(ability_id === undefined){
         ability_id = $('#skill-group-select').val();
     }
@@ -391,10 +417,30 @@ function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined){
     if(name === undefined){
         name = $('#skill-group-select').find('option:selected').text();
     }
-    let label = $(document.createElement('p')).text(name);
-    label.addClass('item-label');
-    $(node).append(label);
-    if(CurrentSelectorWBData){
+    if(AssetsManager.ArmorData.hasOwnProperty(id)){
+        let gid = AssetsManager.ArmorData[id].MEquipmentSkillRateGroupId;
+        let sel = $(document.createElement('select'));
+        if(gid){
+            setupAbilityGroup(gid, sel);
+        }
+        if(ability_id){
+            sel.val(ability_id);
+        }
+        sel.on('change', (e)=>{
+            let node = $(e.target);
+            CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbility = node.val();
+            CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbilityName = node.find('option:selected').text();
+        });
+        let selc = $(document.createElement('div'));
+        selc.append(sel);
+        $(node).append(selc);
+    }
+    else{
+        let label = $(document.createElement('p')).text(name);
+        label.addClass('item-label');
+        $(node).append(label);
+    }
+    if(do_wb && CurrentSelectorWBData){
         CurrentSelectorWBData[CurrentSelectorWBIndex].armor = id < 0 ? 0 : id;
         CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbility = ability_id;
         CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbilityName = name;
@@ -404,7 +450,7 @@ function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined){
     }
 }
 
-function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined){
+function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined, do_wb){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -412,8 +458,8 @@ function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined){
         id = -ITYPE_ARMOR;
     }
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ACCESSORY)
-    attachInventorySelector(icon, ITYPE_ACCESSORY, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
+    attachInventorySelector(icon, ITYPE_ACCESSORY, CurrentSelectorWBData, CurrentSelectorWBIndex);
     if(ability_id === undefined){
         ability_id = $('#skill-group-select').val();
     }
@@ -421,10 +467,30 @@ function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined){
     if(name === undefined){
         name = $('#skill-group-select').find('option:selected').text();
     }
-    let label = $(document.createElement('p')).text(name);
-    label.addClass('item-label');
-    $(node).append(label);
-    if(CurrentSelectorWBData){
+    if(AssetsManager.AccessoryData.hasOwnProperty(id)){
+        let gid = AssetsManager.AccessoryData[id].MEquipmentSkillRateGroupId;
+        let sel = $(document.createElement('select'));
+        if(gid){
+            setupAbilityGroup(gid, sel);
+        }
+        if(ability_id){
+            sel.val(ability_id);
+        }
+        sel.on('change', (e)=>{
+            let node = $(e.target);
+            CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbility = node.val();
+            CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbilityName = node.find('option:selected').text();
+        });
+        let selc = $(document.createElement('div'));
+        selc.append(sel);
+        $(node).append(selc);
+    }
+    else{
+        let label = $(document.createElement('p')).text(name);
+        label.addClass('item-label');
+        $(node).append(label);
+    }
+    if(do_wb && CurrentSelectorWBData){
         CurrentSelectorWBData[CurrentSelectorWBIndex].accessory = id < 0 ? 0 : id;
         CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbility = ability_id;
         CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbilityName = name;
@@ -440,7 +506,7 @@ function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined){
  * @param {*} node node to append the info row
  * @param {*} abs_name Some abstones does not have attached MSkillId, the name of the skill is the name of the abstone itself
  */
-function onAbStoneAdd(id, node, abs_name=null){
+function onAbStoneAdd(id, node, abs_name=null, do_wb=true){
     if(id == 0 && !abs_name){ return; }
     node = $(node)[0];
     if(id == Game_Inventory.ITEM_REMOVE_ID){
@@ -466,44 +532,63 @@ function onAbStoneAdd(id, node, abs_name=null){
     cancel.addClass('clickable');
     cancel.html('&times;');
     let ar = [];
+    let i = CurrentSelectorWBIndex;
     if(node.id.includes('weapon')){
         if(!CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbStone || !id){
             CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbStone = []
         }
         ar = CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbStone;
-        ar.push(id);
+        if(do_wb){ ar.push(id); }
     }
     else if(node.id.includes('armor')){
         if(!CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbStone || !id){
             CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbStone = []
         }
         ar = CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbStone;
-        ar.push(id);
+        if(do_wb){ ar.push(id); }
+        // cancel.click(()=>{
+        //     item.remove();
+        //     ar.splice(ar.indexOf(id),1);
+        //     if(CurrentSelectorWBData == EquipmentPresetData){
+        //         saveEquipPreset();
+        //     }
+        // });
     }
     else if(node.id.includes('accessory')){
         if(!CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbStone || !id){
             CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbStone = [];
         }
         ar = CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbStone;
-        ar.push(id);
+        if(do_wb){ ar.push(id); }
+        // cancel.click(()=>{
+        //     item.remove();
+        //     ar.splice(ar.indexOf(id),1);
+        //     if(CurrentSelectorWBData == EquipmentPresetData){
+        //         saveEquipPreset();
+        //     }
+        // });
     }
     cancel.click(()=>{
         item.remove();
+        console.log(ar, i);
         ar.splice(ar.indexOf(id),1);
+        console.log(ar, i);
         if(CurrentSelectorWBData == EquipmentPresetData){
             saveEquipPreset();
         }
     });
     $(node).prepend(item);
     item.append(cancel);
-    if(CurrentSelectorWBData == EquipmentPresetData){
+    if(do_wb && CurrentSelectorWBData == EquipmentPresetData){
         saveEquipPreset();
     }
 }
 
-function setupAbilityGroup(gid){
+function setupAbilityGroup(gid, node=null){
     if(!AssetsManager.EquipmentSkillGroup.hasOwnProperty(gid)){ return ; }
-    let node = $('#skill-group-select');
+    if(!node){
+        node = $('#skill-group-select');
+    }else{ node = $(node); }
     for(let obj of AssetsManager.EquipmentSkillGroup[gid]){
         let name = Vocab['None'];
         if(AssetsManager.SkillData.hasOwnProperty(obj.MSkillId)){
@@ -516,9 +601,11 @@ function setupAbilityGroup(gid){
     }
 }
 
-function setupUltimateAbilityGroup(id){
+function setupUltimateAbilityGroup(id, node=null){
     if(!AssetsManager.UltimateWeaponGroup.hasOwnProperty(id)){ return ; }
-    let node = $('#skill-group-select');
+    if(!node){
+        node = $('#skill-group-select');
+    }else{ node = $(node); }
     for(let aid in AssetsManager.UltimateWeaponGroup[id].AbilityGroups){
         if(!AssetsManager.UltimateWeaponGroup[id].AbilityGroups.hasOwnProperty(aid)){ continue; }
         let name = AssetsManager.UltimateWeaponGroup[id].AbilityGroups[aid].Name;
@@ -537,8 +624,8 @@ function onSkillAdd(id, node){
         id = -1;
     }
     let pt = AssetsManager.createSkillIconImageNode(id);
-    attachInventorySelector(pt, ITYPE_SKILL, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(pt);
+    attachInventorySelector(pt, ITYPE_SKILL, CurrentSelectorWBData, CurrentSelectorWBIndex);
     let label = $(document.createElement('p'));
     if(id > 0){
         let name = Inventory.createDecoratedSkillNameNode(id);
@@ -556,8 +643,8 @@ function onFieldSkillAdd(id, node){
         id = todigits(node.id) == 4 ? -2 : -1;
     }
     let pt = AssetsManager.createFieldSkillImageNode(id)
-    attachInventorySelector(pt, ITYPE_FIELD_SKILL);
     $(node).append(pt);
+    attachInventorySelector(pt, ITYPE_FIELD_SKILL);
     let name = id > 0 ? AssetsManager.FieldSkillData[id].Name : '';
     let label = $(document.createElement('p')).text(name);
     // label.addClass('item-label');
@@ -571,8 +658,8 @@ function onFormationAdd(id, node){
     node = $(node)[0];
     node.innerHTML = '';
     let pt = AssetsManager.createFormationNode(id)
-    attachInventorySelector(pt, ITYPE_FORMATION);
     $(node).append(pt);
+    attachInventorySelector(pt, ITYPE_FORMATION);
     let name = AssetsManager.FormationData[id].Name;
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
@@ -597,7 +684,8 @@ function clearSlot(idx){
     for(let node of $(`#abstone-armor-${idx}`).children()){
         if(node.tagName.toLowerCase() != 'p'){ continue; }
         if(node.id.length < 1){
-            node.remove();
+            console.log(node.children[0]);
+            node.children[0].click();
         }
     }
     for(let node of $(`#abstone-accessory-${idx}`).children()){
@@ -891,12 +979,16 @@ function saveEquipPreset(){
 
 function createNewPreset(){
     let n = prompt(Vocab.EnterPresetName);
-    insertNewEquipmentPreset({name: n});
+    if(n){
+        insertNewEquipmentPreset({name: n});
+    }
 }
 
 function insertNewEquipmentPreset(data){
     EquipmentPresetCnt += 1;
     let i = EquipmentPresetCnt;
+    CurrentSelectorWBData = EquipmentPresetData;
+    CurrentSelectorWBIndex = i;
     let preset = {
         name: `#${EquipmentPresetCnt}`,
         id: EquipmentPresetCnt,
@@ -941,12 +1033,12 @@ function insertNewEquipmentPreset(data){
     // cells[0].css('width', '110px');
     cells[0].append(ncontainer);
     let wpnode = AssetsManager.createEquipmentImageNode(-ITYPE_WEAPON, ITYPE_WEAPON);
-    attachInventorySelector(wpnode, ITYPE_WEAPON, EquipmentPresetData, EquipmentPresetCnt);
-    if(preset.weapon > 0){
-        onWeaponAdd(preset.weapon, wpnode, preset.weaponAbility, preset.weaponAbilityName);
-    }
     cells[1].attr('id', `preset-weapon-${EquipmentPresetCnt}`);
     cells[1].append(wpnode);
+    attachInventorySelector(wpnode, ITYPE_WEAPON, EquipmentPresetData, EquipmentPresetCnt);
+    if(preset.weapon > 0){
+        onWeaponAdd(preset.weapon, cells[1], preset.weaponAbility, preset.weaponAbilityName, false);
+    }
     let wpasnode = AssetsManager.createEquipmentImageNode(
         -ITYPE_ABSTONE, ITYPE_ABSTONE,
         null,
@@ -955,20 +1047,20 @@ function insertNewEquipmentPreset(data){
             'image_class': 'abstone-add-icon'
         }
     );
-    attachInventorySelector(wpasnode, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), EquipmentPresetData, EquipmentPresetCnt);
     cells[2].attr('id', `preset-abstone-weapon-${EquipmentPresetCnt}`);
     cells[2].append(wpasnode);
+    attachInventorySelector(wpasnode, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), EquipmentPresetData, EquipmentPresetCnt);
     for(let id of preset.weaponAbStone){
-        onAbStoneAdd(id, wpasnode);
+        onAbStoneAdd(id, cells[2], null, false);
     }
     
     let arnode = AssetsManager.createEquipmentImageNode(-ITYPE_ARMOR, ITYPE_ARMOR);
-    attachInventorySelector(arnode, ITYPE_ARMOR, EquipmentPresetData, EquipmentPresetCnt);
-    if(preset.armor > 0){
-        onArmorAdd(preset.armor, arnode, preset.armorAbility, preset.armorAbilityName);
-    }
     cells[3].attr('id', `preset-armor-${EquipmentPresetCnt}`);
     cells[3].append(arnode);
+    attachInventorySelector(arnode, ITYPE_ARMOR, EquipmentPresetData, EquipmentPresetCnt);
+    if(preset.armor > 0){
+        onArmorAdd(preset.armor, cells[3], preset.armorAbility, preset.armorAbilityName, false);
+    }
     let arasnode = AssetsManager.createEquipmentImageNode(
         -ITYPE_ABSTONE, ITYPE_ABSTONE,
         null,
@@ -977,20 +1069,20 @@ function insertNewEquipmentPreset(data){
             'image_class': 'abstone-add-icon'
         }
     );
-    attachInventorySelector(arasnode, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), EquipmentPresetData, EquipmentPresetCnt);
     cells[4].attr('id', `preset-abstone-armor-${EquipmentPresetCnt}`);
     cells[4].append(arasnode);
+    attachInventorySelector(arasnode, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), EquipmentPresetData, EquipmentPresetCnt);
     for(let id of preset.armorAbStone){
-        onAbStoneAdd(id, arasnode);
+        onAbStoneAdd(id, cells[4], null, false);
     }
 
     let acnode = AssetsManager.createEquipmentImageNode(-ITYPE_ACCESSORY, ITYPE_ACCESSORY);
-    attachInventorySelector(acnode, ITYPE_ACCESSORY, EquipmentPresetData, EquipmentPresetCnt);
-    if(preset.accessory > 0){
-        onAccessoryAdd(preset.accessory, acnode, preset.accessoryAbility, preset.accessoryAbilityName);
-    }
     cells[5].attr('id', `preset-accessory-${EquipmentPresetCnt}`);
     cells[5].append(acnode);
+    attachInventorySelector(acnode, ITYPE_ACCESSORY, EquipmentPresetData, EquipmentPresetCnt);
+    if(preset.accessory > 0){
+        onAccessoryAdd(preset.accessory, cells[5], preset.accessoryAbility, preset.accessoryAbilityName, false);
+    }
     let acasnode = AssetsManager.createEquipmentImageNode(
         -ITYPE_ABSTONE, ITYPE_ABSTONE,
         null,
@@ -999,11 +1091,11 @@ function insertNewEquipmentPreset(data){
             'image_class': 'abstone-add-icon'
         }
     );
-    attachInventorySelector(acasnode, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), EquipmentPresetData, EquipmentPresetCnt);
     cells[6].attr('id', `preset-abstone-accessory-${EquipmentPresetCnt}`);
     cells[6].append(acasnode);
+    attachInventorySelector(acasnode, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), EquipmentPresetData, EquipmentPresetCnt);
     for(let id of preset.accessoryAbStone){
-        onAbStoneAdd(id, acasnode);
+        onAbStoneAdd(id, cells[6], null, false);
     }
 
     let apply_btn = $(document.createElement('a'));
@@ -1056,7 +1148,7 @@ function applyPreset(slot_id){
         for(let node of $(`#abstone-armor-${slot_id}`).children()){
             if(node.tagName.toLowerCase() != 'p'){ continue; }
             if(node.id.length < 1){
-                node.remove();
+                node.children[0].click();
             }
         }
         for(let s of preset.armorAbStone){
@@ -1087,6 +1179,7 @@ function exportPreset(){
 function importPreset(){
     alert(Vocab['ImportPresetWarning']);
     let raw = prompt(Vocab['ImportPresetDesc']);
+    if(!raw){ return; }
     let dat = {};
     try{
         dat = JSON.parse(raw);
