@@ -330,6 +330,13 @@
     "ClickOpenInNewTab": "新しいタブで開くにはここをクリック",
     "AddNewPreset": "新しいプリセットを追加する",
     "EnterPresetName": "新しいプリセット名を入力してください",
+    "ApplyTo": "適用されます",
+    "Export": "エクスポート",
+    "Import": "インポート",
+    "ImportPresetWarning": "警告: インポートデータによってローカルプリセットが上書きされます。エクスポートを使用してプリセットのバックアップを取得し、インポートでそれらを回復できるようにしてください。",
+    "ImportPresetDesc": "プリセットの JSON 文字列を入力してください",
+    "ExportPresetDesc": "エクスポートされたデータは JSON 文字列です。それらを新しいタブにコピーできます。",
+    "InvalidData": "無効なデータ",
     "ItemType": {
         "0": "キャラクター",
         "1": "武器",

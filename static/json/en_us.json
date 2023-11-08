@@ -330,6 +330,13 @@
   "ClickOpenInNewTab": "Click here to open in new tab",
   "AddNewPreset": "Add new preset",
   "EnterPresetName": "Please enter new preset name",
+  "ApplyTo": "Apply to",
+  "Export": "Export",
+  "Import": "Import",
+  "ImportPresetWarning": "WARNING: Your local presets will be replaced by the import data, make sure backup your presets by using export so you can recover them with import.",
+  "ImportPresetDesc": "Please enter the JSON string of the presets",
+  "ExportPresetDesc": "Exported data will be JSON string, you can copy them in the new tab",
+  "InvalidData": "Invalid data",
   "ItemType": {
     "0": "Character",
     "1": "Weapon",

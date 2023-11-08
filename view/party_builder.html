@@ -109,14 +109,37 @@
           <div class="tab-pane fade" id="equipment-preset">
             <div id="equipment-preset-add-container">
               <br>
-              <a id="btn-preset-add" type="button" class="btn btn-primary btn-handler" onclick="createNewPreset()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
-                  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                </svg>
-              </a>
-              <label for="btn-preset-add" label="l-AddNewPreset"></label>
+              <span>
+                <a id="btn-preset-add" type="button" class="btn btn-primary btn-handler" onclick="createNewPreset()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                </a>
+                <label for="btn-preset-add" label="l-AddNewPreset"></label>
+              </span>
+              &nbsp;&nbsp;
+              <span>
+                <a id="btn-preset-export" type="button" class="btn btn-primary btn-handler" onclick="exportPreset()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                  </svg>
+                </a>
+                <label for="btn-preset-export" label="l-Export"></label>
+              </span>
+              &nbsp;&nbsp;
+              <span>
+                <a id="btn-preset-import" type="button" class="btn btn-primary btn-handler" onclick="importPreset()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                  </svg>
+                </a>
+                <label for="btn-preset-import" label="l-Import"></label>
+              </span>
             </div>
+            <hr>
             <table id="equipment-preset-table" class="table table-bordered table-responsive table-centered">
               <tbody id="equipment-preset-table-body">
 
@@ -208,15 +231,32 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-body">
-            <button type="button" class="btn btn-secondary btn-major" data-bs-dismiss="modal" label="l-Cancel"></button>
-            <button type="button" class="btn btn-primary btn-major" label="l-SavePartyToGame" onclick="alert(Vocab['Unimplemented'])"></button>
-            <button type="button" class="btn btn-primary btn-major" label="l-LoadPartyFromGame" onclick="applyFromGameParty()"></button>
-            <div>
-              <div class="spinner-border center" id="loading-indicator-2">
-              <span class="sr-only"></span>
-            </div>
+          <button type="button" class="btn btn-secondary btn-major" data-bs-dismiss="modal" label="l-Cancel"></button>
+          <button type="button" class="btn btn-primary btn-major" label="l-SavePartyToGame" onclick="alert(Vocab['Unimplemented'])"></button>
+          <button type="button" class="btn btn-primary btn-major" label="l-LoadPartyFromGame" onclick="applyFromGameParty()"></button>
+          <div>
+            <div class="spinner-border center" id="loading-indicator-2"></div>
+            <span class="sr-only"></span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="modal fade modal-action" id="modal-action-3" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <span label="l-ApplyTo"></span>
+          <button type="button" class="btn btn-primary btn-major" onclick="applyPreset(1)">1</button>
+          <button type="button" class="btn btn-primary btn-major" onclick="applyPreset(2)">2</button>
+          <button type="button" class="btn btn-primary btn-major" onclick="applyPreset(3)">3</button>
+          <button type="button" class="btn btn-primary btn-major" onclick="applyPreset(4)">4</button>
+          <button type="button" class="btn btn-primary btn-major" onclick="applyPreset(5)">5</button>
+          <button type="button" class="btn btn-secondary btn-major" data-bs-dismiss="modal" label="l-Cancel"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </html>

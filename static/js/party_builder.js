@@ -15,9 +15,11 @@ const BICON_MINUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="
 let Inventory   = null;
 let ActionModal = null;
 let PartyGroupActionModal = null;
+let EquipmentPresetModal = null;
 let currentSelectedNode = null;
 let currentSelectedId   = 0;
 let currentAddSkillNode = null;
+let currentPresetId = 0;
 let emptyPlaceholder    = {};
 let characterLevel      = [50, 50, 50, 50, 50, 50];
 let partyData = {
@@ -339,7 +341,7 @@ function onCharacterAdd(id, node){
     CurrentSelectorWBData[CurrentSelectorWBIndex].character = id < 0 ? 0 : id;
 }
 
-function onWeaponAdd(id, node, skill_name=null){
+function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -349,17 +351,30 @@ function onWeaponAdd(id, node, skill_name=null){
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_WEAPON)
     attachInventorySelector(icon, ITYPE_WEAPON, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
-    let name = skill_name;
-    if(name === null){
-        name = $('#skill-group-select').val()
+    if(ability_id === undefined){
+        ability_id = $('#skill-group-select').val();
+    }
+    let name = ability_name;
+    if(name === undefined){
+        name = $('#skill-group-select').find('option:selected').text();
+        if(!name && ability_id && AssetsManager.SkillData.hasOwnProperty(ability_id)){
+            name = AssetsManager.SkillData[ability_id].Name;
+        }
     }
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
-    CurrentSelectorWBData[CurrentSelectorWBIndex].weapon = id < 0 ? 0 : id;
+    if(CurrentSelectorWBData){
+        CurrentSelectorWBData[CurrentSelectorWBIndex].weapon = id < 0 ? 0 : id;
+        CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbility = ability_id;
+        CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbilityName = name;
+        if(CurrentSelectorWBData == EquipmentPresetData){
+            saveEquipPreset();
+        }
+    }
 }
 
-function onArmorAdd(id, node, skill_name=null){
+function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -369,17 +384,27 @@ function onArmorAdd(id, node, skill_name=null){
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ARMOR)
     attachInventorySelector(icon, ITYPE_ARMOR, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
-    let name = skill_name;
-    if(name === null){
-        name = $('#skill-group-select').val()
+    if(ability_id === undefined){
+        ability_id = $('#skill-group-select').val();
+    }
+    let name = ability_name;
+    if(name === undefined){
+        name = $('#skill-group-select').find('option:selected').text();
     }
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
-    CurrentSelectorWBData[CurrentSelectorWBIndex].armor = id < 0 ? 0 : id;
+    if(CurrentSelectorWBData){
+        CurrentSelectorWBData[CurrentSelectorWBIndex].armor = id < 0 ? 0 : id;
+        CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbility = ability_id;
+        CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbilityName = name;
+        if(CurrentSelectorWBData == EquipmentPresetData){
+            saveEquipPreset();
+        }
+    }
 }
 
-function onAccessoryAdd(id, node, skill_name=null){
+function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -389,14 +414,24 @@ function onAccessoryAdd(id, node, skill_name=null){
     let icon = AssetsManager.createEquipmentImageNode(id, ITYPE_ACCESSORY)
     attachInventorySelector(icon, ITYPE_ACCESSORY, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(icon);
-    let name = skill_name;
-    if(name === null){
-        name = $('#skill-group-select').val()
+    if(ability_id === undefined){
+        ability_id = $('#skill-group-select').val();
+    }
+    let name = ability_name;
+    if(name === undefined){
+        name = $('#skill-group-select').find('option:selected').text();
     }
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
-    CurrentSelectorWBData[CurrentSelectorWBIndex].accessory = id < 0 ? 0 : id;
+    if(CurrentSelectorWBData){
+        CurrentSelectorWBData[CurrentSelectorWBIndex].accessory = id < 0 ? 0 : id;
+        CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbility = ability_id;
+        CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbilityName = name;
+        if(CurrentSelectorWBData == EquipmentPresetData){
+            saveEquipPreset();
+        }
+    }
 }
 
 /**
@@ -455,9 +490,15 @@ function onAbStoneAdd(id, node, abs_name=null){
     cancel.click(()=>{
         item.remove();
         ar.splice(ar.indexOf(id),1);
+        if(CurrentSelectorWBData == EquipmentPresetData){
+            saveEquipPreset();
+        }
     });
     $(node).prepend(item);
     item.append(cancel);
+    if(CurrentSelectorWBData == EquipmentPresetData){
+        saveEquipPreset();
+    }
 }
 
 function setupAbilityGroup(gid){
@@ -469,7 +510,7 @@ function setupAbilityGroup(gid){
             name = AssetsManager.SkillData[obj.MSkillId].Name;
         }
         let opt = $(document.createElement('option'));
-        opt.attr('value', name);
+        opt.attr('value', obj.MSkillId || 0);
         opt.text(name);
         node.append(opt);
     }
@@ -482,7 +523,7 @@ function setupUltimateAbilityGroup(id){
         if(!AssetsManager.UltimateWeaponGroup[id].AbilityGroups.hasOwnProperty(aid)){ continue; }
         let name = AssetsManager.UltimateWeaponGroup[id].AbilityGroups[aid].Name;
         let opt = $(document.createElement('option'));
-        opt.attr('value', name);
+        opt.attr('value', aid);
         opt.text(name);
         node.append(opt);
     }
@@ -707,8 +748,11 @@ function applyFromGameParty(){
                     }
                 }
                 let equipped = [];
+                skid = 0;
                 for(let ability of uwp.UltimateWeaponPointAbilityinfoViewModels){
                     if(ability.EquipSlotNo){
+                        // warning: up to 4 is suppoted otherwise use more precise decimal
+                        skid -= ability.MUltimateWeaponPointAbilityId * (10**(equipped.length*4));
                         let aname = AssetsManager.UltimateWeaponGroup[weapon.MWeaponId].AbilityGroups[ability.MUltimateWeaponPointAbilityId].Name;
                         equipped.push(aname);
                     }
@@ -729,14 +773,14 @@ function applyFromGameParty(){
                     }
                 }
             }
-            onWeaponAdd(weapon.MWeaponId, $(`#weapon-${idx}`), skname);
+            onWeaponAdd(weapon.MWeaponId, $(`#weapon-${idx}`), skid, skname);
         }
         let armor = slot.UArmor;
         if(armor){
             let skid = armor.MSkillId;
             let skname = '';
             if(skid){ skname = AssetsManager.SkillData[skid].Name; }
-            onArmorAdd(armor.MArmorId, $(`#armor-${idx}`), skname);
+            onArmorAdd(armor.MArmorId, $(`#armor-${idx}`), skid, skname);
             for(let item of DataManager.dataArmors){
                 if(item.Id != armor.Id){ continue; }
                 if(!item.AbilityStoneSlots){ continue; }
@@ -754,7 +798,7 @@ function applyFromGameParty(){
             let skid = accessory.MSkillId;
             let skname = '';
             if(skid){ skname = AssetsManager.SkillData[skid].Name; }
-            onAccessoryAdd(accessory.MAccessoryId, $(`#accessory-${idx}`), skname);
+            onAccessoryAdd(accessory.MAccessoryId, $(`#accessory-${idx}`), skid, skname);
             for(let item of DataManager.dataAccessories){
                 if(item.Id != accessory.Id){ continue; }
                 if(!item.AbilityStoneSlots){ continue; }
@@ -798,11 +842,13 @@ function setup(){
     Inventory = new Game_Inventory('inventory');
     ActionModal = new bootstrap.Modal($('#modal-action'));
     PartyGroupActionModal = new bootstrap.Modal($('#modal-action-2'));
+    EquipmentPresetModal = new bootstrap.Modal($('#modal-action-3'));
     Inventory.container.on("hidden.bs.modal", ()=>{
         if(Inventory.currentType == ITYPE_SKILL && currentAddSkillNode){
             currentAddSkillNode.remove();
         }
     });
+    setupEquipPreset();
     loadPartyGroups();
 }
 
@@ -830,11 +876,17 @@ function setupSettings(){
 function setupEquipPreset(){
     let tbody = $('#equipment-preset-table-body');
     tbody.html('');
-    EquipmentPresetCnt  = 0;
-    let data = JSON.parse(DataManager.getSetting('EquipmentPresetData'));
-    for(let d of data){
-        insertNewEquipmentPreset(d);
+    EquipmentPresetCnt = 0;
+    let data = DataManager.getSetting('EquipmentPresetData');
+    if(!data){ return; }
+    data = JSON.parse(data);
+    for(let i in data){
+        insertNewEquipmentPreset(data[i]);
     }
+}
+
+function saveEquipPreset(){
+    DataManager.changeSetting('EquipmentPresetData', JSON.stringify(EquipmentPresetData));
 }
 
 function createNewPreset(){
@@ -844,6 +896,7 @@ function createNewPreset(){
 
 function insertNewEquipmentPreset(data){
     EquipmentPresetCnt += 1;
+    let i = EquipmentPresetCnt;
     let preset = {
         name: `#${EquipmentPresetCnt}`,
         id: EquipmentPresetCnt,
@@ -854,6 +907,12 @@ function insertNewEquipmentPreset(data){
         weaponAbStone: [],
         armorAbStone: [],
         accessoryAbStone: [],
+        weaponAbility: 0,
+        armorAbility: 0,
+        accessoryAbility: 0,
+        weaponAbilityName: '',
+        armorAbilityName: '',
+        accessoryAbilityName: '',
     }
     preset = {...preset, ...data};
     EquipmentPresetData[EquipmentPresetCnt] = preset;
@@ -862,16 +921,30 @@ function insertNewEquipmentPreset(data){
     row.attr('id', `preset-${EquipmentPresetCnt}`);
     tbody.append(row);
     let cells = [];
-    for(let i=0;i<8;++i){
+    for(let i=0;i<9;++i){
         let cell = $(document.createElement('td'));
         cell.addClass('cell-centered');
         cells.push(cell);
         row.append(cell);
     }
+    let ncontainer = $(document.createElement('span'));
+    let nname = $(document.createElement('input'));
+    nname.attr('type', 'text').attr('id', `preset-name-input-${EquipmentPresetCnt}`);
+    nname.on('change', (e)=>{
+        EquipmentPresetData[i].name = e.target.value;
+        saveEquipPreset();
+    });
+    // nname.css('width', '100px');
+    nname.val(preset.name);
+    ncontainer.append(nname);
     cells[0].attr('id', `preset-name-${EquipmentPresetCnt}`);
-    cells[0].append($(document.createElement('p')).text(preset.name));
-    let wpnode = AssetsManager.createEquipmentImageNode(preset.weapon, ITYPE_WEAPON);
+    // cells[0].css('width', '110px');
+    cells[0].append(ncontainer);
+    let wpnode = AssetsManager.createEquipmentImageNode(-ITYPE_WEAPON, ITYPE_WEAPON);
     attachInventorySelector(wpnode, ITYPE_WEAPON, EquipmentPresetData, EquipmentPresetCnt);
+    if(preset.weapon > 0){
+        onWeaponAdd(preset.weapon, wpnode, preset.weaponAbility, preset.weaponAbilityName);
+    }
     cells[1].attr('id', `preset-weapon-${EquipmentPresetCnt}`);
     cells[1].append(wpnode);
     let wpasnode = AssetsManager.createEquipmentImageNode(
@@ -889,8 +962,11 @@ function insertNewEquipmentPreset(data){
         onAbStoneAdd(id, wpasnode);
     }
     
-    let arnode = AssetsManager.createEquipmentImageNode(preset.armor, ITYPE_ARMOR);
+    let arnode = AssetsManager.createEquipmentImageNode(-ITYPE_ARMOR, ITYPE_ARMOR);
     attachInventorySelector(arnode, ITYPE_ARMOR, EquipmentPresetData, EquipmentPresetCnt);
+    if(preset.armor > 0){
+        onArmorAdd(preset.armor, arnode, preset.armorAbility, preset.armorAbilityName);
+    }
     cells[3].attr('id', `preset-armor-${EquipmentPresetCnt}`);
     cells[3].append(arnode);
     let arasnode = AssetsManager.createEquipmentImageNode(
@@ -908,8 +984,11 @@ function insertNewEquipmentPreset(data){
         onAbStoneAdd(id, arasnode);
     }
 
-    let acnode = AssetsManager.createEquipmentImageNode(preset.accessory, ITYPE_ACCESSORY);
+    let acnode = AssetsManager.createEquipmentImageNode(-ITYPE_ACCESSORY, ITYPE_ACCESSORY);
     attachInventorySelector(acnode, ITYPE_ACCESSORY, EquipmentPresetData, EquipmentPresetCnt);
+    if(preset.accessory > 0){
+        onAccessoryAdd(preset.accessory, acnode, preset.accessoryAbility, preset.accessoryAbilityName);
+    }
     cells[5].attr('id', `preset-accessory-${EquipmentPresetCnt}`);
     cells[5].append(acnode);
     let acasnode = AssetsManager.createEquipmentImageNode(
@@ -927,16 +1006,161 @@ function insertNewEquipmentPreset(data){
         onAbStoneAdd(id, acasnode);
     }
 
+    let apply_btn = $(document.createElement('a'));
+    apply_btn.addClass('btn btn-primary btn-handler').prop('type', 'button');
+    apply_btn.html(BICON_PLUS);
+    apply_btn.on('click', ()=>{
+        currentPresetId = i;
+        EquipmentPresetModal.show();
+    });
+    cells[7].attr('id', `preset-apply-${EquipmentPresetCnt}`);
+    cells[7].append(apply_btn);
     let remove_btn = $(document.createElement('a'));
     remove_btn.addClass('btn btn-primary btn-handler').prop('type', 'button');
     remove_btn.html(BICON_MINUS);
-    let i = EquipmentPresetCnt;
     remove_btn.on('click', ()=>{
         $(`#preset-${i}`).remove();
         delete EquipmentPresetData[i];
+        saveEquipPreset();
     });
-    cells[7].attr('id', `preset-remove-${EquipmentPresetCnt}`);
-    cells[7].append(remove_btn);
+    cells[8].attr('id', `preset-remove-${EquipmentPresetCnt}`);
+    cells[8].append(remove_btn);
+    saveEquipPreset();
+}
+
+function applyPreset(slot_id){
+    let preset = EquipmentPresetData[currentPresetId];
+    CurrentSelectorWBData = partyData;
+    CurrentSelectorWBIndex = slot_id;
+    if(preset.weapon > 0){
+        onWeaponAdd(preset.weapon, $(`#weapon-${slot_id}`), preset.weaponAbility, preset.weaponAbilityName);
+    }
+    if(preset.armor > 0){
+        onArmorAdd(preset.armor, $(`#armor-${slot_id}`), preset.armorAbility, preset.armorAbilityName);
+    }
+    if(preset.accessory > 0){
+        onAccessoryAdd(preset.accessory, $(`#accessory-${slot_id}`), preset.accessoryAbility, preset.accessoryAbilityName);
+    }
+    if(preset.weapon > 0 || preset.weaponAbStone.length){
+        for(let node of $(`#abstone-weapon-${slot_id}`).children()){
+            if(node.tagName.toLowerCase() != 'p'){ continue; }
+            if(node.id.length < 1){
+                node.children[0].click();
+            }
+        }
+        for(let s of preset.weaponAbStone){
+            onAbStoneAdd(s, $(`#abstone-weapon-${slot_id}`));
+        }
+    }
+    if(preset.armor > 0 || preset.armorAbStone.length){
+        for(let node of $(`#abstone-armor-${slot_id}`).children()){
+            if(node.tagName.toLowerCase() != 'p'){ continue; }
+            if(node.id.length < 1){
+                node.remove();
+            }
+        }
+        for(let s of preset.armorAbStone){
+            onAbStoneAdd(s, $(`#abstone-armor-${slot_id}`));
+        }
+    }
+    if(preset.accessory > 0 || preset.accessoryAbStone.length){
+        for(let node of $(`#abstone-accessory-${slot_id}`).children()){
+            if(node.tagName.toLowerCase() != 'p'){ continue; }
+            if(node.id.length < 1){
+                node.children[0].click();
+            }
+        }
+        for(let s of preset.accessoryAbStone){
+            onAbStoneAdd(s, $(`#abstone-accessory-${slot_id}`));
+        }
+    }
+    EquipmentPresetModal.hide();
+}
+
+function exportPreset(){
+    alert(Vocab['ExportPresetDesc']);
+    let tab = window.open();
+    tab.document.open();
+    tab.document.write('<pre>'+ JSON.stringify(EquipmentPresetData) + '</pre>');
+}
+
+function importPreset(){
+    alert(Vocab['ImportPresetWarning']);
+    let raw = prompt(Vocab['ImportPresetDesc']);
+    let dat = {};
+    try{
+        dat = JSON.parse(raw);
+        let props_vaildator = {
+            'id': [Number, String],
+            'name': [Number, String],
+            'character': [Number, String],
+            'weapon': [Number, String],
+            'armor': [Number, String],
+            'accessory': [Number, String],
+            'weaponAbility': [Number, String],
+            'armorAbility': [Number, String],
+            'accessoryAbility': [Number, String],
+            'weaponAbilityName': [Number, String],
+            'armorAbilityName': [Number, String],
+            'accessoryAbilityName': [Number, String],
+            'weaponAbStone': [Array, [Number, String]],
+            'armorAbStone': [Array, [Number, String]],
+            'accessoryAbStone': [Array, [Number, String]],
+        };
+        for(let i in dat){
+            let d = dat[i];
+            for(let p in d){
+                if(!props_vaildator.hasOwnProperty(p)){
+                    console.log("Invalid property: "+p)
+                    alert(Vocab['InvalidData']);
+                    return;
+                }
+            }
+            for(let p in props_vaildator){
+                if(!d.hasOwnProperty(p)){
+                    console.log("Invalid property: "+p)
+                    alert(Vocab['InvalidData']);
+                    return;
+                }
+                let flag_ok = false;
+                for(let cls of props_vaildator[p]){
+                    if(cls === Array && d[p]){
+                        if(!isClassOf(d[p], cls)){
+                            break;
+                        }
+                        for(let e of d[p]){
+                            for(let cls2 of props_vaildator[p][1]){
+                                if(e !== null && !isClassOf(e, cls2)){
+                                    console.log(`Invalid class of property element: ${p} of ${e}`)
+                                    alert(Vocab['InvalidData']);
+                                    return;
+                                }
+                            }
+                        }
+                        flag_ok = true;
+                        break;
+                    }
+                    else if(d[p] == null || isClassOf(d[p], cls)){
+                        flag_ok = true;
+                        break;
+                    }
+                }
+                if(!flag_ok){
+                    console.log(`Invalid class of property: ${p}`)
+                    alert(Vocab['InvalidData']);
+                    return;
+                }
+            }
+        }
+    }
+    catch(error){
+       console.error(error);
+       alert(Vocab['InvalidData']);
+       return;
+    }
+    EquipmentPresetData = dat;
+    saveEquipPreset();
+    setupEquipPreset();
 }
 
 function isArmor(item){ return item.hasOwnProperty('MArmorId'); }

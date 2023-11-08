@@ -329,6 +329,13 @@
   "ClickOpenInNewTab": "點此在新分頁開啟",
   "AddNewPreset": "新增預設",
   "EnterPresetName": "請輸入新的預設名稱",
+  "ApplyTo": "套用至",
+  "Export": "輸出",
+  "Import": "輸入",
+  "ImportPresetWarning": "警告: 當前儲存的資料將會被導入的資料取代, 強烈建議先使用輸出備份資料以便之後可使用輸入功能恢復原本資料",
+  "ImportPresetDesc": "請輸入預設裝備組的 JSON 字串",
+  "ExportPresetDesc": "將會於新頁面輸出資料的 JSON 字串, 複製後即可備份資料",
+  "InvalidData": "無效的資料",
   "ItemType": {
     "0": "角色",
     "1": "武器",
