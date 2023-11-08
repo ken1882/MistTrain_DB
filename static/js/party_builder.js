@@ -65,7 +65,7 @@ function attachInventorySelector(node, type, wb_data=null, wb_idx=null){
             }
             let skill_ids = ItemManager.getCharacterSkills(wb_data[wb_idx].character);
             let ar = [];
-            let ch = AssetsManager.CharacterData[wb_data[idx].character];
+            let ch = AssetsManager.CharacterData[wb_data[wb_idx].character];
             let owned_skills = [
                 ch.MSkill1Id,
                 ch.MSkill2Id,
@@ -537,7 +537,7 @@ function onSkillAdd(id, node){
         id = -1;
     }
     let pt = AssetsManager.createSkillIconImageNode(id);
-    attachInventorySelector(pt, ITYPE_SKILL);
+    attachInventorySelector(pt, ITYPE_SKILL, CurrentSelectorWBData, CurrentSelectorWBIndex);
     $(node).append(pt);
     let label = $(document.createElement('p'));
     if(id > 0){
