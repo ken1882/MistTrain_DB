@@ -22,25 +22,32 @@ let currentAddSkillNode = null;
 let currentPresetId = 0;
 let emptyPlaceholder    = {};
 let characterLevel      = [50, 50, 50, 50, 50, 50];
-let partyData = {
+let EditorPartyData = {
     1: {}, 2: {}, 3: {}, 4: {}, 5: {},
 };
+let EditorFieldSkillData = [null, null, null, null];
+let EditorFormationData  = null;
 let UltimateWeaponData = {};
 let UltimateWeaponMaxGen = 1;
 
 let GroupName = new Array(11);
 let GroupData = new Array(11);
 let CurrentPartyData = {};
-let RegisteredItems = {
-    weapons: [],
-    armors: [],
-    accessories: [],
-    abstones: []
-};
 let EquipmentPresetData = {};
 let EquipmentPresetCnt  = 0;
 let CurrentSelectorWBData = null;
 let CurrentSelectorWBIndex = null;
+let ApplyPartyRequestQueue = [];
+let ApplyPartyPromises = [];
+let EquipableSkillMap = {};
+
+const PREF_EQUIP_NONE = 0;
+const PREF_EQUIP_ONLY_MATCHED = 1;
+const PREF_EQJWL_NONE   = 0;
+const PREF_EQJWL_EMPTY_UNUSE  = 1;
+const PREF_EQJWL_EMPTY_USING  = 2;
+const PREF_EQJWL_REPLACE_UNUSE = 3;
+const PREF_EQJWL_REPLACE_USING = 4;
 
 function init(){
     AssetsManager.loadCharacterAssets();
@@ -60,7 +67,6 @@ function attachInventorySelector(node, type, wb_data=null, wb_idx=null){
         }
         CurrentSelectorWBData = wb_data;
         CurrentSelectorWBIndex = wb_idx;
-        console.log(CurrentSelectorWBData, CurrentSelectorWBIndex);
         if(wb_data && type == ITYPE_SKILL){
             if(!wb_data[wb_idx].hasOwnProperty('character') || !wb_data[wb_idx].character){
                 alert(Vocab['SelectCharacterFirst']);
@@ -138,7 +144,7 @@ function addPartyPlaceholders(){
                     cell.attr('id', `character-${i}`);
                     icon = AssetsManager.createCharacterAvatarNode(-1);
                     cell.append(icon);
-                    attachInventorySelector(icon, ITYPE_CHARACTER, partyData, i);
+                    attachInventorySelector(icon, ITYPE_CHARACTER, EditorPartyData, i);
                     // cell.append(document.createElement('br'));
                     cell.css('width', '280px');
                     let eles = createLevelInput(i);
@@ -149,7 +155,7 @@ function addPartyPlaceholders(){
                     cell.attr('id', `weapon-${i}`);
                     icon = AssetsManager.createEquipmentImageNode(-ITYPE_WEAPON, ITYPE_WEAPON);
                     cell.append(icon);
-                    attachInventorySelector(icon, ITYPE_WEAPON, partyData, i);
+                    attachInventorySelector(icon, ITYPE_WEAPON, EditorPartyData, i);
                     label.attr('id', `weapon-${i}-label`);
                     cell.append(label);
                     break;
@@ -167,13 +173,13 @@ function addPartyPlaceholders(){
                         }
                     );
                     cell.append(abs);
-                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), partyData, i);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_WEAPON), EditorPartyData, i);
                     break;
                 case 3:
                     cell.attr('id', `armor-${i}`);
                     icon = AssetsManager.createEquipmentImageNode(-ITYPE_ARMOR, ITYPE_ARMOR);
                     cell.append(icon);
-                    attachInventorySelector(icon, ITYPE_ARMOR, partyData, i);
+                    attachInventorySelector(icon, ITYPE_ARMOR, EditorPartyData, i);
                     label.attr('id', `armor-${i}-label`);
                     cell.append(label);
                     break;
@@ -191,13 +197,13 @@ function addPartyPlaceholders(){
                         }
                     );
                     cell.append(abs);
-                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), partyData, i);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ARMOR), EditorPartyData, i);
                     break;
                 case 5:
                     cell.attr('id', `accessory-${i}`);
                     icon = AssetsManager.createEquipmentImageNode(-ITYPE_ACCESSORY, ITYPE_ACCESSORY);
                     cell.append(icon);
-                    attachInventorySelector(icon, ITYPE_ACCESSORY, partyData, i);
+                    attachInventorySelector(icon, ITYPE_ACCESSORY, EditorPartyData, i);
                     label.attr('id', `accessory-${i}-label`);
                     cell.append(label);
                     break;
@@ -215,13 +221,13 @@ function addPartyPlaceholders(){
                         }
                     );
                     cell.append(abs);
-                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), partyData, i);
+                    attachInventorySelector(abs, Game_Inventory.hashAbStoneType(ITYPE_ACCESSORY), EditorPartyData, i);
                     break;
                 case 7:
                     cell.attr('id', `add-skill-${i}`);
                     icon = AssetsManager.createSkillIconImageNode(-1);
                     cell.append(icon);
-                    attachInventorySelector(icon, ITYPE_SKILL, partyData, i);
+                    attachInventorySelector(icon, ITYPE_SKILL, EditorPartyData, i);
                     label.attr('id', `add-skill-${i}-label`);
                     cell.append(label);
                     break;
@@ -376,10 +382,11 @@ function onWeaponAdd(id, node, ability_id=undefined, ability_name=undefined, do_
         if(ability_id){
             sel.val(ItemManager.isUltimateWeapon(id) ? -ability_id : ability_id);
         }
+        let i = CurrentSelectorWBIndex;
         sel.on('change', (e)=>{
             let node = $(e.target);
-            CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbility = node.val();
-            CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbilityName = node.find('option:selected').text();
+            CurrentSelectorWBData[i].weaponAbility = node.val();
+            CurrentSelectorWBData[i].weaponAbilityName = node.find('option:selected').text();
         });
         let selc = $(document.createElement('div'));
         selc.append(sel);
@@ -426,10 +433,11 @@ function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined, do_w
         if(ability_id){
             sel.val(ability_id);
         }
+        let i = CurrentSelectorWBIndex;
         sel.on('change', (e)=>{
             let node = $(e.target);
-            CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbility = node.val();
-            CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbilityName = node.find('option:selected').text();
+            CurrentSelectorWBData[i].armorAbility = node.val();
+            CurrentSelectorWBData[i].armorAbilityName = node.find('option:selected').text();
         });
         let selc = $(document.createElement('div'));
         selc.append(sel);
@@ -450,7 +458,7 @@ function onArmorAdd(id, node, ability_id=undefined, ability_name=undefined, do_w
     }
 }
 
-function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined, do_wb){
+function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined, do_wb=true){
     if(id == 0){ return; }
     node = $(node)[0];
     node.innerHTML = '';
@@ -476,10 +484,11 @@ function onAccessoryAdd(id, node, ability_id=undefined, ability_name=undefined, 
         if(ability_id){
             sel.val(ability_id);
         }
+        let i = CurrentSelectorWBIndex;
         sel.on('change', (e)=>{
             let node = $(e.target);
-            CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbility = node.val();
-            CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbilityName = node.find('option:selected').text();
+            CurrentSelectorWBData[i].accessoryAbility = node.val();
+            CurrentSelectorWBData[i].accessoryAbilityName = node.find('option:selected').text();
         });
         let selc = $(document.createElement('div'));
         selc.append(sel);
@@ -534,17 +543,17 @@ function onAbStoneAdd(id, node, abs_name=null, do_wb=true){
     let ar = [];
     let i = CurrentSelectorWBIndex;
     if(node.id.includes('weapon')){
-        if(!CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbStone || !id){
-            CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbStone = []
+        if(!CurrentSelectorWBData[i].weaponAbStone || !id){
+            CurrentSelectorWBData[i].weaponAbStone = []
         }
-        ar = CurrentSelectorWBData[CurrentSelectorWBIndex].weaponAbStone;
+        ar = CurrentSelectorWBData[i].weaponAbStone;
         if(do_wb){ ar.push(id); }
     }
     else if(node.id.includes('armor')){
-        if(!CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbStone || !id){
-            CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbStone = []
+        if(!CurrentSelectorWBData[i].armorAbStone || !id){
+            CurrentSelectorWBData[i].armorAbStone = []
         }
-        ar = CurrentSelectorWBData[CurrentSelectorWBIndex].armorAbStone;
+        ar = CurrentSelectorWBData[i].armorAbStone;
         if(do_wb){ ar.push(id); }
         // cancel.click(()=>{
         //     item.remove();
@@ -555,10 +564,10 @@ function onAbStoneAdd(id, node, abs_name=null, do_wb=true){
         // });
     }
     else if(node.id.includes('accessory')){
-        if(!CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbStone || !id){
-            CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbStone = [];
+        if(!CurrentSelectorWBData[i].accessoryAbStone || !id){
+            CurrentSelectorWBData[i].accessoryAbStone = [];
         }
-        ar = CurrentSelectorWBData[CurrentSelectorWBIndex].accessoryAbStone;
+        ar = CurrentSelectorWBData[i].accessoryAbStone;
         if(do_wb){ ar.push(id); }
         // cancel.click(()=>{
         //     item.remove();
@@ -570,9 +579,7 @@ function onAbStoneAdd(id, node, abs_name=null, do_wb=true){
     }
     cancel.click(()=>{
         item.remove();
-        console.log(ar, i);
         ar.splice(ar.indexOf(id),1);
-        console.log(ar, i);
         if(CurrentSelectorWBData == EquipmentPresetData){
             saveEquipPreset();
         }
@@ -631,12 +638,16 @@ function onSkillAdd(id, node){
         let name = Inventory.createDecoratedSkillNameNode(id);
         label.append(name)
     }
+    EditorPartyData[CurrentSelectorWBIndex].addSkill = id;
     label.addClass('item-label');
     $(node).append(label);
 }
 
 function onFieldSkillAdd(id, node){
-    if(id == 0){ return; }
+    if(!id){
+        id = Game_Inventory.ITEM_REMOVE_ID;
+        return;
+    }
     node = $(node)[0];
     node.innerHTML = '';
     if(id == Game_Inventory.ITEM_REMOVE_ID){
@@ -649,6 +660,7 @@ function onFieldSkillAdd(id, node){
     let label = $(document.createElement('p')).text(name);
     // label.addClass('item-label');
     $(node).append(label);
+    EditorFieldSkillData[todigits(node.id)] = id < 0 ? null : id;
 }
 
 function onFormationAdd(id, node){
@@ -664,11 +676,12 @@ function onFormationAdd(id, node){
     let label = $(document.createElement('p')).text(name);
     label.addClass('item-label');
     $(node).append(label);
+    EditorFormationData = id;
 }
 
 function clearSlot(idx){
     let rmid = Game_Inventory.ITEM_REMOVE_ID;
-    CurrentSelectorWBData = partyData;
+    CurrentSelectorWBData = EditorPartyData;
     CurrentSelectorWBIndex = idx;
     onCharacterAdd(rmid, $(`#character-${idx}`));
     onWeaponAdd(rmid, $(`#weapon-${idx}`));
@@ -684,7 +697,6 @@ function clearSlot(idx){
     for(let node of $(`#abstone-armor-${idx}`).children()){
         if(node.tagName.toLowerCase() != 'p'){ continue; }
         if(node.id.length < 1){
-            console.log(node.children[0]);
             node.children[0].click();
         }
     }
@@ -801,7 +813,7 @@ function onPartyGroupAction(party){
 }
 
 function applyFromGameParty(){
-    CurrentSelectorWBData = partyData;
+    CurrentSelectorWBData = EditorPartyData;
     for(let slot of CurrentPartyData.UCharacterSlots){
         let idx = slot.SlotNo;
         CurrentSelectorWBIndex = idx;
@@ -846,6 +858,7 @@ function applyFromGameParty(){
                     }
                 }
                 skname = equipped.join(',');
+                EditorPartyData[idx].weaponAbStone = [];
             }
             else{
                 // AbStone data is missing, need to get from UWeapons/Armors/Accessories
@@ -913,6 +926,163 @@ function applyFromGameParty(){
     onFormationAdd(CurrentPartyData.MFormationId, $('#formation'));
     PartyGroupActionModal.hide();
 }
+
+function checkEditorPartyValid(){
+    let used_characters = [];
+    for(let i=1;i<=3;++i){
+        let pid = EditorFieldSkillData[i];
+        if(!pid){ continue; }
+        let pt = DataManager.dataFieldSkills.find((d)=>d.MFieldSkillId==pid);
+        if(!pt){
+            return ['PTNotOwned', AssetsManager.FieldSkillData[pid].Name];    
+        }
+    }
+    let formation = DataManager.dataFormations.find((f)=>f.MFormationId==EditorFormationData);
+    if(!formation){
+        return ['FormationNotOwned', AssetsManager.FormationData[EditorFormationData].Name];
+    }
+    for(let i in EditorPartyData){
+        let dat = EditorPartyData[i];
+        if(!dat.character){ continue; }
+        let chdat = AssetsManager.CharacterData[dat.character];
+        let bchid = chdat.MCharacterBaseId;
+        if(used_characters.includes(bchid)){
+            return ['DuplicatedCharacter', chdat.MCharacterBase.Name];
+        }
+        else{
+            used_characters.push(bchid);
+        }
+        let uch = DataManager.dataCharacters.find((c)=>c.MCharacterId == dat.character);
+        if(!uch){
+            let chname = `${chdat.Name} ${chdat.MCharacterBase.Name}`;
+            return ['CharacterNotOwned', chname];
+        }
+        else{
+            ApplyPartyPromises.push(sendMTG({
+                url: `/api/UCharacters/EquipableSkills/${uch.Id}`,
+                method: 'GET',
+                success: (res) => {
+                    for(let sk of res['r']){
+                        if(!sk.Learned){ continue; }
+                        EquipableSkillMap[`${uch.Id}_${sk.MSkillId}`] = sk.Id;
+                    }
+                },
+                error: (res)=>{ console.error(res) },
+            }));
+        }
+    }
+    if(!used_characters.length){
+        return ['NoCharacterInParty', ''];
+    }
+    return null;
+}
+
+function preApplyToGameParty(){
+    let cont = window.confirm(Vocab['ConfirmOverwrite']);
+    if(!cont){ return; }
+    ApplyPartyRequestQueue = [];
+    ApplyPartyPromises = [];
+    let invalid = checkEditorPartyValid();
+    if(invalid){
+        alert(`${Vocab['InvalidParty']}: ${Vocab[invalid[0]]} ${invalid[1]}`);
+        return;
+    }
+    ApplyPartyPromises.concat(fetchInventory());
+    Promise.all(ApplyPartyPromises).then(()=>{
+        PartyGroupActionModal.hide();
+        showLoadingOverlay();
+        applyToGameParty();
+    }).catch((e) => {
+        console.error("Error while building game party");
+        console.error(e);
+        setTimeout(() => {
+            alert(Vocab['BuildPartyError'], e);
+            hideLoadingOverlay();
+        }, 500);
+    });
+}
+
+function applyToGameParty(){
+    let excludes = {
+        [ITYPE_WEAPON]: [],
+        [ITYPE_ARMOR]: [],
+        [ITYPE_ACCESSORY]: [],
+        [ITYPE_ABSTONE]: [],
+        [ITYPE_CHARACTER]: [],
+        [ITYPE_FIELD_SKILL]: [],
+        ultimate_weapon: 0,
+    };
+    for(let slot of CurrentPartyData.UCharacterSlots){
+        let idx = slot.SlotNo;
+        let payloads = [
+            'uCharacterId=null',
+            'uWeaponId=null',
+            'uArmorId=null',
+            'uAccessoryId=null',
+            'uSkillId=null'
+        ];
+        if(EditorPartyData[idx].character > 0){
+            let uchid   = DataManager.dataCharacters.find((c)=>c.MCharacterId == EditorPartyData[idx].character).Id;
+            payloads[0] = `uCharacterId=${uchid}`;
+            if((EditorPartyData[idx].addSkill || 0) > 0){
+                let uskillid = EquipableSkillMap[`${uchid}_${EditorPartyData[idx].addSkill}`];
+                payloads[4] = `uSkillId=${uskillid}`;
+            }
+            let equips = searchMatchedEquipments(EditorPartyData[idx], excludes);
+            if(equips.weapon){
+                payloads[1] = `uWeaponId=${equips.weapon}`;
+            }
+            if(equips.armor){
+                payloads[2] = `uArmorId=${equips.armor}`;
+            }
+            if(equips.accessory){
+                payloads[3] = `uAccessoryId=${equips.accessory}`;
+            }
+        }
+        ApplyPartyRequestQueue.push({
+            url: `/api/UParties/${CurrentPartyData.Id}/CharacterSlots/${slot.Id}?${payloads.join('&')}`,
+            method: 'POST',
+            success: (res) => {
+                console.log(res);
+            },
+            error: (res)=>{ console.error(res) },
+        });
+    }
+    applyChangeFieldSkills();
+    applyChangeFormation();
+    for(let i in ApplyPartyRequestQueue){
+        setTimeout(() => {
+            ApplyPartyPromises.push(sendMTG(ApplyPartyRequestQueue[i]));
+        }, 500*i);
+    }
+    setTimeout(()=>{
+        Promise.all(ApplyPartyPromises).then(()=>{
+            sendMTG({
+                url: `/api/UParties/GetUPartiesFromUPartyId/${CurrentPartyData.Id}`,
+                method: 'GET',
+                success: (res) => {
+                    let group_idx = res.r.GroupNo;
+                    GroupData[group_idx] = res.r.UParties;
+                    onPartyGroupChange(group_idx);
+                    CurrentPartyData = res.r.UParties.find((p)=>p.Id == CurrentPartyData.Id);
+                    applyFromGameParty();
+                    alert(Vocab['BuildPartyDone']);
+                    hideLoadingOverlay();
+                },
+                error: (res)=>{ console.error(res) },
+            });
+        }).catch((e) => {
+            console.error("Error while loading game party");
+            console.error(e);
+            setTimeout(() => {
+                alert(Vocab['BuildPartyError'], e);
+                hideLoadingOverlay();
+            }, 500);
+        });
+    }, 500*(ApplyPartyRequestQueue.length+1));
+}
+
+
 
 function setup(){
     if(!DataManager.isReady() || !AssetsManager.isReady()){
@@ -1122,7 +1292,7 @@ function insertNewEquipmentPreset(data){
 
 function applyPreset(slot_id){
     let preset = EquipmentPresetData[currentPresetId];
-    CurrentSelectorWBData = partyData;
+    CurrentSelectorWBData = EditorPartyData;
     CurrentSelectorWBIndex = slot_id;
     if(preset.weapon > 0){
         onWeaponAdd(preset.weapon, $(`#weapon-${slot_id}`), preset.weaponAbility, preset.weaponAbilityName);
@@ -1301,6 +1471,303 @@ function isItemLocked(item){
         }
     }
     return false;
+}
+
+function isAbstoneAbilityMatched(skill_id, abstone){
+    if(skill_id < 0){ return false; }
+    if(!abstone){ return false; }
+    if(skill_id > 1){
+        if(!AssetsManager.LevelSkillData.hasOwnProperty(abstone.MLevelUpSkillGroupId)){
+            return false;
+        }
+        let b = AssetsManager.LevelSkillData[abstone.MLevelUpSkillGroupId].find((s)=>{
+            if(!s){ return false; }
+            return s.MSkillId == skill_id;
+        });
+        return !!b;
+    }
+    else{
+        return parseInt(skill_id*1000) == abstone.MAbilityStoneId;
+    }
+}
+
+function isEquipAbstoneMatched(equipped, desired){
+    if(!equipped){ return false; }
+    if(!desired){ return true; }
+    for(let sid of desired){
+        if(!sid){
+            continue;
+        }
+        let a = equipped.find((e)=>{
+            return isAbstoneAbilityMatched(sid, e);
+        });
+        if(!a){return false; }
+    }
+    return true;
+}
+
+function switchUltimateWeaponAbility(uweapon_id, ability_id){
+    if(!UltimateWeaponData.hasOwnProperty(uweapon_id)){
+        uweapon_id = AssetsManager.UltimateWeaponGroup[uweapon_id].Id;
+    }
+    let wp = UltimateWeaponData[uweapon_id];
+    
+}
+
+function equipAbstones(item, abstones){
+    let itype = null;
+    if(isWeapon(item)){ itype = 'UWeapons'; }
+    if(isArmor(item)){ itype = 'UArmors'; }
+    if(isAccessory(item)){ itype = 'UAccessories'; }
+    let payloads = [];
+    for(let i=0;i<4;++i){ // fixed at 4, ask game dev why
+        let aid = 'null';
+        if(abstones[i]){
+            aid = `${abstones[i].Id}`;
+        }
+        payloads.push(`uAbilityStoneId${i+1}=${aid}`);
+    }
+    ApplyPartyRequestQueue.push({
+        url: `/api/${itype}/${item.Id}/SetAbilityStones?${payloads.join('&')}`,
+        method: 'POST',
+        success: (res) => {
+            console.log(res);
+        },
+        error: (res)=>{ console.error(res) },
+    });
+}
+
+function findAbstoneEquippedItem(type, abstone){
+    if(!abstone.IsEquipped){ return null; }
+    let dataPointer = null;
+    if(type == ITYPE_WEAPON){
+        dataPointer = DataManager.dataWeapons;
+    }
+    else if(type == ITYPE_ARMOR){
+        dataPointer = DataManager.dataArmors;
+    }
+    else if(type == ITYPE_ACCESSORY){
+        dataPointer = DataManager.dataAccessories;
+    }
+    return dataPointer.find((e)=>{
+        if(!e.AbilityStoneSlots){ return false;}
+        return !!e.AbilityStoneSlots.find((a)=>a.Id == abstone.Id);
+    });
+}
+
+function findBestEquipmentMatch(type, id, ability_id, abstones, excludes){
+    let dataPointer = null;
+    let IdName = '';
+    let eqm_pref  = parseInt(DataManager.getSetting('EquipmentMethod'));
+    let eqjm_pref = parseInt(DataManager.getSetting('EquipmentJewelMethod'));
+    if(type == ITYPE_WEAPON){
+        dataPointer = DataManager.dataWeapons;
+        IdName = 'MWeaponId';
+    }
+    else if(type == ITYPE_ARMOR){
+        dataPointer = DataManager.dataArmors;
+        IdName = 'MArmorId';
+    }
+    else if(type == ITYPE_ACCESSORY){
+        dataPointer = DataManager.dataAccessories;
+        IdName = 'MAccessoryId';
+    }
+    ability_id = ability_id || 0;
+    // find perfect match
+    let ret = dataPointer.find((item)=>{
+        return item[IdName] == id &&
+            !excludes[type].includes(item.Id) &&
+            (type == ITYPE_WEAPON && ItemManager.isUltimateWeapon(id) ? true : (item.MSkillId || 0) == ability_id) &&
+            !isItemLocked(item) &&
+            isEquipAbstoneMatched(item.AbilityStoneSlots, abstones);
+    });
+    if(ret || eqm_pref == PREF_EQUIP_NONE){ return ret; }
+    const PREF_EQJWL_EMPTY   = [PREF_EQJWL_EMPTY_UNUSE, PREF_EQJWL_EMPTY_USING];
+    const PREF_EQJWL_REPLACE = [PREF_EQJWL_REPLACE_UNUSE, PREF_EQJWL_REPLACE_UNUSE];
+    const PREF_EQJWL_USING   = [PREF_EQJWL_EMPTY_USING, PREF_EQJWL_REPLACE_USING];
+    // find equip with empty abstone slots
+    ret = dataPointer.find((item)=>{
+        return item[IdName] == id &&
+            ((item.SlotCount - (item.AbilityStoneSlots || []).length) == abstones.length) && // empty slots == desired abstone count
+            !excludes[type].includes(item.Id) &&
+            (ItemManager.isUltimateWeapon(id) ? true : (item.MSkillId || 0) == ability_id) &&
+            !isItemLocked(item);
+    });
+    // don't care slots content
+    if(!ret && PREF_EQJWL_REPLACE.includes(eqjm_pref)){
+        ret = dataPointer.find((item)=>{
+            return item[IdName] == id &&
+                !excludes[type].includes(item.Id) &&
+                (ItemManager.isUltimateWeapon(id) ? true : (item.MSkillId || 0) == ability_id) &&
+                !isItemLocked(item);
+        }); 
+    }
+    if(!ret || eqjm_pref == PREF_EQJWL_NONE){ return ret; }
+    let matched_abstones_unused = [];
+    let matched_abstones_using = [];
+    for(let aid of abstones){
+        let abstone = DataManager.dataAbstone.find((a)=>{
+            if(excludes[ITYPE_ABSTONE].includes(a.Id)){ return false; }
+            if(isItemLocked(a)){ return false; }
+            return isAbstoneAbilityMatched(aid, a);
+        });
+        if(abstone){
+            if(abstone.IsEquipped){
+                matched_abstones_using.push(abstone);
+            }
+            else{
+                matched_abstones_unused.push(abstone);
+            }
+        }
+    }
+    for(let i=0;i<ret.SlotCount;++i){
+        let iterator = clone(abstones);
+        let abstones_tochange = [];
+        for(let aid of iterator){
+            if(ret.AbilityStoneSlots[i]){
+                if(PREF_EQJWL_EMPTY.includes(eqjm_pref)){
+                    continue;
+                }
+                if(isAbstoneAbilityMatched(aid, ret.AbilityStoneSlots[i])){
+                    abstones.splice(abstones.indexOf(aid), 1);
+                    continue;
+                }
+            }
+            if(matched_abstones_unused){
+                let a = matched_abstones_unused.find((m)=>isAbstoneAbilityMatched(aid, m));
+                if(a){
+                    matched_abstones_unused.splice(matched_abstones_unused.indexOf(a), 1);
+                    abstones_tochange.push(a);
+                    continue;
+                }
+            }
+            if(matched_abstones_using && PREF_EQJWL_USING.includes(eqjm_pref)){
+                let a = matched_abstones_using.find((m)=>isAbstoneAbilityMatched(aid, m));
+                if(a){
+                    matched_abstones_using.splice(matched_abstones_using.indexOf(a), 1);
+                    let ori_equip = findAbstoneEquippedItem(type, a);
+                    if(!ori_equip){
+                        console.error("Unable to find abstone equipped for", a);
+                        continue;
+                    }
+                    equipAbstones(ori_equip, []);
+                    abstones_tochange.push(a);
+                    continue;
+                }
+            }
+            // probably no more abstones left if runs here
+            // do nothing
+        }
+        if(abstones_tochange){
+            equipAbstones(ret, abstones_tochange);
+        }
+    }
+    return ret;
+}
+
+function searchMatchedEquipments(equipments_data, excludes){
+    let dat = equipments_data;
+    let ret = {
+        weapon: null,
+        armor: null,
+        accessory: null,
+    }
+    if(!dat.character || dat.character < 1){ return ret; }
+    if(dat.weapon){
+        let wp = findBestEquipmentMatch(
+            ITYPE_WEAPON,
+            dat.weapon, dat.weaponAbility,
+            dat.weaponAbStone,
+            excludes
+        );
+        if(!wp){
+            status = 'NoMatchedWeapon';
+        }
+        else{
+            excludes[ITYPE_WEAPON].push(wp.Id);
+            for(let a of wp.AbilityStoneSlots){
+                excludes[ITYPE_ABSTONE].push(a.Id);
+            }
+            ret.weapon = wp.Id;
+        }
+    }
+    if(dat.armor){
+        let ar = findBestEquipmentMatch(
+            ITYPE_ARMOR,
+            dat.armor, dat.armorAbility,
+            dat.armorAbStone,
+            excludes
+        );
+        if(!ar){
+            status = 'NoMatchedArmor';
+        }
+        else{
+            excludes[ITYPE_ARMOR].push(ar.Id);
+            for(let a of ar.AbilityStoneSlots){
+                excludes[ITYPE_ABSTONE].push(a.Id);
+            }
+            ret.armor = ar.Id;
+        }
+    }
+    if(dat.accessory){
+        let ac = findBestEquipmentMatch(
+            ITYPE_ACCESSORY,
+            dat.accessory, dat.accessoryAbility,
+            dat.accessoryAbStone,
+            excludes
+        );
+        if(!ac){
+            status = 'NoMatchedAccessory';
+        }
+        else{
+            excludes[ITYPE_ACCESSORY].push(ac.Id);
+            for(let a of ac.AbilityStoneSlots){
+                excludes[ITYPE_ABSTONE].push(a.Id);
+            }
+            ret.accessory = ac.Id;
+        }
+    }
+    return ret;
+}
+
+let payloads = [];
+function applyChangeFieldSkills(){
+    for(let i=1;i<=3;++i){
+        let upid = null;
+        if(EditorFieldSkillData[i]){
+            upid = DataManager.dataFieldSkills.find((d)=>d.MFieldSkillId==EditorFieldSkillData[i]).Id;
+        }
+        payloads.push(`uFieldSkillId${i}=${upid}`);
+    }
+    ApplyPartyRequestQueue.push({
+        url: `/api/UParties/CharacterSlots/changeFieldSkills/${CurrentPartyData.Id}?${payloads.join('&')}`,
+        method: 'POST',
+        success: (res) => {
+            console.log(res);
+        },
+        error: (res)=>{ console.error(res) },
+    });
+}
+
+function applyChangeFormation(){
+    ApplyPartyRequestQueue.push({
+        url: `/api/UParties/setFormation/${EditorFormationData}?uPartyId=${CurrentPartyData.Id}`,
+        method: 'POST',
+        success: (res) => {
+            console.log(res);
+        },
+        error: (res)=>{ console.error(res) },
+    });
+}
+
+function showLoadingOverlay(){
+    $("#loading-overlay").modal('show');
+    window.onbeforeunload = (_)=>{return 'leave page?';};
+}
+  
+function hideLoadingOverlay(){
+    $("#loading-overlay").modal('hide');
+    window.onbeforeunload = null;
 }
 
 (function(){

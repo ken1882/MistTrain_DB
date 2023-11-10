@@ -312,6 +312,22 @@ function fetchInventory(){
                 DataManager.dataAbstone = res.r;
             },
             error: (res)=>{console.error(res)},
+        }),
+        sendMTG({
+            url: '/api/UFieldSkills',
+            method: 'GET',
+            success: (res) => {
+                DataManager.dataFieldSkills = res.r;
+            },
+            error: (res)=>{console.error(res)}
+        }),
+        sendMTG({
+            url: '/api/UFormations',
+            method: 'GET',
+            success: (res) => {
+                DataManager.dataFormations = res.r;
+            },
+            error: (res)=>{console.error(res)}
         })
     ];
 }

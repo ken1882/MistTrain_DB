@@ -232,7 +232,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <button type="button" class="btn btn-secondary btn-major" data-bs-dismiss="modal" label="l-Cancel"></button>
-          <button type="button" class="btn btn-primary btn-major" label="l-SavePartyToGame" onclick="alert(Vocab['Unimplemented'])"></button>
+          <button type="button" class="btn btn-primary btn-major" label="l-SavePartyToGame" onclick="preApplyToGameParty()"></button>
           <button type="button" class="btn btn-primary btn-major" label="l-LoadPartyFromGame" onclick="applyFromGameParty()"></button>
           <div>
             <div class="spinner-border center" id="loading-indicator-2"></div>
@@ -259,4 +259,18 @@
     </div>
   </div>
 
+  <div class="modal fade" id="loading-overlay" tabindex="-1" role="dialog" 
+      aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" label="l-LoadText">_</h5>
+          </div>
+          <div class="modal-body" label="l-BuildPartyHint">
+            _
+          </div>
+        </div>
+      </div>
+    </div>
 </html>

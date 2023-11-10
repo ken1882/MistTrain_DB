@@ -300,7 +300,9 @@ const ITYPE_SKILL       = 31;
   }
   /*-------------------------------------------------------------------------*/
   static get buildEquipmentPerf(){
-    return this.getSetting('EquipmentMethod') || 0;
+    let ret = this.getSetting('EquipmentMethod');
+    if(ret == null){ ret = 1; } // default
+    return ret;
   }
   static set buildEquipmentPerf(val){
     this.changeSetting('EquipmentMethod', val);
@@ -308,7 +310,7 @@ const ITYPE_SKILL       = 31;
   /*-------------------------------------------------------------------------*/
   static get buildAbstonePerf(){
     let ret = this.getSetting('EquipmentJewelMethod');
-    if(ret == null){ ret = 1; }
+    if(ret == null){ ret = 4; } // default
     return ret;
   }
   static set buildAbstonePerf(val){
