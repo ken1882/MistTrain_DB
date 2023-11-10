@@ -25,6 +25,9 @@ let characterLevel      = [50, 50, 50, 50, 50, 50];
 let EditorPartyData = {
     1: {}, 2: {}, 3: {}, 4: {}, 5: {},
 };
+let EditorSPData = {
+    1: {}, 2: {}, 3: {}, 4: {}, 5: {},
+};
 let EditorFieldSkillData = [null, null, null, null];
 let EditorFormationData  = null;
 let UltimateWeaponData = {};
@@ -945,6 +948,12 @@ function checkEditorPartyValid(){
         let dat = EditorPartyData[i];
         if(!dat.character){ continue; }
         let chdat = AssetsManager.CharacterData[dat.character];
+        if(dat.weapon){
+            let wp = AssetsManager.WeaponData[dat.weapon];
+            if(chdat.MCharacterBase.WeaponEquipType != wp.WeaponEquipType){
+                return ['InvalidWeapon', `${chdat.MCharacterBase.Name} X ${wp.Name}`];
+            }
+        }
         let bchid = chdat.MCharacterBaseId;
         if(used_characters.includes(bchid)){
             return ['DuplicatedCharacter', chdat.MCharacterBase.Name];
@@ -1052,25 +1061,30 @@ function applyToGameParty(){
     applyChangeFormation();
     for(let i in ApplyPartyRequestQueue){
         setTimeout(() => {
+            console.log(ApplyPartyRequestQueue[i].url);
             ApplyPartyPromises.push(sendMTG(ApplyPartyRequestQueue[i]));
         }, 500*i);
     }
     setTimeout(()=>{
         Promise.all(ApplyPartyPromises).then(()=>{
-            sendMTG({
-                url: `/api/UParties/GetUPartiesFromUPartyId/${CurrentPartyData.Id}`,
-                method: 'GET',
-                success: (res) => {
-                    let group_idx = res.r.GroupNo;
-                    GroupData[group_idx] = res.r.UParties;
-                    onPartyGroupChange(group_idx);
-                    CurrentPartyData = res.r.UParties.find((p)=>p.Id == CurrentPartyData.Id);
-                    applyFromGameParty();
-                    alert(Vocab['BuildPartyDone']);
-                    hideLoadingOverlay();
-                },
-                error: (res)=>{ console.error(res) },
-            });
+            setTimeout(() => {
+                Promise.all(fetchInventory()).then(()=>{
+                    sendMTG({
+                        url: `/api/UParties/GetUPartiesFromUPartyId/${CurrentPartyData.Id}`,
+                        method: 'GET',
+                        success: (res) => {
+                            let group_idx = res.r.GroupNo;
+                            GroupData[group_idx] = res.r.UParties;
+                            onPartyGroupChange(group_idx);
+                            CurrentPartyData = res.r.UParties.find((p)=>p.Id == CurrentPartyData.Id);
+                            applyFromGameParty();
+                            alert(Vocab['BuildPartyDone']);
+                            hideLoadingOverlay();
+                        },
+                        error: (res)=>{ console.error(res) },
+                    });
+                });
+            }, 500);
         }).catch((e) => {
             console.error("Error while loading game party");
             console.error(e);
@@ -1131,12 +1145,24 @@ function setupSettings(){
     }
 }
 
+function importServerPresets(){
+    let cont = window.confirm(Vocab['ImportPresetWarning']);
+    if(!cont){ return; }
+    $.ajax({
+        url: '/static/json/default-equip-presets.json',
+        success: (res) => {
+            DataManager.changeSetting('EquipmentPresetData', JSON.stringify(res));
+            setupEquipPreset();
+        },
+        error: handleAjaxError,
+    });
+}
+
 function setupEquipPreset(){
     let tbody = $('#equipment-preset-table-body');
     tbody.html('');
     EquipmentPresetCnt = 0;
     let data = DataManager.getSetting('EquipmentPresetData');
-    if(!data){ return; }
     data = JSON.parse(data);
     for(let i in data){
         insertNewEquipmentPreset(data[i]);
@@ -1339,20 +1365,8 @@ function applyPreset(slot_id){
     EquipmentPresetModal.hide();
 }
 
-function exportPreset(){
-    alert(Vocab['ExportPresetDesc']);
-    let tab = window.open();
-    tab.document.open();
-    tab.document.write('<pre>'+ JSON.stringify(EquipmentPresetData) + '</pre>');
-}
-
-function importPreset(){
-    alert(Vocab['ImportPresetWarning']);
-    let raw = prompt(Vocab['ImportPresetDesc']);
-    if(!raw){ return; }
-    let dat = {};
+function validateImportData(data){
     try{
-        dat = JSON.parse(raw);
         let props_vaildator = {
             'id': [Number, String],
             'name': [Number, String],
@@ -1369,61 +1383,138 @@ function importPreset(){
             'weaponAbStone': [Array, [Number, String]],
             'armorAbStone': [Array, [Number, String]],
             'accessoryAbStone': [Array, [Number, String]],
+            'addSkill': [Number, String],
         };
-        for(let i in dat){
-            let d = dat[i];
-            for(let p in d){
-                if(!props_vaildator.hasOwnProperty(p)){
-                    console.log("Invalid property: "+p)
-                    alert(Vocab['InvalidData']);
-                    return;
-                }
+        for(let p in data){
+            if(!props_vaildator.hasOwnProperty(p)){
+                console.log("Invalid property: "+p)
+                return false;
             }
-            for(let p in props_vaildator){
-                if(!d.hasOwnProperty(p)){
-                    console.log("Invalid property: "+p)
-                    alert(Vocab['InvalidData']);
-                    return;
-                }
-                let flag_ok = false;
-                for(let cls of props_vaildator[p]){
-                    if(cls === Array && d[p]){
-                        if(!isClassOf(d[p], cls)){
-                            break;
-                        }
-                        for(let e of d[p]){
-                            for(let cls2 of props_vaildator[p][1]){
-                                if(e !== null && !isClassOf(e, cls2)){
-                                    console.log(`Invalid class of property element: ${p} of ${e}`)
-                                    alert(Vocab['InvalidData']);
-                                    return;
-                                }
+        }
+        for(let p in props_vaildator){
+            let flag_ok = false;
+            for(let cls of props_vaildator[p]){
+                if(cls === Array && data[p]){
+                    if(!isClassOf(data[p], cls)){
+                        break;
+                    }
+                    for(let e of data[p]){
+                        for(let cls2 of props_vaildator[p][1]){
+                            if(e && isClassOf(e, cls2)){
+                                flag_ok = true;
+                                break;
                             }
                         }
-                        flag_ok = true;
-                        break;
                     }
-                    else if(d[p] == null || isClassOf(d[p], cls)){
-                        flag_ok = true;
-                        break;
+                    if(!flag_ok){
+                        console.log(`Invalid class of property element: ${p} of ${data[p]}`)
+                        return false;
                     }
+                    break;
                 }
-                if(!flag_ok){
-                    console.log(`Invalid class of property: ${p}`)
-                    alert(Vocab['InvalidData']);
-                    return;
+                else if(data[p] == null || isClassOf(data[p], cls)){
+                    flag_ok = true;
+                    break;
                 }
+            }
+            if(!flag_ok){
+                console.log(`Invalid class of property: ${p}`)
+                return false;
             }
         }
     }
     catch(error){
        console.error(error);
-       alert(Vocab['InvalidData']);
-       return;
+       return false;
+    }
+    return true;
+}
+
+function exportPreset(){
+    alert(Vocab['ExportPresetDesc']);
+    let tab = window.open();
+    tab.document.open();
+    tab.document.write('<pre>'+ JSON.stringify(EquipmentPresetData) + '</pre>');
+}
+
+function importPreset(){
+    alert(Vocab['ImportPresetWarning']);
+    let raw = prompt(Vocab['ImportPresetDesc']);
+    if(!raw){ return; }
+    let dat = {};
+    dat = JSON.parse(raw);
+    for(let i in dat){
+        validateImportData(dat[i]);
     }
     EquipmentPresetData = dat;
     saveEquipPreset();
     setupEquipPreset();
+}
+
+function exportParty(){
+    alert(Vocab['ExportPresetDesc']);
+    let tab = window.open();
+    let dat = {
+        'party': EditorPartyData,
+        'pt': EditorFieldSkillData,
+        'formation': EditorFormationData,
+        'sp': EditorSPData
+    }
+    tab.document.open();
+    tab.document.write('<pre>'+ JSON.stringify(dat) + '</pre>');
+}
+
+function importParty(){
+    let raw = prompt(Vocab['ImportPresetDesc']);
+    if(!raw){ return; }
+    let data = {};
+    data = JSON.parse(raw);
+    let pdat = data.party;
+    for(let i in pdat){
+        validateImportData(pdat[i]);
+    }
+    for(let i=0;i<4;++i){
+        if(i && data.pt[i]){
+            onFieldSkillAdd(data.pt[i], $(`#fieldskill-${i}`));
+        }
+    }
+    if(data.formation){
+        onFormationAdd(data.formation, $('#formation'));
+    }
+    for(let i=1;i<=5;++i){
+        clearSlot(i);
+        let dat = pdat[i];
+        if((dat.character || 0) > 0){
+            onCharacterAdd(dat.character, $(`#character-${i}`));
+        }
+        if(dat.weapon && dat.weapon > 0){
+            onWeaponAdd(dat.weapon, $(`#weapon-${i}`), dat.weaponAbility, dat.weaponAbilityName);
+        }
+        if(dat.armor && dat.armor > 0){
+            onArmorAdd(dat.armor, $(`#armor-${i}`), dat.armorAbility, dat.armorAbilityName);
+        }
+        if(dat.accessory && dat.accessory > 0){
+            onAccessoryAdd(dat.accessory, $(`#accessory-${i}`), dat.accessoryAbility, dat.accessoryAbilityName);
+        }
+        if(dat.weaponAbStone){
+            for(let aid of dat.weaponAbStone){
+                onAbStoneAdd(aid, $(`#abstone-weapon-${i}`));
+            }
+        }
+        if(dat.armorAbStone){
+            for(let aid of dat.armorAbStone){
+                onAbStoneAdd(aid, $(`#abstone-armor-${i}`));
+            }
+        }
+        if(dat.accessoryAbStone){
+            for(let aid of dat.accessoryAbStone){
+                onAbStoneAdd(aid, $(`#abstone-accessory-${i}`));
+            }
+        }
+        if(dat.addSkill && dat.addSkill > 0){
+            onSkillAdd(dat.addSkill, $(`#add-skill-${i}`))
+        }
+    }
 }
 
 function isArmor(item){ return item.hasOwnProperty('MArmorId'); }
@@ -1583,7 +1674,7 @@ function findBestEquipmentMatch(type, id, ability_id, abstones, excludes){
     });
     if(ret || eqm_pref == PREF_EQUIP_NONE){ return ret; }
     const PREF_EQJWL_EMPTY   = [PREF_EQJWL_EMPTY_UNUSE, PREF_EQJWL_EMPTY_USING];
-    const PREF_EQJWL_REPLACE = [PREF_EQJWL_REPLACE_UNUSE, PREF_EQJWL_REPLACE_UNUSE];
+    const PREF_EQJWL_REPLACE = [PREF_EQJWL_REPLACE_UNUSE, PREF_EQJWL_REPLACE_USING];
     const PREF_EQJWL_USING   = [PREF_EQJWL_EMPTY_USING, PREF_EQJWL_REPLACE_USING];
     // find equip with empty abstone slots
     ret = dataPointer.find((item)=>{
