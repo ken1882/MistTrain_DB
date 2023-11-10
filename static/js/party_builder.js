@@ -1168,6 +1168,7 @@ function setupEquipPreset(){
     tbody.html('');
     EquipmentPresetCnt = 0;
     let data = DataManager.getSetting('EquipmentPresetData');
+    if(!data){ return; }
     data = JSON.parse(data);
     for(let i in data){
         insertNewEquipmentPreset(data[i]);
