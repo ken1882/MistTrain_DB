@@ -176,7 +176,7 @@ function appendCharacterList(){
     }
     $(cells[0]).attr('id', `list-avatar-${id}`);
     $(cells[1]).text(chname);
-    let wtype = data.MCharacterBase.WeaponEquipType;
+    let wtype = data.WeaponEquipType;
     $(cells[2]).text(Vocab.WeaponTypeList[wtype]);
     for(let i=3;i<cells.length;++i){
       let attr = head_attrs[i-2];

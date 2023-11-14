@@ -239,7 +239,7 @@ function fillCharacterBaseInfo(){
   if(!chname){
     chname = `${data.Name} ${data.MCharacterBase.Name}`;
   }
-  let wtype = data.MCharacterBase.WeaponEquipType;
+  let wtype = data.WeaponEquipType;
   $("#character-title").text(chname);
   $("#character-rarity").text(Vocab.RarityList[data.CharacterRarity]);
   $("#character-type").text(Vocab.CharacterTypeList[data.CharacterType]);

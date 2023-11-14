@@ -320,7 +320,7 @@ class Game_Inventory{
                     case ITYPE_CHARACTER:
                         img = AssetsManager.createCharacterAvatarNode(id);
                         name = `${instance.Name} ${instance.MCharacterBase.Name}`;
-                        desc += `${Vocab.WeaponTypeList[instance.MCharacterBase.WeaponEquipType]} / `;
+                        desc += `${Vocab.WeaponTypeList[instance.WeaponEquipType]} / `;
                         desc += `${Vocab.CharacterTypeList[instance.CharacterType]}`;
                         break;
                     case ITYPE_WEAPON:
@@ -624,7 +624,7 @@ class Game_Inventory{
             let id = $(r).attr('id');
             if(id && id.includes('character')){
                 id = todigits(id);
-                if(enabled[AssetsManager.CharacterData[id].MCharacterBase.WeaponEquipType]){
+                if(enabled[AssetsManager.CharacterData[id].WeaponEquipType]){
                     $(r).show();
                 }
                 else{

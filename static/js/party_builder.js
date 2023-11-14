@@ -95,7 +95,7 @@ function attachInventorySelector(node, type, wb_data=null, wb_idx=null){
         let filter = {}
         if(wb_data && (wb_data[wb_idx].character || 0) > 0){
             filter = {
-                'WeaponEquipType': AssetsManager.CharacterData[wb_data[wb_idx].character].MCharacterBase.WeaponEquipType,
+                'WeaponEquipType': AssetsManager.CharacterData[wb_data[wb_idx].character].WeaponEquipType,
             }
         }
         Inventory.applyFilter(filter);
@@ -953,7 +953,7 @@ function checkEditorPartyValid(){
         let chdat = AssetsManager.CharacterData[dat.character];
         if(dat.weapon){
             let wp = AssetsManager.WeaponData[dat.weapon];
-            if(chdat.MCharacterBase.WeaponEquipType != wp.WeaponEquipType){
+            if(chdat.WeaponEquipType != wp.WeaponEquipType){
                 return ['InvalidWeapon', `${chdat.MCharacterBase.Name} X ${wp.Name}`];
             }
         }
