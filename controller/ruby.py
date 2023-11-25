@@ -41,9 +41,9 @@ def rubifiy_japanese(text, fname='', depth=0):
     print("An error occurred during rubifiy phrase:", err, 'original text:', text, sep='\n')
     if fname:
       print('File:', fname)
-    if depth < 3:
-      print('Retry after a second, depth=', depth+1, sep='')
-      sleep(1)
+    if depth < 5:
+      print('Retry after 3 seconds, depth=', depth+1, sep='')
+      sleep(3)
       return rubifiy_japanese(text, fname, depth+1)
     else:
       print("Payload:", urllib.parse.quote_plus(text), sep='\n')
