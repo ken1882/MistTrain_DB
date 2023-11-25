@@ -65,6 +65,7 @@ def rubifiy_file(file, verbose=False):
     text = text.replace('\\n', LinewrapSymbol)
     text = text.replace('\u3000', '')
     text = text.replace('\r',  LinewrapSymbol)
+    text = text.replace('"',  "'")
     ruby = rubifiy_japanese(text, file)
     correction = (
       (
