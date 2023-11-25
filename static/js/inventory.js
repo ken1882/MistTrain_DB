@@ -124,6 +124,7 @@ class Game_Inventory{
             return table;
         };
         handlers[Vocab['Bookmark']] = handler;
+        handlers['UR'] = handler;
         handlers['SS'] = handler;
         handlers['S'] = handler;
         handlers['A'] = handler;
@@ -183,7 +184,7 @@ class Game_Inventory{
     }
 
     setupFieldSkillTab(){
-        let categories = [Vocab['Bookmark'], 'SS', 'S', 'A'];
+        let categories = [Vocab['Bookmark'], 'UR', 'SS', 'S', 'A'];
         let body = this.createTabBody('fieldskill', categories, this.getCommonHandlers());
         this.tabs[ITYPE_FIELD_SKILL] = body;
     }
