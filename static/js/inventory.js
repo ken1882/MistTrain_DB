@@ -297,6 +297,9 @@ class Game_Inventory{
             case 'SS':
                 rarity = 4;
                 break;
+            case 'UR':
+                rarity = 5;
+                break;
             case Vocab['Bookmark']:
                 rarity = 0;
                 break;
@@ -400,6 +403,9 @@ class Game_Inventory{
                 break;
             case 'SS':
                 rarity = 4;
+                break;
+            case 'UR':
+                rarity = 5;
                 break;
             case Vocab['Bookmark']:
                 rarity = 0;
