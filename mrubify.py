@@ -110,3 +110,5 @@ def patch():
 if __name__ == '__main__':
     main()
     patch()
+    print("Errored files:")
+    print(ruby.ErrorFiles)

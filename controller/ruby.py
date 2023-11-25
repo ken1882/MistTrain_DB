@@ -48,6 +48,7 @@ def rubifiy_japanese(text, fname='', depth=0):
     else:
       print("Payload:", urllib.parse.quote_plus(text), sep='\n')
       print("Response:", res.content, sep='\n')
+      ErrorFiles.add(fname)
   return f"<div>{ret}</div>"
 
 def rubifiy_file(file, verbose=False):
