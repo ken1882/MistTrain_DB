@@ -319,6 +319,7 @@ def change_token(token):
 
 def is_connected():
   global Session
+  return False
   res = get_request('/api/Users/Me')
   if type(res) != dict:
     return False

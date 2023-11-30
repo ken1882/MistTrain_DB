@@ -55,6 +55,7 @@ def discord_oauth():
 
 @app.route('/api/login/pwd', methods=['POST'])
 def dmm_login():
+  return jsonify({'status': 503}),503
   email = request.form.get('email')
   pwd   = request.form.get('password')
   reme  = (not not request.form.get('remember'))
@@ -74,6 +75,7 @@ def dmm_login():
 
 @app.route('/api/login/totp', methods=['POST'])
 def dmm_login_totp():
+  return jsonify({'status': 503}),503
   b64ck = request.form.get('b64ck')
   token = request.form.get('token')
   pin   = request.form.get('pin')
@@ -93,6 +95,7 @@ def dmm_login_totp():
 
 @app.route('/api/login/game', methods=['POST'])
 def mtg_login():
+  return jsonify({'status': 503}),503
   b64ck = request.form.get('b64ck')
   try:
     ret = dmm.login_game(b64ck)
@@ -224,6 +227,7 @@ def get_navbar():
 @app.route('/api/GetNextRace', methods=['GET'])
 @req_derpy_ready
 def get_next_race():
+  return jsonify({'status': 503}),503
   try:
     race = derpy.get_upcoming_race()
     code = 200
@@ -239,6 +243,7 @@ def get_next_race():
 @app.route('/api/GetNextRacePrediction', methods=['GET'])
 @req_derpy_ready
 def get_next_predictions():
+  return jsonify({'status': 503}),503
   try:
     result = derpy.get_next_prediction()
     code = 200
@@ -268,6 +273,7 @@ def get_available_character_scene():
 
 @app.route('/api/SponsorScenes', methods=['POST'])
 def spnosor_scene():
+  return jsonify({'status': 503}),503
   token = request.form.get('token')
   msg = story.dump_sponspred_scene(token)
   if msg == _G.ERROR_LOCKED:
@@ -297,7 +303,7 @@ def decrypt_token():
 
 def setup():
   dm.update_cache()
-  derpy.init()
+  # derpy.init()
   story.init()
   if not _G.FlagUseCloudData:
     return

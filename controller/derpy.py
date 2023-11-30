@@ -21,6 +21,7 @@ IsDerpyInitCalled = False
 def init():
   global IsDerpyReady,IsDerpyInitCalled
   IsDerpyInitCalled = True
+  return
   while not dm.CacheBooted:
     log_warning("[Derpy] Data cache unbooted, waiting for 10 seconds")
     sleep(10)
@@ -72,10 +73,12 @@ def save_database(dat, y, m, upload=True):
   return path
 
 def get_race_odds(id):
+  return []
   res = game.get_request(f"/api/Casino/Race/GetOdds/{id}")
   return json.loads(res['r'])['data']
 
 def get_upcoming_race():
+  return {}
   cache_expired = False
   curt = datetime.now(tz=pytz.timezone('Asia/Tokyo'))
   elapsed = curt - _G.GetCacheTimestamp('LastRaceCacheTime')
@@ -110,6 +113,7 @@ def get_upcoming_race():
   return data
 
 def get_recent_races():
+  return []
   res = game.get_request('/api/Casino/Race/GetPastSchedules')  
   return res['r']['list']
 
@@ -158,6 +162,7 @@ def update_race_history_db():
     #log_debug("Race history needn't update")
 
 def sweep_race_replays(begin=0,end=0x7fffffff):
+  return
   error = 0
   for i in range(begin,end):
     if error > 3:
@@ -175,6 +180,7 @@ def sweep_race_replays(begin=0,end=0x7fffffff):
       error += 1
   
 def get_race_replay(id):
+  return []
   res = game.get_request(f"/api/Casino/Race/GetReplay/{id}")
   return json.loads(res['r'])
 
