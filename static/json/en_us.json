@@ -119,6 +119,7 @@
   "CharacterVoice": "Voices",
   "CharacterFigure": "Figure",
   "Animation": "Animation",
+  "Skin": "Skin",
   "LoopAnimation": "Loop",
   "ZoomIn": "Zoom in",
   "ZoomOut": "Zoom out",
@@ -385,6 +386,12 @@
     "105": "Weapon Ability Stone",
     "205": "Armor Ability Stone",
     "305": "Accessory Ability Stone"
+  },
+  "LoadSpineFiles": "Load spine files",
+  "SpineErrors": {
+    "MissingFile": "Missing file, please make sure all three png atlas skel are selected",
+    "TextureNameUnmatch": "Texture image name unmatched with atlas structure provided name",
+    "UnsupportedVersion": "Unsupported version"
   },
   "__comment": "Keep complicated translations at bottom",
   "CharacterName": {

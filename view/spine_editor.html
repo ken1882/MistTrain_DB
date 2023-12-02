@@ -84,12 +84,14 @@
     </div>
     <br><br>
     <hr>
+    <div class="center">
+      <label for="inp-spfiles" label="l-LoadSpineFiles"></label>
+      <input type="file" id="inp-spfiles" accept=".png,.atlas,.skel" multiple>
+      <button onclick="loadSpineFiles()">OK</button>
+    </div>
+    <hr>
     <div class="spinner-border center" id="loading-indicator">
       <span class="sr-only"></span>
-    </div>
-    <div>
-      <label for="fileInput">Select Spine Files:</label>
-      <input type="file" id="fileInput" accept=".png,.atlas,.skel" multiple>
     </div>
     <div class="row justify-content-center" style="text-align: center;">
       <div class="col-lg-5 col-md-5 col-sm-10">
@@ -104,6 +106,7 @@
         <thead>
           <tr>
             <th class="avatar-col-header" label="l-Avatar"></th>
+            <th>Reserved</th>
             <th>Reserved</th>
             <th label="l-Action" class="col-md-2"></th>
             <th label="l-Move" class="col-md-2"></th>
@@ -126,6 +129,7 @@
             <tr>
               <th class="avatar-col-header" label="l-Avatar"></th>
               <th label="l-Animation"></th>
+              <th label="l-Skin"></th>
               <th label="l-Action" class="col-md-2"></th>
               <th label="l-Move" class="col-md-2"></th>
             </tr>

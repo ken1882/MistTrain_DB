@@ -187,7 +187,6 @@ class Spine4_AssetsManager extends spine4.AssetManager{
     addObject(obj){
         this.objects.push(obj);
         this.sortObjects();
-        
     }
 
     sortObjects(){
@@ -221,7 +220,7 @@ class Spine4_Character{
     loadResources(rssdat={}){
         Object.assign(this, rssdat);
         this.manager.loadTexture(this.texture);
-        this.manager.loadTextureAtlas(this.atlas, null, null, {[this.textureName]: this.texture});
+        this.manager.loadTextureAtlas(this.atlas, null, null, {[this.name]: this.texture});
         this.manager.loadBinary(this.skel);
     }
 
@@ -236,19 +235,12 @@ class Spine4_Character{
 
     loadSpineData(){
         if(!this.skin){ this.skin = this.DEFAULT_SKIN; }
-
-        this.atlas = new spine4.TextureAtlas(
-            this.manager.get(this.atlas),
-            (_) => { return this.manager.get(this.texture); }
-        );
-
         let loader = new spine4.AtlasAttachmentLoader(this.manager.get(this.atlas));
         let skbin  = new spine4.SkeletonBinary(loader);
         let skdat  = skbin.readSkeletonData(this.manager.get(this.skel));
         this.skeleton = new spine4.Skeleton(skdat);
         this.updateBounds();
-        this.changeSkin(this.skin);
-        
+        // this.changeSkin(this.skin);
         this.animationState = new spine4.AnimationState(new spine4.AnimationStateData(this.skeleton.data));
         let anim = this.defaultAnimation;
         if(!anim){

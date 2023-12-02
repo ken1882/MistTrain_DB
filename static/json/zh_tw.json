@@ -119,6 +119,7 @@
   "CharacterVoice": "語音",
   "CharacterFigure": "人物",
   "Animation": "動畫",
+  "Skin": "造型",
   "LoopAnimation": "重複",
   "ZoomIn": "放大",
   "ZoomOut": "縮小",
@@ -384,6 +385,12 @@
     "105": "武器寶珠",
     "205": "防具寶珠",
     "305": "飾品寶珠"
+  },
+  "LoadSpineFiles": "讀取 Spine 檔案",
+  "SpineErrors": {
+    "MissingFile": "缺少檔案, 請確認選擇的檔案包含 png atlas skel 三種",
+    "TextureNameUnmatch": "材質圖片檔案名稱與 atlas 結構檔內容不相符",
+    "UnsupportedVersion": "不支援的版本"
   },
   "__備註": "請把複雜翻譯項目置底",
   "CharacterName": {

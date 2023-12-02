@@ -119,6 +119,7 @@
     "CharacterVoice": "ボイス",
     "CharacterFigure": "フィギュア",
     "Animation": "アニメーション",
+    "Skin": "スキン",
     "LoopAnimation": "ループ",
     "ZoomIn": "拡大",
     "ZoomOut": "縮小",
@@ -385,6 +386,12 @@
         "105": "武器宝珠",
         "205": "防具宝珠",
         "305": "アクセサリー宝珠"
+    },
+    "LoadSpineFiles": "Spine ファイルを読み込む",
+    "SpineErrors": {
+        "MissingFile": "ファイルが見つかりません。3 つの png atlas skel がすべて選択されていることを確認してください",
+        "TextureNameUnmatch": "テクスチャ画像の名前がアトラスの構造で指定された名前と一致しません",
+        "UnsupportedVersion": "サポートされていないバージョン"
     },
     "__comment": "複雑な翻訳は最後に保管してください",
     "__comment2": "元の言語はすでに日本語なので、翻訳する必要はありません",

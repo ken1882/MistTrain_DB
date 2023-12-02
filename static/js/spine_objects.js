@@ -180,13 +180,11 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
             if(!sp.ready || !sp.visible){ continue; }
             sp.update(dt);
         }
-
     }
 
     addObject(obj){
         this.objects.push(obj);
         this.sortObjects();
-        
     }
 
     sortObjects(){
@@ -219,6 +217,7 @@ class Spine_Character{
 
     loadResources(rssdat={}){
         Object.assign(this, rssdat);
+        console.log("Loading resources:", this.texture, this.atlas, this.skel);
         this.manager.loadTexture(this.texture);
         this.manager.loadText(this.atlas);
         this.manager.loadBinary(this.skel);
@@ -355,6 +354,7 @@ class MTG_Spine extends Spine_Character{
     }
     postSetup(){
         super.postSetup();
+        this.version = '3.8.95';
         // this.skeleton.scaleY = -1;
         for(let i in this.skeleton.data.slots){
             let sdat = this.skeleton.data.slots[i];
@@ -374,4 +374,78 @@ class MTG_Spine extends Spine_Character{
             }
         }
     }
+}
+
+class SpineFileLoader{
+    constructor(texture, atlas, skel){
+        this.handler = {
+            'loaded': null,
+            'error': null,
+        };
+        this.version = null;
+        this.textureName = texture.name;
+        this.texture = URL.createObjectURL(texture);
+        this.atlas   = URL.createObjectURL(atlas);
+        this.skel    = URL.createObjectURL(skel);
+        this._disposed  = false;
+        this._readyCnt = 0;
+        this._readtReq = 2;
+        this.loadVersion(skel);
+        this.verifyAtlasTextureName(atlas);
+    }
+
+    verifyAtlasTextureName(atlas){
+        fbread(atlas, (buffer)=>{
+            let content = new TextDecoder().decode(buffer);
+            content = content.replaceAll('\r\n', '\n');
+            let tname = '';
+            for(let line of content.split('\n')){
+                if(line.split('.').last() != 'png'){ continue; }
+                tname = line;
+                break;
+            }
+            if(tname != this.textureName){
+                this.dispose();
+                alert(`${Vocab.SpineErrors['TextureNameUnmatch']}\nexpected ${tname}\ngot ${this.textureName}`);
+                return ;
+            }
+            this._readyCnt += 1;
+            this.callLoadedHandler();
+        });
+    }
+
+    loadVersion(skel){
+        fbread(skel, (buffer)=>{
+            let content = new TextDecoder().decode(buffer);
+            let match = content.match(/\b\d+\.\d+\.\d+\b/);
+            if(match){
+                this.version = match[0];
+                console.log("Load spine version: "+this.version);
+            }
+            else{
+                this.dispose();
+                alert(Vocab.SpineErrors['UnsupportedVersion']);
+                return;
+            }
+            this._readyCnt += 1;
+            this.callLoadedHandler();
+        }, 0, 0x30);
+    }
+
+    isReady(){ return this._readyCnt >= this._readtReq; }
+
+    callLoadedHandler(){
+        if(!this.isReady() || !this.handler['loaded']){ return ;}
+        this.handler['loaded'](this);
+    }
+
+    setLoadedHandler(callback){
+        this.handler['loaded'] = callback;
+    }
+
+    dispose(){
+        return (this._disposed = false);
+    }
+
+    get disposed(){ return this._disposed; }
 }

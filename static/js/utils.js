@@ -20,6 +20,28 @@ window.mobilecheck = function() {
 // Whether is mobile
 var isMobile = window.mobilecheck();
 
+/**
+ * Return last item, undefined if empty
+ */
+Object.defineProperty(Array.prototype, 'last', {
+  value: function () {
+    return this.length ? this[this.length - 1] : undefined;
+  },
+  enumerable: false,
+});
+/**
+ * Remove first item found in array
+ */
+Object.defineProperty(Array.prototype, 'remove', {
+  value: function (o) {
+    let i = this.indexOf(o);
+    if(i >= 0){
+      return this.splice(this.indexOf(o), 1)[0];
+    }
+    return undefined;
+  },
+  enumerable: false,
+});
 /**----------------------------------------------------------------------------
  * > Request user to reload
  */
@@ -392,6 +414,24 @@ function rgb2hex(rgb){
   let g = parseInt(rgb[1]*0xff).toString(16);
   let b = parseInt(rgb[2]*0xff).toString(16);
   return `#${r}${g}${b}`;
+}
+
+/**
+ * Reading a file as binary
+ * @param {File} file 
+ * @param {Function} callback 
+ */
+function fbread(file, callback, fseek=0, fstop=0){
+  let reader = new FileReader();
+  reader.onloadend = ()=>{
+    callback(new Uint8Array(reader.result));
+  }
+  if(fseek || fstop){
+    reader.readAsArrayBuffer(file.slice(fseek, fstop+1));
+  }
+  else{
+    reader.readAsArrayBuffer(file);
+  }
 }
 
 /**

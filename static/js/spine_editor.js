@@ -9,6 +9,7 @@ let lastFrameTime = Date.now() / 1000;
 let BackgroundColor = [0.8, 0.8, 0.8, 0];
 let AnimationRecorder;
 let MouseToolMode = 'move';
+let ObjectRenderList = [];
 
 const BICON_PLUS = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
 <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
@@ -121,7 +122,16 @@ function renderObjects(){
     lastFrameTime = now;
     SpineManager.clear(BackgroundColor);
     SpineManager.update(delta);
-    Spine4Manager.updateViewport();
+    Spine4Manager.update(delta);
+    // if(!SpineManager.paused){
+    //     SpineManager.renderer.begin();
+    //     Spine4Manager.renderer.begin();
+    //     for(let sp of ObjectRenderList){
+    //         sp.update(delta);
+    //     }
+    //     SpineManager.renderer.end();
+    //     Spine4Manager.renderer.end();
+    // }
     requestAnimationFrame(renderObjects);
 }
 
@@ -302,6 +312,7 @@ function addCharacter(type, id, callback=null){
         if(!sp.ready){ return setTimeout(proc, 500); }
         resizeScale(sp);
         SpineManager.addObject(sp);
+        ObjectRenderList.push(sp);
         sp.showHitbox = $('#ckb_showhitbox').prop('checked');
         if(callback){ callback(sp); }
     };
@@ -351,18 +362,36 @@ function setupEditableCharacters(){
     }, 500);
 }
 
+function createNameRow(name, btn_html){
+    let tr = document.createElement('tr');
+    let cells = [];
+    for(let i=0;i<5;++i){
+        let node = document.createElement('td');
+        cells.push(node);
+        tr.append(node);
+    }
+    $(cells[0]).html(`<span>${name}</span>`);
+    $(cells[3]).html(btn_html);
+    $(cells[4]).html(`
+        <a class="btn btn-primary btn-handler" type="button">
+        ${BICON_ARROW_UPDOWN}
+        </a>
+    `);
+    return $(tr);
+}
+
 function createAvatarRow(id, btn_html){
     let tr = document.createElement('tr');
     $(tr).attr('pid', id);
     let cells = [];
-    for(let i=0;i<4;++i){
+    for(let i=0;i<5;++i){
         let node = document.createElement('td');
         cells.push(node);
         tr.append(node);
     }
     $(cells[0]).append(AssetsManager.createCharacterAvatarNode(id));
-    $(cells[2]).html(btn_html);
-    $(cells[3]).html(`
+    $(cells[3]).html(btn_html);
+    $(cells[4]).html(`
         <a class="btn btn-primary btn-handler" type="button">
         ${BICON_ARROW_UPDOWN}
         </a>
@@ -412,22 +441,37 @@ function onTypeAddClick(cid, t){
         $(`#loader-${uid}`).remove();
         r.attr('pid', cid);
         r.attr('data-index', $('#layer-tbody').children().length);
-        let sel = document.createElement('select');
+        let sel_anim = document.createElement('select');
         for(let anim of sp.skeleton.data.animations){
             let an = Vocab.CharacterAnimationName[anim.name];
             if(!an){ an = anim.name; }
-            $(sel).append($('<option>', {
+            $(sel_anim).append($('<option>', {
                 value: anim.name,
                 text: an
             }));
             if(anim.name == sp.defaultAnimation){
-                $(sel).val(anim.name);
+                $(sel_anim).val(anim.name);
             }
         }
-        $(sel).on('change', (e)=>{
+        $(sel_anim).on('change', (e)=>{
             sp.animationState.setAnimation(0, e.target.value, true);
         });
-        r.children()[1].append(sel);
+        r.children()[1].append(sel_anim);
+        let sel_skin = document.createElement('select');
+        for(let skin of sp.skeleton.data.skins){
+            let an = skin.name;
+            $(sel_skin).append($('<option>', {
+                value: skin.name,
+                text: an
+            }));
+            if(skin.name == sp.skin){
+                $(sel_skin).val(skin.name);
+            }
+        }
+        $(sel_skin).on('change', (e)=>{
+            sp.skeleton.setSkinByName(e.target.value);
+        });
+        r.children()[2].append(sel_skin);
         $('#layer-tbody').append(r);
     };
 
@@ -440,11 +484,18 @@ function onTypeAddClick(cid, t){
 function onLayerRemoveClick(e){
     let idx = parseInt($(e.parentElement.parentElement).attr('data-index'));
     let list = $('#layer-tbody').children();
+    let sp = ObjectRenderList[idx];
     for(let i=idx+1;i<list.length;++i){
         $(list[i]).attr('data-index', i-1);
     }
     $(list[idx]).remove();
-    return SpineManager.objects.splice(idx, 1);
+    if(sp.version[0] == '3'){
+        SpineManager.objects.remove(sp);
+    }
+    else{
+        Spine4Manager.objects.remove(sp);
+    }
+    ObjectRenderList.remove(sp);
 }
 
 function onListMove(e, u){
@@ -453,10 +504,9 @@ function onListMove(e, u){
 
 function onLayerMove(e, u){
     setTimeout(() => {
-        let temp = Array(SpineManager.objects);
+        let temp = Array(ObjectRenderList);
         let list = [];
         for(let ch of $('#layer-tbody').children()){
-            console.log(ch);
             if($(ch).attr('data-index')){
                 list.push(ch)
             }
@@ -464,10 +514,22 @@ function onLayerMove(e, u){
         for(let i=0;i<list.length;++i){
             let oi = $(list[i]).attr('data-index');
             console.log(`${oi} => ${i}`);
-            temp[i] = SpineManager.objects[oi];
+            temp[i] = ObjectRenderList[oi];
             $(list[i]).attr('data-index', i);
         }
-        SpineManager.objects = temp;
+        ObjectRenderList = temp;
+        let temp_objv3 = [];
+        let temp_objv4 = [];
+        for(let obj of ObjectRenderList){
+            if(SpineManager.objects.indexOf(obj) >= 0){
+                temp_objv3.push(obj);
+            }
+            if(Spine4Manager.objects.indexOf(obj) >= 0){
+                temp_objv4.push(obj);
+            }
+        }
+        SpineManager.objects  = temp_objv3;
+        Spine4Manager.objects = temp_objv4;
     }, 500);
 }
 
@@ -580,7 +642,9 @@ function createGlContextSnapshot(gl){
 
 function exportSceneCanvas(){
     let canvas = createGlContextSnapshot(SpineManager.gl);
-    window.open(canvas.toDataURL("image/png"));
+    let u = canvas.toDataURL("image/png");
+	let w = window.open();
+	w.document.write('<img src="'+u+'"/>');
     canvas.remove();
 }
 
@@ -649,6 +713,103 @@ function exportSceneAnimation(blob){
 
 function setupGifExport(){
        
+}
+
+function loadSpineFiles(){
+    let files = Array.from(document.getElementById('inp-spfiles').files);
+    let fa = files.find((f)=>f.name.split('.').last()=='atlas');
+    let ft = files.find((f)=>f.name.split('.').last()=='png');
+    let fs = files.find((f)=>f.name.split('.').last()=='skel');
+    if(!fa || !ft || !fs){
+        alert(Vocab.SpineErrors['MissingFile']);
+        return ;
+    }
+    let fsloader = new SpineFileLoader(ft, fa, fs);
+    fsloader.setLoadedHandler((fsl)=>{
+        let sp = null;
+        console.log(fsl);
+        let callback = (sp)=>{
+            let btn_html = `
+            <button class="btn btn-primary btn-handler" type="button" onclick="onLayerRemoveClick(this)">
+            ${BICON_MINUS}
+            </button>
+            `;
+            let r = createNameRow(sp.name, btn_html);
+            r.attr('data-index', $('#layer-tbody').children().length);
+            let sel_anim = document.createElement('select');
+            for(let anim of sp.skeleton.data.animations){
+                let an = anim.name;
+                $(sel_anim).append($('<option>', {
+                    value: anim.name,
+                    text: an
+                }));
+                if(anim.name == sp.defaultAnimation){
+                    $(sel_anim).val(anim.name);
+                }
+            }
+            $(sel_anim).on('change', (e)=>{
+                sp.animationState.setAnimation(0, e.target.value, true);
+            });
+            r.children()[1].append(sel_anim);
+            let sel_skin = document.createElement('select');
+            for(let skin of sp.skeleton.data.skins){
+                let an = skin.name;
+                $(sel_skin).append($('<option>', {
+                    value: skin.name,
+                    text: an
+                }));
+                if(skin.name == sp.skin){
+                    $(sel_skin).val(skin.name);
+                }
+            }
+            $(sel_skin).on('change', (e)=>{
+                console.log(e);
+                console.log(e.target.value);
+                sp.skeleton.setSkinByName(e.target.value);
+            });
+            r.children()[2].append(sel_skin);
+            $('#layer-tbody').append(r);
+        }
+        if(fsl.version[0] == '3'){
+            sp = new Spine_Character(SpineManager, {
+                texture: fsl.texture,
+                atlas: fsl.atlas,
+                skel: fsl.skel,
+                name: fsl.textureName,
+                version: fsl.version,
+            });
+            let proc = ()=>{
+                if(sp.disposed){ return ; }
+                if(!sp.ready){ return setTimeout(proc, 500); }
+                resizeScale(sp);
+                SpineManager.addObject(sp);
+                ObjectRenderList.push(sp);
+                sp.showHitbox = $('#ckb_showhitbox').prop('checked');
+                callback(sp);
+            };
+            proc();
+        }
+        if(fsl.version[0] == '4'){
+            sp = new Spine4_Character(Spine4Manager, {
+                texture: fsl.texture,
+                atlas: fsl.atlas,
+                skel: fsl.skel,
+                name: fsl.textureName,
+                version: fsl.version,
+            });
+            let proc = ()=>{
+                if(sp.disposed){ return ; }
+                if(!sp.ready){ return setTimeout(proc, 500); }
+                resizeScale(sp);
+                Spine4Manager.addObject(sp);
+                ObjectRenderList.push(sp);
+                sp.showHitbox = $('#ckb_showhitbox').prop('checked');
+                callback(sp);
+            };
+            proc();
+        }
+        console.log(sp);
+    });
 }
 
 window.addEventListener('load', initSPEdit);
