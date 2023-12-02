@@ -12560,4 +12560,5 @@ var spine;
 	}());
 	spine.SpinePlayerEditor = SpinePlayerEditor;
 })(spine || (spine = {}));
+spine.version = '3.8';
 //# sourceMappingURL=spine-all.js.map

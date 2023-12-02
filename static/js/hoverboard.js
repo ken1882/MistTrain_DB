@@ -10,7 +10,7 @@ var hoverboardDemo = function(canvas, bgColor) {
 	var target = null;
 	var hoverTargets = [];
 	var controlBones = ["hoverboard controller", "hip controller", "board target", "crosshair"];
-	var coords = new spine.webgl.Vector3(), temp = new spine.webgl.Vector3(), temp2 = new spine.Vector2(), temp3 = new spine.webgl.Vector3();
+	var coords = new spine.Vector3(), temp = new spine.Vector3(), temp2 = new spine.Vector2(), temp3 = new spine.Vector3();
 	var isPlaying = true;
 
 	var DEMO_NAME = "HoverboardDemo";
@@ -21,14 +21,14 @@ var hoverboardDemo = function(canvas, bgColor) {
 		canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight;
 		gl = canvas.ctx.gl;
 
-		renderer = new spine.webgl.SceneRenderer(canvas, gl);
+		renderer = new spine.SceneRenderer(canvas, gl);
 		assetManager = spineDemos.assetManager;
-		var textureLoader = function(img) { return new spine.webgl.GLTexture(gl, img); };
+		var textureLoader = function(img) { return new spine.GLTexture(gl, img); };
 		assetManager.loadTexture(DEMO_NAME, textureLoader, "atlas1.png");
 		assetManager.loadTexture(DEMO_NAME, textureLoader, "atlas12.png");
 		assetManager.loadText(DEMO_NAME, "atlas1.atlas");
 		assetManager.loadJson(DEMO_NAME, "demos.json");
-		input = new spine.webgl.Input(canvas);
+		input = new spine.Input(canvas);
 		timeKeeper = new spine.TimeKeeper();
 	}
 
@@ -154,7 +154,7 @@ var hoverboardDemo = function(canvas, bgColor) {
 
 		renderer.camera.viewportWidth = bounds.x * 1.2;
 		renderer.camera.viewportHeight = bounds.y * 1.2;
-		renderer.resize(spine.webgl.ResizeMode.Fit);
+		renderer.resize(spine.ResizeMode.Fit);
 
 		gl.clearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 		gl.clear(gl.COLOR_BUFFER_BIT);

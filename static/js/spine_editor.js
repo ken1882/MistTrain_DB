@@ -1,4 +1,5 @@
 let SpineManager, ResizeListener;
+let Spine4Manager;
 let oldCanvasSize;
 let TargetScaleHeight = 400;
 let AvailableTypeCache  = {};
@@ -52,6 +53,7 @@ function initSPEdit(){
         return setTimeout(initSPEdit, 100);
     }
     SpineManager = new Spine_AssetsManager(document.getElementById('main-canvas'));
+    Spine4Manager = new Spine4_AssetsManager(document.getElementById('main-canvas'));
     BackgroundColor = SpineManager.BackgroundColor;
     $('#inp_bgcolor').val(rgb2hex(BackgroundColor));
     // resize event will be called again due to inner canvas resize,
@@ -109,6 +111,7 @@ function resizeCanvas(w, h){
     SpineManager.canvas.height = h;
     SpineManager.clear(BackgroundColor);
     SpineManager.updateViewport();
+    Spine4Manager.updateViewport();
 }
 
 function renderObjects(){
@@ -118,6 +121,7 @@ function renderObjects(){
     lastFrameTime = now;
     SpineManager.clear(BackgroundColor);
     SpineManager.update(delta);
+    Spine4Manager.updateViewport();
     requestAnimationFrame(renderObjects);
 }
 
@@ -164,6 +168,7 @@ function setupMouseTools(){
     list.on('change', (e)=>{
         MouseToolMode = e.target.value;
         SpineManager.mouseResize = (MouseToolMode == 'resize');
+        Spine4Manager.mouseResize = (MouseToolMode == 'resize');
     });
     let opt = $('<option>',{
         value: 'move',
@@ -181,6 +186,7 @@ function setupMouseTools(){
         case 'shift':
         case 'Shift':
             SpineManager.mouseResize = true;
+            Spine4Manager.mouseResize = true;
         }
     });
     $(document).on('keyup', (e)=>{
@@ -188,6 +194,7 @@ function setupMouseTools(){
         case 'shift':
         case 'Shift':
             SpineManager.mouseResize = false || MouseToolMode == 'resize';
+            Spine4Manager.mouseResize = false || MouseToolMode == 'resize';
         }
     });
 }
@@ -509,6 +516,7 @@ function checkAvailableTypes(id){
 
 function toggleSceneAnimationPause(){
     SpineManager.paused ^= true;
+    Spine4Manager.paused ^= true;
     if(SpineManager.paused){
         $('#scene-anim-pause').html(BICON_PLAY);
     }
@@ -519,6 +527,14 @@ function toggleSceneAnimationPause(){
 
 function toggleHitboxDraw(b=null){
     for(let sp of SpineManager.objects){
+        if(b == null){
+            sp.showHitbox ^= true;
+        }
+        else{
+            sp.showHitbox = b;
+        }
+    }
+    for(let sp of Spine4Manager.objects){
         if(b == null){
             sp.showHitbox ^= true;
         }
@@ -587,7 +603,7 @@ function setupSceneAnimRecord(){
         exportSceneAnimation( new Blob(chunks, {type: 'video/webm'}) );
     };
     
-    let target = SpineManager.objects[0];
+    let target = SpineManager.objects[0] || Spine4Manager.objects[0];
     let rec_start_proc = ()=>{
       if(target.animationState.timeScale > 0){
         target.animationState.setAnimation(
