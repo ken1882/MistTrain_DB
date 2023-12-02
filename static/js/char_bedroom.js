@@ -262,7 +262,9 @@ function setAnimationStep(n){
 
 function exportCharacterCanvas(){
 	let canvas = createGlContextSnapshot(BedroomGL);
-	window.open(canvas.toDataURL("image/png"));
+	let u = canvas.toDataURL("image/png");
+	let w = window.open();
+	w.document.write('<img src="'+u+'"/>');
 	canvas.remove();
 }
 

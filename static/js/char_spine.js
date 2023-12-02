@@ -362,7 +362,9 @@ function createGlContextSnapshot(gl){
 function exportCharacterCanvas(){
 	if(!__FlagCharacterCanvasReady){ return; }
 	let canvas = createGlContextSnapshot(CharacterGL);
-	window.open(canvas.toDataURL("image/png"));
+	let u = canvas.toDataURL("image/png");
+	let w = window.open();
+	w.document.write('<img src="'+u+'"/>');
 	canvas.remove();
 }
 
