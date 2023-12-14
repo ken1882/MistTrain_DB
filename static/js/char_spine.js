@@ -43,20 +43,17 @@ function init () {
 		preserveDrawingBuffer: true,
 		premultipliedAlpha: PREMUL_ALPHA,
 	});
-	if(!spine.SceneRenderer){
-		spine.SceneRenderer = spine.webgl.SceneRenderer;
-	}
-	BattlerRenderer = new spine.SceneRenderer(BattlerCanvas, BattlerGL);
+	BattlerRenderer = new spine.webgl.SceneRenderer(BattlerCanvas, BattlerGL);
 	BattlerRenderer.debugRendering = false;
 	CharacterCanvas = document.getElementById("character-canvas");
 	CharacterGL = CharacterCanvas.getContext("webgl", {
 		preserveDrawingBuffer: true,
 		premultipliedAlpha: PREMUL_ALPHA
 	});
-	CharacterRenderer = new spine.SceneRenderer(CharacterCanvas, CharacterGL);
+	CharacterRenderer = new spine.webgl.SceneRenderer(CharacterCanvas, CharacterGL);
 	CharacterRenderer.debugRendering = false;
-	BattlerAssetManager = new spine.AssetManager(BattlerGL);
-	CharacterAssetManager = new spine.AssetManager(CharacterGL);
+	BattlerAssetManager = new spine.webgl.AssetManager(BattlerGL);
+	CharacterAssetManager = new spine.webgl.AssetManager(CharacterGL);
 }
 
 function getBattlerSpineResourcesData(id){
@@ -290,7 +287,7 @@ function resizeBattlerCanvas(){
 	BattlerRenderer.camera.direction.z = 1;
 	BattlerRenderer.camera.viewportWidth = BattlerBounds.size.x * BattlerSkeletonShrinkRate;
 	BattlerRenderer.camera.viewportHeight = BattlerBounds.size.y * BattlerSkeletonShrinkRate;
-	BattlerRenderer.resize(spine.ResizeMode.Fit);
+	BattlerRenderer.resize(spine.webgl.ResizeMode.Fit);
 	var ch = BattlerCanvas.height - 32;
 	var lh = 28;
 	$("#battler-act-list").attr('size', parseInt(ch / lh));
@@ -314,7 +311,7 @@ function resizeCharacterCanvas(){
 	CharacterRenderer.camera.direction.z = 1;
 	CharacterRenderer.camera.viewportWidth = CharacterBounds.size.x * CharacterSkeletonShrinkRate;
 	CharacterRenderer.camera.viewportHeight = CharacterBounds.size.y * CharacterSkeletonShrinkRate;
-	CharacterRenderer.resize(spine.ResizeMode.Fit);
+	CharacterRenderer.resize(spine.webgl.ResizeMode.Fit);
 	var ch = CharacterCanvas.height - 32;
 	var lh = 28;
 	$("#char-act-list").attr('size', parseInt(ch / lh));
