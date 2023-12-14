@@ -36,9 +36,9 @@ function initBedroom(){
   AnimationParts      = [];
   __bedroomReadyReq   = 1;
   __bedroomReadyCnt   = 0;
-  BedroomRenderer = new spine.SceneRenderer(BedroomCanvas, BedroomGL);
+  BedroomRenderer = new spine.webgl.SceneRenderer(BedroomCanvas, BedroomGL);
 	BedroomRenderer.debugRendering = false;
-	CharacterAssetManager = new spine.AssetManager(BedroomGL);
+	CharacterAssetManager = new spine.webgl.AssetManager(BedroomGL);
   setup();
 }
 
@@ -251,7 +251,7 @@ function resizeBedroomCanvas(){
       maxn = sum;
     }
   }
-	BedroomRenderer.resize(spine.ResizeMode.Fit);
+	BedroomRenderer.resize(spine.webgl.ResizeMode.Fit);
 }
 
 function setAnimationStep(n){
