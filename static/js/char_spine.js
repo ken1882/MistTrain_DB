@@ -43,6 +43,9 @@ function init () {
 		preserveDrawingBuffer: true,
 		premultipliedAlpha: PREMUL_ALPHA,
 	});
+	if(!spine.SceneRenderer){
+		spine.SceneRenderer = spine.webgl.SceneRenderer;
+	}
 	BattlerRenderer = new spine.SceneRenderer(BattlerCanvas, BattlerGL);
 	BattlerRenderer.debugRendering = false;
 	CharacterCanvas = document.getElementById("character-canvas");
