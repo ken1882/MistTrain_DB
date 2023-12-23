@@ -233,14 +233,22 @@ def dump_sponspred_scene(token):
       elif res.status_code == 403:
         return _G.ERRNO_MAINTENANCE
       try:
-        res = res.json()
+        raw = game.unpack(res.content)
+        if k == 'main':
+          data = interpret_main_scenes(raw)
+        elif k == 'event':
+          data = interpret_event_scenes(raw)
+        elif k == 'character':
+          data = interpret_character_scenes(raw)
+        elif k == 'side':
+          data = interpret_side_scenes(raw)
       except Exception as err:
         log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
         return _G.ERRNO_FAILED
       # get missing scenes
-      news[k] = get_new_scenes(k, res['r'])
+      news[k] = get_new_scenes(k, data)
       new_total += len(news[k])
-      nmeta[k] = res['r']
+      nmeta[k] = data
     log_info('New scenes:', pformat(news))
     for k in news:
       UploadStatus = 'download,'+k
@@ -259,11 +267,10 @@ def dump_sponspred_scene(token):
         elif res.status_code == 403:
           return _G.ERRNO_MAINTENANCE
         try:
-          res = res.json()
+          data = interpret_scene_data(game.unpack(res.content))
         except Exception as err:
           log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
           return _G.ERRNO_FAILED
-        data = res['r']
         if 'MSceneDetailViewModel' in data:
           data['MSceneDetailViewModel'] = sorted(data['MSceneDetailViewModel'], key=lambda o:o['GroupOrder'])
         else:
@@ -486,3 +493,155 @@ def save_sponsors(token):
   })
   with open(_G.SCENE_SPONSOR_ARCHIVE, 'w') as fp:
     json.dump(dat, fp)
+
+def interpret_main_scenes(data):
+  ret = []
+  for dat in data:
+    ret.append(game.interpret_data(
+      (
+        'MChapterId', 'Title', 'WorldLayoutType',
+        ('Scenes',
+          (
+            'MSceneId', 'Status',
+            ('Rewards', ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')),
+            'CanStartMQuestId'
+          )
+        ),
+        'MEventId', 'EventSpoilInfoViewModel', 'ChapterSceneType'
+      ),
+      dat
+    ))
+  return ret
+
+def interpret_event_scenes(data):
+  ret = []
+  for dat in data:
+    ret.append(game.interpret_data(
+      (
+        'MChapterId', 'Title', 'WorldLayoutType',
+        ('Scenes',
+          (
+            'MSceneId', 'Status',
+            ('Rewards', ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')),
+            'CanStartMQuestId'
+          )
+        ),
+        'MEventId', 'EventSpoilInfoViewModel', 'ChapterSceneType'
+      ),
+      dat
+    ))
+  return ret
+
+def interpret_side_scenes(data):
+  ret = []
+  for dat in data:
+    ret.append(game.interpret_data(
+      (
+        'MChapterId', 'Title', 'WorldLayoutType',
+        ('Scenes',
+          (
+            'MSceneId', 'Status',
+            ('Rewards', ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')),
+            'CanStartMQuestId'
+          )
+        ),
+        'MEventId', 'EventSpoilInfoViewModel', 'ChapterSceneType'
+      ),
+      dat
+    ))
+  return ret
+
+def interpret_character_scenes(data):
+  ret = []
+  for dat in data:
+    ret.append(game.interpret_data(
+      (
+        'MCharacterBaseId', 'HasNew',
+        ('CharacterScenes', list,
+          (
+            'MCharacterId', 'CurrentKizunaRank',
+            ('Scenes', list,
+              (
+                'MSceneId', 'Status',
+                (
+                  'Rewards',  list,
+                  ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')
+                ),
+                'CanStartMQuestId'
+              )
+            ),
+          )
+        ),
+      ),
+      dat
+    ))
+  return ret
+
+def interpret_scene_data(data):
+  return game.interpret_data(
+    (
+      'MSceneId',
+      (
+        'MSceneDetailViewModel', list,
+        (
+          'GroupOrder',
+          'ViewOrder',
+          'Name',
+          'Phrase',
+          'PhraseFontSize',
+          'PhraseSpeed',
+          'IsPhraseCenter',
+          'SpeechMCharacterId',
+          'IsSpeakingFlags',
+          'FrameImage',
+          'VoiceFileName',
+          'BackgroundImage',
+          'BGM',
+          'BattleBGM',
+          'SE',
+          'Effect',
+          'BackgroundEffectType',
+          (
+            'StandCharacters', list,
+            ('MCharacterId','Position','Action','Emotion','FacialExpression','EnterAction'),
+          ),
+          (
+            'StillDetail', dict,
+            ('AnimationName', 'AnimationSpeed', 'CameraZoomRatio', 'CameraPositionX', 'CameraPositionY', 'CameraWorkDuration', 'CameraRotation')
+          ),
+          (
+            'MSceneChoiceViewModel', dict,
+            (
+              'Id',
+              (
+                'Details', list,
+                ('Id', 'Order', 'Phrase', 'HasSelected')
+              )
+            )
+          ),
+          (
+            'MSceneBranchViewModel', dict,
+            (
+              'Details', list,
+              (
+                'Conditions', list,
+                ('MSceneChoiceDetailId',)
+              )
+            )
+          ),
+          'IsEnd',
+          'IsChangeAction'
+        )
+      ),
+      (
+        'FirstViewRewords', dict,
+        (
+          'Items',
+          'GiftItems',
+          'DeletedItemIds'
+        )
+      ),
+      'IsClosed'
+    ),
+    data
+  )

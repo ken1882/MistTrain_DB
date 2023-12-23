@@ -616,20 +616,21 @@ function createGlContextSnapshot(gl){
 	let end = (height - 1) * row;
 	
 	gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, tmp);
+    for(var i=0;i<tmp.length;i+=4){
+        let alpha = tmp[i+3] / 255.0;
+        // tmp[i] = Math.round(tmp[i] * alpha);
+        // tmp[i+1] = Math.round(tmp[i+1] * alpha);
+        // tmp[i+2] = Math.round(tmp[i+2] * alpha);
+        // tmp[i+3] = alpha > 0.5 ? 0xff : 0;
+	}
 	for(var i=0;i<tmp.length;i+=row){
 		pixels.set(tmp.subarray(i,i+row), end - i);
 	}
-    
-	// alpha channel binarization
-	// for(var i=0;i<pixels.length;i+=4){
-	// 	if(pixels[i+3] < 0x70){pixels[i+3] = 0;}
-	// 	else{ pixels[i+3] = 0xff; }
-	// }
 
 	let canvas 		= document.createElement('canvas');
 	canvas.width 	= width;
 	canvas.height = height;
-	let context 	= canvas.getContext('2d');
+	let context 	= canvas.getContext('2d', {alpha: true});
 	let imgdata 	= context.createImageData(width, height);
     
 	for(var i=0;i<pixels.length;++i){

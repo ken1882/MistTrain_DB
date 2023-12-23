@@ -15,6 +15,7 @@ from html import unescape
 from urllib.parse import unquote,urlparse,urlencode
 from random import randint
 from multiprocessing import Lock
+import msgpack
 import pytz
 
 FLOCK = Lock()
@@ -365,6 +366,11 @@ def refresh_daily_token():
   FlagDayChanged = False
   reauth_game()
 
+def unpack(content):
+  unpacker = msgpack.Unpacker()
+  unpacker.feed(content)
+  return list(unpacker)[1]
+
 def get_request(url, depth=1, agent=None):
   global Session,ServerLocation
   if not agent:
@@ -410,7 +416,7 @@ def get_request(url, depth=1, agent=None):
       pass
   if not res.content:
     return None
-  return res.json()
+  return unpack(res.content)
 
 def post_request(url, data=None, depth=1, agent=None):
   global Session,TemporaryNetworkErrors,ServerLocation
@@ -532,4 +538,22 @@ def get_profile(token):
   res  = se.get(f"{ServerLocation}/api/Users/Me").json()['r']
   res2 = se.get(f"{ServerLocation}/api/Users/MyPreferences").json()['r']
   ret = {**res, **res2}
+  return ret
+
+def interpret_data(keys, data):
+  ret = {}
+  for k,dat in zip(keys, data):
+    if type(k) == str:
+      ret[k] = dat
+    else:
+      if dat == None:
+        ret[k[0]] = None
+        continue
+      otype = k[1]
+      if otype == list:
+        ret[k[0]] = []
+        for d in dat:
+          ret[k[0]].append(interpret_data(k[2], d))
+      elif otype == dict:
+        ret[k[0]] = interpret_data(k[2], dat)
   return ret

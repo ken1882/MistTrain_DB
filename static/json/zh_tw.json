@@ -21,6 +21,7 @@
   "LoginSavedDMM": "是否是用以儲存的 DMM 帳號重新登入?",
   "NotLogin": "您尚未登入",
   "ReloginDMM": "是否前往登入畫面?",
+  "ForceAuthPluginLogin": "您必須安裝瀏覽器套件(MTG DB Bridge v1.1)後才能使用登入相關功能",
   "AskOuathLogin": "如果您希望使用 OAuth Token 登入，請在下方輸入:",
   "CheckConnection": "檢查遊戲連線",
   "LanguageText": "語言",

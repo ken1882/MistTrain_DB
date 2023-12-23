@@ -104,6 +104,17 @@ def mtg_login():
     ret = {'status': 403}
   return jsonify(ret),ret['status']
 
+@app.route('/api/game_server', methods=['GET'])
+def get_game_server_url():
+  ret = game.ServerLocation
+  if not ret:
+    ret = game.determine_server()
+  if ret == _G.ERRNO_MAINTENANCE:
+    ret = {'status': 503}
+  else:
+    ret = {'status': 200, 'uri': ret}
+  return jsonify(ret),ret['status']
+
 ## Routes
 
 @app.route('/', methods=['GET'])

@@ -21,6 +21,7 @@
   "LoginSavedDMM": "Login with existing DMM account?",
   "NotLogin": "You haven't logged in yet",
   "ReloginDMM": "Go to login page?",
+  "ForceAuthPluginLogin": "You must install browser plugin (MTG DB Bridge v1.1) to use login related features.",
   "AskOuathLogin": "If you want to use OAuth token to login, plese enter it below:",
   "CheckConnection": "Check connection",
   "LanguageText": "Language",

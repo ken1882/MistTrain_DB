@@ -21,6 +21,7 @@
     "LoginSavedDMM": "既存のDMMアカウントでログインしますか？",
     "NotLogin": "まだログインしていません。",
     "ReloginDMM": "ログインページに移動しますか？",
+    "ForceAuthPluginLogin": "ログイン関連の機能を使用するには、ブラウザプラグイン(MTG DB Bridge v1.1)をインストールする必要があります。",
     "AskOuathLogin": "OAuthトークンを使用してログインする場合は、以下に入力してください：",
     "CheckConnection": "接続を確認する",
     "LanguageText": "言語",

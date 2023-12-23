@@ -310,7 +310,8 @@ SCENE_METAS = {
 SCENE_META_API = {
   'main': '/api/UScenes/MainScenes',
   'event': '/api/UScenes/EventScenes',
-  'character': '/api/UScenes/ViewableCharacters'
+  'character': '/api/UScenes/ViewableCharacters',
+  'side': '/api/UScenes/SideStoryScenes'
 }
 
 SCENE_SPONSOR_ARCHIVE = f"{STATIC_FILE_DIRECTORY}/sponsors.json"
