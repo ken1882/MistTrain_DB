@@ -230,6 +230,7 @@
     "StoryTranscriptDB": "ストーリートランスクリプト",
     "MainStory": "メインストーリー",
     "EventStory": "イベントストーリー",
+    "SideStory": "サイドストーリー",
     "CharacterStory": "キャラクターストーリー",
     "MainStoryVolume": "第%i巻",
     "StoryChapter": "第%i章",

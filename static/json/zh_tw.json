@@ -230,6 +230,7 @@
   "StoryTranscriptDB": "全劇情文本",
   "MainStory": "主線劇情",
   "EventStory": "活動劇情",
+  "SideStory": "支線劇情",
   "CharacterStory": "角色劇情",
   "MainStoryVolume": "第 %i 部",
   "StoryChapter": "第 %i 章",

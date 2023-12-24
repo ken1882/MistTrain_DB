@@ -230,6 +230,7 @@
   "StoryTranscriptDB": "Story Transcripts",
   "MainStory": "Main Story",
   "EventStory": "Event Story",
+  "SideStory": "Side Story",
   "CharacterStory": "Character Story",
   "MainStoryVolume": "Volume %i",
   "StoryChapter": "Chapter %i",

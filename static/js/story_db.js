@@ -9,6 +9,7 @@ const MaruHeaders = {
 
 let MainStoryData = {};
 let EventStoryData = {};
+let SideStoryData = {};
 
 function RubifiyJapanese(text, ok_handler, err_handler=null){
   if(!err_handler){
@@ -160,6 +161,107 @@ function loadEventStory(){
   $("#event-section").attr('style', '');
 }
 
+function loadSideStory(){
+  let parent = $("#side-section");
+  // SideStoryData.sort((a, b)=>{
+  //   let ta = AssetsManager.EventData[a.MEventId];
+  //   let tb = AssetsManager.EventData[b.MEventId];
+  //   if(ta){ ta = new Date(ta.StartDate); }
+  //   else{ ta = new Date(0); }
+  //   if(tb){ tb = new Date(tb.StartDate); }
+  //   else{ tb = new Date(0); }
+  //   return new Date(tb) - new Date(ta);
+  // });
+  for(let i=0;i<SideStoryData.length;++i){
+    let scene = SideStoryData[i];
+    // Chapter container
+    let container = $(document.createElement("div"));
+    container.attr('id', `side-story-${scene.MChapterId}`);
+    container.attr('class', 'collapse story-side-collapse');
+    let section = $(document.createElement('div'));
+    section.attr('class', 'card card-body');
+    let node = $(document.createElement('a'));
+    node.attr('class', 'btn btn-secondary');
+    let img = document.createElement('img');
+    let final_src = `${ASSET_HOST}/Textures/Banners/Theater/main/${scene.MChapterId}.png`;
+    img.onerror = (e)=>{
+      if(e.target.src != final_src){
+        $(`#side-banner-${scene.MChapterId}`).attr('src', final_src)
+      }
+    }
+    img.src = final_src;
+    $(img).css('max-height', '60px');
+    $(img).attr('id', `side-banner-${scene.MChapterId}`);
+    let desc = document.createElement('span');
+    let text = scene.Title;
+    $(desc).css('padding', '4px');
+    $(desc).text(text);
+    node.append(img);
+    node.append(desc);
+    
+    // scene container
+    var container_id = `section-container-${scene.MChapterId}`;
+    node.attr('data-bs-toggle', 'collapse');
+    node.attr('aria-controls', `${container_id}`);
+    node.attr('href', `#${container_id}`);
+    section.append(node);
+    registerCollapseIndicator(node);
+
+    var chapter_container = $(document.createElement('div'));
+    chapter_container.attr('id', `${container_id}`);
+    scene.Scenes = scene.Scenes.sort((a,b)=>{return a.MSceneId - b.MSceneId;})
+    for(let j=0;j<scene.Scenes.length;++j){
+      var sc = scene.Scenes[j];
+      var chap_btn = $(document.createElement('a'));
+      let sid = sc.MSceneId;
+
+      chap_btn.attr('class', 'btn collapse');
+      chap_btn.attr('data-bs-toggle', 'collapse');
+      chap_btn.attr('id', `${container_id}`);
+      chap_btn.css('margin', '4px');
+
+      if(AssetsManager.SceneData[sc.MSceneId].IsAdult){
+        chap_btn.addClass('btn-danger');
+        chap_btn.attr('data-toggle', 'tooltip');
+        chap_btn.attr('title', Vocab.SceneAdult);
+        chap_btn.on('click', (_)=>{
+          alert(Vocab.SceneAdult);
+        });
+      }
+      else if(sc.Status == 5 || sc.Status == 1){
+        chap_btn.addClass('btn-success');
+        chap_btn.on('click', (_)=>{
+          window.open(`/story_transcript/${sid}?t=m`, '_blank').focus();
+        });
+      }
+      else{
+        chap_btn.addClass('btn-danger');
+        chap_btn.attr('data-toggle', 'tooltip');
+        chap_btn.attr('title', Vocab.SceneMissing);
+        chap_btn.on('click', (_)=>{
+          alert(Vocab.SceneMissing);
+        });
+      }
+      var txt = AssetsManager.SceneData[sid].Title;
+      if(Vocab.SceneTitle.hasOwnProperty(sid)){
+        txt = Vocab.SceneTitle[sid];
+      }
+      chap_btn.text(`${j+1}. ${txt}`);
+      chap_btn.append(chap_btn);
+      chapter_container.append(chap_btn);
+    }
+
+    node.append(chapter_container);
+    container.append(section);
+    parent.append(container);
+
+  }
+
+  registerCollapseIndicator($("#header-side"));
+  $("#loading-indicator4").remove();
+  $("#side-section").attr('style', '');
+}
+
 function loadCharacterStory(){
   registerCollapseIndicator($("#header-characters"));
   $("#loading-indicator3").remove();
@@ -249,6 +351,13 @@ function loadStoryData(){
       },
       error: handleAjaxError,
     }),
+    $.ajax({
+      url: '/static/json/side_scene.json',
+      success: (res) => {
+        SideStoryData = res;
+      },
+      error: handleAjaxError,
+    }),
   ];
 }
 
@@ -260,6 +369,7 @@ function init(){
   }
   loadMainStory();
   loadEventStory();
+  loadSideStory();
   loadCharacterStory();
   loadSponsorScene();
 }
