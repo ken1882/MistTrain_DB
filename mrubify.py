@@ -104,6 +104,13 @@ def patch():
                 if not dm.get_cache(cpath):
                     continue
                 sc['Status'] = 1
+    for ch in story.SceneMeta['side']:
+        for sc in ch['Scenes']:
+            sid = sc['MSceneId']
+            cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{sid}.json"
+            if not dm.get_cache(cpath):
+                continue
+            sc['Status'] = 1
     story.save_meta(story.SceneMeta)
     dm.upload_story_meta(copy(story.SceneMeta))
 

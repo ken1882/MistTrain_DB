@@ -304,7 +304,8 @@ DERPY_CLOUD_ESTIMATORS = [
 SCENE_METAS = {
   'main': 'main_scene.json',
   'event': 'event_scene.json',
-  'character': 'character_scene.json'
+  'character': 'character_scene.json',
+  'side': 'side_scene.json'
 }
 
 SCENE_META_API = {

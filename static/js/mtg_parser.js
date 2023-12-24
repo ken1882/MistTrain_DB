@@ -49,6 +49,69 @@ function parseProfileData(e) {
     return t;
 }
 
+function parseStatusData(e) {
+    if (null === e)
+        return null;
+    if (!(e instanceof Array)){
+        throw new Error;
+    }
+    for (var t = {}, n = 0; n < e.length; n++)
+        switch (n) {
+        case 0:
+            t.HP = dh(e[n]);
+            break;
+        case 1:
+            t.Strength = dh(e[n]);
+            break;
+        case 2:
+            t.Defence = dh(e[n]);
+            break;
+        case 3:
+            t.Dexterity = dh(e[n]);
+            break;
+        case 4:
+            t.Speed = dh(e[n]);
+            break;
+        case 5:
+            t.Intelligence = dh(e[n]);
+            break;
+        case 6:
+            t.MindDefence = dh(e[n]);
+            break;
+        case 7:
+            t.Mind = dh(e[n]);
+            break;
+        case 8:
+            t.Luck = dh(e[n])
+        }
+    return t
+}
+
+function parseSkillData(e) {
+    if (null === e)
+        return null;
+    if (!(e instanceof Array))
+        throw new Error;
+    for (var t = {}, n = 0; n < e.length; n++)
+        switch (n) {
+        case 0:
+            t.Id = dh(e[n]);
+            break;
+        case 1:
+            t.MSkillId = dh(e[n]);
+            break;
+        case 2:
+            t.Stage = dh(e[n]);
+            break;
+        case 3:
+            t.Rank = dh(e[n]);
+            break;
+        case 4:
+            t.Learned = lh(e[n])
+        }
+    return t
+}
+
 function parseUserPreference(e) {
     if (null === e)
         return null;
@@ -308,6 +371,132 @@ function parseJukeBox(e) {
             break;
         case 1:
             t.AutoRoundMusicId = dh(e[n])
+        }
+    return t
+}
+
+function parseUCharacterBase(e) {
+    if (null === e)
+        return null;
+    if (!(e instanceof Array))
+        throw new Error;
+    for (var t = {}, n = 0; n < e.length; n++)
+        switch (n) {
+        case 0:
+            t.Id = dh(e[n]);
+            break;
+        case 1:
+            t.UUserId = dh(e[n]);
+            break;
+        case 2:
+            t.MCharacterBaseId = dh(e[n]);
+            break;
+        case 3:
+            t.Experience = dh(e[n]);
+            break;
+        case 4:
+            t.Status = parseStatusData(e[n]);
+            break;
+        case 5:
+            t.ExStatus = parseStatusData(e[n])
+        }
+    return t
+}
+
+function parseUCharacter(e) {
+    if (null === e)
+        return null;
+    if (!(e instanceof Array))
+        throw new Error;
+    for (var t = {}, n = 0; n < e.length; n++)
+        switch (n) {
+        case 0:
+            t.Id = dh(e[n]);
+            break;
+        case 1:
+            t.UUserId = dh(e[n]);
+            break;
+        case 2:
+            t.MCharacterId = dh(e[n]);
+            break;
+        case 3:
+            t.UCharacterBaseId = dh(e[n]);
+            break;
+        case 4:
+            t.UCharacterBaseViewModel = parseUCharacterBase(e[n]);
+            break;
+        case 5:
+            t.Level = dh(e[n]);
+            break;
+        case 6:
+            t.TotalExperience = dh(e[n]);
+            break;
+        case 7:
+            t.MaxLevel = dh(e[n]);
+            break;
+        case 8:
+            t.USkill1 = parseSkillData(e[n]);
+            break;
+        case 9:
+            t.USkill2 = parseSkillData(e[n]);
+            break;
+        case 10:
+            t.USkill3 = parseSkillData(e[n]);
+            break;
+        case 11:
+            t.SpecialSkill = parseSkillData(e[n]);
+            break;
+        case 12:
+            t.BaseStatus = parseStatusData(e[n]);
+            break;
+        case 13:
+            t.TotalStatus = dh(e[n]);
+            break;
+        case 14:
+            t.KizunaRank = dh(e[n]);
+            break;
+        case 15:
+            t.ReferenceCounting = dh(e[n]);
+            break;
+        case 16:
+            t.GearLevel = dh(e[n]);
+            break;
+        case 17:
+            t.TotalGearExperience = dh(e[n]);
+            break;
+        case 18:
+            t.CanLevelup = lh(e[n]);
+            break;
+        case 19:
+            t.IllustMCharacterId = dh(e[n]);
+            break;
+        case 20:
+            t.IllustMCharacterSkinId = dh(e[n]);
+            break;
+        case 21:
+            t.SdMCharacterId = dh(e[n]);
+            break;
+        case 22:
+            t.SdMCharacterSkinId = dh(e[n]);
+            break;
+        case 23:
+            t.UTrainBoard = parseTrainBoardMeta(e[n])
+        }
+    return t
+}
+
+function parseTrainBoardMeta(e) {
+    if (null === e)
+        return null;
+    if (!(e instanceof Array))
+        throw new Error;
+    for (var t = {}, n = 0; n < e.length; n++)
+        switch (n) {
+        case 0:
+            t.BoardOrder = dh(e[n]);
+            break;
+        case 1:
+            t.DetailOrder = dh(e[n])
         }
     return t
 }

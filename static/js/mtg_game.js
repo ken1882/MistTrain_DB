@@ -63,7 +63,7 @@ function onExtensionInputChange(){
             success: (res) => {
                 saveMTGServer(res.server);
                 saveMTGToken(res.token);
-                Promise.all(fetchPlayerProfile()).then(()=>{
+                fetchPlayerProfile().then(()=>{
                     reloadProfile();
                     let p = DataManager.playerProfile;
                     FlagConnLock = false;
@@ -101,14 +101,14 @@ function checkGameConnection(){
     FlagConnLock = true;
     $("#conn-icon").css('display', 'none');
     $("#conid-game").css('display', '');
-    Promise.all(fetchPlayerProfile()).then(()=>{
+    fetchPlayerProfile().then(()=>{
         console.log("Ajax done");
         reloadProfile();
         let p = DataManager.playerProfile;
         alert(`${Vocab.GameLoginOK}\n${Vocab.Name}: ${p.Name} (Lv.${p.Level})`)
         FlagConnLock = false;
-    }).catch(() => {
-        console.log("Ajax failed");
+    }).catch((e) => {
+        console.log("Ajax failed", e);
         reloadProfile();
         alert(Vocab.GameLoginFailed+'\n\n'+Vocab.GameLoginFailed2);
         handleGameConnectionError();
@@ -194,7 +194,7 @@ function processGameLogin(ret, back='/'){
 }
 
 function verifyGameLogin(back='/'){
-    Promise.all(fetchPlayerProfile()).then(()=>{
+    fetchPlayerProfile().then(()=>{
         console.log("Ajax done");
         var u = new URL(window.location.href);
         var path = u.searchParams.get('loginback') || back;
@@ -280,18 +280,21 @@ async function fetchPlayerProfile(){
     }
   }
 
-function fetchCharacters(){
-    return;
-    return [
-        sendMTG({
-            url: '/api/UCharacters',
-            method: 'GET',
-            success: (res) => {
-                DataManager.dataCharacters = res.r;
-            },
-            error: (res)=>{console.error(res)},
-        })
-    ];
+async function fetchCharacters(){
+    try{
+        const [characterResponse] = await Promise.all([
+            sendMTG({url: '/api/UCharacters', method: 'GET' })
+        ]);
+    
+        let characterData = await unpackResponse(characterResponse);
+        let data = [];
+        for(let dat of characterData[1]){
+            data.push(parseUCharacter(dat));
+        }
+        DataManager.dataCharacters = data;
+      } catch (error) {
+        console.error('Error fetching characters:', error);
+      }
 }
 
 function fetchInventory(){
@@ -369,14 +372,13 @@ function fetchBackgroundParty(){
 }
 
 function loadCharacters(){
-    return;
     if(FlagConnLock){ return ;}
     if(!getMTGServer()){
         return handleNotLoggedin();
     }
     FlagConnLock = true;
     $("#conid-chars").css('display', '');
-    Promise.all(fetchCharacters()).then(()=>{
+    fetchCharacters().then(()=>{
         var msg = `${Vocab.LoadCharactersOK}\n${Vocab.Amount}: ${DataManager.dataCharacters.length}`;
         $("#conid-chars").css('display', 'none');
         alert(msg);

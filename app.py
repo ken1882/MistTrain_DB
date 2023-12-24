@@ -284,7 +284,6 @@ def get_available_character_scene():
 
 @app.route('/api/SponsorScenes', methods=['POST'])
 def spnosor_scene():
-  return jsonify({'status': 503}),503
   token = request.form.get('token')
   msg = story.dump_sponspred_scene(token)
   if msg == _G.ERROR_LOCKED:
@@ -313,6 +312,7 @@ def decrypt_token():
 ## Main functions
 
 def setup():
+  game.determine_server()
   dm.update_cache()
   # derpy.init()
   story.init()

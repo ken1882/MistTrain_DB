@@ -226,7 +226,8 @@ def load_story_meta(data_dir='json'):
   s_main  = f"/{_G.SCENE_METAS['main']}"
   s_event = f"/{_G.SCENE_METAS['event']}"
   s_chars = f"/{_G.SCENE_METAS['character']}"
-  metas = [s_main, s_event, s_chars]
+  s_side  = f"/{_G.SCENE_METAS['side']}"
+  metas = [s_main, s_event, s_chars, s_side]
   ret = []
   for filename in metas:
     dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{data_dir}{filename}"

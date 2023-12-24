@@ -48,6 +48,16 @@ MaruHeaders = {
   'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
 }
 
+MTGHeaders = {
+  'Accept': 'application/vnd.msgpack',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Origin': 'https://assets.mist-train-girls.com',
+  'Referer': 'https://assets.mist-train-girls.com/',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
+  'Cache-Control': 'no-cache',
+  'Pragma': 'no-cache',
+}
+
 FlagDailyUpdated = False
 UPDATE_HOUR = 4 # 4 am
 
@@ -106,6 +116,12 @@ def update_scene_cache():
       if is_scene_unlocked('event', sid, sc['Status']):
         ExistedScene.add(sid)
   
+  for ch in SceneMeta['side']:
+    for sc in ch['Scenes']:
+      sid = sc['MSceneId']
+      if is_scene_unlocked('side', sid, sc['Status']):
+        ExistedScene.add(sid)
+
   for ch in SceneMeta['character']:
     for layer in ch['CharacterScenes']:
       for sc in layer['Scenes']:
@@ -163,6 +179,8 @@ def is_scene_unlocked(_type, id, status):
     return id % 100 > 10
   elif _type == 'event':
     return status == 5 
+  elif _type == 'side':
+    return status == 5 
   elif _type == 'character':
     return status == 3
   return False
@@ -219,6 +237,7 @@ def dump_sponspred_scene(token):
   try:
     UploadLock = True
     se = requests.Session()
+    se.headers = copy(MTGHeaders)
     se.headers['Authorization'] = token
     UploadStatus = 'meta'
     new_total = 0
@@ -349,7 +368,7 @@ def is_scene_missing(_type, sid, status):
 def get_new_scenes(_type, scenes):
   global SceneMeta,ExistedScene
   ret = []
-  if _type == 'main' or _type == 'event':
+  if _type in ['main', 'event', 'side']:
     for ch in scenes:
       for sc in ch['Scenes']:
         sid = sc['MSceneId']
@@ -429,6 +448,38 @@ def update_meta(old_meta, new_meta, saved):
     old_meta['event'], 
     key=lambda o:o['MChapterId']
   )
+
+  ### 
+
+  for ch in new_meta['side']:
+    och_idx = next(
+      (i for (i, o) in enumerate(old_meta['side']) if o['MChapterId'] == ch['MChapterId']),
+      -1
+    )
+    if och_idx == -1:
+      old_meta['side'].append(ch)
+      continue
+    for sc in ch['Scenes']:
+      sid = sc['MSceneId']
+      if sid not in saved:
+        continue
+      nidx = next(
+        (i for (i, o) in enumerate(old_meta['side'][och_idx]['Scenes']) if o['MSceneId'] == sid),
+        -1
+      )
+      if nidx == -1:
+        old_meta['side'][och_idx]['Scenes'].append(sc)
+      else:
+        old_meta['side'][och_idx]['Scenes'][nidx] = sc
+    old_meta['side'][och_idx]['Scenes'] = sorted(
+      old_meta['side'][och_idx]['Scenes'], 
+      key=lambda o:o['MSceneId']
+    )
+  
+  old_meta['side'] = sorted(
+    old_meta['side'], 
+    key=lambda o:o['MChapterId']
+  )
       
   ###
 
@@ -500,10 +551,13 @@ def interpret_main_scenes(data):
     ret.append(game.interpret_data(
       (
         'MChapterId', 'Title', 'WorldLayoutType',
-        ('Scenes',
+        ('Scenes', list,
           (
             'MSceneId', 'Status',
-            ('Rewards', ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')),
+            (
+              'Rewards',  list,
+              ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')
+            ),
             'CanStartMQuestId'
           )
         ),
@@ -519,10 +573,13 @@ def interpret_event_scenes(data):
     ret.append(game.interpret_data(
       (
         'MChapterId', 'Title', 'WorldLayoutType',
-        ('Scenes',
+        ('Scenes', list,
           (
             'MSceneId', 'Status',
-            ('Rewards', ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')),
+            (
+              'Rewards',  list,
+              ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')
+            ),
             'CanStartMQuestId'
           )
         ),
@@ -538,10 +595,13 @@ def interpret_side_scenes(data):
     ret.append(game.interpret_data(
       (
         'MChapterId', 'Title', 'WorldLayoutType',
-        ('Scenes',
+        ('Scenes', list,
           (
             'MSceneId', 'Status',
-            ('Rewards', ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')),
+            (
+              'Rewards', list,
+              ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')
+            ),
             'CanStartMQuestId'
           )
         ),

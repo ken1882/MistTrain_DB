@@ -535,9 +535,41 @@ def get_scene(id):
 def get_profile(token):
   se = requests.Session()
   se.headers['Authorization'] = token
-  res  = se.get(f"{ServerLocation}/api/Users/Me").json()['r']
-  res2 = se.get(f"{ServerLocation}/api/Users/MyPreferences").json()['r']
-  ret = {**res, **res2}
+  res  = se.get(f"{ServerLocation}/api/Users/Me")
+  res2 = se.get(f"{ServerLocation}/api/Users/MyPreferences")
+  profile_dat = interpret_data(
+    (
+      'Id', 'CurrentActionPoints', 'ActionPointsRestoredAt', 'IsAdult', 'Money',
+      'Gem', 'FreeGem', 'Level', 'TotalExperience', 'MaxActionPoints', 'TotalFieldSkillCost',
+      'DisplayUserId',
+    ),
+    unpack(res.content)
+  )
+  pref_dat = interpret_data(
+    (
+      'Name','DateOfBirth','LocateType',
+      'WeaponLimit','ArmorLimit','AccessoryLimit','AbilityStoneLimit',
+      'SoundMute','BgmVolume','SeVolume','VoiceVolume',
+      'MyPageBgmJukeBoxActivated','AutoRoundBgmJukeBoxActivated','UJukeBoxMusicSettingViewModel',
+      'CharacterAutoLockRarity','IsHomeCharacterRandom','CurrentHomeViewTypeIsCharacter',
+      'MFieldSkillId1','MFieldSkillId2','MFieldSkillId3','IsHomeFieldSkillRandom',
+      'KnuckleWeaponLevel','KnuckleWeaponTotalPoint','SwordWeaponLevel','SwordWeaponTotalPoint',
+      'AxWeaponLevel','AxWeaponTotalPoint','SpearWeaponLevel','SpearWeaponTotalPoint',
+      'WhipWeaponLevel','WhipWeaponTotalPoint','MagicWeaponLevel','MagicWeaponTotalPoint','BowWeaponLevel',
+      'BowWeaponTotalPoint','RodWeaponLevel','RodWeaponTotalPoint','GunWeaponLevel','GunWeaponTotalPoint',
+      'UPartyId','MQuestId','BattleAutoSetting','BattleSpeed','AutoSellEquipRarity','AutoSellEquipEvolution',
+      'AutoSellEquipLevel','AutoSellAbility','AutoSellSlot','AdventureTextFeed','SpecialSkillAnimation',
+      'CurrentClearChapter','UnlockFeatureFlag','UnlockEffectFlag','FunctionHelpFlag','FunctionHelpFlag2',
+      'FunctionHelpFlag3','TutorialStatus','BattleAutoSellEquipType','BattleRaritySellTypeB','BattleRaritySellTypeA',
+      'BattleRaritySellTypeS','AbilityStoneBattleRaritySellTypeA','AbilityStoneBattleRaritySellTypeS',
+      'InCombat','WorkOutEndTime','DoubleWorkOutEndTime','HasRecommendNotice','IsAutoSpecialSkill',
+      'IsAutoOverDrive','EnableConnect','EnableIndividualAutoSell','ImageQualitySetting',
+      'RankingTitleId','IsAutoApprovalFriendRequest','EnableEnemyShieldEffect','BattleAutoSpecialSkillType',
+      'BattleSkipBuffEffectFlag','UserPreferenceActiveFlag','CurrentClearSideStoryChapter'
+    ),
+    unpack(res2.content)
+  )
+  ret = {**profile_dat, **pref_dat}
   return ret
 
 def interpret_data(keys, data):
