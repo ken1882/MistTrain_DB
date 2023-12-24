@@ -138,7 +138,7 @@ def update_scene_cache():
         CharacterSceneCache[chid][sid] = True
       else:
         CharacterSceneCache[chid][sid] = False
-
+  log_info("Scene cache updated")
 
 def check_new_available():
   global FlagDailyUpdated
@@ -148,8 +148,9 @@ def check_new_available():
     return
   if FlagDailyUpdated:
     return
-  update_cache()
   log_info(f"Updating scene cache")
+  update_cache()
+  log_info(f"Updating database cache")
   dm.update_cache(dm.SceneFolder)
   for lang,folder in dm.SceneFolderTranslated.items():
       log_info(f"Updating scene cache of {lang}")

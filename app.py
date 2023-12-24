@@ -329,7 +329,8 @@ def loop_game_listner():
   while _G.FlagRunning:
     _G.wait(_G.SERVER_TICK_INTERVAL)
     try:
-      derpy.update_race_history_db()
+      # derpy.update_race_history_db()
+      pass
     except Exception as err:
       log_warning("Server seems is under maintenance")
       handle_exception(err)
