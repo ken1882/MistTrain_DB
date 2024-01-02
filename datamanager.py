@@ -254,7 +254,7 @@ def upload_story_meta(meta):
     if not target:
       log_warning(f"Cloud file {cfname} does not exists, creating new file")
       target = Database.CreateFile({
-        'title': cfname,
+        'title': _G.SCENE_METAS[t],
         'parents': [{'kind': 'drive#fileLink', 'id': RootFolder['id']}],
       })
       set_cache(target)
