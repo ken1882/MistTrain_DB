@@ -176,7 +176,7 @@ function loadWorldData(){
     },
     ()=>{
       $.ajax({
-        url: `${ASSET_HOST}/Jsons/WorldPin/worldMapPin${__VolumeId}.json`,
+        url: `${ASSET_HOST}/Jsons/WorldPin/Main/worldMapPin${__VolumeId}.json`,
         success: (res) => {
           handlePinData(res);
           AssetsManager.incReadyCounter();
