@@ -122,6 +122,12 @@ def update_scene_cache():
       if is_scene_unlocked('side', sid, sc['Status']):
         ExistedScene.add(sid)
 
+  for ch in SceneMeta['pt']:
+    for sc in ch['Scenes']:
+      sid = sc['MSceneId']
+      if is_scene_unlocked('pt', sid, sc['Status']):
+        ExistedScene.add(sid)
+
   for ch in SceneMeta['character']:
     for layer in ch['CharacterScenes']:
       for sc in layer['Scenes']:
@@ -183,6 +189,8 @@ def is_scene_unlocked(_type, id, status):
   elif _type == 'side':
     return status == 5 
   elif _type == 'character':
+    return status == 3
+  elif _type == 'pt':
     return status == 3
   return False
 
@@ -262,6 +270,8 @@ def dump_sponspred_scene(token):
           data = interpret_character_scenes(raw)
         elif k == 'side':
           data = interpret_side_scenes(raw)
+        elif k == 'pt':
+          data = interpret_pt_scenes(raw)
       except Exception as err:
         log_error("Error while getting scene via sponser's token:\n", res.status_code,res.content)
         return _G.ERRNO_FAILED
@@ -369,7 +379,7 @@ def is_scene_missing(_type, sid, status):
 def get_new_scenes(_type, scenes):
   global SceneMeta,ExistedScene
   ret = []
-  if _type in ['main', 'event', 'side']:
+  if _type in ['main', 'event', 'side', 'pt']:
     for ch in scenes:
       for sc in ch['Scenes']:
         sid = sc['MSceneId']
@@ -386,104 +396,37 @@ def get_new_scenes(_type, scenes):
           ret.append(sid)
   return ret
 
-def update_meta(old_meta, new_meta, saved):
-  saved = [int(s) for s in saved]
-  for ch in new_meta['main']:
+def update_general_meta(stype, old_meta, new_meta, saved, primary_key='MChapterId'):
+  for ch in new_meta[stype]:
     och_idx = next(
-      (i for (i, o) in enumerate(old_meta['main']) if o['MChapterId'] == ch['MChapterId']),
+      (i for (i, o) in enumerate(old_meta[stype]) if o[primary_key] == ch[primary_key]),
       -1
     )
     if och_idx == -1:
-      old_meta['main'].append(ch)
+      old_meta[stype].append(ch)
       continue
     for sc in ch['Scenes']:
       sid = sc['MSceneId']
       if sid not in saved:
         continue
       nidx = next(
-        (i for (i, o) in enumerate(old_meta['main'][och_idx]['Scenes']) if o['MSceneId'] == sid),
+        (i for (i, o) in enumerate(old_meta[stype][och_idx]['Scenes']) if o['MSceneId'] == sid),
         -1
       )
       if nidx == -1:
-        old_meta['main'][och_idx]['Scenes'].append(sc)
+        old_meta[stype][och_idx]['Scenes'].append(sc)
       else:
-        old_meta['main'][och_idx]['Scenes'][nidx] = sc
-    old_meta['main'][och_idx]['Scenes'] = sorted(
-      old_meta['main'][och_idx]['Scenes'], 
+        old_meta[stype][och_idx]['Scenes'][nidx] = sc
+    old_meta[stype][och_idx]['Scenes'] = sorted(
+      old_meta[stype][och_idx]['Scenes'], 
       key=lambda o:o['MSceneId']
     )
-  
-  old_meta['main'] = sorted(
-    old_meta['main'], 
-    key=lambda o:o['MChapterId']
-  )
-  
-  ### 
-
-  for ch in new_meta['event']:
-    och_idx = next(
-      (i for (i, o) in enumerate(old_meta['event']) if o['MChapterId'] == ch['MChapterId']),
-      -1
-    )
-    if och_idx == -1:
-      old_meta['event'].append(ch)
-      continue
-    for sc in ch['Scenes']:
-      sid = sc['MSceneId']
-      if sid not in saved:
-        continue
-      nidx = next(
-        (i for (i, o) in enumerate(old_meta['event'][och_idx]['Scenes']) if o['MSceneId'] == sid),
-        -1
-      )
-      if nidx == -1:
-        old_meta['event'][och_idx]['Scenes'].append(sc)
-      else:
-        old_meta['event'][och_idx]['Scenes'][nidx] = sc
-    old_meta['event'][och_idx]['Scenes'] = sorted(
-      old_meta['event'][och_idx]['Scenes'], 
-      key=lambda o:o['MSceneId']
-    )
-  
-  old_meta['event'] = sorted(
-    old_meta['event'], 
-    key=lambda o:o['MChapterId']
+  old_meta[stype] = sorted(
+    old_meta[stype], 
+    key=lambda o:o[primary_key]
   )
 
-  ### 
-
-  for ch in new_meta['side']:
-    och_idx = next(
-      (i for (i, o) in enumerate(old_meta['side']) if o['MChapterId'] == ch['MChapterId']),
-      -1
-    )
-    if och_idx == -1:
-      old_meta['side'].append(ch)
-      continue
-    for sc in ch['Scenes']:
-      sid = sc['MSceneId']
-      if sid not in saved:
-        continue
-      nidx = next(
-        (i for (i, o) in enumerate(old_meta['side'][och_idx]['Scenes']) if o['MSceneId'] == sid),
-        -1
-      )
-      if nidx == -1:
-        old_meta['side'][och_idx]['Scenes'].append(sc)
-      else:
-        old_meta['side'][och_idx]['Scenes'][nidx] = sc
-    old_meta['side'][och_idx]['Scenes'] = sorted(
-      old_meta['side'][och_idx]['Scenes'], 
-      key=lambda o:o['MSceneId']
-    )
-  
-  old_meta['side'] = sorted(
-    old_meta['side'], 
-    key=lambda o:o['MChapterId']
-  )
-      
-  ###
-
+def update_character_meta(old_meta, new_meta, saved):
   for base in new_meta['character']:
     bch_idx = next(
       (i for (i, o) in enumerate(old_meta['character']) if o['MCharacterBaseId'] == base['MCharacterBaseId']),
@@ -512,6 +455,18 @@ def update_meta(old_meta, new_meta, saved):
           old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'].append(sc)
         else:
           old_meta['character'][bch_idx]['CharacterScenes'][lch_idx]['Scenes'][nidx] = sc
+
+def update_meta(old_meta, new_meta, saved):
+  saved = [int(s) for s in saved]
+  pkey_map = {
+    'main': 'MChapterId',
+    'event': 'MChapterId',
+    'side': 'MChapterId',
+    'pt': 'MFieldSkillId',
+  }
+  for stype,pk in pkey_map.items():
+    update_general_meta(stype, old_meta, new_meta, saved, pk)
+  update_character_meta(old_meta, new_meta, saved)
 
 def save_meta(meta, prefix=''):
   for k, fname in _G.SCENE_METAS.items():
@@ -706,3 +661,24 @@ def interpret_scene_data(data):
     ),
     data
   )
+
+def interpret_pt_scenes(data):
+  ret = []
+  for dat in data:
+    ret.append(game.interpret_data(
+      (
+        'MFieldSkillId',
+        ('Scenes', list,
+          (
+            'MSceneId', 'Status',
+            (
+              'Rewards',  list,
+              ('ItemId', 'ItemQuantity', 'UserItemId', 'Sold')
+            ),
+            'CanStartMQuestId'
+          )
+        ),
+      ),
+      dat
+    ))
+  return ret

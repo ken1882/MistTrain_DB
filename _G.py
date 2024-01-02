@@ -305,14 +305,16 @@ SCENE_METAS = {
   'main': 'main_scene.json',
   'event': 'event_scene.json',
   'character': 'character_scene.json',
-  'side': 'side_scene.json'
+  'side': 'side_scene.json',
+  'pt': 'pt_scene.json',
 }
 
 SCENE_META_API = {
   'main': '/api/UScenes/MainScenes',
   'event': '/api/UScenes/EventScenes',
   'character': '/api/UScenes/ViewableCharacters',
-  'side': '/api/UScenes/SideStoryScenes'
+  'side': '/api/UScenes/SideStoryScenes',
+  'pt': '/api/UScenes/GetViewableFieldSkillScene',
 }
 
 SCENE_SPONSOR_ARCHIVE = f"{STATIC_FILE_DIRECTORY}/sponsors.json"

@@ -231,6 +231,9 @@ tbody tr td{
   text-align: center;
 }
 
+.pt-swapskill{
+  cursor:pointer;
+}
 
 .normal-skill{
   color:white;

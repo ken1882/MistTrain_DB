@@ -223,11 +223,7 @@ def load_derpy_estimators():
         break
 
 def load_story_meta(data_dir='json'):
-  s_main  = f"/{_G.SCENE_METAS['main']}"
-  s_event = f"/{_G.SCENE_METAS['event']}"
-  s_chars = f"/{_G.SCENE_METAS['character']}"
-  s_side  = f"/{_G.SCENE_METAS['side']}"
-  metas = [s_main, s_event, s_chars, s_side]
+  metas = [f"/{fn}" for fn in _G.SCENE_METAS]
   ret = []
   for filename in metas:
     dst_path = f"{_G.STATIC_FILE_DIRECTORY}/{data_dir}{filename}"

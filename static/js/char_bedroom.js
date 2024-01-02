@@ -64,14 +64,14 @@ function loadBedroomSpineMeta(scene_id){
     __bedroomReadyCnt = 1;
     return ;
   }
-  var baseurl = getBedroombaseUrl(scene_id);
+  var baseurl = getBedroomBaseUrl(scene_id);
   $.ajax({
     url: `${baseurl}/still_configuration.json`,
     success: (res)=>{parseBedroomSpineMeta(res, scene_id)},
   });
 }
 
-function getBedroombaseUrl(sid){
+function getBedroomBaseUrl(sid){
   let pre = '', n = parseInt(sid / 100000);
   while(n > 10){
     pre += parseInt(n % 10);
@@ -79,6 +79,10 @@ function getBedroombaseUrl(sid){
   }
   pre = pre.split('').reverse().join('');
   return `${ASSET_HOST}/Spines/Stills/${pre}/${sid}`;
+}
+
+function getPtBedroomBaseUrl(pt_id, sid){
+  return `${ASSET_HOST}/Spines/PTSkillStills/${pt_id}/${sid}`;
 }
 
 function parseBedroomSpineMeta(res, sid){
@@ -162,7 +166,7 @@ function setupBedroomSpine(data){
 }
 
 function getBedroomSpinePart(sid, p){
-  let baseurl = getBedroombaseUrl(sid) + '/' + p;
+  let baseurl = getBedroomBaseUrl(sid) + '/' + p;
   return {
     png: `${baseurl}.png`,
     atlas: `${baseurl}.atlas`,

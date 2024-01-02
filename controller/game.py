@@ -31,8 +31,8 @@ TemporaryNetworkErrors = (
 )
 
 PostHeaders = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
+  'Accept': 'application/vnd.msgpack',
+  'Content-Type': 'application/vnd.msgpack',
   'Accept-Encoding': 'gzip, deflate, br',
 }
 
