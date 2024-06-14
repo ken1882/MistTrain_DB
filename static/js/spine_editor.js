@@ -616,13 +616,13 @@ function createGlContextSnapshot(gl){
 	let end = (height - 1) * row;
 	
 	gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, tmp);
-    for(var i=0;i<tmp.length;i+=4){
-        let alpha = tmp[i+3] / 255.0;
-        // tmp[i] = Math.round(tmp[i] * alpha);
-        // tmp[i+1] = Math.round(tmp[i+1] * alpha);
-        // tmp[i+2] = Math.round(tmp[i+2] * alpha);
-        // tmp[i+3] = alpha > 0.5 ? 0xff : 0;
-	}
+    // for(var i=0;i<tmp.length;i+=4){
+    //     let alpha = tmp[i+3] / 255.0;
+    //     tmp[i] = Math.round(tmp[i] * alpha);
+    //     tmp[i+1] = Math.round(tmp[i+1] * alpha);
+    //     tmp[i+2] = Math.round(tmp[i+2] * alpha);
+    //     tmp[i+3] = alpha > 0.5 ? 0xff : 0;
+	// }
 	for(var i=0;i<tmp.length;i+=row){
 		pixels.set(tmp.subarray(i,i+row), end - i);
 	}
