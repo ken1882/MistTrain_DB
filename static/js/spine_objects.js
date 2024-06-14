@@ -377,19 +377,23 @@ class MTG_Spine extends Spine_Character{
 }
 
 class SpineFileLoader{
-    constructor(texture, atlas, skel){
+    constructor(textures, atlas, skel){
         this.handler = {
             'loaded': null,
             'error': null,
         };
         this.version = null;
-        this.textureName = texture.name;
-        this.texture = URL.createObjectURL(texture);
+        this.textures = [];
+        this.textureNames = [];
+        for(let t of textures){
+            this.textures.push(URL.createObjectURL(t));
+            this.textureNames.push(t.name);
+        }
         this.atlas   = URL.createObjectURL(atlas);
         this.skel    = URL.createObjectURL(skel);
         this._disposed  = false;
         this._readyCnt = 0;
-        this._readtReq = 2;
+        this._readyReq = 2;
         this.loadVersion(skel);
         this.verifyAtlasTextureName(atlas);
     }
@@ -398,16 +402,13 @@ class SpineFileLoader{
         fbread(atlas, (buffer)=>{
             let content = new TextDecoder().decode(buffer);
             content = content.replaceAll('\r\n', '\n');
-            let tname = '';
             for(let line of content.split('\n')){
                 if(line.split('.').last() != 'png'){ continue; }
-                tname = line;
-                break;
-            }
-            if(tname != this.textureName){
-                this.dispose();
-                alert(`${Vocab.SpineErrors['TextureNameUnmatch']}\nexpected ${tname}\ngot ${this.textureName}`);
-                return ;
+                if(!this.textureNames.includes(line)){
+                    this.dispose();
+                    alert(`${Vocab.SpineErrors['TextureNameUnmatch']}\nexpected ${line}\ngot ${this.textureNames.join(' ')}`);
+                    return ;
+                }
             }
             this._readyCnt += 1;
             this.callLoadedHandler();
@@ -432,7 +433,7 @@ class SpineFileLoader{
         }, 0, 0x30);
     }
 
-    isReady(){ return this._readyCnt >= this._readtReq; }
+    isReady(){ return this._readyCnt >= this._readyReq; }
 
     callLoadedHandler(){
         if(!this.isReady() || !this.handler['loaded']){ return ;}

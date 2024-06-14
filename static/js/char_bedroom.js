@@ -42,8 +42,6 @@ function initBedroom(){
   setup();
 }
 
-
-
 function setup(){
   if(!DataManager.isReady() || !AssetsManager.isReady()){
     return setTimeout(setup, 300);
@@ -355,10 +353,25 @@ function setupPartSelection(){
   for(let i in AnimationParts){
     let p = AnimationParts[i];
     let section = document.createElement('p');
-    section.innerHTML = `
-      <input type="checkbox" id="ckb_part-${i}" checked>
-      <label for="ckb_part-${i}">${p.Path}</label>
+    let html = `
+      <div style="display:block; padding:8px;">
+        <input type="checkbox" id="ckb_part-${i}" checked>
+        <label for="ckb_part-${i}">${p.Path}</label>
+        <br>
     `
+    let att_len = CharacterSkeletons[i].slots.length;
+    for(let j=0;j<att_len;++j){
+      let att = CharacterSkeletons[i].slots[j].attachment;
+      if(!att){ continue; }
+      html += `
+        <span style="padding: 2px">
+          <input type="checkbox" id="ckb_attachment-${i}-${j}" checked>
+          <label for="ckb_attachment-${i}-${j}">${att.name}</label>
+        </span>
+      `
+    }
+    html += '</div><br><br><hr>'
+    section.innerHTML = html;
     $(section).addClass('item');
     plist.append(section);
     $(`#ckb_part-${i}`).on('change', (e)=>{
@@ -369,6 +382,16 @@ function setupPartSelection(){
         CharacterSkeletons[i].scaleX = 0;
       }
     });
+    for(let j=0;j<att_len;++j){
+      $(`#ckb_attachment-${i}-${j}`).on('change', (e)=>{
+        if(e.target.checked){
+          CharacterSkeletons[i].slots[j].color.a = 1;
+        }
+        else{
+          CharacterSkeletons[i].slots[j].color.a = 0;
+        }
+      });
+    }
   }
 
 }

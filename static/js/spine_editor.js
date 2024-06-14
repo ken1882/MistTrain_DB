@@ -719,13 +719,17 @@ function setupGifExport(){
 function loadSpineFiles(){
     let files = Array.from(document.getElementById('inp-spfiles').files);
     let fa = files.find((f)=>f.name.split('.').last()=='atlas');
-    let ft = files.find((f)=>f.name.split('.').last()=='png');
     let fs = files.find((f)=>f.name.split('.').last()=='skel');
-    if(!fa || !ft || !fs){
+    let texture_files = [];
+    for(let f of files){
+        if(f.name.split('.').last() != 'png'){ continue; }
+        texture_files.push(f);
+    }
+    if(!fa || !texture_files || !fs){
         alert(Vocab.SpineErrors['MissingFile']);
         return ;
     }
-    let fsloader = new SpineFileLoader(ft, fa, fs);
+    let fsloader = new SpineFileLoader(texture_files, fa, fs);
     fsloader.setLoadedHandler((fsl)=>{
         let sp = null;
         console.log(fsl);
