@@ -105,12 +105,17 @@ function findSpeakerCharacterId(dialog){
 function setupDialogues(){
   DialogData = SceneData.MSceneDetailViewModel;
   DialoguePlayer.setup(SceneData);
+  var title = '';
   if(Vocab.SceneTitle.hasOwnProperty(SceneData.MSceneId)){
-    $("#scene-title")[0].innerHTML += Vocab.SceneTitle[SceneData.MSceneId];
+    title = Vocab.SceneTitle[SceneData.MSceneId];
   }
-  else{
-    $("#scene-title")[0].innerHTML += SceneData.Title;
+  else if(SceneData.Title){
+    title = SceneData.Title;
   }
+  else if(AssetsManager.SceneData.hasOwnProperty(SceneData.MSceneId)){
+    title = AssetsManager.SceneData[SceneData.MSceneId].Title;
+  }
+  $("#scene-title")[0].innerHTML += title;
   let parent = $("#log-section");
   for(let i in DialogData){
     let dialog = DialogData[i];
@@ -126,7 +131,7 @@ function setupDialogues(){
     else{
       content = dialog.Phrase;
     }
-    phrase.innerHTML = content.replaceAll('＊', '<br>');
+    phrase.innerHTML = content.replaceAll('＊', '<br>').replaceAll('\\n', '<br>');
     if(dialog['Name']){
       phrase.innerHTML = `<span style="color:greenyellow;"><b>${dialog['Name']}：</b></span><br>` + phrase.innerHTML;
       let mchid = findSpeakerCharacterId(dialog);
