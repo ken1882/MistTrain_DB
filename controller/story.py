@@ -203,9 +203,15 @@ def rubify_scenes(sids):
     if os.path.exists(dst):
       log_info(f"{dst} already exists, skip")
       continue
-    rbd = ruby.rubifiy_file(src)
+    # rbd = ruby.rubifiy_file(src)
+    # with open(dst, 'w') as fp:
+    #   json.dump(rbd, fp)
+    with open(src, 'r') as fp:
+      data = json.load(fp)
+      if 'r' in data:
+        data = data['r']
     with open(dst, 'w') as fp:
-      json.dump(rbd, fp)
+      json.dump(data, fp)
 
 def patch_scenes(sids):
   global IsStoryReady
