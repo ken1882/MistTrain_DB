@@ -85,13 +85,16 @@ function setupChapterPins(response){
     let timg = TopPinAssets[ChapterPinIdMap[timg_idx]];
     let lx = px + pin_dat.x;
     let ly = py + pin_dat.y * -1;
-    let lhash = parseInt(lx/10) + parseInt(ly/10)*1000;
-    if(OccuptionMap.hasOwnProperty(lhash)){
+    const BLOCK_SIZE = 100;
+    let lhash = parseInt(lx/BLOCK_SIZE) + parseInt(ly/BLOCK_SIZE)*1000;
+    let offset = 1;
+    while(OccuptionMap.hasOwnProperty(lhash)){
       pin_idx = id*2;
       pin_dat = WorldPinData[pin_idx];
-      lx = px + pin_dat.x;
-      ly = py + pin_dat.y * -1;
-      lhash = parseInt(lx/10) + parseInt(ly/10)*1000;
+      lx = px + pin_dat.x + 100*offset;
+      ly = py + pin_dat.y * -1 + 100*offset;
+      lhash = parseInt(lx/BLOCK_SIZE) + parseInt(ly/BLOCK_SIZE)*1000;
+      offset += 1;
     }
     LocationPinContext.clearRect(0, 0, LocationPinCanvas.width, LocationPinCanvas.height);
     LocationPinContext.drawImage(
