@@ -179,10 +179,10 @@ function insertFieldSkills(){
                 }
                 let skid = dat.Value1;
                 skill = AssetsManager.SkillData[skid];
-                sname = Vocab.SkillName[skid];
-                sdesc = Vocab.SkillEffect[skid];
-                if(!sname){ sname = skill.Name; }
-                if(!sdesc){ sdesc = skill.Description; }
+                sname = Vocab.SkillName[skid] || '';
+                sdesc = Vocab.SkillEffect[skid] || '';
+                if(!sname && skill){ sname = skill.Name; }
+                if(!sdesc && skill){ sdesc = skill.Description; }
                 let nname = $("<b>").text(sname);
                 let nhr = $("<hr>");
                 let ndesc = $("<span>").text(sdesc);
