@@ -3,16 +3,9 @@ import requests
 import urllib.parse
 import json
 import controller.game as game
+import unicodedata
 from time import sleep
-
-MaruHeaders = {
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Accept': 'text/plain, */*; q=0.01',
-  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  'Host': 'www.jpmarumaru.com',
-  'Origin': 'https://www.jpmarumaru.com',
-  'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
-}
+from bs4 import BeautifulSoup as BS
 
 LinewrapSymbol = '＊'
 CommonTitleCache = {}
@@ -24,19 +17,25 @@ IgnorePhrase = [
   '！！！！！！'
 ]
 
-def rubifiy_japanese(text, fname='', depth=0):
+def rubifiy_japanese(text, fname='', depth=0, agent=None, token=None):
+  ret = {
+    'html': f"<div>{text}</div>",
+    'agent': agent,
+    'token': token
+  }
   if text in IgnorePhrase:
-    return f"<div>{text}</div>"
-  res = requests.post(
-    "https://www.jpmarumaru.com/tw/api/json_KanjiFurigana.asp",
-    'Text='+urllib.parse.quote_plus(text),
-    headers=MaruHeaders
-  )
-  ret = text
+    return ret
+  if not agent or not token:
+    agent = requests.Session()
+    r = agent.get('https://www.jcinfo.net/zh-hant/tools/kana')
+    page = BS(r)
+    token = page.find('input', {'name': '_token'})['value']
+  res = agent.post('https://www.jcinfo.net/zh-hant/tools/kana', {'_token': token, 'text': text})
   try:
-    ret = res.content.decode()
-    if ret == '<div>500</div>':
-      raise RuntimeError('Server responded with 500')
+    res_page = BS(res.content)
+    ret['agent'] = agent
+    ret['html']  = res_page.find('div', {'class': '_result-ruby'})
+    ret['token'] = res_page.find('input', {'name': '_token'})['value']
   except Exception as err:
     print("An error occurred during rubifiy phrase:", err, 'original text:', text, sep='\n')
     if fname:
@@ -49,9 +48,22 @@ def rubifiy_japanese(text, fname='', depth=0):
       print("Payload:", urllib.parse.quote_plus(text), sep='\n')
       print("Response:", res.content, sep='\n')
       ErrorFiles.add(fname)
-  return f"<div>{ret}</div>"
+  return ret
+
+def rubify_line(text, fname='', agent=None, token=None):
+  ret = rubifiy_japanese(text, fname=fname, agent=agent, token=token)
+  correction = (
+    (
+      '<span class="morpheme"><ruby>幻<rp>(</rp><rt>まぼろし</rt><rp>)</rp></ruby></span><span class="morpheme"><ruby>霧<rp>(</rp><rt>ぎり</rt><rp>)</rp></ruby></span>',
+      '<span class="morpheme"><ruby>幻霧<rp>(</rp><rt>げんむ</rt><rp>)</rp></ruby></span>',
+    ),
+  )
+  for pair in correction:
+    ret['html'] = ret['html'].replace(pair[0], pair[1])
+  return ret
 
 def rubifiy_file(file, verbose=False):
+  global LinewrapSymbol
   with open(file, 'r') as fp:
     data = json.load(fp)
     if 'r' in data:
@@ -60,31 +72,17 @@ def rubifiy_file(file, verbose=False):
     data = data[0]
   id = data['MSceneId']
   dialogs = sorted(data['MSceneDetailViewModel'], key=lambda x:x['GroupOrder']+x['ViewOrder']*0.01)
+  agent, token = None, None
   for i,dia in enumerate(dialogs):
-    text = dia['Phrase']
+    text = unicodedata.normalize('NFKD', dia['Phrase'])
     text = text.replace('\\n', LinewrapSymbol)
-    text = text.replace('\u3000', '')
-    text = text.replace('\r',  LinewrapSymbol)
+    text = text.replace('\r', LinewrapSymbol)
     text = text.replace('"',  "'")
-    ruby = rubifiy_japanese(text, file)
-    correction = (
-      (
-        '<ruby><rb>一</rb><rt>いち</rt></ruby><ruby><rb>人</rb><rt>にん</rt></ruby>',
-        '<ruby><rb>一人</rb><rt>ひとり</rt></ruby>',
-      ),
-      (
-        '<ruby><rb>二</rb><rt>に</rt></ruby><ruby><rb>人</rb><rt>にん</rt></ruby>',
-        '<ruby><rb>二人</rb><rt>ふたり</rt></ruby>',
-      ),
-      (
-        '<ruby><rb>幻</rb><rt>まぼろし</rt></ruby><ruby><rb>霧</rb><rt>きり</rt></ruby>',
-        '<ruby><rb>幻</rb><rt>げん</rt></ruby><ruby><rb>霧</rb><rt>む</rt></ruby>',
-      )
-    )
-    for pair in correction:
-      ruby = ruby.replace(pair[0], pair[1])
+    r_data = rubify_line(text, file, agent, token)
+    agent = r_data['agent']
+    token = r_data['token']
     if verbose:
-      print(ruby)
+      print(r_data['html'])
     dialogs[i]['Ruby'] = ruby
   data['MSceneDetailViewModel'] = dialogs
   # Title
@@ -92,6 +90,8 @@ def rubifiy_file(file, verbose=False):
   if t in CommonTitleCache:
     data['Title'] = CommonTitleCache[t]
   else:
-    data['Title'] = rubifiy_japanese(t, file)
+    data['Title'] = rubify_line(t, file)['html']
+    agent = r_data['agent']
+    token = r_data['token']
     CommonTitleCache[t] = data['Title']
   return data

@@ -109,13 +109,13 @@ def update_scene_cache():
       sid = sc['MSceneId']
       if is_scene_unlocked('main', sid, sc['Status']):
         ExistedScene.add(sid)
-  
+
   for ch in SceneMeta['event']:
     for sc in ch['Scenes']:
       sid = sc['MSceneId']
       if is_scene_unlocked('event', sid, sc['Status']):
         ExistedScene.add(sid)
-  
+
   for ch in SceneMeta['side']:
     for sc in ch['Scenes']:
       sid = sc['MSceneId']
@@ -164,14 +164,6 @@ def check_new_available():
   FlagDailyUpdated = True
   log_info("Story meta updated")
 
-def rubifiy_japanese(text):
-  res = requests.post(
-    "https://www.jpmarumaru.com/tw/api/json_KanjiFurigana.asp",
-    'Text='+urllib.parse.quote_plus(text),
-    headers=MaruHeaders
-  )
-  return res.content
-
 def copy_meta_cache():
   for k,fn in _G.SCENE_METAS.items():
     src = f"{_G.STATIC_FILE_DIRECTORY}/json/{fn}"
@@ -185,9 +177,9 @@ def is_scene_unlocked(_type, id, status):
   if _type == 'main':
     return id % 100 > 10
   elif _type == 'event':
-    return status == 5 
+    return status == 5
   elif _type == 'side':
-    return status == 5 
+    return status == 5
   elif _type == 'character':
     return status == 3
   elif _type == 'pt':
@@ -239,7 +231,7 @@ def patch_scenes(sids):
 
     dm.save_scene(sid, rbd)
 
-# save in tmp folder, add to cache 
+# save in tmp folder, add to cache
 # and upload to gdrive after downloaded
 # file will need to be rubified before serving
 # TODO: make this part prettier
@@ -319,11 +311,11 @@ def dump_sponspred_scene(token):
         ExistedScene.add(sid) # add to cache
         ok_total += 1
         log_info(f"Scene#{sid} {game.get_scene(sid)['Title']} saved")
-    
+
     save_sponsors(token)
     if not saved:
       return _G.ERRNO_OK
-    
+
     # if false, manually run rubifiing process,
     # makes response much faster
     if not RUBIFY_STORY:
@@ -331,7 +323,7 @@ def dump_sponspred_scene(token):
       update_meta(tmp_meta, nmeta, saved)
       save_meta(tmp_meta, 't_')
       return _G.ERRNO_OK
-    
+
     UploadStatus = 'process'
     ok_total = 0
     new_total = len(saved)
@@ -340,13 +332,13 @@ def dump_sponspred_scene(token):
       th = Thread(target=rubify_scenes, args=(chunk,))
       RubyWorkers.append(th)
       th.start()
-    
+
     _running = True
     while _running:
       sleep(1)
       # print([th.is_alive() for th in RubyWorkers])
       _running = not all([not th.is_alive() for th in RubyWorkers])
-    
+
     UploadStatus = 'upload'
     ok_total = 0
     new_total = len(saved)
@@ -358,7 +350,7 @@ def dump_sponspred_scene(token):
         dm.save_scene(sid, json.load(fp))
       done.append(sid)
       ok_total += 1
-    
+
     update_meta(SceneMeta, nmeta, done)
     save_meta(SceneMeta)
     dm.upload_story_meta(copy(SceneMeta))
@@ -424,11 +416,11 @@ def update_general_meta(stype, old_meta, new_meta, saved, primary_key='MChapterI
       else:
         old_meta[stype][och_idx]['Scenes'][nidx] = sc
     old_meta[stype][och_idx]['Scenes'] = sorted(
-      old_meta[stype][och_idx]['Scenes'], 
+      old_meta[stype][och_idx]['Scenes'],
       key=lambda o:o['MSceneId']
     )
   old_meta[stype] = sorted(
-    old_meta[stype], 
+    old_meta[stype],
     key=lambda o:o[primary_key]
   )
 
@@ -481,11 +473,11 @@ def save_meta(meta, prefix=''):
       with open(path, 'r') as fp:
         with open(path+'.bak', 'w') as fp2:
           json.dump(json.load(fp), fp2)
-    
+
     with open(path, 'w') as fp:
       json.dump(meta[k], fp)
       log_info(f"{fname} saved")
-  
+
 
 def save_sponsors(token):
   try:
