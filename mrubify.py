@@ -20,6 +20,21 @@ import os, sys
 MaxWorkers  = 1 # more then 1 will rate limited using yahoo's service
 RubyWorkers = []
 
+def scan_err_files():
+    files = glob('static/scenes/*.json')
+    for f in files:
+        try:
+            with open(f, 'r') as fp:
+                data = json.load(fp)
+            if 'MSceneDetailViewModel' not in data:
+                continue
+            for dia in data['MSceneDetailViewModel']:
+                if 'Ruby' not in dia or '<span>' not in dia['Ruby']:
+                    print(f, dia['Ruby'])
+                    break
+        except Exception:
+            pass
+
 def main():
     game.load_database()
     dm.init()

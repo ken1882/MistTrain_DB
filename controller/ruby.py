@@ -41,7 +41,7 @@ def rubifiy_japanese(text, fname='', depth=0, agent=None, token=None):
     'agent': agent,
     'token': token
   }
-  if text in IgnorePhrase:
+  if text in IgnorePhrase or not text:
     return ret
   if not agent or not token:
     agent = requests.Session()
