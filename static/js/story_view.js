@@ -242,7 +242,7 @@ function playDialogueNode(node){
   stopDialogueNode(CurrentDialogueElement);
   clearTimeout(CurrentDialogueTimer);
   CurrentDialogueElement = node;
-  if(!node){ 
+  if(!node){
     CurrentDialogueIndex = -1;
     CurrentDialogueTimer = null;
     return;
@@ -286,7 +286,7 @@ function playDialogueNode(node){
     if(DialoguePlayer.currentBGM && DialoguePlayer.currentBGM.id != bgm){
       DialoguePlayer.fadeOutBGM(null, dur);
     }
-    if(!DialoguePlayer.currentBGM || 
+    if(!DialoguePlayer.currentBGM ||
       DialoguePlayer.currentBGM.id != bgm ||
       !DialoguePlayer.currentBGM.playing()){
       DialoguePlayer.fadeInBGM(bgm, dur);

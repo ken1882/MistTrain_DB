@@ -39,15 +39,6 @@ ExistedScene = set()
 # For frontend to determine whether character has all scene unlocked
 CharacterSceneCache = {}
 
-MaruHeaders = {
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Accept': 'text/plain, */*; q=0.01',
-  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  'Host': 'www.jpmarumaru.com',
-  'Origin': 'https://www.jpmarumaru.com',
-  'Referer': 'https://www.jpmarumaru.com/tw/toolKanjiFurigana.asp'
-}
-
 MTGHeaders = {
   'Accept': 'application/vnd.msgpack',
   'Accept-Encoding': 'gzip, deflate, br',
@@ -64,6 +55,7 @@ UPDATE_HOUR = 4 # 4 am
 def init():
   global IsStoryReady,IsStoryInitCalled
   IsStoryInitCalled = True
+  IsStoryReady = False
   while not dm.CacheBooted:
     log_warning("[Story] Data cache unbooted, waiting for 10 seconds")
     sleep(10)
@@ -146,14 +138,15 @@ def update_scene_cache():
         CharacterSceneCache[chid][sid] = False
   log_info("Scene cache updated")
 
-def check_new_available():
+def check_new_available(force=False):
   global FlagDailyUpdated
-  curt = game.localt2jpt(datetime.now())
-  if curt.hour != UPDATE_HOUR:
-    FlagDailyUpdated = False
-    return
-  if FlagDailyUpdated:
-    return
+  if not force:
+    curt = game.localt2jpt(datetime.now())
+    if curt.hour != UPDATE_HOUR:
+      FlagDailyUpdated = False
+      return
+    if FlagDailyUpdated:
+      return
   log_info(f"Updating scene cache")
   update_cache()
   log_info(f"Updating database cache")
@@ -195,15 +188,18 @@ def rubify_scenes(sids):
     if os.path.exists(dst):
       log_info(f"{dst} already exists, skip")
       continue
-    # rbd = ruby.rubifiy_file(src)
-    # with open(dst, 'w') as fp:
-    #   json.dump(rbd, fp)
+    # old data format
     with open(src, 'r') as fp:
       data = json.load(fp)
       if 'r' in data:
         data = data['r']
+    # unprocessed fallback
     with open(dst, 'w') as fp:
       json.dump(data, fp)
+    # add kanji hiraganas
+    rbd = ruby.rubifiy_file(src)
+    with open(dst, 'w') as fp:
+      json.dump(rbd, fp)
 
 def patch_scenes(sids):
   global IsStoryReady
@@ -235,7 +231,7 @@ def patch_scenes(sids):
 # and upload to gdrive after downloaded
 # file will need to be rubified before serving
 # TODO: make this part prettier
-def dump_sponspred_scene(token):
+def dump_sponsored_scene(token):
   global UploadLock,SceneMeta,UploadStatus,RubyWorkers
   if UploadLock:
     return _G.ERROR_LOCKED

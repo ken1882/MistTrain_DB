@@ -9,6 +9,7 @@ import controller.game  as game
 import controller.story as story
 import controller.dmm as dmm
 import datamanager as dm
+import sigmanager as sm
 from config import DevelopmentConfig,ProductionConfig
 from threading import Thread
 import pytz
@@ -84,13 +85,13 @@ def dmm_login_totp():
   except Exception as err:
     handle_exception(err, debug=True)
     ret = {'status': 403}
-  
+
   try:
     ret['mtg_result'] = dmm.login_game(ret['result'])
   except Exception as err:
     handle_exception(err, debug=True)
     ret = {'status': 403}
-  
+
   return jsonify(ret),ret['status']
 
 @app.route('/api/login/game', methods=['POST'])
@@ -148,14 +149,14 @@ def character_database():
 
 @app.route('/character_database/<id>')
 def character_info(id):
-  return render_template('character_info.html', 
+  return render_template('character_info.html',
     navbar_content=get_navbar(),
     ch_id=id,
   )
 
 @app.route('/character_database/<id>/bedroom')
 def character_bedroom(id):
-  res_ok = make_response(render_template('character_bedroom.html', 
+  res_ok = make_response(render_template('character_bedroom.html',
     navbar_content=get_navbar(),
     ch_id=id,
   ))
@@ -169,7 +170,7 @@ def character_bedroom(id):
     )
     return redirect(f"/auth/discord/redirect?dir=out&callback={request.path}&dest={dest}")
   elif msg == _G.MSG_PIPE_CONT:
-    res_ok.set_cookie('btoken', 
+    res_ok.set_cookie('btoken',
       b64encode('ミストトレインガールズ～霧の世界の車窓から～ X '.encode()).decode(),
       expires=datetime.now()+timedelta(days=30)
     )
@@ -177,14 +178,14 @@ def character_bedroom(id):
   elif msg == _G.MSG_PIPE_STOP:
     res = _G.PipeRetQueue.popleft()
     return jsonify(res.json()),res.status_code
-  
+
   res_ban = make_response(jsonify({'msg': 'Forbidden'}), 403)
-  res_ban.set_cookie('btoken', 
+  res_ban.set_cookie('btoken',
       b64encode('ミストトレインガールズ～霧の世界の車窓から～'.encode()).decode(),
       expires=datetime.now()+timedelta(days=3)
     )
   return res_ban
-  
+
 @app.route('/story_transcript', methods=['GET'])
 @req_story_ready
 def story_transcript_index():
@@ -198,7 +199,7 @@ def character_scene_db_index():
 @app.route('/mainstory_map/<volume>', methods=['GET'])
 @req_story_ready
 def story_main_worldmap(volume=1):
-  return render_template('main_story.html', 
+  return render_template('main_story.html',
     navbar_content=get_navbar(),
     vol_id=volume,
   )
@@ -207,7 +208,7 @@ def story_main_worldmap(volume=1):
 @app.route('/story_transcript/<id>', methods=['GET'])
 @req_story_ready
 def story_view(id=1):
-  return render_template('story_view.html', 
+  return render_template('story_view.html',
     navbar_content=get_navbar(),
     sc_id=id,
   )
@@ -223,6 +224,34 @@ def speditor_index():
 @app.route('/party_builder', methods=['GET'])
 def partybuilder_index():
   return render_template('party_builder.html', navbar_content=get_navbar())
+
+@app.route('/adminutil/reload')
+def reload_database():
+  res_ok = make_response('OK', 200)
+  msg = auth.verify_request(request, response=[res_ok])
+  if msg == _G.MSG_PIPE_REAUTH:
+    ainfo = auth.get_dcauth_info()
+    dest = quote(
+      "https://discord.com/oauth2/authorize?" + \
+      f"response_type={ainfo['type']}&client_id={ainfo['client_id']}&" + \
+      f"scope={ainfo['scope']}&redirect_uri={ainfo['callback']}"
+    )
+    sm.flag_reload()
+    return redirect(f"/auth/discord/redirect?dir=out&callback={request.path}&dest={dest}")
+  elif msg == _G.MSG_PIPE_CONT:
+    res_ok.set_cookie('btoken',
+      b64encode('ミストトレインガールズ～霧の世界の車窓から～ X '.encode()).decode(),
+      expires=datetime.now()+timedelta(days=30)
+    )
+    sm.flag_reload()
+    return res_ok
+
+  res_ban = make_response(jsonify({'msg': 'Forbidden'}), 403)
+  res_ban.set_cookie('btoken',
+      b64encode('ミストトレインガールズ～霧の世界の車窓から～'.encode()).decode(),
+      expires=datetime.now()+timedelta(days=3)
+    )
+  return res_ban
 
 ## Auxiliary methods / API
 
@@ -283,9 +312,9 @@ def get_available_character_scene():
   return jsonify({}),500
 
 @app.route('/api/SponsorScenes', methods=['POST'])
-def spnosor_scene():
+def sponsor_scene():
   token = request.form.get('token')
-  msg = story.dump_sponspred_scene(token)
+  msg = story.dump_sponsored_scene(token)
   if msg == _G.ERROR_LOCKED:
     return jsonify({'msg': 'Locked'}),409
   if msg == _G.ERRNO_UNAUTH:
@@ -322,22 +351,16 @@ def setup():
     res = game.reauth_game()
     if res == _G.ERRNO_MAINTENANCE:
       log_warning("Server is under maintenance!")
-  _G.ThreadPool['game'] = Thread(target=loop_game_listner, daemon=True)
+  _G.ThreadPool['game'] = Thread(target=loop_game_listener, daemon=True)
   _G.ThreadPool['game'].start()
 
-def loop_game_listner():
+def loop_game_listener():
   while _G.FlagRunning:
     _G.wait(_G.SERVER_TICK_INTERVAL)
     try:
-      # derpy.update_race_history_db()
-      pass
+      sm.update()
     except Exception as err:
       log_warning("Server seems is under maintenance")
-      handle_exception(err)
-    try:
-      story.check_new_available()
-    except Exception as err:
-      log_error("Error while updating story cache")
       handle_exception(err)
     # log_debug("Server ticked")
 

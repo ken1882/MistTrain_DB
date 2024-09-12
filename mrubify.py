@@ -15,9 +15,9 @@ from copy import copy
 from threading import Thread
 from time import sleep
 import re
-import os
+import os, sys
 
-MaxWorkers  = 8
+MaxWorkers  = 1 # more then 1 will rate limited using yahoo's service
 RubyWorkers = []
 
 def main():
@@ -27,6 +27,7 @@ def main():
     story.init()
     files = glob(f"{_G.DCTmpFolder}/scenes/*.json")
     news  = []
+    force = '-f' in sys.argv
     for f in files:
         try:
             sid = re.search(r"(\d+).json", f).groups()[0]
@@ -35,7 +36,7 @@ def main():
             utils.handle_exception(err)
             continue
         cpath = f"/{_G.SCENE_CLOUD_FOLDERNAME}/{sid}.json"
-        if dm.get_cache(cpath):
+        if not force and dm.get_cache(cpath):
             _G.log_info(f"Scene already on cloud: {cpath}, skip")
             continue
         news.append(sid)
@@ -47,14 +48,14 @@ def main():
     new_total = len(news)
     csize = new_total // MaxWorkers
     for chunk in utils.chop(news, csize):
-      th = Thread(target=story.rubify_scenes, args=(chunk,))
-      RubyWorkers.append(th)
-      th.start()
-    
+        th = Thread(target=story.rubify_scenes, args=(chunk,))
+        RubyWorkers.append(th)
+        th.start()
+
     _running = True
     while _running:
-      sleep(1)
-      _running = not all([not th.is_alive() for th in RubyWorkers])
+        sleep(1)
+        _running = not all([not th.is_alive() for th in RubyWorkers])
 
     _G.log_info('Rubify done, uploading files')
     for sid in news:
@@ -65,7 +66,7 @@ def main():
         except Exception as err:
             utils.handle_exception(err)
             continue
-    
+
     nmeta = {}
     # load tmp meta and upload as serving meta
     for k, fname in _G.SCENE_METAS.items():

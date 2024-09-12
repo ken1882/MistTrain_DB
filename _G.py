@@ -28,7 +28,7 @@ PRODUCTION = ((os.getenv('FLASK_ENV') or '').lower() == 'production')
 
 DCTmpFolder = ".tmp"
 DCSnapshotFile = "snapshot.png"
-STATIC_FILE_DIRECTORY = './static' 
+STATIC_FILE_DIRECTORY = './static'
 
 # 0:NONE 1:ERROR 2:WARNING 3:INFO 4:DEBUG
 VerboseLevel = 3
@@ -220,7 +220,7 @@ DERPY_TACTIC_NIGE     = 1 # 逃げ
 DERPY_TACTIC_SENKO    = 2 # 先行
 DERPY_TACTIC_SASHI    = 3 # 差し
 DERPY_TACTIC_OI       = 4 # 追い
-DERPY_DIRECTION_RIGHT = 0 # 右回り 
+DERPY_DIRECTION_RIGHT = 0 # 右回り
 DERPY_DIRECTION_LEFT  = 1 # 左回り
 DERPY_WEATHER_SUNNY   = 0 # 晴
 DERPY_WEATHER_RAIN    = 1 # 雨
@@ -250,7 +250,7 @@ DERPY_CONDITION_LIST = [
   'やる気を感',
   '調子は良さ',
   '凄い意気込',
-  '絶好調のよ',  
+  '絶好調のよ',
 ]
 DERPY_CONDITION_NAME = [
   '',
@@ -432,7 +432,7 @@ def SetCacheString(key, val):
       return os.system(f'dotenv set {key} "{val}"')
   except Exception as err:
     log_error("Error while caching:", err)
-    return None  
+    return None
 
 def SetCacheTimestamp(key, val):
   global RedisCache

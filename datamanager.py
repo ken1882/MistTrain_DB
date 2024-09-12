@@ -48,6 +48,7 @@ def init():
 
 def update_cache(folder=None):
   global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated,CacheBooted
+  CacheBooted = False
   log_db_info()
   if not folder: # update all
     files = get_folder_files()
@@ -58,7 +59,6 @@ def update_cache(folder=None):
       SceneFolderTranslated[lang] = next((f for f in files if f['title'] == fname), None)
   else:
     files = get_folder_files(folder)
-  
   for f in files:
     if not f['parents']:
       continue
@@ -113,16 +113,16 @@ def load_derpy_db(year, month):
   ttl  = datetime.now() - timedelta(days=32)
   if not _G.FlagUseCloudData:
     return dst_path
-  
+
   if datetime(year, month, 1) < ttl and os.path.exists(dst_path):
     log_info(f"{dst_path} already exists")
     return dst_path
-  
+
   target = get_cache(f"/{_G.DERPY_CLOUD_FOLDERNAME}/{filename}")
   if not target:
     log_warning(target, 'does not exists!')
     return dst_path
-  
+
   tmp_path = f"{_G.DCTmpFolder}/{filename}"
   log_info(f"Downloading {target['title']}")
   target.GetContentFile(tmp_path)
@@ -149,7 +149,7 @@ def upload_derpy_db(data, y, m):
     for file in files:
       if file['title'] != fname:
         continue
-      target = file 
+      target = file
       break
   if not target:
     log_warning(f"Cloud file {fname} does not exists, creating new file")
