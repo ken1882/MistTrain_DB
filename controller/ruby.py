@@ -106,8 +106,8 @@ def rubifiy_file(file, verbose=False):
   if t in CommonTitleCache:
     data['Title'] = CommonTitleCache[t]
   else:
-    rdat2 = rubify_line(t, file, agent, token)
-    data['Title'] = rdat2['html']
+    rdat = rubify_line(t, file, agent, token)
+    data['Title'] = rdat['html']
     agent = rdat['agent']
     token = rdat['token']
     CommonTitleCache[t] = data['Title']
