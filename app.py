@@ -236,14 +236,13 @@ def reload_database():
       f"response_type={ainfo['type']}&client_id={ainfo['client_id']}&" + \
       f"scope={ainfo['scope']}&redirect_uri={ainfo['callback']}"
     )
-    sm.flag_reload()
     return redirect(f"/auth/discord/redirect?dir=out&callback={request.path}&dest={dest}")
   elif msg == _G.MSG_PIPE_CONT:
     res_ok.set_cookie('btoken',
       b64encode('ミストトレインガールズ～霧の世界の車窓から～ X '.encode()).decode(),
       expires=datetime.now()+timedelta(days=30)
     )
-    sm.flag_reload()
+    sm.sig_reload()
     return res_ok
 
   res_ban = make_response(jsonify({'msg': 'Forbidden'}), 403)

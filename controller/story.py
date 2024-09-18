@@ -49,9 +49,6 @@ MTGHeaders = {
   'Pragma': 'no-cache',
 }
 
-FlagDailyUpdated = False
-UPDATE_HOUR = 4 # 4 am
-
 def init():
   global IsStoryReady,IsStoryInitCalled
   IsStoryInitCalled = True
@@ -138,15 +135,7 @@ def update_scene_cache():
         CharacterSceneCache[chid][sid] = False
   log_info("Scene cache updated")
 
-def check_new_available(force=False):
-  global FlagDailyUpdated
-  if not force:
-    curt = game.localt2jpt(datetime.now())
-    if curt.hour != UPDATE_HOUR:
-      FlagDailyUpdated = False
-      return
-    if FlagDailyUpdated:
-      return
+def check_new_available():
   log_info(f"Updating scene cache")
   update_cache()
   log_info(f"Updating database cache")
@@ -154,11 +143,10 @@ def check_new_available(force=False):
   for lang,folder in dm.SceneFolderTranslated.items():
       log_info(f"Updating scene cache of {lang}")
       dm.update_cache(folder)
-  FlagDailyUpdated = True
   log_info("Story meta updated")
 
 def copy_meta_cache():
-  for k,fn in _G.SCENE_METAS.items():
+  for _,fn in _G.SCENE_METAS.items():
     src = f"{_G.STATIC_FILE_DIRECTORY}/json/{fn}"
     dst = f"{_G.STATIC_FILE_DIRECTORY}/json/c_{fn}"
     if os.path.exists(src):
