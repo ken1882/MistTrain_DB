@@ -51,7 +51,7 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
     EditUnactiveColor = new spine.Color(1.0, 0.0, 0.0, 1.0);
     EditActiveColor   = new spine.Color(0.3, 0.5, 1.0, 1.0);
     ResizeFactor = 1000;
-    
+
     constructor(canvas){
         let gl = canvas.getContext('webgl2', {
             preserveDrawingBuffer: true,
@@ -71,7 +71,7 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
         this.renderer = new spine.webgl.SceneRenderer(this.canvas, this.gl);
         this.renderer.debugRendering = false;
         this.renderer.camera.position.x = 0;
-	    this.renderer.camera.position.y = 0;
+        this.renderer.camera.position.y = 0;
     }
 
     initInput(){
@@ -81,8 +81,8 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
         this.input = new spine.webgl.Input(this.canvas);
         this.mouseResize = false;
         this.input.addListener({
-            down: (x,y)=>{ 
-                this.handleInputDown(x,y); 
+            down: (x,y)=>{
+                this.handleInputDown(x,y);
             },
 			up: (x, y) => {
 				this.handleInputUp(x, y);
@@ -114,7 +114,7 @@ class Spine_AssetsManager extends spine.webgl.AssetManager{
                 this.mouseTarget = sp;
             }
         }
-        
+
     }
 
     handleInputUp(x, y){
@@ -246,7 +246,7 @@ class Spine_Character{
         this.skeleton = new spine.Skeleton(skdat);
         this.updateBounds();
         this.changeSkin(this.skin);
-        
+
         this.animationState = new spine.AnimationState(new spine.AnimationStateData(this.skeleton.data));
         let anim = this.defaultAnimation;
         if(!anim){
@@ -265,7 +265,7 @@ class Spine_Character{
         this.skeleton.getBounds(offset, size, []);
         this.bounds = { offset: offset, size: size };
         this.hitbox.set(
-            this.bounds.offset.x, 
+            this.bounds.offset.x,
             this.bounds.offset.y,
             this.bounds.size.x,
             this.bounds.size.y,
@@ -346,7 +346,7 @@ class MTG_Spine extends Spine_Character{
             /^normal\s2$/i, // blush alternative name
         ],
         3: [
-            /body/i, /arm/i, /leg/i, /foot/i, 
+            /body/i, /arm/i, /leg/i, /foot/i,
             /chest/i, /finger/i,
             /eye(s)?$/i, /^eyes_hl$/i,
             /brow/i, /mouth/i, /matsuge/i, /thigh/i,
