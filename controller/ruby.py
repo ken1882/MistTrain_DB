@@ -25,6 +25,14 @@ IgnorePhrase = [
   '！！！！！！'
 ]
 
+REPLACE_WORDS = {
+  '\\n': LinewrapSymbol,
+  '\r': LinewrapSymbol,
+  '\u3000': '',
+  '"':  "'",
+  '〜': '～',
+}
+
 def clean_ruby_html(html_node):
   for tag in html_node.find_all(True):
     for k in copy(tag.attrs):
@@ -90,10 +98,9 @@ def rubifiy_file(file, verbose=False):
   agent, token = None, None
   for i,dia in enumerate(dialogs):
     # text = unicodedata.normalize('NFKD', dia['Phrase'])
-    text = dia['Phrase'].replace('\u3000', '')
-    text = text.replace('\\n', LinewrapSymbol)
-    text = text.replace('\r', LinewrapSymbol)
-    text = text.replace('"',  "'")
+    text = dia['Phrase']
+    for k,v in REPLACE_WORDS.items():
+      text = text.replace(k, v)
     rdat = rubify_line(text, file, agent, token)
     agent = rdat['agent']
     token = rdat['token']
