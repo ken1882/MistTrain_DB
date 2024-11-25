@@ -56,7 +56,6 @@ def discord_oauth():
 
 @app.route('/api/login/pwd', methods=['POST'])
 def dmm_login():
-  return jsonify({'status': 503}),503
   email = request.form.get('email')
   pwd   = request.form.get('password')
   reme  = (not not request.form.get('remember'))
@@ -76,7 +75,6 @@ def dmm_login():
 
 @app.route('/api/login/totp', methods=['POST'])
 def dmm_login_totp():
-  return jsonify({'status': 503}),503
   b64ck = request.form.get('b64ck')
   token = request.form.get('token')
   pin   = request.form.get('pin')
@@ -96,7 +94,6 @@ def dmm_login_totp():
 
 @app.route('/api/login/game', methods=['POST'])
 def mtg_login():
-  return jsonify({'status': 503}),503
   b64ck = request.form.get('b64ck')
   try:
     ret = dmm.login_game(b64ck)
@@ -341,9 +338,9 @@ def decrypt_token():
 
 def setup():
   game.determine_server()
-  dm.update_cache()
+  # dm.update_cache()
   # derpy.init()
-  story.init()
+  # story.init()
   if not _G.FlagUseCloudData:
     return
   if not game.is_connected():

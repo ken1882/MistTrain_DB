@@ -208,18 +208,31 @@ function verifyGameLogin(back='/'){
     });
 }
 
-function sendMTG(payload){
-    if(!payload.headers){
-        payload.headers = {
-            Accept: 'application/vnd.msgpack',
-        };
-    }
-    payload.headers['Origin']  = ORIGIN_MASQUERADE;
-    payload.headers['Referer'] = ORIGIN_MASQUERADE;
-    payload.headers['Authorization'] = getMTGToken();
-    payload.xhrFields = { responseType: 'arraybuffer'};
-    payload.url = getMTGServer()+payload.url;
-    return $.ajax(payload);
+function sendMTG(payload) {
+    return new Promise((resolve, reject) => {
+        if (!payload.headers) {
+            payload.headers = {
+                Accept: 'application/vnd.msgpack',
+            };
+        }
+        payload.headers['Origin'] = ORIGIN_MASQUERADE;
+        payload.headers['Referer'] = ORIGIN_MASQUERADE;
+        payload.headers['Authorization'] = getMTGToken();
+        payload.xhrFields = { responseType: 'arraybuffer' };
+        payload.url = getMTGServer() + payload.url;
+        $.ajax(payload)
+            .done((data, textStatus, jqXHR) => {
+                // Only resolve if the status code is 2XX
+                if (parseInt(jqXHR.status / 100) == 2) {
+                    resolve(data);
+                } else {
+                    reject(new Error(`Request failed with status code ${jqXHR.status}`));
+                }
+            })
+            .fail((jqXHR, textStatus, errorThrown) => {
+                reject(new Error(`Request failed: ${textStatus}, ${errorThrown}`));
+            });
+    });
 }
 
 function handleNotLoggedin(){
@@ -235,7 +248,7 @@ function handleNotLoggedin(){
 
 function handleGameConnectionError(res){
     // this pop should display last
-    console.error(res);    
+    console.error(res);
     let b64ck = getDMMLogin();
     let msg = Vocab.GameLoginFailed + '\n';
     if(b64ck){
@@ -259,33 +272,33 @@ function handleGameConnectionError(res){
             saveMTGToken(t);
             verifyGameLogin(window.location.pathname);
         }
-    } 
+    }
 }
 
 async function fetchPlayerProfile(){
     try{
-      const [profileResponse, preferencesResponse] = await Promise.all([
-        sendMTG({ url: '/api/Users/Me', method: 'GET' }),
-        sendMTG({ url: '/api/Users/MyPreferences', method: 'GET' }),
-      ]);
-  
-      let profileData = await unpackResponse(profileResponse);
-      let preferencesData = await unpackResponse(preferencesResponse);
-      profileData = parseProfileData(profileData[1]);
-      preferencesData = parseUserPreference(preferencesData[1]);
-      DataManager.updateProfile(profileData);
-      DataManager.updateProfile(preferencesData);
+        const [profileResponse, preferencesResponse] = await Promise.all([
+            sendMTG({ url: '/api/Users/Me', method: 'GET' }),
+            sendMTG({ url: '/api/Users/MyPreferences', method: 'GET' }),
+        ]);
+        let profileData = await unpackResponse(profileResponse);
+        let preferencesData = await unpackResponse(preferencesResponse);
+        profileData = parseProfileData(profileData[1]);
+        preferencesData = parseUserPreference(preferencesData[1]);
+        DataManager.updateProfile(profileData);
+        DataManager.updateProfile(preferencesData);
     } catch (error) {
-      console.error('Error fetching player profile:', error);
+        console.error('Error fetching player profile:', error);
+        throw error;
     }
-  }
+}
 
 async function fetchCharacters(){
     try{
         const [characterResponse] = await Promise.all([
             sendMTG({url: '/api/UCharacters', method: 'GET' })
         ]);
-    
+
         let characterData = await unpackResponse(characterResponse);
         let data = [];
         for(let dat of characterData[1]){

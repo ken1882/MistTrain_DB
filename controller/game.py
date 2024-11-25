@@ -17,6 +17,7 @@ from random import randint
 from multiprocessing import Lock
 import msgpack
 import pytz
+import fcntl
 
 FLOCK = Lock()
 
@@ -101,6 +102,7 @@ def determine_server(depth=0):
     log_warning("Unable to get a live server")
     return _G.ERRNO_MAINTENANCE
 
+  Session.cookies['ckcy_remedied_check'] = 'ec_mrnhbtk'
   res  = Session.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
   page = res.content.decode('utf8')
   try:
@@ -110,24 +112,24 @@ def determine_server(depth=0):
     sync_token()
     return determine_server(depth+1)
 
-  inf     = {}
+  inf = {}
   for line in inf_raw.split('\n'):
     line = [l.strip() for l in line.split(':')]
     if len(line) < 2:
       continue
     inf[line[0].lower()] = literal_eval(line[1].strip()[:-1])
-  
+
   inf['url'] = unescape(unquote(inf['url']))
   inf['st']  = unquote(inf['st'])
   tmp  = inf['url'].split('&url=')[-1].split('&st=')
   _url = [u for u in tmp if u[:4] == 'http'][0]
   urld = urlparse(_url)
-  
+
   Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
   ServerLocation = f"{urld.scheme}://{urld.hostname}"
-  
+
   return ServerLocation if ServerLocation else _G.ERRNO_MAINTENANCE
-    
+
 def check_login():
   global Session,ServerLocation
   log_info("Trying to connect to server:", ServerLocation)
@@ -188,10 +190,11 @@ def login_dmm():
       log_error("2FA verification failed")
       res3.status_code = 401
       return res3
-  
+
   raw_cookies = ''
   for k in Session.cookies.keys():
     raw_cookies += f"{k}={Session.cookies[k]};"
+  raw_cookies.replace('ckcy_remedied_check=ktkrt_argt', 'ckcy_remedied_check=ec_mrnhbtk')
   _G.SetCacheString('DMM_MTG_COOKIES', raw_cookies)
   return res2
 
@@ -208,10 +211,22 @@ def login_totp(token, pin=''):
   return Session.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
 
 def reauth_game(depth=0):
+  # this lock only works for workers on same file system
+  ret   = _G.ERRNO_MAINTENANCE
+  flock = open(_G.LOCK_LOGIN, 'a')
   try:
+    fcntl.lockf(flock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     ret = _reauth_game(depth=depth)
+  except BlockingIOError:
+    w = randint(2, 5)
+    log_warning(f"Login lock detected, wait for {w} seconds to retry")
+    sleep(w)
+    sync_token()
+    ret = check_login()
+    ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
   finally:
-    _G.SetCacheString('LOGIN_LOCK', '')
+    fcntl.lockf(flock, fcntl.LOCK_UN)
+    flock.close()
   return ret
 
 def _reauth_game(depth=0):
@@ -220,16 +235,6 @@ def _reauth_game(depth=0):
   if depth > 3:
     log_warning("Reauth depth excessed, abort")
     return _G.ERRNO_MAINTENANCE
-  with FLOCK:
-    if _G.GetCacheString('LOGIN_LOCK'):
-      w = randint(2, 5)
-      log_warning(f"Login lock detected, wait for {w} seconds to retry")
-      sleep(w)
-      sync_token()
-      ret = check_login()
-      ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
-      return ret
-    _G.SetCacheString('LOGIN_LOCK', '1')
   log_info("Try login game")
   try:
     raw_cookies = _G.GetCacheString('DMM_MTG_COOKIES')
@@ -238,7 +243,8 @@ def _reauth_game(depth=0):
       k = seg[0]
       v = '='.join(seg[1:])
       Session.cookies.set(k, v)
-    
+
+    Session.cookies['ckcy_remedied_check'] = 'ec_mrnhbtk'
     res  = Session.get('https://pc-play.games.dmm.co.jp/play/MistTrainGirlsX/')
     page = res.content.decode('utf8')
     inf_raw = re.search(r"var gadgetInfo = {((?:.*?|\n)*?)};", page).group(0)
@@ -248,13 +254,13 @@ def _reauth_game(depth=0):
       if len(line) < 2:
         continue
       inf[line[0].lower()] = literal_eval(line[1].strip()[:-1])
-    
+
     inf['url'] = unescape(unquote(inf['url']))
     inf['st']  = unquote(inf['st'])
     tmp  = inf['url'].split('&url=')[-1].split('&st=')
     _url = [u for u in tmp if u[:4] == 'http'][0]
     urld = urlparse(_url)
-    
+
     Session.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     payload = _G.GetCacheString('DMM_FORM_DATA')
     ServerLocation = f"{urld.scheme}://{urld.hostname}"
@@ -282,10 +288,10 @@ def _reauth_game(depth=0):
       _G.SetCacheString('DMM_FORM_DATA', payload)
 
     res = Session.post('https://osapi.dmm.com/gadgets/makeRequest', payload)
-    log_debug("Response:", res)
+    log_debug("MakeRequest:", res)
     content = ''.join(res.content.decode('utf8').split('>')[1:])
     data = json.loads(content)
-    #log_debug(data)
+    # log_debug(data)
     if "'rc': 403" in str(data):
       return _G.ERRNO_MAINTENANCE
     new_token = json.loads(data[list(data.keys())[0]]['body'])
@@ -295,9 +301,11 @@ def _reauth_game(depth=0):
     handle_exception(err)
   finally:
     Session.headers = GAME_POST_HEADERS
-  
+  # connect to game with wait sever-side update
   if new_token:
-    log_info("Game connected")
+    log_info("Checking game connection")
+    sleep(3)
+    log_debug(Session.headers['Authorization'])
     res = check_login()
     if type(res) == int:
       return _G.ERRNO_MAINTENANCE
@@ -320,11 +328,12 @@ def change_token(token):
 
 def is_connected():
   global Session
+  try:
+    ret = get_profile(Session.headers['Authorization'])
+    return type(ret) == dict
+  except Exception:
+    pass
   return False
-  res = get_request('/api/Users/Me')
-  if type(res) != dict:
-    return False
-  return res['r']
 
 def is_response_ok(res):
   if res.status_code != 200:
