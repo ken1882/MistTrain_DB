@@ -54,8 +54,8 @@ def init():
   IsStoryInitCalled = True
   IsStoryReady = False
   while not dm.CacheBooted:
-    log_warning("[Story] Data cache unbooted, waiting for 10 seconds")
-    sleep(10)
+    log_warning("[Story] Data cache unbooted, waiting for 60 seconds")
+    sleep(60)
   update_cache()
   # copy_meta_cache()
   IsStoryReady = True

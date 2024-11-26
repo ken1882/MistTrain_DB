@@ -211,22 +211,10 @@ def login_totp(token, pin=''):
   return Session.post('https://accounts.dmm.co.jp/service/login/totp/authenticate', form)
 
 def reauth_game(depth=0):
-  # this lock only works for workers on same file system
-  ret   = _G.ERRNO_MAINTENANCE
-  flock = open(_G.LOCK_LOGIN, 'a')
   try:
-    fcntl.lockf(flock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     ret = _reauth_game(depth=depth)
-  except BlockingIOError:
-    w = randint(2, 5)
-    log_warning(f"Login lock detected, wait for {w} seconds to retry")
-    sleep(w)
-    sync_token()
-    ret = check_login()
-    ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
   finally:
-    fcntl.lockf(flock, fcntl.LOCK_UN)
-    flock.close()
+    _G.SetCacheString('LOGIN_LOCK', '')
   return ret
 
 def _reauth_game(depth=0):
@@ -235,6 +223,16 @@ def _reauth_game(depth=0):
   if depth > 3:
     log_warning("Reauth depth excessed, abort")
     return _G.ERRNO_MAINTENANCE
+  with FLOCK:
+    if _G.GetCacheString('LOGIN_LOCK'):
+      w = randint(2, 5)
+      log_warning(f"Login lock detected, wait for {w} seconds to retry")
+      sleep(w)
+      sync_token()
+      ret = check_login()
+      ret = _G.ERRNO_MAINTENANCE if type(ret) == int else ret
+      return ret
+    _G.SetCacheString('LOGIN_LOCK', '1')
   log_info("Try login game")
   try:
     raw_cookies = _G.GetCacheString('DMM_MTG_COOKIES')
