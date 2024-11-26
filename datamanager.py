@@ -52,7 +52,8 @@ def update_cache(folder=None):
   global CacheLoading, CacheBooted
   try:
     with FLOCK:
-      CacheBooted  = False
+      if not folder:
+        CacheBooted  = False
       CacheLoading = True
       log_db_info()
       if not folder: # update all
