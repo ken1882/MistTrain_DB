@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    
+
     <script src="https://unpkg.com/@msgpack/msgpack@2.4.1/dist.es5+umd/msgpack.min.js" integrity="sha384-1QkR1O/KG1VWNOc6j488GfFuKx8YtXfv74ufbwpknN2hWXgRTreeOl0a3aNjxK7q" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
 
@@ -35,7 +35,7 @@
     </nav>
     <br>
     <img src="{{ url_for('static', filename='assets/mtg-logo.png') }}" class="center" style="max-width: 80%;"><br>
-    
+
     <div class="center">
       <p id="login-warning" label="l-GameLoginWarning"></p>
 
@@ -44,12 +44,12 @@
           <input type="text" id="inp-email" class="form-control" />
           <label class="form-label" for="inp-email" id="l-email" label="l-Email">_</label>
         </div>
-      
+
         <div class="form-outline mb-4">
           <input type="password" id="inp-password" class="form-control" />
           <label class="form-label" for="inp-password" label="l-Password">_</label>
         </div>
-        
+
         <div class="col d-flex justify-content-center">
           <div class="form-check" id="section_remember">
             <input class="form-check-input" type="checkbox" value="" id="ckb-remember" />
@@ -75,7 +75,7 @@
         <button type="button" id="btn-login-totp" class="btn btn-primary btn-block mb-4" onclick="login_totp()" label="l-Login">_</button>
       </div>
     </div>
-    
+
     <script>
       document.getElementById('ckb-token').checked = false;
       $("#inp-email").val('');

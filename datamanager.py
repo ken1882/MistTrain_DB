@@ -18,6 +18,7 @@ RootFolder  = None
 SceneFolder = None
 DerpyFolder = None
 CacheBooted = False
+CacheLoading = False
 SceneFolderTranslated = {}
 
 __FileCache = {}
@@ -47,35 +48,41 @@ def init():
   log_info("Cloud initialized")
 
 def update_cache(folder=None):
-  global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated,CacheBooted
-  CacheBooted = False
-  log_db_info()
-  if not folder: # update all
-    files = get_folder_files()
-    RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
-    SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
-    DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
-    for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
-      SceneFolderTranslated[lang] = next((f for f in files if f['title'] == fname), None)
-  else:
-    files = get_folder_files(folder)
-  for f in files:
-    if not f['parents']:
-      continue
-    fpid = f['parents'][0]['id']
-    if fpid == RootFolder['id']:
-      set_cache(f)
-    elif fpid == DerpyFolder['id']:
-      set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
-    elif fpid == SceneFolder['id']:
-      set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
-    else:
-      for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
-        if fpid == SceneFolderTranslated[lang]['id']:
-          set_cache(f, f"/{fname}")
-  log_info(f"Cloud cache of {folder['title'] if folder else 'root'} updated")
-  if not folder:
-    CacheBooted = True
+  global Database,RootFolder,SceneFolder,DerpyFolder,SceneFolderTranslated
+  global CacheLoading, CacheBooted
+  try:
+    with FLOCK:
+      CacheBooted  = False
+      CacheLoading = True
+      log_db_info()
+      if not folder: # update all
+        files = get_folder_files()
+        RootFolder  = next((f for f in files if f['title'] == _G.CLOUD_ROOT_FOLDERNAME), None)
+        SceneFolder = next((f for f in files if f['title'] == _G.SCENE_CLOUD_FOLDERNAME), None)
+        DerpyFolder = next((f for f in files if f['title'] == _G.DERPY_CLOUD_FOLDERNAME), None)
+        for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
+          SceneFolderTranslated[lang] = next((f for f in files if f['title'] == fname), None)
+      else:
+        files = get_folder_files(folder)
+      for f in files:
+        if not f['parents']:
+          continue
+        fpid = f['parents'][0]['id']
+        if fpid == RootFolder['id']:
+          set_cache(f)
+        elif fpid == DerpyFolder['id']:
+          set_cache(f, f"/{_G.DERPY_CLOUD_FOLDERNAME}")
+        elif fpid == SceneFolder['id']:
+          set_cache(f, f"/{_G.SCENE_CLOUD_FOLDERNAME}")
+        else:
+          for lang, fname in _G.SCENE_CLOUD_TRANSLATED_FOLDERNAME.items():
+            if fpid == SceneFolderTranslated[lang]['id']:
+              set_cache(f, f"/{fname}")
+      log_info(f"Cloud cache of {folder['title'] if folder else 'root'} updated")
+      if not folder:
+        CacheBooted = True
+  finally:
+    CacheLoading = False
 
 def log_db_info():
   global Database

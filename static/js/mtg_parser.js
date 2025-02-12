@@ -159,202 +159,199 @@ function parseUserPreference(e) {
             t.AutoRoundBgmJukeBoxActivated = lh(e[n]);
             break;
         case 13:
-            t.UJukeBoxMusicSettingViewModel = parseJukeBox(e[n]);
-            break;
-        case 14:
             t.CharacterAutoLockRarity = dh(e[n]);
             break;
-        case 15:
+        case 14:
             t.IsHomeCharacterRandom = lh(e[n]);
             break;
-        case 16:
+        case 15:
             t.CurrentHomeViewTypeIsCharacter = lh(e[n]);
             break;
-        case 17:
+        case 16:
             t.MFieldSkillId1 = dh(e[n]);
             break;
-        case 18:
+        case 17:
             t.MFieldSkillId2 = dh(e[n]);
             break;
-        case 19:
+        case 18:
             t.MFieldSkillId3 = dh(e[n]);
             break;
-        case 20:
+        case 19:
             t.IsHomeFieldSkillRandom = lh(e[n]);
             break;
-        case 21:
+        case 20:
             t.KnuckleWeaponLevel = dh(e[n]);
             break;
-        case 22:
+        case 21:
             t.KnuckleWeaponTotalPoint = dh(e[n]);
             break;
-        case 23:
+        case 22:
             t.SwordWeaponLevel = dh(e[n]);
             break;
-        case 24:
+        case 23:
             t.SwordWeaponTotalPoint = dh(e[n]);
             break;
-        case 25:
+        case 24:
             t.AxWeaponLevel = dh(e[n]);
             break;
-        case 26:
+        case 25:
             t.AxWeaponTotalPoint = dh(e[n]);
             break;
-        case 27:
+        case 26:
             t.SpearWeaponLevel = dh(e[n]);
             break;
-        case 28:
+        case 27:
             t.SpearWeaponTotalPoint = dh(e[n]);
             break;
-        case 29:
+        case 28:
             t.WhipWeaponLevel = dh(e[n]);
             break;
-        case 30:
+        case 29:
             t.WhipWeaponTotalPoint = dh(e[n]);
             break;
-        case 31:
+        case 30:
             t.MagicWeaponLevel = dh(e[n]);
             break;
-        case 32:
+        case 31:
             t.MagicWeaponTotalPoint = dh(e[n]);
             break;
-        case 33:
+        case 32:
             t.BowWeaponLevel = dh(e[n]);
             break;
-        case 34:
+        case 33:
             t.BowWeaponTotalPoint = dh(e[n]);
             break;
-        case 35:
+        case 34:
             t.RodWeaponLevel = dh(e[n]);
             break;
-        case 36:
+        case 35:
             t.RodWeaponTotalPoint = dh(e[n]);
             break;
-        case 37:
+        case 36:
             t.GunWeaponLevel = dh(e[n]);
             break;
-        case 38:
+        case 37:
             t.GunWeaponTotalPoint = dh(e[n]);
             break;
-        case 39:
+        case 38:
             t.UPartyId = dh(e[n]);
             break;
-        case 40:
+        case 39:
             t.MQuestId = dh(e[n]);
             break;
-        case 41:
+        case 40:
             t.BattleAutoSetting = $t(e[n]);
             break;
-        case 42:
+        case 41:
             t.BattleSpeed = tn(e[n]);
             break;
-        case 43:
+        case 42:
             t.AutoSellEquipRarity = on(e[n]);
             break;
-        case 44:
+        case 43:
             t.AutoSellEquipEvolution = an(e[n]);
             break;
-        case 45:
+        case 44:
             t.AutoSellEquipLevel = cn(e[n]);
             break;
-        case 46:
+        case 45:
             t.AutoSellAbility = ln(e[n]);
             break;
-        case 47:
+        case 46:
             t.AutoSellSlot = dn(e[n]);
             break;
-        case 48:
+        case 47:
             t.AdventureTextFeed = hn(e[n]);
             break;
-        case 49:
+        case 48:
             t.SpecialSkillAnimation = mn(e[n]);
             break;
-        case 50:
+        case 49:
             t.CurrentClearChapter = dh(e[n]);
             break;
-        case 51:
+        case 50:
             t.UnlockFeatureFlag = gn(e[n]);
             break;
-        case 52:
+        case 51:
             t.UnlockEffectFlag = gn(e[n]);
             break;
-        case 53:
+        case 52:
             t.FunctionHelpFlag = vn(e[n]);
             break;
-        case 54:
+        case 53:
             t.FunctionHelpFlag2 = Sn(e[n]);
             break;
-        case 55:
+        case 54:
             t.FunctionHelpFlag3 = wn(e[n]);
             break;
-        case 56:
+        case 55:
             t.TutorialStatus = An(e[n]);
             break;
-        case 57:
+        case 56:
             t.BattleAutoSellEquipType = Cn(e[n]);
             break;
-        case 58:
+        case 57:
             t.BattleRaritySellTypeB = kn(e[n]);
             break;
-        case 59:
+        case 58:
             t.BattleRaritySellTypeA = kn(e[n]);
             break;
-        case 60:
+        case 59:
             t.BattleRaritySellTypeS = kn(e[n]);
             break;
-        case 61:
+        case 60:
             t.AbilityStoneBattleRaritySellTypeA = kn(e[n]);
             break;
-        case 62:
+        case 61:
             t.AbilityStoneBattleRaritySellTypeS = kn(e[n]);
             break;
-        case 63:
+        case 62:
             t.InCombat = lh(e[n]);
             break;
-        case 64:
+        case 63:
             t.WorkOutEndTime = hh(e[n]);
             break;
-        case 65:
+        case 64:
             t.DoubleWorkOutEndTime = hh(e[n]);
             break;
-        case 66:
+        case 65:
             t.HasRecommendNotice = lh(e[n]);
             break;
-        case 67:
+        case 66:
             t.IsAutoSpecialSkill = lh(e[n]);
             break;
-        case 68:
+        case 67:
             t.IsAutoOverDrive = lh(e[n]);
             break;
-        case 69:
+        case 68:
             t.EnableConnect = lh(e[n]);
             break;
-        case 70:
+        case 69:
             t.EnableIndividualAutoSell = lh(e[n]);
             break;
-        case 71:
+        case 70:
             t.ImageQualitySetting = Pn(e[n]);
             break;
-        case 72:
+        case 71:
             t.RankingTitleId = dh(e[n]);
             break;
-        case 73:
+        case 72:
             t.IsAutoApprovalFriendRequest = lh(e[n]);
             break;
-        case 74:
+        case 73:
             t.EnableEnemyShieldEffect = lh(e[n]);
             break;
-        case 75:
+        case 74:
             t.BattleAutoSpecialSkillType = Tn(e[n]);
             break;
-        case 76:
+        case 75:
             t.BattleSkipBuffEffectFlag = En(e[n]);
             break;
-        case 77:
+        case 76:
             t.UserPreferenceActiveFlag = Ln(e[n]);
             break;
-        case 78:
-            t.CurrentClearSideStoryChapter = dh(e[n])
+        case 77:
+            t.CurrentClearSideStoryChapter = dh(e[n]);
         }
     return t
 }

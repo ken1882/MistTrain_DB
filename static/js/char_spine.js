@@ -125,7 +125,7 @@ function loadBattlerSpineData(rssdata){
 		let bone = BattlerAnimState.data.skeletonData.slots[i].boneData;
 		if(bone.transformMode == 2){ bone.transformMode = 1; }
 		if(sdat.blendMode == 1){ sdat.blendMode = 3; }
-		
+
 		let aname = sdat.attachmentName;
 		if(!aname){ aname = null;}
 		DefaultSkinAttachments[sdat.name] = aname;
@@ -137,7 +137,7 @@ function loadBattlerSpineData(rssdata){
 	resizeBattlerCanvas();
 	requestAnimationFrame(renderBattler);
 	window.addEventListener("resize", resizeBattlerCanvas, true);
-	$("#battler-loading-indicator").remove();	
+	$("#battler-loading-indicator").remove();
 	__FlagBattlerCanvasReady = true;
 }
 
@@ -169,12 +169,12 @@ function loadCharacterSpineData(rssdata){
 function loadSkeleton(astmgr, rssdata) {
 	if(!rssdata.skin) rssdata.skin = "default";
 	atlas = new spine.TextureAtlas(
-		astmgr.get(rssdata.atlas), 
+		astmgr.get(rssdata.atlas),
 		(_) => {
 			return astmgr.get(rssdata.png);
 		}
 	);
-  
+
 	// Create a AtlasAttachmentLoader, which is specific to the WebGL backend.
 	atlasLoader = new spine.AtlasAttachmentLoader(atlas);
 
@@ -205,7 +205,7 @@ function loadSkeleton(astmgr, rssdata) {
 	// 		console.log("Animation on track " + trackIndex + " ended");
 	// 	}
 	// });
-	
+
 	// Pack everything up and return to caller.
 	return { skeleton: skeleton, state: animationState, bounds: bounds };
 }
@@ -333,7 +333,7 @@ function createGlContextSnapshot(gl){
 	let tmp = new Uint8Array(width * height * 4)
 	let row = width * 4;
 	let end = (height - 1) * row;
-	
+
 	gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, tmp);
 	for(var i=0;i<tmp.length;i+=row){
 		pixels.set(tmp.subarray(i,i+row), end - i);
@@ -390,6 +390,6 @@ function ChangeBattlerSkin(skin_id){
 	}
 }
 
-(function() { 
+(function() {
 	window.addEventListener("load", init);
 }());

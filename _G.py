@@ -74,6 +74,8 @@ SYMBOL_WIDTH = {
   2: '★☆【】ⅠⅡⅢ：',
 }
 
+LOCK_LOGIN = '.tmp/login.lock'
+
 RedisCache = None
 if os.getenv('REDISCLOUD_URL'):
   try:
@@ -399,6 +401,7 @@ def ClearCache():
 
 def GetCacheString(key):
   global RedisCache
+  key = f"C__{key}__"
   try:
     if RedisCache:
       return (RedisCache.get(key) or b'').decode()
@@ -411,6 +414,7 @@ def GetCacheString(key):
 
 def GetCacheTimestamp(key):
   global RedisCache
+  key = f"C__{key}__"
   try:
     if RedisCache:
       st = float( (RedisCache.get(key) or b'0').decode() )
@@ -425,6 +429,7 @@ def GetCacheTimestamp(key):
 
 def SetCacheString(key, val):
   global RedisCache
+  key = f"C__{key}__"
   try:
     if RedisCache:
       return RedisCache.set(key, val)
@@ -436,6 +441,7 @@ def SetCacheString(key, val):
 
 def SetCacheTimestamp(key, val):
   global RedisCache
+  key = f"C__{key}__"
   if type(val) == datetime:
     val = val.timestamp()
   try:
@@ -449,6 +455,7 @@ def SetCacheTimestamp(key, val):
 
 def GetCacheBinary(key):
   global RedisCache
+  key = f"C__{key}__"
   if RedisCache:
     try:
       return pickle.loads(RedisCache.get(key))
@@ -466,6 +473,7 @@ def GetCacheBinary(key):
 
 def SetCacheBinary(key, val):
   global RedisCache
+  key = f"C__{key}__"
   if RedisCache:
     try:
       return RedisCache.set(key, pickle.dumps(val))
