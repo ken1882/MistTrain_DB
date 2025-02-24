@@ -194,7 +194,7 @@ def login_dmm():
   raw_cookies = ''
   for k in Session.cookies.keys():
     raw_cookies += f"{k}={Session.cookies[k]};"
-  raw_cookies.replace('ckcy_remedied_check=ktkrt_argt', 'ckcy_remedied_check=ec_mrnhbtk')
+  raw_cookies = raw_cookies.replace('ckcy_remedied_check=ktkrt_argt', 'ckcy_remedied_check=ec_mrnhbtk')
   _G.SetCacheString('DMM_MTG_COOKIES', raw_cookies)
   return res2
 
