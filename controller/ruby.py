@@ -69,8 +69,9 @@ def rubifiy_japanese(text, fname='', depth=0, agent=None, token=None):
     if fname:
       print('File:', fname)
     if depth < 5:
-      print('Retry after 3 seconds, depth=', depth+1, sep='')
-      sleep(3)
+      n = min(300, 3 ** depth)
+      print(f'Retry after {n} seconds, depth=', depth+1, sep='')
+      sleep(n)
       return rubifiy_japanese(text, fname, depth+1)
     else:
       print("Payload:", urllib.parse.quote_plus(text), sep='\n')
