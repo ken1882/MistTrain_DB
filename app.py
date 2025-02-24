@@ -340,7 +340,7 @@ def setup():
   game.determine_server()
   # dm.update_cache()
   # derpy.init()
-  # story.init()
+  story.init()
   if not _G.FlagUseCloudData:
     return
   if not game.is_connected():
