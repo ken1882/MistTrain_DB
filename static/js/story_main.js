@@ -25,6 +25,7 @@ const __MapURI = {
   '3': 'https://assets4.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
   '4': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
   '5': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
+  '6': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
 }
 
 function init(){
@@ -246,10 +247,10 @@ function loadPinAssets(){
     if(!WorldPinData.hasOwnProperty(i)){ continue; }
     let dat = WorldPinData[i];
     let pid = 0, qid = 0, qdat = null, ldat = null;
-    // for(let j=5;j>0;j--){
     for(let j=1;j<=5;++j){
       qid  = getMainQuestId(dat.mAreaId, j);
       qdat = QuestData[qid];
+      if(!qdat){ continue; }
       ldat = LocationData[qdat.MLocationId];
       pid  = ldat.PinType;
       if(pid && !pset.has(pid)){ break; }
