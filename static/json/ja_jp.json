@@ -57,6 +57,7 @@
     "UnknownError": "不明なエラーが発生しました。後でもう一度お試しください。もし続けて問題が発生する場合は、開発者にお知らせください。",
     "CharacterDB": "キャラクター一覽",
     "DrawSpineBones": "スパインの骨を描く",
+    "LoadGameAssets": "ゲームアセットを読み込む",
     "CharacterList": "キャラクターリスト",
     "CharacterAnimationName": {
         "Idle_Normal": "通常",

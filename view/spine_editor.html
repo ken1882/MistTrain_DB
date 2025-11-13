@@ -92,10 +92,14 @@
       <button onclick="loadSpineFiles()">OK</button>
     </div>
     <hr>
-    <div class="spinner-border center" id="loading-indicator">
+    <div class="spinner-border center" id="loading-indicator" style="display: none;">
       <span class="sr-only"></span>
     </div>
     <div class="row justify-content-center" style="text-align: center;">
+      <div id="section-load-defaults">
+        <button id="btn-load-defaults" type="button" onclick="loadDefaults()" label="l-LoadGameAssets">
+        </button>
+      </div>
       <div class="col-lg-5 col-md-5 col-sm-10">
         <div>
           <select id="char-type-list" aria-label="select">

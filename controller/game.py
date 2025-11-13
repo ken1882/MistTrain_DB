@@ -17,7 +17,6 @@ from random import randint
 from multiprocessing import Lock
 import msgpack
 import pytz
-import fcntl
 
 FLOCK = Lock()
 

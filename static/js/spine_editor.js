@@ -79,32 +79,37 @@ function initSPEdit(){
     let dh = parseInt(window.innerHeight * 0.8);
     $("#main-canvas-container").css('width', dw);
     $("#main-canvas-container").css('height', dh);
-    
+
+    setupOptions();
+    $('#layer-table').css('display', '');
+    setTimeout(() => {
+        requestAnimationFrame(renderObjects);
+    }, 1000);
+}
+
+function loadDefaults(){
+    $('#section-load-defaults').remove();
+    $('#loading-indicator').css('display', '');
     AssetsManager.loadCharacterAssets();
     setupCavnasListener();
     setupSPEditor();
-    setupOptions();
 }
 
 function setupSPEditor(){
     if(!DataManager.isReady() || !AssetsManager.isReady()){
         return setTimeout(setupSPEditor, 300);
     }
-    
+
     setupEditableCharacters();
-    
+
     for(let k in AVAILABLE_TYPE_BITSET){
         $(`#btn-add-${k}`).on('click', (_)=>{
             onTypeAddClick(CurrentCharacterId, `${k}`);
         });
     }
 
-    setTimeout(() => {
-        requestAnimationFrame(renderObjects);
-    }, 1000);
     $('#loading-indicator').remove();
     $('#character-table').css('display', '');
-    $('#layer-table').css('display', '');
 }
 
 function resizeCanvas(w, h){
@@ -796,10 +801,10 @@ function loadSpineFiles(){
         }
         if(fsl.version[0] == '4'){
             sp = new Spine4_Character(Spine4Manager, {
-                texture: fsl.texture,
+                texture: fsl.texture || fsl.textures[0],
                 atlas: fsl.atlas,
                 skel: fsl.skel,
-                name: fsl.textureName,
+                name: fsl.textureName || fsl.textureNames[0],
                 version: fsl.version,
             });
             let proc = ()=>{

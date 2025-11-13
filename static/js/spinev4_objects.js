@@ -72,7 +72,7 @@ class Spine4_AssetsManager extends spine4.AssetManager{
         this.renderer = new spine4.SceneRenderer(this.canvas, this.gl);
         this.renderer.debugRendering = false;
         this.renderer.camera.position.x = 0;
-	    this.renderer.camera.position.y = 0;
+        this.renderer.camera.position.y = 0;
     }
 
     initInput(){
@@ -235,6 +235,7 @@ class Spine4_Character{
 
     loadSpineData(){
         if(!this.skin){ this.skin = this.DEFAULT_SKIN; }
+        console.log(this.manager)
         let loader = new spine4.AtlasAttachmentLoader(this.manager.get(this.atlas));
         let skbin  = new spine4.SkeletonBinary(loader);
         let skdat  = skbin.readSkeletonData(this.manager.get(this.skel));
@@ -259,7 +260,7 @@ class Spine4_Character{
         this.skeleton.getBounds(offset, size, []);
         this.bounds = { offset: offset, size: size };
         this.hitbox.set(
-            this.bounds.offset.x, 
+            this.bounds.offset.x,
             this.bounds.offset.y,
             this.bounds.size.x,
             this.bounds.size.y,

@@ -57,6 +57,7 @@
   "UnknownError": "程式發生未知錯誤，請稍後嘗試；若持續發生請通知開發人員",
   "CharacterDB": "角色資料庫",
   "DrawSpineBones": "顯示骨骼",
+  "LoadGameAssets": "載入遊戲資源",
   "CharacterList": "角色列表",
   "CharacterAnimationName": {
     "Idle_Normal": "正常",

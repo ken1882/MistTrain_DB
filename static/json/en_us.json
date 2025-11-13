@@ -57,6 +57,7 @@
   "UnknownError": "Unknown error occurred, please try again later and notify devs if keep happening",
   "CharacterDB": "Character Database",
   "DrawSpineBones": "Draw bones",
+  "LoadGameAssets": "Load game assets",
   "CharacterList": "Character List",
   "CharacterAnimationName": {
     "Idle_Normal": "Normal",
