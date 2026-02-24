@@ -20,12 +20,12 @@ LocationPinCanvas.width = 140*PinScale;
 LocationPinCanvas.height = 210*PinScale;
 
 const __MapURI = {
-  '1': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
-  '2': 'https://assets4.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
-  '3': 'https://assets4.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
-  '4': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
-  '5': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
-  '6': 'https://assets4.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
+  '1': 'https://assets-ak.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
+  '2': 'https://assets-ak.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
+  '3': 'https://assets-ak.mist-train-girls.com/production-client-web/81/res/raw-assets/61/615148e8-5947-412a-8b5c-eeeb12f5593a.jpg',
+  '4': 'https://assets-ak.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
+  '5': 'https://assets-ak.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
+  '6': 'https://assets-ak.mist-train-girls.com/production-client-web/83/res/raw-assets/63/63d4f1ac-f1f7-476f-b744-f8f38902a445.jpg',
 }
 
 function init(){
