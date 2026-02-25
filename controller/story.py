@@ -42,8 +42,8 @@ CharacterSceneCache = {}
 MTGHeaders = {
   'Accept': 'application/vnd.msgpack',
   'Accept-Encoding': 'gzip, deflate, br',
-  'Origin': 'https://assets4.mist-train-girls.com',
-  'Referer': 'https://assets4.mist-train-girls.com/',
+  'Origin': 'https://mist-production-api-001.mist-train-girls.com',
+  'Referer': 'https://mist-production-api-001.mist-train-girls.com/',
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
   'Cache-Control': 'no-cache',
   'Pragma': 'no-cache',

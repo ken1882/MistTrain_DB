@@ -1,7 +1,7 @@
 const DMM_CK_KEY = 'DMM_B64CK';
 const MTG_TOKEN_KEY = 'MTG_TOKEN';
 const MTG_SERVER_KEY = 'MTG_HOST';
-const ORIGIN_MASQUERADE = 'https://assets4.mist-train-girls.com';
+const ORIGIN_MASQUERADE = 'https://mist-production-api-001.mist-train-girls.com';
 
 let FlagConnLock = false;
 

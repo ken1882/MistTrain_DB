@@ -1,7 +1,9 @@
 from datetime import datetime,timedelta
+
+import requests
 import _G
 import os
-from flask import Flask, make_response, redirect, abort
+from flask import Flask, Response, make_response, redirect, abort
 from flask import render_template,jsonify,send_from_directory,request
 from _G import log_error,log_info,log_warning,log_debug
 import controller.derpy as derpy
@@ -17,7 +19,7 @@ import auth
 from utils import handle_exception,load_navbar
 from controller.derpy import req_derpy_ready
 from controller.story import req_story_ready
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 from base64 import b64decode, b64encode
 from datetime import datetime, timedelta
 
@@ -333,6 +335,140 @@ def decrypt_token():
   if msg == _G.ERRNO_UNAVAILABLE:
     return jsonify({'msg': 'Maintenance'}),403
   return jsonify({'msg': 'OK', 'token': msg, 'server': game.ServerLocation}),200
+
+## proxy assets
+UPSTREAM_HOST = "assets-ak.mist-train-girls.com"
+UPSTREAM_BASE = f"https://{UPSTREAM_HOST}"
+
+PROXY_PREFIXES = (
+  "/production-client-web-static",
+  "/production-client-web-assets",
+)
+
+# Headers to strip from upstream response
+EXCLUDED_RESPONSE_HEADERS = {
+  # CORS - we inject our own
+  "access-control-allow-origin",
+  "access-control-allow-credentials",
+  "access-control-allow-headers",
+  "access-control-allow-methods",
+  "access-control-expose-headers",
+
+  # Azure Blob internals - no need to expose
+  "x-ms-request-id",
+  "x-ms-version",
+  "x-ms-lease-status",
+  "x-ms-blob-type",
+
+  # Akamai internals
+  "akamai-cache-status",
+  "akamai-grn",
+
+  # Infrastructure noise
+  "server",
+  "x-firefox-spdy",
+
+  # Connection-level headers - gunicorn manages these
+  "transfer-encoding",
+  "connection",
+  "keep-alive",
+
+  # Don't forward cookies
+  "set-cookie",
+}
+
+# Headers to strip before forwarding request upstream
+EXCLUDED_REQUEST_HEADERS = {
+  "host",
+  "origin",
+  "referer",
+}
+
+_callback_uri = os.environ.get("DCAUTH_CALLBACK_URI", "")
+_callback_origin = (
+    f"{p.scheme}://{p.netloc}"
+    if (p := urlparse(_callback_uri)).netloc
+    else None
+)
+ALLOWED_ORIGINS = (
+  "http://localhost",
+  "http://localhost:8080",
+  "http://localhost:5000",
+  *( {_callback_origin} if _callback_origin else set() ),
+)
+
+CACHE_MAX_AGE = 86400  # 1 day in seconds
+
+
+def _add_cors(resp):
+  resp.headers["Access-Control-Allow-Origin"] = "*"
+  resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+  resp.headers["Access-Control-Allow-Headers"] = "*"
+
+
+def _add_cors(resp):
+  origin = request.headers.get("Origin", "")
+  resp.headers["Access-Control-Allow-Origin"] = (
+      origin if origin in ALLOWED_ORIGINS else "https://my-host.com"
+  )
+  resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+  resp.headers["Access-Control-Allow-Headers"] = "*"
+  resp.headers["Vary"] = "Origin"  # important: tells CF/browsers the response varies by origin
+
+def _add_cache(resp, max_age=86400):
+  resp.headers["Cache-Control"] = f"public, max-age={max_age}, s-maxage={max_age}"
+
+@app.route("/production-client-web-static/", defaults={"subpath": ""})
+@app.route("/production-client-web-static/<path:subpath>", methods=["GET", "OPTIONS"])
+@app.route("/production-client-web-assets/", defaults={"subpath": ""})
+@app.route("/production-client-web-assets/<path:subpath>", methods=["GET", "OPTIONS"])
+def reverse_proxy(subpath):
+  # Handle preflight without hitting upstream
+  if request.method == "OPTIONS":
+    resp = Response("")
+    resp.status_code = 204
+    _add_cors(resp)
+    return resp
+
+  # Build upstream URL preserving full path + query string
+  upstream_url = UPSTREAM_BASE + request.path
+  if request.query_string:
+    upstream_url += "?" + request.query_string.decode()
+
+  # Forward request headers, stripping sensitive/irrelevant ones
+  forward_headers = {
+    k: v for k, v in request.headers
+    if k.lower() not in EXCLUDED_REQUEST_HEADERS
+  }
+  forward_headers["Host"] = UPSTREAM_HOST
+
+  try:
+    upstream_resp = requests.get(
+      upstream_url,
+      headers=forward_headers,
+      stream=True,
+      verify=True,
+      timeout=30,
+    )
+  except requests.exceptions.RequestException as e:
+    return Response(f"Upstream error: {e}", status=502)
+
+  # Filter upstream response headers
+  response_headers = [
+    (k, v) for k, v in upstream_resp.headers.items()
+    if k.lower() not in EXCLUDED_RESPONSE_HEADERS
+  ]
+
+  resp = Response(
+    upstream_resp.iter_content(chunk_size=8192),
+    status=upstream_resp.status_code,
+    headers=response_headers,
+  )
+
+  _add_cors(resp)
+  _add_cache(resp)
+
+  return resp
 
 ## Main functions
 

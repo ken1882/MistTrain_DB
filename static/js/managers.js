@@ -1,5 +1,5 @@
-const ASSET_HOST = 'https://assets4.mist-train-girls.com/production-client-web-assets';
-const STATIC_HOST = 'https://assets4.mist-train-girls.com/production-client-web-static';
+const ASSET_HOST = '/production-client-web-assets';
+const STATIC_HOST = '/production-client-web-static';
 
 const CharacterAvatarWidth  = 94;
 const CharacterAvatarHeight = 94;
@@ -125,7 +125,7 @@ const ITYPE_SKILL       = 31;
   }
   /*-------------------------------------------------------------------------*/
   static loadLanguageFont(){
-    
+
   }
   /*-------------------------------------------------------------------------*/
   static loadAudioEnable(){
@@ -220,7 +220,7 @@ const ITYPE_SKILL       = 31;
     req_atlas.send();
     req_skel.send();
     return [req_png, req_atlas, req_skel];
-  }  
+  }
   /*-------------------------------------------------------------------------*/
   static updateProfile(val){
     let p = this.playerProfile;
@@ -353,7 +353,7 @@ const ITYPE_SKILL       = 31;
     this.SkillIconImageSet    = {};
     this.SkillIconImageClip   = {};
     this.SkillIconImageMap    = {};
-    
+
     this.initialized = true;
   }
 
@@ -373,7 +373,7 @@ const ITYPE_SKILL       = 31;
     this.setupFieldSkillCanvas();
     $.ajax({
       url: `${STATIC_HOST}/MasterData/MFieldSkillViewModel.json`,
-      success: (res) => { 
+      success: (res) => {
         for(let dat of res){
           this.FieldSkillData[dat.Id] = dat;
         }
@@ -414,7 +414,7 @@ const ITYPE_SKILL       = 31;
     this.__readyReq += 1;
     $.ajax({
       url: `${ASSET_HOST}/Textures/Icons/Atlas/FieldSkills/field_skill-${idx}.plist`,
-      success: (res) => { 
+      success: (res) => {
         AssetsManager.parseFieldSkillImageClip(res, idx);
         this.incReadyCounter();
       },
@@ -602,7 +602,7 @@ const ITYPE_SKILL       = 31;
       },
     });
   }
-  
+
   static loadLevelSkillData(){
     this.__readyReq += 1;
     $.ajax({
@@ -766,7 +766,7 @@ const ITYPE_SKILL       = 31;
     this.__readyReq += 1;
     $.ajax({
       url: `${ASSET_HOST}/Textures/Icons/Atlas/Layers/character-${idx}.plist`,
-      success: (res) => { 
+      success: (res) => {
         AssetsManager.parseAvatarClipData(res, idx);
         this.incReadyCounter();
         AssetsManager.loadAvatarClipData(idx+1);
@@ -779,7 +779,7 @@ const ITYPE_SKILL       = 31;
   }
 
   /**
-   * > Request async resources, used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()` 
+   * > Request async resources, used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()`
    * to check if fully loaded.
    * @param {int} req_n - Counter number to increase
    * @param {function} proc - Function to call (the loading procedure)
@@ -792,8 +792,8 @@ const ITYPE_SKILL       = 31;
 
   /**
    * > Request a single async resources, increase counter according to
-   * the number of `procs` given.  
-   * Used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()` 
+   * the number of `procs` given.
+   * Used with `AssetsManager.incReadyCounter` and `AssetsManager.isReady()`
    * to check if fully loaded.
    * @param  {function} procs - Functions to call
    */
@@ -879,7 +879,7 @@ const ITYPE_SKILL       = 31;
     }
     $.ajax({
       url: uri,
-      success: (res) => { 
+      success: (res) => {
         handler.apply(AssetsManager, [res]);
         this.incReadyCounter();
       },
@@ -909,9 +909,9 @@ const ITYPE_SKILL       = 31;
     }
     return node;
   }
-  
+
   /**
-   * > Parse clip data from mega character canvas 
+   * > Parse clip data from mega character canvas
    * @param {*} xml Response XML dara
    * @param {*} idx Index of canvas to track correct canvas of character
    */
@@ -924,7 +924,7 @@ const ITYPE_SKILL       = 31;
       this.CharacterAvatarMap[i] = idx;
     }
   }
-  
+
   static parseCharacterData(res){
     this.CharacterData = {};
     for(let i in res){
@@ -932,7 +932,7 @@ const ITYPE_SKILL       = 31;
       this.CharacterData[dat['Id']] = dat;
     }
   }
-  
+
   static parseGearData(res){
     this.MaxGearStatusData = {};
     for(let i=20;i<=res.length;i+=20){
@@ -940,7 +940,7 @@ const ITYPE_SKILL       = 31;
       this.MaxGearStatusData[dat.MCharacterId] = dat.Status;
     }
   }
-  
+
   static parseIconClipData(res){
     this.IconClipData = res;
   }
@@ -1177,7 +1177,7 @@ const ITYPE_SKILL       = 31;
         src_img = this.CharacterAvatarSet[src_idx];
       }
       clipImage(
-        this.AvatarCanvas, src_img, img, 
+        this.AvatarCanvas, src_img, img,
         rect[0], rect[1], rect[2], rect[3],
         this.FramePadding, this.FramePadding,
         CharacterAvatarWidth, CharacterAvatarHeight,
@@ -1185,8 +1185,8 @@ const ITYPE_SKILL       = 31;
     }
     if(rect2){
       clipImage(
-        this.AvatarCanvas, this.PartyFrameSet, img, 
-        rect2[0], rect2[1], rect2[2], rect2[3], 
+        this.AvatarCanvas, this.PartyFrameSet, img,
+        rect2[0], rect2[1], rect2[2], rect2[3],
         0, 0, rect2[2], rect2[3]
       );
     }
@@ -1268,18 +1268,18 @@ const ITYPE_SKILL       = 31;
         src_img = this.FieldSkillImageSet[src_idx];
       }
       clipImage(
-        canvas, src_img, img, 
+        canvas, src_img, img,
         rect[0], rect[1], rotated ? rect[3] : rect[2], rotated ? rect[2] : rect[3],
         this.FramePadding, this.FramePadding,
-        rotated ? FieldSkillImageHeight : FieldSkillImageWidth, 
+        rotated ? FieldSkillImageHeight : FieldSkillImageWidth,
         rotated ? FieldSkillImageWidth  : FieldSkillImageHeight,
         rotated ? 270 : 0
       );
     }
     if(rect2){
       clipImage(
-        canvas, this.PartyFrameSet, img, 
-        rect2[0], rect2[1], rect2[2], rect2[3], 
+        canvas, this.PartyFrameSet, img,
+        rect2[0], rect2[1], rect2[2], rect2[3],
         0, 0, rect2[2], rect2[3]
       );
     }
@@ -1390,7 +1390,7 @@ const ITYPE_SKILL       = 31;
         src_img = equipment_set[src_idx]
       }
       clipImage(
-        this.AvatarCanvas, src_img, img, 
+        this.AvatarCanvas, src_img, img,
         rect[0], rect[1], rect[2], rect[3],
         this.FramePadding, this.FramePadding,
         CharacterAvatarWidth, CharacterAvatarHeight,
@@ -1398,8 +1398,8 @@ const ITYPE_SKILL       = 31;
     }
     if(rect2){
       clipImage(
-        this.AvatarCanvas, this.PartyFrameSet, img, 
-        rect2[0], rect2[1], rect2[2], rect2[3], 
+        this.AvatarCanvas, this.PartyFrameSet, img,
+        rect2[0], rect2[1], rect2[2], rect2[3],
         0, 0, rect2[2], rect2[3]
       );
     }
@@ -1416,7 +1416,7 @@ const ITYPE_SKILL       = 31;
     block.append(img);
     this.FormationContext.clearRect(0, 0, this.FormationCanvas.width, this.FormationCanvas.height);
     clipImage(
-      this.FormationCanvas, this.FormationBaseImage, img, 
+      this.FormationCanvas, this.FormationBaseImage, img,
       0, 0, FormationBaseWidth, FormationBaseHeight,
       0, 0
     );
@@ -1460,7 +1460,7 @@ const ITYPE_SKILL       = 31;
     this.__readyReq += 1;
     $.ajax({
       url: `${ASSET_HOST}/Textures/Icons/Atlas/Skills/skill-${idx}.plist`,
-      success: (res) => { 
+      success: (res) => {
         AssetsManager.parseSkillIconClip(res, idx);
         this.incReadyCounter();
       },
@@ -1519,13 +1519,13 @@ const ITYPE_SKILL       = 31;
         let src_idx = this.SkillIconImageMap[image_key];
         src_img = this.SkillIconImageSet[src_idx];
         clipImage(
-          this.AvatarCanvas, this.SkillIconFrame, img, 
+          this.AvatarCanvas, this.SkillIconFrame, img,
           0, 0, SkillIconFrameWidth, SkillIconFrameHeight,
           0, 0
         );
       }
       clipImage(
-        this.AvatarCanvas, src_img, img, 
+        this.AvatarCanvas, src_img, img,
         rect[0], rect[1], rect[2], rect[3],
         2, 2,
         CharacterAvatarWidth, CharacterAvatarHeight,
@@ -1540,7 +1540,7 @@ const ITYPE_SKILL       = 31;
     return this.__readyCnt >= this.__readyReq;
   }
 
-  static isReady(){ 
+  static isReady(){
     return !this.__requestQueue.length && this.isStageLoaded();
   }
 }
