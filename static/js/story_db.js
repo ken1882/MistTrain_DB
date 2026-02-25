@@ -96,7 +96,7 @@ function loadEventStory(){
     $(desc).text(text);
     node.append(img);
     node.append(desc);
-    
+
     // scene container
     var container_id = `section-container-${scene.MChapterId}`;
     node.attr('data-bs-toggle', 'collapse');
@@ -198,7 +198,7 @@ function loadSideStory(){
     $(desc).text(text);
     node.append(img);
     node.append(desc);
-    
+
     // scene container
     var container_id = `section-container-${scene.MChapterId}`;
     node.attr('data-bs-toggle', 'collapse');
@@ -307,7 +307,7 @@ function sendSponsorScene(){
         alert(Vocab.UnderMaintenance);
       }
       else{
-        alert(Vocab.UnknownError);
+        alert(`${Vocab.UnknownError}\n${res.status} ${res.url}`);
       }
       hideSponsorOverlay();
       window.onbeforeunload = null;

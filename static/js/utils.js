@@ -8,7 +8,7 @@ var isFirefox = typeof InstallTrigger !== 'undefined';
 // Chrome 1+
 var isChrome = !!window.chrome;
 
-// Safari 3.0+ "[object HTMLElementConstructor]" 
+// Safari 3.0+ "[object HTMLElementConstructor]"
 var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
 window.mobilecheck = function() {
@@ -218,7 +218,7 @@ function capitalize(str){
   return tmp;
 }
 /**----------------------------------------------------------------------------
- * > Check whether the object is interable 
+ * > Check whether the object is interable
  * @param {Object} obj - the object to checl
  */
 function isIterable(obj) {
@@ -239,7 +239,7 @@ function processJSON(path, handler, fallback){
   if(!handler){ handler = function(){} }
   xhr.open('GET', path, true);
   xhr.responseType = 'blob';
-  xhr.onload = function(e) { 
+  xhr.onload = function(e) {
     if(this.status == 200){
       var file = new File([this.response], 'temp');
       var fileReader = new FileReader();
@@ -377,7 +377,7 @@ function handleAjaxError(response){
     alert(Vocab['AppInitializing']);
   }
   else{
-    alert(Vocab['UnknownError']);
+    alert(`${Vocab['UnknownError']}\n${response.status} ${response.url}`);
   }
 }
 
@@ -418,8 +418,8 @@ function rgb2hex(rgb){
 
 /**
  * Reading a file as binary
- * @param {File} file 
- * @param {Function} callback 
+ * @param {File} file
+ * @param {Function} callback
  */
 function fbread(file, callback, fseek=0, fstop=0){
   let reader = new FileReader();
@@ -451,7 +451,7 @@ function init_navbar(){
     }, 300);
   }
   let node = $("#languageText");
-  node.innerText = Vocab.currentLanguageName;        
+  node.innerText = Vocab.currentLanguageName;
   node = $("#languageOptions");
   for(let i in Vocab.SupportedLanguages){
     let lang = Vocab.SupportedLanguages[i];
@@ -486,7 +486,7 @@ function init_totop_button(){
   });
 
   button.addEventListener("mouseover", ()=>{
-    button.style.opacity = "1";          
+    button.style.opacity = "1";
   });
 
   button.addEventListener("mouseout", ()=>{
