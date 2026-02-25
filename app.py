@@ -377,13 +377,6 @@ EXCLUDED_RESPONSE_HEADERS = {
   "set-cookie",
 }
 
-# Headers to strip before forwarding request upstream
-EXCLUDED_REQUEST_HEADERS = {
-  "host",
-  "origin",
-  "referer",
-}
-
 _callback_uri = os.environ.get("DCAUTH_CALLBACK_URI", "")
 _callback_origin = (
     f"{p.scheme}://{p.netloc}"
@@ -397,6 +390,17 @@ ALLOWED_ORIGINS = (
   *( {_callback_origin} if _callback_origin else set() ),
 )
 
+MTGHeaders = {
+  "Accept": "*/*",
+  "Accept-Encoding": "gzip, deflate, br",
+  "Origin": "https://mist-production-api-001.mist-train-girls.com",
+  "Referer": "https://mist-production-api-001.mist-train-girls.com/",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+  "Cache-Control": "no-cache",
+  "Pragma": "no-cache",
+  "Host": UPSTREAM_HOST,
+}
+
 CACHE_MAX_AGE = 86400  # 1 day in seconds
 
 
@@ -409,7 +413,7 @@ def _add_cors(resp):
 def _add_cors(resp):
   origin = request.headers.get("Origin", "")
   resp.headers["Access-Control-Allow-Origin"] = (
-      origin if origin in ALLOWED_ORIGINS else "https://my-host.com"
+    origin if origin in ALLOWED_ORIGINS else "http://localhost"
   )
   resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
   resp.headers["Access-Control-Allow-Headers"] = "*"
@@ -435,17 +439,10 @@ def reverse_proxy(subpath):
   if request.query_string:
     upstream_url += "?" + request.query_string.decode()
 
-  # Forward request headers, stripping sensitive/irrelevant ones
-  forward_headers = {
-    k: v for k, v in request.headers
-    if k.lower() not in EXCLUDED_REQUEST_HEADERS
-  }
-  forward_headers["Host"] = UPSTREAM_HOST
-
   try:
     upstream_resp = requests.get(
       upstream_url,
-      headers=forward_headers,
+      headers=MTGHeaders,
       stream=True,
       verify=True,
       timeout=30,
