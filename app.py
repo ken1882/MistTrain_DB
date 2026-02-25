@@ -457,7 +457,7 @@ def reverse_proxy(subpath):
   ]
 
   resp = Response(
-    upstream_resp.iter_content(chunk_size=8192),
+    upstream_resp.raw.stream(amt=8192, decode_content=False),
     status=upstream_resp.status_code,
     headers=response_headers,
   )
