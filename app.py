@@ -340,11 +340,6 @@ def decrypt_token():
 UPSTREAM_HOST = "assets-ak.mist-train-girls.com"
 UPSTREAM_BASE = f"https://{UPSTREAM_HOST}"
 
-PROXY_PREFIXES = (
-  "/production-client-web-static",
-  "/production-client-web-assets",
-)
-
 # Headers to strip from upstream response
 EXCLUDED_RESPONSE_HEADERS = {
   # CORS - we inject our own
@@ -426,6 +421,8 @@ def _add_cache(resp, max_age=86400):
 @app.route("/production-client-web-static/<path:subpath>", methods=["GET", "OPTIONS"])
 @app.route("/production-client-web-assets/", defaults={"subpath": ""})
 @app.route("/production-client-web-assets/<path:subpath>", methods=["GET", "OPTIONS"])
+@app.route("/production-client-web/", defaults={"subpath": ""})
+@app.route("/production-client-web/<path:subpath>", methods=["GET", "OPTIONS"])
 def reverse_proxy(subpath):
   # Handle preflight without hitting upstream
   if request.method == "OPTIONS":
